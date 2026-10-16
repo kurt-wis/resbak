@@ -4,9 +4,9 @@
 
 | If you're… | Read, in order |
 | ---------- | -------------- |
-| New to the project | [`../AGENTS.md`](../AGENTS.md) → [`status.md`](status.md) → [`design/RESBAK_GDD.md`](design/RESBAK_GDD.md) (§ 1 and § 2) → [`glossary.md`](glossary.md) |
+| New to the project | [`../AGENTS.md`](../AGENTS.md) → [`status.md`](status.md) → [`RESBAK.md`](RESBAK.md) (§ 1 and § 2) → [`glossary.md`](glossary.md) |
 | Implementing a skill / passive | spec § 4 Characters → [`architecture.md`](architecture.md) → [`status.md`](status.md) |
-| Implementing game rules (tag, jail, rescue, win) | spec § 2 Core rules → spec § 12 Technical (tick order) → [`architecture.md`](architecture.md) § "Not yet in code" |
+| Implementing game rules (tag, jail, rescue, win) | spec § 2 Core rules → spec § 12 Technical (tick order) → [`architecture.md`](architecture.md) (MatchHost, systems) |
 | Checking whether a feature is in scope | spec § 1, What ships when |
 | Editing the map | spec § 5 Maps → [`pipelines/map_pipeline.md`](pipelines/map_pipeline.md) (edit the scene directly; never re-run the pipeline scripts) |
 | Building / animating a character | [`pipelines/blender.md`](pipelines/blender.md) → [`../tools/README.md`](../tools/README.md) |
@@ -16,7 +16,7 @@
 ## All docs
 
 **Design (intent)**
-- [`design/RESBAK_GDD.md`](design/RESBAK_GDD.md): the design spec, condensed from the team's full GDD (a long PDF kept outside the repo). The only design source of truth. Don't hand-edit.
+- [`RESBAK.md`](RESBAK.md): the design spec, condensed from the team's full GDD (a long PDF kept outside the repo). The only design source of truth. Don't hand-edit.
 - [`glossary.md`](glossary.md): Filipino terms → mechanics → code identifiers.
 
 **Reality (what ships)**

@@ -1,19 +1,26 @@
 # scripts/tests/
 
-| File | Status | What it checks |
-| ---- | ------ | -------------- |
-| `integration_test.gd` | **The gate. Must pass.** | Batang Hamog clips (Idle/Walking/Running/Harurot/Lusot_Slide/Lusot_Vault, ≥60 tracks, Slide/Dash absent), JM Botsog GLB (clips, Mixamo + towel bones, ≥50 bones), 7 InputMap actions, `BatangHamogController` (VaultDetector casts, VFX nodes, Harurot→Walk recovery, Lusot hurtbox + tag lockout), `DireDiretsoComponent` stacking/resets, both playtest scenes load. |
-| `legacy/verify_*.gd` | **Stale — fail on current map.** Not part of the gate. | Snapshots of the map at earlier pipeline stages (some contradict each other, e.g. `verify_refinement` asserts no `CourtRoof`, `verify_court` requires one). Kept for history; do not "fix" the map to satisfy them. |
+`integration_test.gd` is **the gate**. It runs every suite in `suites/` (listed in its `SUITES`):
 
-Run the gate (from repo root):
+| Suite | Checks |
+| ----- | ------ |
+| `project` | 1920×1080, stretch, 60 ticks, Jolt, autoloads, input actions, key tuning numbers |
+| `legacy` | Batang Hamog clips and controller, Dire-Diretso prototype, JM Botsog rig, character select, scene loads, main scene |
+| `hero_assets` | five hero GLBs (clips, no Slide/Dash, one mesh), `data/heroes/*.tres` against spec § 4 |
+| `core_rules` | tagging, Sabay, EP, barriers, capture, chain, rescue, lockdown, timer, sudden death, draws, reset, match end |
+| `kit_tutoy`, `kit_nene`, `kit_nathan`, `kit_jm`, `kit_inday` | each hero's skills and passive against spec § 4 |
+| `bots` | roles, perception, tagging, retreat, chain, rescue, a bot-only 5v5 |
+| `hud` | HUD parts, timer, tag feed, scoreboard, hide, pause |
+| `frontend` | every front-end screen builds, draft, names, results maths, settings persist |
+| `match_flow` | `scenes/match.tscn` runs 600 frames with bots |
 
 ```powershell
-& $env:GODOT --headless --path . -s scripts/tests/integration_test.gd
+& $env:GODOT --headless --path . -s scripts/tests/integration_test.gd                       # all
+& $env:GODOT --headless --path . -s scripts/tests/integration_test.gd -- --only=core_rules,bots
 ```
 
-Exit code 0 + final line `All checks passed successfully (100%)!` = pass.
-A failed `assert` aborts the deferred `run()` before `quit()`, so a broken gate
-can **hang** instead of exiting non-zero — if it doesn't finish in ~1 min, treat it as a failure and read the `SCRIPT ERROR` lines.
+Pass = exit 0 and the last line `All checks passed successfully (100%)!`. A suite is a `RefCounted` with
+`func run(t: TestCtx)`; use `t.check(cond, msg)` (never `assert`), `t.make_match(...)` for a grey arena match with
+`ScriptedInput` and manual stepping. After adding `class_name` scripts run `--import` first.
 
-When adding a feature, add asserts to `integration_test.gd` (keep the
-`print("  ✓ ...")` line-per-section style).
+`legacy/verify_*.gd` are stale map snapshots, not part of the gate.

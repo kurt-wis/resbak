@@ -5,7 +5,7 @@
 | **Agawan Base** | "stealing bases" | The traditional game RESBAK adapts | — |
 | **Resbak** | slang: backup / retaliation | Title; also the rescue theme | — |
 | **Barangay** | village / district | Setting: the open-air Barangay Court | `scenes/barangay_court.tscn` |
-| **Unahan** | "whoever is first" | Tag rule: anyone away from their base can be tagged; the first clean tag wins (replaces the old Bago sa Base freshness rule) | planned `can_tag()` |
+| **Unahan** | "whoever is first" | Tag rule: anyone away from their base can be tagged; the first clean tag wins (replaces the old Bago sa Base freshness rule) | `TagSystem.can_tag()` |
 | **Sabay** | "at the same time" | Two enemies tag each other on the same tick: both stumble, nobody is jailed | — |
 | **Base** | home pad | Pole in a 2 m ring; a barrier keeps the base's own team out, enemies capture it | `BaseSites/{Yellow,Purple}_Site_N` |
 | **Kulungan** | jail / cage | Where tagged players are held | `JailZones/{Yellow,Purple}Jail` |
@@ -31,3 +31,8 @@
 | **Ihip** | blow (wind) | Inday skill 1, an ally speed tunnel | — |
 | **Takbo Na** | "run now!" | Inday passive, a post-jailbreak surge | — |
 | **Sari-sari store / tricycle / monobloc** | corner shop / motor-sidecar taxi / plastic chair | Environment props | `assets/props/*` |
+
+| **Takipsilim** | sunset | Sudden death after a tied timer (30 s, untimed after 2 draws) | `RoundFlow.Phase.SUDDEN_DEATH` |
+| **Tabla** | draw | A round with no winner (replayed, no point) | `RoundFlow` (`winner = -1`) |
+| **Bantay / Atake / Pain / Resbak / Kapit** | guard / attack / bait / rescue / hold on | Bot roles (spec § 11) | `BotCoord.Role` |
+| **Kimkim** | invented candy brand | Nathan's powder packet | `scripts/match/skills/nathan/` |

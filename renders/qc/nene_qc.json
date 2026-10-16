@@ -1,0 +1,301 @@
+{
+ "file": "assets\\characters\\nene.glb",
+ "real_height_m": 1.716,
+ "game_scale": 1.049,
+ "dims_m": [
+  0.877,
+  0.61,
+  1.716
+ ],
+ "triangles": 10283,
+ "clips": [
+  {
+   "clip": "BreakDance",
+   "frames": [
+    0,
+    93
+   ],
+   "seconds": 3.875,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.44,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Capture",
+   "frames": [
+    0,
+    64
+   ],
+   "seconds": 2.667,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.39,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Chained",
+   "frames": [
+    0,
+    240
+   ],
+   "seconds": 10.0,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.03,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Idle",
+   "frames": [
+    0,
+    240
+   ],
+   "seconds": 10.0,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.03,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Iyak",
+   "frames": [
+    0,
+    48
+   ],
+   "seconds": 2.0,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.5,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Jailed",
+   "frames": [
+    0,
+    121
+   ],
+   "seconds": 5.042,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.02,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Running",
+   "frames": [
+    0,
+    22
+   ],
+   "seconds": 0.917,
+   "tracks": 660,
+   "foot_plant_speed_mps": 3.06,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 1.63
+  },
+  {
+   "clip": "Stumble",
+   "frames": [
+    0,
+    18
+   ],
+   "seconds": 0.75,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.94,
+   "loop_seam_m": 0.376,
+   "hips_root_motion_m": 0.058
+  },
+  {
+   "clip": "Stunned",
+   "frames": [
+    0,
+    26
+   ],
+   "seconds": 1.083,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.06,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Sumbong",
+   "frames": [
+    0,
+    27
+   ],
+   "seconds": 1.125,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.03,
+   "loop_seam_m": 0.809,
+   "hips_root_motion_m": 0.026
+  },
+  {
+   "clip": "Tag",
+   "frames": [
+    0,
+    16
+   ],
+   "seconds": 0.667,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.85,
+   "loop_seam_m": 0.62,
+   "hips_root_motion_m": 0.014
+  },
+  {
+   "clip": "Tagged",
+   "frames": [
+    0,
+    22
+   ],
+   "seconds": 0.917,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.12,
+   "loop_seam_m": 0.615,
+   "hips_root_motion_m": 0.1
+  },
+  {
+   "clip": "Victory",
+   "frames": [
+    0,
+    33
+   ],
+   "seconds": 1.375,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.28,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Walking",
+   "frames": [
+    0,
+    69
+   ],
+   "seconds": 2.875,
+   "tracks": 660,
+   "foot_plant_speed_mps": 1.21,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 2.07
+  }
+ ],
+ "sheet": "renders\\qc\\nene_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.007 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "WARN",
+   "detail": "XY centre (-0.089, -0.049) m"
+  },
+  {
+   "check": "normals Mesh_0",
+   "status": "PASS",
+   "detail": "69% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology Mesh_0",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (5631 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "10283 (budget 15000)"
+  },
+  {
+   "check": "mixamo names",
+   "status": "WARN",
+   "detail": "65/66 bones"
+  },
+  {
+   "check": "facing",
+   "status": "PASS",
+   "detail": "toes -Y of ankles (want -Y = Godot +Z front)"
+  },
+  {
+   "check": "clip BreakDance",
+   "status": "PASS",
+   "detail": "3.875 s, 660 channels, foot plant 0.44 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Capture",
+   "status": "PASS",
+   "detail": "2.667 s, 660 channels, foot plant 0.39 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Chained",
+   "status": "PASS",
+   "detail": "10.0 s, 660 channels, foot plant 0.03 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Idle",
+   "status": "PASS",
+   "detail": "10.0 s, 660 channels, foot plant 0.03 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Iyak",
+   "status": "PASS",
+   "detail": "2.0 s, 660 channels, foot plant 0.5 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Jailed",
+   "status": "PASS",
+   "detail": "5.042 s, 660 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Running",
+   "status": "PASS",
+   "detail": "0.917 s, 660 channels, foot plant 3.06 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Running",
+   "status": "FAIL",
+   "detail": "moves 5.0 m/s, feet push 3.06 m/s: x1.63 (play the clip at x1.63 or put its blend point at 3.06 m/s)"
+  },
+  {
+   "check": "clip Stumble",
+   "status": "WARN",
+   "detail": "0.75 s, 660 channels, foot plant 0.94 m/s, loop seam 0.376 m, root motion 0.058 m"
+  },
+  {
+   "check": "clip Stunned",
+   "status": "PASS",
+   "detail": "1.083 s, 660 channels, foot plant 0.06 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Sumbong",
+   "status": "WARN",
+   "detail": "1.125 s, 660 channels, foot plant 0.03 m/s, loop seam 0.809 m, root motion 0.026 m"
+  },
+  {
+   "check": "clip Tag",
+   "status": "WARN",
+   "detail": "0.667 s, 660 channels, foot plant 0.85 m/s, loop seam 0.62 m, root motion 0.014 m"
+  },
+  {
+   "check": "clip Tagged",
+   "status": "WARN",
+   "detail": "0.917 s, 660 channels, foot plant 0.12 m/s, loop seam 0.615 m, root motion 0.1 m"
+  },
+  {
+   "check": "clip Victory",
+   "status": "PASS",
+   "detail": "1.375 s, 660 channels, foot plant 0.28 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Walking",
+   "status": "PASS",
+   "detail": "2.875 s, 660 channels, foot plant 1.21 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Walking",
+   "status": "FAIL",
+   "detail": "moves 2.5 m/s, feet push 1.21 m/s: x2.07 (play the clip at x2.07 or put its blend point at 1.21 m/s)"
+  }
+ ]
+}

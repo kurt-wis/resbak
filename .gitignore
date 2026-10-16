@@ -10,3 +10,7 @@
 __pycache__/
 *.pyc
 *.blend1
+
+# Gate output scratch and stray git-hook folder
+gate_*.txt
+/dev/

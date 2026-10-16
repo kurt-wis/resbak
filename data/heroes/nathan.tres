@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="HeroData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/match/hero_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/match/skills/nathan/buga.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/match/skills/nathan/ubo_ubo.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/match/skills/nathan/may_tira_pa.gd" id="4"]
+
+[resource]
+script = ExtResource("1")
+id = "nathan"
+display_name = "Nathan"
+nickname = ""
+role = "Disruption"
+secondary_role = "Deception"
+color = Color(0.4824, 0.3608, 0.8392, 1)
+glb = "res://assets/characters/nathan.glb"
+model_height = 1.8
+run_speed = 5.0
+tag_reach = 1.2
+walk_clip_speed = 0.28
+run_clip_speed = 2.99
+skill1_name = "BUGA!"
+skill2_name = "UBO! UBO!"
+passive_name = "MAY TIRA PA!"
+skill1_cooldown = 10.0
+skill2_cooldown = 18.0
+skill1_script = ExtResource("2")
+skill2_script = ExtResource("3")
+passive_script = ExtResource("4")
+skill1_text = "Inhale 0.4 s, then blow a 5 m Kimkim powder cone. Hit enemies are slowed 30 % for 1.5 s and leave a powder trail your team can track."
+skill2_text = "Lob a Kimkim packet up to 9 m. Its 3.5 m cloud hides everyone inside for 5 s; enemies who stay inside cough and give themselves away."
+passive_text = "After a skill, your next sharp turn drops a powder patch. The first enemy to step in it puffs and is revealed to your team."
+values = {
+"buga_inhale": 0.4,
+"buga_length": 5.0,
+"buga_width_deg": 60.0,
+"buga_slow": 0.3,
+"buga_slow_time": 1.5,
+"buga_trail_time": 4.0,
+"ubo_range": 9.0,
+"ubo_flight_time": 0.5,
+"ubo_radius": 3.5,
+"ubo_cloud_time": 5.0,
+"ubo_inside_sight": 2.0,
+"ubo_cough_after": 1.0,
+"ubo_cough_reveal": 2.0,
+"tira_turn_deg": 90.0,
+"tira_turn_window": 0.5,
+"tira_turn_sample": 0.2,
+"tira_patch_radius": 1.0,
+"tira_reveal_time": 2.0
+}

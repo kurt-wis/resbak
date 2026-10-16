@@ -1,49 +1,55 @@
 # Implementation status
 
-What exists versus what is only designed. Update this file in the same change as the code.
-Legend: ✅ done · 🟡 partial · ❌ design only. The "Gate" column says whether `scripts/tests/integration_test.gd` covers it.
+What exists versus what is only designed in [`RESBAK.md`](RESBAK.md). Update this file in the same change as the code.
+Legend: ✅ done · 🟡 partial · ❌ design only. "Suite" = the gate suite in `scripts/tests/suites/` that checks it.
 
-_Last verified: 2026-10-16 (gate green)._
+_Last verified: 2026-10-16 (gate run in the commit that added this file)._
 
-## Core game systems ([rules](design/RESBAK_GDD.md#2-core-rules))
+## Core rules (spec § 2, § 3)
 
-| System | Status | Where | Gate |
-| ------ | ------ | ----- | ---- |
-| Barangay court map, props, collisions | ✅ | `scenes/barangay_court.tscn` | loads |
-| Base pads (3 per team, 2 m ring, own-team barrier) / jails (Area3D markers) | 🟡 markers only, no logic | `BaseSites/*`, `JailZones/*` | — |
-| Teams (Purok Dilaw yellow / Purok Lila purple) | ❌ | — | — |
-| Unahan tag rule (first clean tag wins, Sabay) + tag resolution | ❌ | — | — |
-| Jail, human chain, rescue by touching the chain tip, 4 s Escape Protection | ❌ | — | — |
-| Win conditions (base capture, total jail lockdown, sunset tiebreak and sudden death) | ❌ | — | — |
-| Flag carry (the GDD has no flag; capture is hold Interact 1.5 s at the pole) | 🟡 legacy `is_carrying_flag` flag on the controller only | `batang_hamog.gd` | ✅ (Dire reset) |
-| Roof cutaway | 🟡 shader + toggle exist; roof not instanced in court | `court_playtest.gd`, `scenes/court_roof.tscn` | — |
-| Multiplayer / networking | ❌ | — | — |
-| Character select (demo) → playtest spawns the pick | ✅ main scene | `scenes/character_select.tscn`, `hero_roster.gd` | ✅ |
+| System | Status | Where | Suite |
+| ------ | ------ | ----- | ----- |
+| Host tick loop, 60 ticks/s, spec tick order (10 steps), InputFrames for players and bots | ✅ | `scripts/match/match_host.gd` | core_rules |
+| Unahan tagging: 9-tick wind-up, reach edge to edge, 45° arc, nearest wins, failed tag stumble, Sabay, tag assist (gamepad) | ✅ | `systems/tag_system.gd` | core_rules |
+| Bodies (r 0.4, solid when Free, ghost when Tagged/Jailed/Chained/EP), pushes (0.2 s, stop dead), strongest slow, biggest bonus, stun/stumble | ✅ | `scripts/match/hero.gd` | core_rules, kits |
+| Bases: site roulette or Fixed, solid pole, own-ring barrier (2.4 m), capture (hold or toggle, 1.5 s, cancels), capture lockout | ✅ | `systems/base_system.gd` | core_rules |
+| Jail: 0.8 s freeze then tagger's jail, jail barrier, anchor/join/let go, tip steering, 4-chain max, rescue by touching tip / lone-anchor hand point, EP 4 s (5 s Inday), lockout | ✅ | `systems/jail_system.gd` | core_rules |
+| Round flow: countdown 3 s, KABOOM, 2 min timer, lockdown, sunset win, sudden death (Takipsilim, 30 s, untimed after 2 draws), draws, reset to spawns, first to 3 | ✅ | `systems/round_flow.gd` | core_rules |
+| Results stats: Impact (tag 2, rescue 3/prisoner, capture 10, Saved +2, Clutch +5), Pader, Pasaway, tags-by for Nemesis | 🟡 Assists and Kidlat (longest chase) are not counted yet (always 0) | `match_host.gd`, systems | frontend |
+| Taguan zones, high ground zoom, terrain, hazards (Baha) | ❌ | — | — |
 
-## Characters ([spec, Characters](design/RESBAK_GDD.md#4-characters))
+## Heroes (spec § 4)
 
-| Character | Model / rig | Clips | Skill 1 | Skill 2 | Passive |
-| --------- | ----------- | ----- | ------- | ------- | ------- |
-| **Tutoy** (Meshy model; takes Batang Hamog's kit in the design doc) | ✅ `tutoy.glb` (66 bones) | Idle, Walking, Running, BreakDance ✅ `HeroController` blend (gate) | ❌ | ❌ | ❌ |
-| [Batang Hamog](archive/characters/03_batang_hamog.md) (old rig, skills prototype; **not in the select**, `--hero=hamog` only) | ✅ `batang_hamog.glb` | Idle, Walking, Running, Harurot, Lusot_Slide, Lusot_Vault ✅ | **HARUROT!** ✅ `try_harurot` (gate) | **LUSOT!** ✅ slide + vault `try_lusot` (gate) | **DIRE-DIRETSO** ✅ `DireDiretsoComponent` (gate) |
-| [JM (Botsog)](design/RESBAK_GDD.md#jm-botsog) | ✅ `jm.glb` (Meshy, 67 bones); older procedural `jm_botsog.glb` unused | Idle, Walking, Running, BreakDance ✅ `HeroController` blend (gate) | TALBOG! ❌ | TAMARAW!!! ❌ | MAKAPAL! ❌ |
-| [Nene](design/RESBAK_GDD.md#nene) | ✅ `nene.glb` (66 bones) | Idle, Walking, Running, BreakDance ✅ `HeroController` blend (gate) | IYAK! ❌ | SUMBONG KITA! ❌ | SALING-PUSA ❌ |
-| [Nathan](design/RESBAK_GDD.md#nathan) | ✅ `nathan.glb` (66 bones) | Idle, Walking, Running, BreakDance ✅ `HeroController` blend (gate) | BUGA! ❌ | UBO! UBO! ❌ | MAY TIRA PA! ❌ |
-| [Inday](design/RESBAK_GDD.md#inday) | ✅ `inday.glb` (66 bones) | Idle, Walking, Running, BreakDance ✅ `HeroController` blend (gate) | IHIP! ❌ | SAGIP! ❌ | TAKBO NA! ❌ |
+| Hero | Idle / Walk / Run (own clips) | Skill 1 | Skill 2 | Passive | Suite |
+| ---- | ----------------------------- | ------- | ------- | ------- | ----- |
+| **Tutoy** | Idle_5 / Quick Walk / Lean Forward Sprint | HARUROT! ✅ 9 m/s 1.2 s, wind trail | LUSOT! ✅ 4 m slide, vault, 0.3 s no-tag, PERFECT stun 0.6 s | DIRE-DIRETSO ✅ 0→15 % over 3 s | kit_tutoy |
+| **Nene** | Happy Sway / Skip / Run Fast 7 | IYAK! ✅ crying decoy 5 s, see-through 3 s | SUMBONG KITA! ✅ fake alert 12 m / fake rescuer near jail | SALING-PUSA ✅ silent after 4 s | kit_nene |
+| **Nathan** | Scheming / Sneaky Walk / Run Fast 9 | BUGA! ✅ 0.4 s inhale, 5 m 60° cone, slow + trail + reveal | UBO! UBO! ✅ 9 m packet, 3.5 m cloud 5 s, cough reveal | MAY TIRA PA! ✅ powder patch | kit_nathan |
+| **JM "Botsog"** | Idle_11 / Proud Strut / Run Fast 4 | TALBOG! ✅ 6 m jump 0.6 s, push 3 m, crescent wall 4 s | TAMARAW!!! ✅ 9 m/s charge, side shove, wall stun | MAKAPAL! ✅ guard break, 15 s regen | kit_jm |
+| **Inday** | Hand on Hip / Confident Strut / Run Fast 6 | IHIP! ✅ 10×3 m wind lane, +25 % allies | SAGIP! ✅ 3 m ranged rescue with clear line | TAKBO NA! ✅ +20 % 2 s, +1 s EP | kit_inday |
 
-The five Meshy heroes move with the shared `HeroController` (no skills yet). Movement follows the
-design doc's 2026-10-16 rule: always run (Tutoy 5.4, JM 4.6, others 5.0 m/s), a 15–50 % stick tilt
-walks at half speed, under 15 % stands; keyboard always runs. On the character select each hero
-plays their own Mixamo `BreakDance` routine. Skills exist only on the old Batang Hamog rig (`--hero=hamog`).
-`source_art/heroes/KimKim_Asset.glb` is Nathan's Kimkim packet prop (not used in code yet).
+Every hero also has the core clips Tag, Tagged, Stumble, Stunned, Jailed, Chained, Capture, Victory, and BreakDance for menus (`docs/pipelines/blender.md`).
+
+## Match presentation, bots, front end
+
+| Area | Status | Where | Suite |
+| ---- | ------ | ----- | ----- |
+| Camera (55° pitch, 22 m, 40° FOV, never rotates), outlines (orange taggable / grey), "!" icon, EP shield, see-through, cloud hiding, world feedback (HULI!, RESBAK!, NAKUHA!, PERFECT!, confetti) | ✅ | `match_camera.gd`, `match_view.gd`, `hero_visual.gd` | match_flow, hud |
+| HUD: sun timer + score + dots, prisoner tracker, minimap, tag feed, S1/S2 + passive, danger border, off-screen arrows, capture rings, jail prompt, countdown + between rounds, scoreboard (Tab), F10, pause overlay | ✅ | `scripts/ui/hud/` | hud |
+| Bots: roles every 1 s (Bantay, Atake, Pain, Resbak, Kapit), reaction / retreat / skill-use by difficulty, visibility rule, runtime navmesh | ✅ | `scripts/match/bots/` | bots |
+| Front end: boot, title, first-time setup, Home (bench hero), Play menu (vs Bots, Tradisyonal; Custom Room greyed), roulette, snake draft, results (3 steps), Settings (5 tabs) | ✅ offline | `scripts/ui/frontend/`, `scenes/frontend/` | frontend |
+| Save (settings.cfg, profile.json, .tmp→rename, .bak), Session, Audio buses + announcer queue, Controls (rebindable defaults) | ✅ | `scripts/autoload/` | project, frontend |
+| 1920×1080 base resolution, borderless fullscreen default | ✅ | `project.godot` | project |
+| LAN (Net autoload, ENet, discovery, Custom Room, Kanto lobby, takeover, rejoin) | ❌ next step: the host already runs on InputFrames, so clients only need to send frames and draw snapshots | — | — |
+| Tutorial lessons, Alam Mo Ba? pages, intro cinematic, credits, audio assets, voice lines | ❌ | — | — |
+| Plaza and Tambakan maps | ❌ | — | — |
 
 ## Known design ↔ code gaps
-- **No flag in the GDD**: base capture is a 1.5 s Interact hold at the pole. There is no flag to carry, and no capture code exists yet.
-- **`is_carrying_flag` is legacy**: it survives on `BatangHamogController` only because Dire-Diretso's reset (and its gate assert) uses it. Replace it when capture is built.
-- **Tutoy vs Batang Hamog**: the design doc gives Tutoy the speed burst + slide kit, but Harurot / Lusot / Dire-Diretso still live in `BatangHamogController` on the old model. Porting them onto `tutoy.glb` needs Harurot/Lusot clips for the new rig.
-- **Walk/run clips are shared**: Idle and Running are Quaternius mocap and Walking is JM's Meshy walk, for all five. Only BreakDance is per hero. Per-hero personality walks/runs would read better.
-- Walk/run playback is scaled to the measured foot speed (hero_roster *_clip_speed): running plays at 0.76–1.11×, walking near 1.7–2.2× until heroes get longer-stride walks.
-- **Harurot speed**: the dossier says "120% speed multiplier"; the code reads it as +120%, `harurot_speed_multiplier = 2.2`. The clip is 1.0 s but the burst lasts 1.2 s, and the last 0.2 s holds the clip's final pose.
-- **`movement_test.gd`** still has the pre-controller Shift-sprint rig and does not use `BatangHamogController`.
-- The touch button labelled **DASH** triggers Harurot. That label is a leftover from before the rename.
+- **Map size**: Barangay Court is about 39 × 29 m of play space; the spec says 56 × 32 m. Jails are 4 × 3.3 m (spec 6 × 4). Spawns and jail markers are derived by `MapLayout` (no `Spawn_*` / `JailMarker_*` nodes in the scene yet).
+- **Facing**: the spec says the hero always faces the cursor. Heroes face their movement direction while running and turn to the aim when standing, tagging or casting; an aim fan under the local hero shows the lunge. Forward-only run clips look wrong when strafing. Team decision needed.
+- **Slow walk cycles**: Nathan's Sneaky Walk and JM's Proud Strut have short strides, so at the spec walk speed they play about 8.9× and 4.4×. Walking only happens on a gamepad (15–50 % tilt). Fix: a faster Meshy walk preset (3 credits each) or another walk.
+- **JM Talbog_Slam**: his fist dips up to 12 cm under the floor at impact (covered by the dust ring).
+- **Assists and Kidlat** are not tracked yet, so those badges never appear.
+- **Skill visuals are code-built** (CPUParticles, simple meshes). No authored VFX textures or sounds yet; `Audio.play()` names are placeholders until audio lands.
+- **Legacy dev code**: `scripts/runtime/` (HeroController, HeroRoster, character select, Batang Hamog prototype, movement test) is kept for reference and the `legacy` suite; the match does not use it. `jm_botsog.glb` is unused.
 - The `scripts/tests/legacy/verify_*.gd` checks fail against the current map; they are historical.

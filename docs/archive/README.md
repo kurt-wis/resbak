@@ -2,7 +2,7 @@
 
 These were the design docs before the game design document (GDD) existed. They are kept
 unchanged for history. **Do not implement from them.** Where they disagree with
-[`../design/RESBAK_GDD.md`](../design/RESBAK_GDD.md), the GDD is right.
+[`../RESBAK.md`](../RESBAK.md), the GDD is right.
 
 | File | Was | Now in the GDD |
 | ---- | --- | -------------- |

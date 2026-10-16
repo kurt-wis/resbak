@@ -1,25 +1,36 @@
 """
-build_heroes.py - Idle / Walking / Running / BreakDance for the five Meshy-rigged heroes.
+build_heroes.py - Every clip of the five Meshy-rigged heroes, from one clip table per hero.
 
 Input : source_art/heroes/<Name>_Character.glb (Meshy auto-rig, Mixamo bone names, A-pose, faces -Y)
+        source_art/mocap/meshy/*.glb (Meshy auto-rig of each hero + Meshy preset animations and
+          two text-to-motion clips; 24-bone Meshy rig, see tools/retarget_clip.py)
         source_art/mocap/quaternius/UAL1_Standard.glb (Quaternius Universal Animation Library, CC0)
         mixamo/breakdance-pack/*.fbx (Mixamo breakdance pack on X Bot)
-Output: assets/characters/<id>.glb with NLA clips Idle, Walking, Running, BreakDance,
-        renders/heroes_<id>_*.png stills, renders/heroes_breakdance.png dance sheet.
+Output: assets/characters/<id>.glb with one NLA clip per entry below (names are the game's
+          contract: scripts/runtime looks them up by name),
+        renders/heroes_<id>_{idle,walking,running}.png stills, renders/heroes_breakdance.png,
+        renders/heroes_<id>_moves.png (six frames of every clip, for review).
 
-- Idle / Running are Quaternius Idle_Loop / Jog_Fwd_Loop and Walking is JM's Meshy walk, for
-  everyone, retargeted by tools/retarget_clip.py (handles T-pose vs A-pose and bone roll, 24 fps).
-  A per-hero file source_art/mocap/<id>_walk.* / <id>_run.* overrides the shared clip.
-- BreakDance is each hero's own routine of Mixamo moves (BREAKDANCE below). Each move has its
-  root drift (travel, height, spin) removed, moves are cross-faded, and the end eases into
-  frame 0 so the loop is seamless. Character select plays it; gameplay never does.
+- HERO_CLIPS: each hero's own Idle / Walking / Running and skill clips. SHARED: the core-rule
+  clips every hero gets (Tag, Tagged, Stumble, Stunned, Jailed, Capture, Victory). Chained is
+  authored here from the hero's Idle (arms out to the sides, holding hands in the chain).
+- An entry: clip(source file, source clip, trim=(start_s, end_s), warp=[(out_s, src_s), ...],
+  loop=..., in_place=..., blend=frames, face=..., turn=deg, plant=...). Loops always lose their
+  travel and spin (in_place) so the seam is exact; open whole-clip loops are closed by
+  retarget_clip; `blend` eases a cut segment back into its first frame; face / turn rotate a
+  clip that stands turned. Every clip is grounded: lowest point on the floor over the whole
+  clip (jumps keep their air time), or with plant=True every frame's lowest sole on the floor.
+- BreakDance is each hero's own routine of Mixamo moves (BREAKDANCE below), unchanged since
+  2026-10-16: drift removed, cross-faded, kept on the select pad, eased into frame 0.
+- Never name a clip exactly 'Slide' or 'Dash' (the gate asserts they are absent).
 - After changing clips, re-measure foot speeds with tools/qc_asset.py and update
-  walk_clip_speed / run_clip_speed in scripts/runtime/hero_roster.gd.
+  walk_clip_speed / run_clip_speed in data/heroes/<id>.tres (HeroData), where the game reads them.
 
 Run:  & $env:BLENDER -b --python tools/build_heroes.py            (all heroes)
       & $env:BLENDER -b --python tools/build_heroes.py -- nene    (one hero)
 """
 import bpy, os, math, sys
+import numpy as np
 from mathutils import Matrix, Quaternion, Vector
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -29,8 +40,7 @@ PROJ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # repo root
 SRC_DIR = os.path.join(PROJ, "source_art", "heroes")
 OUT_DIR = os.path.join(PROJ, "assets", "characters")
 RENDER_DIR = os.path.join(PROJ, "renders")
-MOCAP_DIR = os.path.join(PROJ, "source_art", "mocap")  # optional <id>_walk / <id>_run clips
-QUATERNIUS = os.path.join(MOCAP_DIR, "quaternius", "UAL1_Standard.glb")
+MOCAP_DIR = os.path.join(PROJ, "source_art", "mocap")
 MIXAMO_DIR = os.path.join(PROJ, "mixamo", "breakdance-pack")
 
 HEROES = {  # id -> source file
@@ -40,10 +50,95 @@ HEROES = {  # id -> source file
     "jm": "JM_Character.glb",
     "inday": "Inday_Character.glb",
 }
-LOCOMOTION = {"Idle": "Idle_Loop", "Running": "Jog_Fwd_Loop"}
-# Quaternius' Walk_Loop is a slow stroll (feet push ~0.8 m/s); at the design's 2.5 m/s walk it
-# would play ~3x. The brisker walk Meshy shipped with JM (~1.3 m/s) needs ~1.9x instead.
-WALK_SOURCE = os.path.join(SRC_DIR, "JM_Character.glb")
+
+
+def clip(src, name=None, trim=None, warp=None, loop=False, in_place=False, blend=0, face=False,
+         turn=0.0, plant=False):
+    """One clip: `src` is relative to source_art/mocap/; `name` None = the file's only clip.
+    trim / warp times are seconds in the source clip (Meshy files: frame / 24).
+    face : turn the clip so the chest faces -Y on average (clips that stand turned).
+    turn : then turn it this many more degrees about Z (+ = toward the hero's left, +X).
+    plant: ground every frame on its lowest sole (bake_planted) instead of the whole clip on
+           its lowest point; for standing clips whose retargeted feet hover, or whose hands
+           reach under the floor (Talbog_Slam)."""
+    return {"src": src, "name": name, "trim": trim, "warp": warp, "loop": loop,
+            "in_place": in_place, "blend": blend, "face": face, "turn": turn, "plant": plant}
+
+
+T, NE, NA, J, I = (f"meshy/{h}_moves.glb" for h in ("tutoy", "nene", "nathan", "jm", "inday"))
+
+# Each hero's own locomotion and skills. Times were picked from source contact sheets.
+HERO_CLIPS = {
+    "tutoy": {
+        "Idle": clip(T, "Idle_5", loop=True, face=True),                   # stands ~42 deg turned
+        "Walking": clip(T, "Quick_Walk", trim=(0.0, 1.0), loop=True),     # 3 identical 1 s cycles
+        "Running": clip(T, "Lean_Forward_Sprint", loop=True),
+        "Harurot": clip(T, "run_fast_2", loop=True),                       # S1 HARUROT! sprint
+        "Lusot_Slide": clip(T, "slide_light", trim=(5 / 24, 25 / 24), in_place=True),  # drop to get-up
+        "Lusot_Vault": clip(T, "Unarmed_Vault", in_place=True),
+    },
+    "nene": {
+        "Idle": clip(NE, "Happy_Sway_Standing", loop=True),
+        "Walking": clip(NE, "Skip_Forward", loop=True),
+        "Running": clip(NE, "run_fast_7", loop=True),
+        # S1 IYAK! crying decoy: the sitting tantrum (kicking, crying), looped.
+        "Iyak": clip(NE, "Angry_To_Tantrum_Sit", trim=(66 / 24, 114 / 24), loop=True, blend=12),
+        # S2 SUMBONG KITA!: arm sweeps up, then calls out with a hand at the mouth.
+        "Sumbong": clip(NE, "Call_Gesture", trim=(45 / 24, 72 / 24)),
+    },
+    "nathan": {
+        "Idle": clip(NA, "Scheming_Hand_Rub", loop=True),
+        "Walking": clip(NA, "Sneaky_Walk", loop=True),
+        "Running": clip(NA, "run_fast_9", loop=True),
+        # S1 BUGA!: lean back to inhale, then blow forward; the source holds the inhale ~0.8 s,
+        # squeezed so the blow peaks 0.4 s in (the spec's inhale time), settle at full speed.
+        "Buga": clip("meshy/nathan_buga.glb",
+                     warp=[(0.0, 1 / 24), (0.22, 9 / 24), (0.27, 27 / 24), (0.40, 39 / 24), (1.20, 60 / 24)],
+                     plant=True),
+        # S2 UBO! UBO! packet throw: hand up by the shoulder, then the throw forward and down.
+        # The source is a grappling over-shoulder throw; the body stands ~70 deg turned to the
+        # left while the throwing hand releases straight ahead, so it is left unturned.
+        "Ubo": clip(NA, "Over_Shoulder_Throw", trim=(54 / 24, 74 / 24), plant=True),
+    },
+    "jm": {
+        "Idle": clip(J, "Idle_11", loop=True),
+        "Walking": clip(J, "Proud_Strut", loop=True, plant=True),           # hovered ~7 cm
+        "Running": clip(J, "run_fast_4", loop=True),
+        # Crouch to just before landing; the source jumps with feet ~50 deg to the right.
+        "Talbog_Jump": clip(J, "Regular_Jump", trim=(4 / 24, 26 / 24), turn=40),
+        # Impact + recovery. Planted: his hand reaches 11 cm under his soles in the crouch, so
+        # whole-clip grounding floated him 11-20 cm; now the fist dips into the floor instead.
+        "Talbog_Slam": clip(J, "Charged_Ground_Slam", trim=(33 / 24, 66 / 24), plant=True),
+        "Tamaraw": clip(J, "Male_Head_Down_Charge", loop=True, in_place=True),
+        "GuardBreak": clip(J, "Hit_Reaction_to_Waist", trim=(3 / 24, 27 / 24), face=True),  # ~55 deg off
+    },
+    "inday": {
+        "Idle": clip(I, "Hand_on_Hip_Gesture", loop=True),
+        "Walking": clip(I, "Confident_Strut", loop=True),
+        "Running": clip(I, "run_fast_6", loop=True),
+        # S1 IHIP!: the held two-arms-forward push, channelled up to 4 s.
+        "Ihip": clip(I, "mage_soell_cast_3", trim=(32.8 / 24, 60.8 / 24), loop=True, blend=6),
+        "Sagip": clip(I, "Cheer_with_Both_Hands_Up", trim=(3 / 24, 36 / 24)),   # S2 SAGIP!
+    },
+}
+
+# Core-rule clips, retargeted onto every hero. Chained is authored from each hero's Idle.
+SHARED = {
+    # Wind-up, lunge, back. The body turns ~65 deg (right shoulder leading) while the tagging
+    # hand reaches straight ahead (-Y), so it is left unturned.
+    "Tag": clip("meshy/shared_tag.glb", trim=(11 / 24, 27 / 24), in_place=True),
+    "Tagged": clip(T, "Slap_Reaction", trim=(18 / 24, 40 / 24)),                 # 0.8 s freeze
+    "Stumble": clip(T, "Stumble_Walk", trim=(18 / 24, 36 / 24), in_place=True),   # failed tag, 0.5 s
+    "Stunned": clip(T, "Head_Hold_in_Pain", trim=(51.2 / 24, 76.8 / 24), loop=True, blend=6),
+    "Jailed": clip(T, "Wave_for_Help", loop=True),
+    "Capture": clip("quaternius/UAL1_Standard.glb", "Push_Loop", loop=True, plant=True),
+    "Victory": clip(NE, "Victory_Cheer", trim=(0.0, 33 / 24), loop=True, blend=8, plant=True),
+}
+CHAINED = "Chained"
+CHAIN_CALM = tuple(f"mixamorig:{b}" for b in ("Spine", "Spine1", "Spine2", "Neck", "Head"))
+LOCOMOTION = ("Idle", "Walking", "Running")
+CORE_ORDER = ("Tag", "Tagged", "Stumble", "Stunned", "Jailed", CHAINED, "Capture", "Victory")
+
 # Each hero's own breakdance: Mixamo moves played in order, (file, repeats). Every move here
 # starts and ends in the same pose, so the routine loops cleanly.
 BREAKDANCE = {
@@ -54,11 +149,17 @@ BREAKDANCE = {
     "inday": [("brooklyn uprock.fbx", 1)],                                # Brooklyn uprock, dips to the floor
 }
 CROSSFADE = 8  # frames between moves and at the loop seam
+LOOP_EASE = 3  # frames every loop eases into its first frame (unless its entry sets `blend`)
 PAD_RADIUS = 0.35  # m of floor travel allowed on the select-screen pad
 
 
 def log(msg):
     print(f"[build_heroes] {msg}", flush=True)
+
+
+def clip_order(hero_id):
+    skills = [n for n in HERO_CLIPS[hero_id] if n not in LOCOMOTION]
+    return list(LOCOMOTION) + ["BreakDance"] + list(CORE_ORDER) + skills
 
 
 def reset():
@@ -104,7 +205,7 @@ def bake(arm, name, offset_frames, hips_scale):
         pose_m = {}
         for b in bones:
             n = b.name
-            # Bones missing from the source (headfront, JM's Bone_016) follow their parent rigidly.
+            # Bones missing from the source (fingers, headfront) follow their parent rigidly.
             d = rot.get(n)
             if d is None:
                 p = b.parent
@@ -141,11 +242,6 @@ def _blend_frame(a, b, t):
     return ({n: q.slerp(rb.get(n, q), t) for n, q in ra.items()}, ha.lerp(hb, t))
 
 
-def _heading(q):
-    f = q @ Vector((0, -1, 0))
-    return math.atan2(f.x, -f.y)
-
-
 def remove_drift(frames):
     """Cancel a move's net travel, height change and spin so its last frame lands on its first."""
     n = len(frames)
@@ -153,7 +249,7 @@ def remove_drift(frames):
         return frames
     d = frames[-1][1] - frames[0][1]
     hips0, hips1 = frames[0][0]["mixamorig:Hips"], frames[-1][0]["mixamorig:Hips"]
-    dyaw = (_heading(hips1) - _heading(hips0) + math.pi) % (2 * math.pi) - math.pi
+    dyaw = (retarget_clip._heading(hips1) - retarget_clip._heading(hips0) + math.pi) % (2 * math.pi) - math.pi
     out = []
     for i, (rot, hips) in enumerate(frames):
         t = i / (n - 1)
@@ -174,9 +270,23 @@ def concat(a, b, fade=CROSSFADE):
     return out + list(b[fade:])
 
 
-def _mesh_lows(arm, act, count):
-    """Lowest skinned-mesh point (armature space Z) on each of the first `count` frames."""
+FOOT_BONES = ("LeftFoot", "RightFoot", "LeftToeBase", "RightToeBase", "LeftToe_End", "RightToe_End")
+
+
+def _sole_mask(o):
+    """Vertices of mesh `o` skinned mostly (> 50 %) to foot and toe bones."""
+    feet = {g.index for g in o.vertex_groups if g.name.split(":")[-1] in FOOT_BONES}
+    return np.array([sum(g.weight for g in v.groups if g.group in feet) > 0.5 for v in o.data.vertices],
+                    dtype=bool)
+
+
+def _mesh_lows(arm, act, count, soles=False):
+    """Lowest skinned-mesh point (armature space Z) on each of the first `count` frames;
+    soles=True: lowest point of the feet only."""
     body = [o for o in bpy.data.objects if o.type == "MESH" and o.find_armature() == arm]
+    masks = {o.name: _sole_mask(o) for o in body} if soles else {}
+    if soles:
+        body = [o for o in body if masks[o.name].any()]
     arm.animation_data.action = act
     f0 = int(act.frame_range[0])
     lows = []
@@ -187,7 +297,11 @@ def _mesh_lows(arm, act, count):
         for o in body:
             ev = o.evaluated_get(dg)
             me = ev.to_mesh()
-            low = min(low, min((ev.matrix_world @ v.co).z for v in me.vertices))
+            co = np.empty(len(me.vertices) * 3, dtype=np.float64)
+            me.vertices.foreach_get("co", co)
+            mw = np.array(ev.matrix_world)
+            z = co.reshape(-1, 3) @ mw[2, :3] + mw[2, 3]
+            low = min(low, float((z[masks[o.name]] if soles else z).min()))
             ev.to_mesh_clear()
         lows.append(low)
     return lows
@@ -195,13 +309,27 @@ def _mesh_lows(arm, act, count):
 
 def bake_grounded(arm, name, frames):
     """Bake, then shift the whole clip so its lowest sole touches the floor: retargeted hips
-    heights otherwise leave feet a few cm under or over it."""
+    heights otherwise leave feet a few cm under or over it. Jumps keep their air time (the
+    lowest frame is the crouch)."""
     act = bake(arm, name, frames, 1.0)
     dz = -min(_mesh_lows(arm, act, len(frames)))
     if abs(dz) > 0.003:
         bpy.data.actions.remove(act)
         act = bake(arm, name, [(r, h + Vector((0, 0, dz))) for r, h in frames], 1.0)
         log(f"  grounded {name}: {dz * 100:+.1f} cm")
+    return act
+
+
+def bake_planted(arm, name, frames):
+    """Bake, then move each frame up or down so its lowest sole sits on the floor. Retargeted
+    hips heights drift against the hero's own leg lengths, so standing clips hover a few cm
+    (JM's Proud_Strut ~7 cm); in Talbog_Slam JM's hand reaches 11 cm under his feet, so
+    whole-clip grounding floated him 11-20 cm. Kills hops: only for clips with a planted foot."""
+    act = bake(arm, name, frames, 1.0)
+    lows = _mesh_lows(arm, act, len(frames), soles=True)
+    bpy.data.actions.remove(act)
+    act = bake(arm, name, [(r, h - Vector((0, 0, low))) for (r, h), low in zip(frames, lows)], 1.0)
+    log(f"  planted {name}: soles moved {-max(lows) * 100:+.1f} to {-min(lows) * 100:+.1f} cm")
     return act
 
 
@@ -222,18 +350,69 @@ def bake_on_floor(arm, name, frames):
     return act
 
 
-def quaternius_clips(arm, wanted):
-    """{our clip name: offset frames} from the Quaternius library, loaded once per hero."""
-    acts_before = set(bpy.data.actions)
-    src, _ = retarget_clip.load_source(QUATERNIUS)
-    new_acts = [a for a in bpy.data.actions if a not in acts_before]
+def retarget_table(arm, table):
+    """{our clip name: offset frames}, each source file loaded once."""
+    by_file = {}
+    for ours, spec in table.items():
+        by_file.setdefault(spec["src"], []).append(ours)
     out = {}
-    for ours, theirs in wanted.items():
-        act = next(a for a in new_acts if a.name == theirs or a.name.startswith(theirs + "."))
-        out[ours] = retarget_clip.offsets_from_rig(src, act, arm, label=theirs)
-    bpy.data.objects.remove(src, do_unlink=True)
-    for a in new_acts:
-        bpy.data.actions.remove(a)
+    for src_rel, names in by_file.items():
+        src, acts = retarget_clip.load_clips(os.path.join(MOCAP_DIR, *src_rel.split("/")))
+        for ours in names:
+            spec = table[ours]
+            if spec["name"]:
+                act = acts.get(spec["name"])
+                if act is None:
+                    raise SystemExit(f"{src_rel}: no clip {spec['name']!r}; has {sorted(acts)}")
+            else:
+                act = max(acts.values(), key=lambda a: a.frame_range[1] - a.frame_range[0])
+            label = f"{ours} <- {os.path.basename(src_rel)}:{spec['name'] or act.name}"
+            frames = retarget_clip.offsets_from_rig(src, act, arm, label=label, trim=spec["trim"],
+                                                    warp=spec["warp"], loop=spec["loop"])
+            if spec["loop"] or spec["in_place"]:
+                frames = retarget_clip.in_place(frames, spec["loop"])
+            if spec["face"] or spec["turn"]:
+                frames = retarget_clip.face_front(frames, turn=spec["turn"], auto=spec["face"])
+            # Loops end exactly on their first frame: a source loop that was only nearly closed
+            # (under LOOP_SEAM_DEG, e.g. Nathan's run_fast_9: 3 cm) would hitch at every wrap.
+            blend = spec["blend"] or (LOOP_EASE if spec["loop"] else 0)
+            if blend:
+                frames = retarget_clip.loop_blend(frames, blend=blend)
+            out[ours] = frames
+        retarget_clip.discard(src, list(acts.values()))
+    return out
+
+
+def chained(arm, idle):
+    """Chained: the hero's own Idle with both arms held out to the sides, about horizontal,
+    as if holding hands in the human chain. The pose is first turned so the chest faces -Y on
+    average (else a turned idle would reach one arm forward and the other back), and the spine,
+    neck and head keep only a quarter of their motion away from frame 0 (calm: Nathan's
+    scheming idle bows deep). Arm directions follow the chest, so breathing and sway still
+    read; forearms and hands continue the arm line."""
+    rest = rest_data(arm)
+    up = Vector((0, 1, 0))
+    rest_dir = {n: rest[n].to_quaternion() @ up for n in rest}
+    faced = retarget_clip.face_front(idle)
+    first = faced[0][0]
+    out = []
+    for rot, hips in faced:
+        r = dict(rot)
+        for n in CHAIN_CALM:
+            if n in r and n in first:
+                r[n] = r[n].slerp(first[n], 0.75).normalized()
+        chest = r.get("mixamorig:Spine2", Quaternion())
+        for side, sx in (("Left", 1.0), ("Right", -1.0)):
+            # Out to the side (+X is the hero's left: they face -Y), a little forward and down.
+            arm_dir = (chest @ Vector((sx, -0.12, -0.16))).normalized()
+            fore_dir = (chest @ Vector((sx, -0.30, -0.06))).normalized()
+            for bone, want in ((f"mixamorig:{side}Arm", arm_dir), (f"mixamorig:{side}ForeArm", fore_dir),
+                               (f"mixamorig:{side}Hand", fore_dir)):
+                parent = arm.data.bones[bone].parent.name
+                d = r.get(bone, r.get(parent, Quaternion()))
+                cur = d @ rest_dir[bone]
+                r[bone] = (cur.rotation_difference(want) @ d).normalized()
+        out.append((r, hips))
     return out
 
 
@@ -299,25 +478,110 @@ def render_sheet(arm, hero_id):
     cam.location = (0, -5.5, 8.0)
     cam.rotation_euler = (math.radians(34), 0, 0)
     shots = []
-    for clip, frame in (("Idle", 0), ("Walking", 6), ("Running", 4)):
-        arm.animation_data.action = bpy.data.actions[clip]
+    for clip_name, frame in (("Idle", 0), ("Walking", 6), ("Running", 4)):
+        arm.animation_data.action = bpy.data.actions[clip_name]
         sc.frame_set(frame)
-        path = os.path.join(RENDER_DIR, f"heroes_{hero_id}_{clip.lower()}.png")
+        path = os.path.join(RENDER_DIR, f"heroes_{hero_id}_{clip_name.lower()}.png")
         sc.render.filepath = path
         bpy.ops.render.render(write_still=True)
         shots.append(path)
     log(f"  renders: {', '.join(os.path.basename(s) for s in shots)}")
 
 
-def export(arm, hero_id):
-    # Clip sources (e.g. JM_Character.glb for the walk) can bring Meshy's stray Icosphere back.
+# 3x5 pixel font for the moves sheet labels.
+_FONT = dict(zip("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-", (
+    "010101111101101", "110101110101110", "011100100100011", "110101101101110", "111100110100111",
+    "111100110100100", "011100101101011", "101101111101101", "111010010010111", "001001001101010",
+    "101101110101101", "100100100100111", "101111111101101", "110101101101101", "010101101101010",
+    "110101110100100", "010101101110011", "110101110101101", "011100010001110", "111010010010010",
+    "101101101101111", "101101101101010", "101101111111101", "101101010101101", "101101010010010",
+    "111001010100111", "111101101101111", "010110010010111", "110001010100111", "110001010001110",
+    "101101111001001", "111100110001110", "011100110101010", "111001010010010", "010101010101010",
+    "010101011001110", "000000000000111", "000000000000010", "000000111000000")))
+
+
+def _stamp(img, text, x0, y0, s=2, color=(0.75, 0.05, 0.05)):
+    """Write `text` into an (H, W, 4) top-down image."""
+    for ci, ch in enumerate(text.upper()):
+        g = _FONT.get(ch)
+        if not g:
+            continue
+        for r in range(5):
+            for c in range(3):
+                if g[r * 3 + c] == "1":
+                    y, x = y0 + r * s, x0 + (ci * 4 + c) * s
+                    img[y:y + s, x:x + s, :3] = color
+
+
+def render_moves_sheet(arm, hero_id, names, per_clip=6, per_row=2, tile=(150, 190)):
+    """renders/heroes_<id>_moves.png: `per_clip` evenly spaced frames of every clip (first and
+    last included), from the front-right, with a floor and shadows so floating or sunken feet,
+    arms through the body and bad trims show up."""
+    sc = bpy.context.scene
+    sc.render.engine = "BLENDER_WORKBENCH"
+    sh = sc.display.shading
+    sh.light, sh.color_type = "STUDIO", "TEXTURE"
+    sh.show_shadows = True
+    sc.display.shadow_shift = 0.05
+    sc.render.film_transparent = False
+    w, h = tile
+    sc.render.resolution_x, sc.render.resolution_y = w, h
+    sc.render.resolution_percentage = 100
+    if sc.world is None:
+        sc.world = bpy.data.worlds.new("W")
+    sc.world.color = (0.82, 0.8, 0.75)
+    floor_me = bpy.data.meshes.new("QC_Floor")
+    floor_me.from_pydata([(-1.5, -1.5, 0), (1.5, -1.5, 0), (1.5, 1.5, 0), (-1.5, 1.5, 0)], [], [(0, 1, 2, 3)])
+    floor = bpy.data.objects.new("QC_Floor", floor_me)
+    sc.collection.objects.link(floor)
+    cam = bpy.data.objects.new("MovesCam", bpy.data.cameras.new("MovesCam"))
+    cam.data.type = "ORTHO"; cam.data.ortho_scale = 2.5
+    sc.collection.objects.link(cam); sc.camera = cam
+    d = Vector((0.75, -1.0, 0.42)).normalized()
+    cam.location = Vector((0, 0, 0.95)) + d * 8
+    cam.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
+    tmp = os.path.join(RENDER_DIR, f"_moves_{hero_id}.png")
+    rows = (len(names) + per_row - 1) // per_row
+    sheet = np.ones((rows * h, per_row * per_clip * w, 3), np.float32)
+    for ci, name in enumerate(names):
+        act = bpy.data.actions[name]
+        arm.animation_data.action = act
+        f0, f1 = (int(round(x)) for x in act.frame_range)
+        for k in range(per_clip):
+            f = int(round(f0 + (f1 - f0) * k / (per_clip - 1)))
+            sc.frame_set(f)
+            sc.render.filepath = tmp
+            bpy.ops.render.render(write_still=True)
+            img = bpy.data.images.load(tmp, check_existing=False)
+            px = np.array(img.pixels[:], dtype=np.float32).reshape(h, w, 4)[::-1].copy()
+            bpy.data.images.remove(img)
+            if k == 0:
+                _stamp(px, name, 3, 3)
+            _stamp(px, str(f), 3, h - 13, color=(0.2, 0.2, 0.2))
+            px[:, -1, :3] = px[-1, :, :3] = 0.35
+            r, c = divmod(ci, per_row)
+            y, x = r * h, (c * per_clip + k) * w
+            sheet[y:y + h, x:x + w] = px[..., :3]
+    if os.path.exists(tmp):
+        os.remove(tmp)
+    bpy.data.objects.remove(floor, do_unlink=True)
+    out = bpy.data.images.new("moves_sheet", sheet.shape[1], sheet.shape[0])
+    rgba = np.concatenate([sheet, np.ones(sheet.shape[:2] + (1,), np.float32)], axis=2)
+    out.pixels = rgba[::-1].ravel()
+    path = os.path.join(RENDER_DIR, f"heroes_{hero_id}_moves.png")
+    out.filepath_raw = path; out.file_format = "PNG"; out.save()
+    log(f"  moves sheet: {os.path.relpath(path, PROJ)}")
+
+
+def export(arm, hero_id, names):
+    # Clip sources can bring Meshy's stray Icosphere back; the review floor goes too.
     for o in list(bpy.data.objects):
         if o.type == "MESH" and len(o.vertex_groups) == 0:
             bpy.data.objects.remove(o, do_unlink=True)
     ad = arm.animation_data
     while len(ad.nla_tracks):
         ad.nla_tracks.remove(ad.nla_tracks[0])
-    for name in ("Idle", "Walking", "Running", "BreakDance"):
+    for name in names:
         act = bpy.data.actions[name]
         tr = ad.nla_tracks.new(); tr.name = name
         strip = tr.strips.new(name, int(act.frame_range[0]), act); strip.name = name
@@ -328,38 +592,47 @@ def export(arm, hero_id):
         export_animation_mode="NLA_TRACKS", export_skins=True,
         export_materials="EXPORT", export_apply=False,
     )
-    log(f"  exported {os.path.relpath(out, PROJ)}")
+    log(f"  exported {os.path.relpath(out, PROJ)}: {', '.join(names)}")
+
+
+def build(hero_id):
+    log(f"hero {hero_id}")
+    reset()
+    arm = import_hero(HEROES[hero_id])
+    if arm.animation_data is None:
+        arm.animation_data_create()
+    ad = arm.animation_data
+    ad.action = None
+    while len(ad.nla_tracks):
+        ad.nla_tracks.remove(ad.nla_tracks[0])
+    for a in list(bpy.data.actions):  # the one sample clip Meshy shipped
+        bpy.data.actions.remove(a)
+    table = dict(SHARED)
+    table.update(HERO_CLIPS[hero_id])
+    for bad in ("Slide", "Dash"):
+        assert bad not in table, f"clip name {bad!r} is banned (gate asserts it is absent)"
+    clips = retarget_table(arm, table)
+    clips[CHAINED] = chained(arm, clips["Idle"])
+    names = clip_order(hero_id)
+    for name in names:
+        if name == "BreakDance":
+            bake_on_floor(arm, "BreakDance", breakdance(arm, hero_id))
+        elif name in table and table[name]["plant"]:
+            bake_planted(arm, name, clips[name])
+        else:
+            bake_grounded(arm, name, clips[name])
+    render_sheet(arm, hero_id)
+    strip = render_dance_strip(arm, hero_id)
+    render_moves_sheet(arm, hero_id, names)
+    export(arm, hero_id, names)
+    return strip
 
 
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
     os.makedirs(RENDER_DIR, exist_ok=True)
     only = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else list(HEROES)
-    dance_strips = {}
-    for hero_id in only:
-        log(f"hero {hero_id}")
-        reset()
-        arm = import_hero(HEROES[hero_id])
-        if arm.animation_data is None:
-            arm.animation_data_create()
-        ad = arm.animation_data
-        ad.action = None
-        while len(ad.nla_tracks):
-            ad.nla_tracks.remove(ad.nla_tracks[0])
-        for a in list(bpy.data.actions):  # the one sample clip Meshy shipped
-            bpy.data.actions.remove(a)
-        clips = quaternius_clips(arm, LOCOMOTION)
-        clips["Walking"] = retarget_clip.mocap_offsets(WALK_SOURCE, arm)
-        for ours, kind in (("Walking", "walk"), ("Running", "run")):
-            own = retarget_clip.find_mocap(MOCAP_DIR, hero_id, kind)
-            if own:
-                clips[ours] = retarget_clip.mocap_offsets(own, arm)
-        for name in ("Idle", "Walking", "Running"):
-            bake_grounded(arm, name, clips[name])
-        bake_on_floor(arm, "BreakDance", breakdance(arm, hero_id))
-        render_sheet(arm, hero_id)
-        dance_strips[hero_id] = render_dance_strip(arm, hero_id)
-        export(arm, hero_id)
+    dance_strips = {hero_id: build(hero_id) for hero_id in only}
     _contact_sheet(dance_strips, os.path.join(RENDER_DIR, "heroes_breakdance.png"))
     log("done")
 

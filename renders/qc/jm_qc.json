@@ -1,0 +1,335 @@
+{
+ "file": "assets\\characters\\jm.glb",
+ "real_height_m": 1.703,
+ "game_scale": 1.057,
+ "dims_m": [
+  0.813,
+  0.612,
+  1.703
+ ],
+ "triangles": 10480,
+ "clips": [
+  {
+   "clip": "BreakDance",
+   "frames": [
+    0,
+    161
+   ],
+   "seconds": 6.708,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.24,
+   "loop_seam_m": 0.001,
+   "hips_root_motion_m": 0.001
+  },
+  {
+   "clip": "Capture",
+   "frames": [
+    0,
+    64
+   ],
+   "seconds": 2.667,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.28,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Chained",
+   "frames": [
+    0,
+    44
+   ],
+   "seconds": 1.833,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "GuardBreak",
+   "frames": [
+    0,
+    24
+   ],
+   "seconds": 1.0,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.15,
+   "loop_seam_m": 0.542,
+   "hips_root_motion_m": 0.062
+  },
+  {
+   "clip": "Idle",
+   "frames": [
+    0,
+    44
+   ],
+   "seconds": 1.833,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Jailed",
+   "frames": [
+    0,
+    121
+   ],
+   "seconds": 5.042,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.02,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Running",
+   "frames": [
+    0,
+    16
+   ],
+   "seconds": 0.667,
+   "tracks": 670,
+   "foot_plant_speed_mps": 3.72,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 1.24
+  },
+  {
+   "clip": "Stumble",
+   "frames": [
+    0,
+    18
+   ],
+   "seconds": 0.75,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.67,
+   "loop_seam_m": 0.407,
+   "hips_root_motion_m": 0.048
+  },
+  {
+   "clip": "Stunned",
+   "frames": [
+    0,
+    26
+   ],
+   "seconds": 1.083,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.08,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Tag",
+   "frames": [
+    0,
+    16
+   ],
+   "seconds": 0.667,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.74,
+   "loop_seam_m": 0.788,
+   "hips_root_motion_m": 0.011
+  },
+  {
+   "clip": "Tagged",
+   "frames": [
+    0,
+    22
+   ],
+   "seconds": 0.917,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.06,
+   "loop_seam_m": 0.949,
+   "hips_root_motion_m": 0.083
+  },
+  {
+   "clip": "Talbog_Jump",
+   "frames": [
+    0,
+    22
+   ],
+   "seconds": 0.917,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.2,
+   "loop_seam_m": 0.851,
+   "hips_root_motion_m": 0.181
+  },
+  {
+   "clip": "Talbog_Slam",
+   "frames": [
+    0,
+    33
+   ],
+   "seconds": 1.375,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.08,
+   "loop_seam_m": 1.235,
+   "hips_root_motion_m": 0.124
+  },
+  {
+   "clip": "Tamaraw",
+   "frames": [
+    0,
+    13
+   ],
+   "seconds": 0.542,
+   "tracks": 670,
+   "foot_plant_speed_mps": 4.18,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Victory",
+   "frames": [
+    0,
+    33
+   ],
+   "seconds": 1.375,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.29,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Walking",
+   "frames": [
+    0,
+    108
+   ],
+   "seconds": 4.5,
+   "tracks": 670,
+   "foot_plant_speed_mps": 0.52,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 4.42
+  }
+ ],
+ "sheet": "renders\\qc\\jm_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.008, -0.050) m"
+  },
+  {
+   "check": "normals Mesh_0",
+   "status": "PASS",
+   "detail": "70% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology Mesh_0",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (7962 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "10480 (budget 15000)"
+  },
+  {
+   "check": "mixamo names",
+   "status": "WARN",
+   "detail": "65/67 bones"
+  },
+  {
+   "check": "facing",
+   "status": "PASS",
+   "detail": "toes -Y of ankles (want -Y = Godot +Z front)"
+  },
+  {
+   "check": "clip BreakDance",
+   "status": "PASS",
+   "detail": "6.708 s, 670 channels, foot plant 0.24 m/s, loop seam 0.001 m, root motion 0.001 m"
+  },
+  {
+   "check": "clip Capture",
+   "status": "PASS",
+   "detail": "2.667 s, 670 channels, foot plant 0.28 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Chained",
+   "status": "PASS",
+   "detail": "1.833 s, 670 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip GuardBreak",
+   "status": "WARN",
+   "detail": "1.0 s, 670 channels, foot plant 0.15 m/s, loop seam 0.542 m, root motion 0.062 m"
+  },
+  {
+   "check": "clip Idle",
+   "status": "PASS",
+   "detail": "1.833 s, 670 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Jailed",
+   "status": "PASS",
+   "detail": "5.042 s, 670 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Running",
+   "status": "PASS",
+   "detail": "0.667 s, 670 channels, foot plant 3.72 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Running",
+   "status": "FAIL",
+   "detail": "moves 4.6 m/s, feet push 3.72 m/s: x1.24 (play the clip at x1.24 or put its blend point at 3.72 m/s)"
+  },
+  {
+   "check": "clip Stumble",
+   "status": "WARN",
+   "detail": "0.75 s, 670 channels, foot plant 0.67 m/s, loop seam 0.407 m, root motion 0.048 m"
+  },
+  {
+   "check": "clip Stunned",
+   "status": "PASS",
+   "detail": "1.083 s, 670 channels, foot plant 0.08 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Tag",
+   "status": "WARN",
+   "detail": "0.667 s, 670 channels, foot plant 0.74 m/s, loop seam 0.788 m, root motion 0.011 m"
+  },
+  {
+   "check": "clip Tagged",
+   "status": "WARN",
+   "detail": "0.917 s, 670 channels, foot plant 0.06 m/s, loop seam 0.949 m, root motion 0.083 m"
+  },
+  {
+   "check": "clip Talbog_Jump",
+   "status": "WARN",
+   "detail": "0.917 s, 670 channels, foot plant 0.2 m/s, loop seam 0.851 m, root motion 0.181 m"
+  },
+  {
+   "check": "clip Talbog_Slam",
+   "status": "WARN",
+   "detail": "1.375 s, 670 channels, foot plant 0.08 m/s, loop seam 1.235 m, root motion 0.124 m"
+  },
+  {
+   "check": "clip Tamaraw",
+   "status": "PASS",
+   "detail": "0.542 s, 670 channels, foot plant 4.18 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Victory",
+   "status": "PASS",
+   "detail": "1.375 s, 670 channels, foot plant 0.29 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Walking",
+   "status": "PASS",
+   "detail": "4.5 s, 670 channels, foot plant 0.52 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Walking",
+   "status": "FAIL",
+   "detail": "moves 2.3 m/s, feet push 0.52 m/s: x4.42 (play the clip at x4.42 or put its blend point at 0.52 m/s)"
+  }
+ ]
+}

@@ -148,7 +148,8 @@ Sole scope authority. Finals/Later items: no spec beyond stubs.
   - Otherwise normal slide; tag checked against new position.
 - Passive DIRE-DIRETSO: moving without sharp turn (> 45 deg within 0.5 s), bonus rises evenly 0 to 15% over 3 s, holds. Resets on stop, sharp turn, Tag press, capture start, push/slow/stun by enemy skill. Terrain and hazard slows (mud, flood) don't reset it.
 
-### Nathan (candy brand Kimkim, invented; never a real brand anywhere)
+### Nathan
+- Candy brand Kimkim (invented); never use a real brand anywhere.
 - S1 BUGA!: inhale 0.4 s (can move; enemies see, hear), then powder cone 5 m long, 60 deg wide along aim; walls block. Hit: slowed 30% 1.5 s; powder trail (visible to all) 4 s, while Nathan's team sees them everywhere (hiding spots, clouds, minimap). No tag, no capture cancel.
 - S2 UBO! UBO!: packet ≤ 9 m, lands 0.5 s later or at first wall; cloud r 3.5 m, 5 s. Outside players can't see anyone whose centre is inside (screen, minimap); inside players see only within 2 m; both teams incl. Nathan. Enemy inside > 1 continuous s coughs once per cloud: shown to Nathan's team on minimap and through cloud 2 s; can still act.
 - Passive MAY TIRA PA!: after a skill, next movement turn > 90 deg within 0.5 s drops powder patch r 1 m (visible to all). First enemy centre entering: puff + loud footstep, shown to Nathan's team on minimap and through hiding spots 2 s; patch gone. No slow, no tag. One patch; new replaces old; lasts until triggered or round end.
@@ -177,7 +178,8 @@ Sole scope authority. Finals/Later items: no spec beyond stubs.
 - Terrain, speed strips: crossing a pedestrian crossing moving within 45 deg of straight toward enemy side: +20% speed 1.5 s; recrossing restarts it.
 - Hazard, market shutters: both sides close every 30 s after KABOOM (0:30, 1:00, 1:30 ..., incl. sudden death) for 10 s, cutting main path to jail; rattle 2 s before. Closed = walls; players under one pushed to nearer side.
 
-### Tambakan (junkyard; never a real place name)
+### Tambakan
+- A junkyard. Never use a real place name (no Payatas).
 - Jeepney body blocks the line between bases; cover lane trash maze; flank truck road; high ground mounds. Sites: 1 maze exit, 2 beside mound, 3 truck road.
 - Terrain, mud: dry waterway 4 m wide, full 56 m, through middle of each side; slows 15%.
 - Hazard Trak ng Basura: twice per round along whole truck road, at 1/3 and 2/3 of round timer (40 s and 80 s after KABOOM in 2 min); horn 3 s before; 4 s to pass; alternates direction. Solid moving wall, pushes anyone in path to nearer roadside. No tag. Not in sudden death.

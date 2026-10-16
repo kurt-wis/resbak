@@ -1,0 +1,318 @@
+{
+ "file": "assets\\characters\\tutoy.glb",
+ "real_height_m": 1.547,
+ "game_scale": 1.163,
+ "dims_m": [
+  0.939,
+  0.547,
+  1.547
+ ],
+ "triangles": 10554,
+ "clips": [
+  {
+   "clip": "BreakDance",
+   "frames": [
+    0,
+    72
+   ],
+   "seconds": 3.0,
+   "tracks": 660,
+   "foot_plant_speed_mps": 5.87,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Capture",
+   "frames": [
+    0,
+    64
+   ],
+   "seconds": 2.667,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.3,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Chained",
+   "frames": [
+    0,
+    43
+   ],
+   "seconds": 1.792,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.01,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Harurot",
+   "frames": [
+    0,
+    14
+   ],
+   "seconds": 0.583,
+   "tracks": 660,
+   "foot_plant_speed_mps": 6.06,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Idle",
+   "frames": [
+    0,
+    43
+   ],
+   "seconds": 1.792,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.01,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Jailed",
+   "frames": [
+    0,
+    121
+   ],
+   "seconds": 5.042,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.02,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Lusot_Slide",
+   "frames": [
+    0,
+    20
+   ],
+   "seconds": 0.833,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.5,
+   "loop_seam_m": 0.905,
+   "hips_root_motion_m": 0.046
+  },
+  {
+   "clip": "Lusot_Vault",
+   "frames": [
+    0,
+    20
+   ],
+   "seconds": 0.833,
+   "tracks": 660,
+   "foot_plant_speed_mps": 3.54,
+   "loop_seam_m": 0.332,
+   "hips_root_motion_m": 0.013
+  },
+  {
+   "clip": "Running",
+   "frames": [
+    0,
+    14
+   ],
+   "seconds": 0.583,
+   "tracks": 660,
+   "foot_plant_speed_mps": 4.28,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 1.26
+  },
+  {
+   "clip": "Stumble",
+   "frames": [
+    0,
+    18
+   ],
+   "seconds": 0.75,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.89,
+   "loop_seam_m": 0.428,
+   "hips_root_motion_m": 0.061
+  },
+  {
+   "clip": "Stunned",
+   "frames": [
+    0,
+    26
+   ],
+   "seconds": 1.083,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.07,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Tag",
+   "frames": [
+    0,
+    16
+   ],
+   "seconds": 0.667,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.78,
+   "loop_seam_m": 0.702,
+   "hips_root_motion_m": 0.014
+  },
+  {
+   "clip": "Tagged",
+   "frames": [
+    0,
+    22
+   ],
+   "seconds": 0.917,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.05,
+   "loop_seam_m": 0.717,
+   "hips_root_motion_m": 0.105
+  },
+  {
+   "clip": "Victory",
+   "frames": [
+    0,
+    33
+   ],
+   "seconds": 1.375,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.16,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Walking",
+   "frames": [
+    0,
+    24
+   ],
+   "seconds": 1.0,
+   "tracks": 660,
+   "foot_plant_speed_mps": 1.42,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 1.9
+  }
+ ],
+ "sheet": "renders\\qc\\tutoy_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.006 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "WARN",
+   "detail": "XY centre (0.010, -0.206) m"
+  },
+  {
+   "check": "normals Mesh_0",
+   "status": "PASS",
+   "detail": "68% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology Mesh_0",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (10086 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "10554 (budget 15000)"
+  },
+  {
+   "check": "mixamo names",
+   "status": "WARN",
+   "detail": "65/66 bones"
+  },
+  {
+   "check": "facing",
+   "status": "PASS",
+   "detail": "toes -Y of ankles (want -Y = Godot +Z front)"
+  },
+  {
+   "check": "clip BreakDance",
+   "status": "PASS",
+   "detail": "3.0 s, 660 channels, foot plant 5.87 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Capture",
+   "status": "PASS",
+   "detail": "2.667 s, 660 channels, foot plant 0.3 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Chained",
+   "status": "PASS",
+   "detail": "1.792 s, 660 channels, foot plant 0.01 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Harurot",
+   "status": "PASS",
+   "detail": "0.583 s, 660 channels, foot plant 6.06 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Idle",
+   "status": "PASS",
+   "detail": "1.792 s, 660 channels, foot plant 0.01 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Jailed",
+   "status": "PASS",
+   "detail": "5.042 s, 660 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Lusot_Slide",
+   "status": "WARN",
+   "detail": "0.833 s, 660 channels, foot plant 0.5 m/s, loop seam 0.905 m, root motion 0.046 m"
+  },
+  {
+   "check": "clip Lusot_Vault",
+   "status": "WARN",
+   "detail": "0.833 s, 660 channels, foot plant 3.54 m/s, loop seam 0.332 m, root motion 0.013 m"
+  },
+  {
+   "check": "clip Running",
+   "status": "PASS",
+   "detail": "0.583 s, 660 channels, foot plant 4.28 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Running",
+   "status": "FAIL",
+   "detail": "moves 5.4 m/s, feet push 4.28 m/s: x1.26 (play the clip at x1.26 or put its blend point at 4.28 m/s)"
+  },
+  {
+   "check": "clip Stumble",
+   "status": "WARN",
+   "detail": "0.75 s, 660 channels, foot plant 0.89 m/s, loop seam 0.428 m, root motion 0.061 m"
+  },
+  {
+   "check": "clip Stunned",
+   "status": "PASS",
+   "detail": "1.083 s, 660 channels, foot plant 0.07 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Tag",
+   "status": "WARN",
+   "detail": "0.667 s, 660 channels, foot plant 0.78 m/s, loop seam 0.702 m, root motion 0.014 m"
+  },
+  {
+   "check": "clip Tagged",
+   "status": "WARN",
+   "detail": "0.917 s, 660 channels, foot plant 0.05 m/s, loop seam 0.717 m, root motion 0.105 m"
+  },
+  {
+   "check": "clip Victory",
+   "status": "PASS",
+   "detail": "1.375 s, 660 channels, foot plant 0.16 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Walking",
+   "status": "PASS",
+   "detail": "1.0 s, 660 channels, foot plant 1.42 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Walking",
+   "status": "FAIL",
+   "detail": "moves 2.7 m/s, feet push 1.42 m/s: x1.90 (play the clip at x1.90 or put its blend point at 1.42 m/s)"
+  }
+ ]
+}
