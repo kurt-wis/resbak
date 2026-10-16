@@ -4,12 +4,18 @@ extends CharacterBody3D
 ## Shared locomotion controller for the Meshy heroes (Tutoy, Nene, Nathan, JM, Inday).
 ## Idle / Walking / Running are blended by horizontal speed through an AnimationTree
 ## BlendSpace1D, so the pose changes smoothly as the hero speeds up and slows down.
-## Skills are not implemented here yet; Batang Hamog keeps its own controller.
+## Movement rule (design doc, 2026-10-16): no sprint, no stamina. Heroes always run;
+## a stick tilted 15-50 % walks at half run speed, under 15 % stands still. Keyboard runs.
+## Skills are not implemented here yet.
 ## Same facing convention as BatangHamogController: only `visual` is yawed (atan2(x, z)).
 
+const STICK_DEADZONE := 0.15
+const STICK_RUN := 0.5
+const WALK_FRACTION := 0.5
+
 @export var hero_id: String = "tutoy"
-@export var run_speed: float = 5.0
-@export var walk_speed: float = 1.8 ## Alt held, or a light analog push
+@export var run_speed: float = 5.0 ## replaced by the roster's per-hero run_speed in _ready()
+var walk_speed: float = 2.5
 @export var acceleration: float = 14.0
 @export var deceleration: float = 18.0
 @export var turn_speed: float = 15.0
@@ -26,8 +32,7 @@ var body_collision: CollisionShape3D
 var idle_clip: String = ""
 var walk_clip: String = ""
 var run_clip: String = ""
-var external_move: Vector2 = Vector2.ZERO ## touch override from playtest UI
-var walk_held: bool = false ## lets tests and touch UI request walking
+var external_move: Vector2 = Vector2.ZERO ## touch / test override, same scale as a stick
 
 func _ready() -> void:
 	_ensure_input_actions()
@@ -49,11 +54,6 @@ func _ensure_input_actions() -> void:
 	for action in ["move_forward", "move_back", "move_left", "move_right"]:
 		if not InputMap.has_action(action):
 			InputMap.add_action(action, 0.2)
-	if not InputMap.has_action("move_walk"):
-		InputMap.add_action("move_walk", 0.2)
-		var ev := InputEventKey.new()
-		ev.physical_keycode = KEY_ALT
-		InputMap.action_add_event("move_walk", ev)
 
 func _setup_model() -> void:
 	visual = Node3D.new()
@@ -61,6 +61,8 @@ func _setup_model() -> void:
 	add_child(visual)
 	var hero := HeroRoster.get_hero(hero_id)
 	assert(not hero.is_empty(), "Unknown hero id %s" % hero_id)
+	run_speed = hero.get("run_speed", run_speed)
+	walk_speed = run_speed * WALK_FRACTION
 	var packed: PackedScene = load(hero["glb"]) as PackedScene
 	model = packed.instantiate() as Node3D
 	model.name = hero["name"].replace(" ", "")
@@ -119,10 +121,17 @@ func _setup_anim_tree() -> void:
 	anim_tree.active = true
 
 func _read_move_input() -> Vector2:
-	var v := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	if external_move.length() > 0.1:
+	# Deadzone 0 = raw stick tilt, so the 15 % / 50 % thresholds below are exact.
+	var v := Input.get_vector("move_left", "move_right", "move_forward", "move_back", 0.0)
+	if external_move.length() > 0.0:
 		v = external_move
 	return v.limit_length()
+
+## Speed the stick tilt asks for: 0, walk_speed or run_speed. Keys always give full tilt.
+func speed_for_tilt(tilt: float) -> float:
+	if tilt < STICK_DEADZONE:
+		return 0.0
+	return walk_speed if tilt < STICK_RUN else run_speed
 
 ## World-space facing (the body itself is never rotated).
 func get_facing_dir() -> Vector3:
@@ -134,10 +143,8 @@ func get_ground_speed() -> float:
 
 func _physics_process(delta: float) -> void:
 	var input_v := _read_move_input()
-	var wish_dir := Vector3(input_v.x, 0, input_v.y)
-	var walking := walk_held or Input.is_action_pressed("move_walk")
-	var top_speed := walk_speed if walking else run_speed
-	# Analog sticks scale speed, so a light push walks and a full push runs.
+	var top_speed := speed_for_tilt(input_v.length())
+	var wish_dir := Vector3(input_v.x, 0, input_v.y).normalized() if top_speed > 0.0 else Vector3.ZERO
 	var target := wish_dir * top_speed
 	var horiz := Vector3(velocity.x, 0, velocity.z)
 	var rate := acceleration if target.length() > horiz.length() else deceleration

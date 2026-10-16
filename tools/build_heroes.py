@@ -1,10 +1,10 @@
-﻿"""
+"""
 build_heroes.py - Idle / Walking / Running for the five Meshy-rigged heroes.
 
 Input : source_art/heroes/<Name>_Character.glb (Meshy auto-rig, Mixamo bone names,
         A-pose, faces -Y, ONE clip each: Running, or Walking for JM).
-Output: assets/characters/<id>.glb with NLA clips Idle, Walking, Running,
-        renders/heroes_<id>.png review sheet.
+Output: assets/characters/<id>.glb with NLA clips Idle, Walking, Running, BreakDance,
+        renders/heroes_<id>_*.png stills, renders/heroes_breakdance.png dance sheet.
 
 How the missing clips are made (no external animation library needed):
 - Clips are retargeted between heroes in ARMATURE space: for every bone we take the
@@ -194,6 +194,169 @@ def make_idle(walk_offsets, rest_names, children_of):
     return frames
 
 
+# ---------------------------------------------------------------- BreakDance
+# A 4 s loop for the character select: two bars of toprock (Indian step), drop to a
+# squat, a two-turn spinning leg sweep on the hands, a one-arm freeze, pop back up.
+# Poses are authored as limb DIRECTIONS in the hero's yaw frame (x = hero's left, -y = front,
+# z = up), so the same choreography fits every rig regardless of its A-pose angle or
+# bone rolls. Hips height is solved every frame so the lowest foot stays on the floor.
+BD_FRAMES = 96  # 4.0 s @ 24 fps; frame 96 == frame 0
+
+
+def _v(x, y, z):
+    return Vector((x, y, z)).normalized()
+
+
+def _m(v):  # mirror left <-> right
+    return Vector((-v.x, v.y, v.z))
+
+
+def _euler(p, y, r):  # degrees: pitch about X (top goes forward), yaw about Z, roll about Y
+    return (Quaternion((0, 0, 1), math.radians(y)) @ Quaternion((1, 0, 0), math.radians(p))
+            @ Quaternion((0, 1, 0), math.radians(r)))
+
+
+GUARD_L, GUARD_LF = _v(0.55, -0.25, -0.8), _v(-0.25, -0.7, 0.65)  # fists up near the chest
+STAND_LT, STAND_LS = _v(0.08, -0.05, -1), _v(0.06, 0.1, -1)
+SQUAT_LT, SQUAT_LS = _v(0.35, -0.85, -0.38), _v(0.05, 0.35, -0.94)
+
+
+def _pose(**kw):
+    p = dict(hip=(5, 0, 0), off=(0.0, 0.0), hop=0.0, spine=(8, 0, 0), head=(-10, 0, 0),
+             la=GUARD_L, lf=GUARD_LF, ra=_m(GUARD_L), rf=_m(GUARD_LF),
+             lt=STAND_LT, ls=STAND_LS, rt=_m(STAND_LT), rs=_m(STAND_LS), lfoot=0.0, rfoot=0.0)
+    p.update(kw)
+    return p
+
+
+def _mirror_pose(p):
+    q = dict(p)
+    q["hip"] = (p["hip"][0], -p["hip"][1], -p["hip"][2])
+    q["spine"] = (p["spine"][0], -p["spine"][1], -p["spine"][2])
+    q["head"] = (p["head"][0], -p["head"][1], -p["head"][2])
+    q["off"] = (-p["off"][0], p["off"][1])
+    for a, b in (("la", "ra"), ("lf", "rf"), ("lt", "rt"), ("ls", "rs")):
+        q[a], q[b] = _m(p[b]), _m(p[a])
+    q["lfoot"], q["rfoot"] = p["rfoot"], p["lfoot"]
+    return q
+
+
+BD_T0 = _pose()
+BD_T1 = _pose(  # right foot steps across in front, arms swing open
+    hip=(5, 25, -5), off=(0.03, -0.03), spine=(10, -20, 0), head=(-8, -10, 0),
+    la=_v(0.95, 0.0, -0.25), lf=_v(0.9, -0.4, 0.15), ra=_v(-0.25, -0.85, -0.45), rf=_v(0.35, -0.85, 0.25),
+    lt=_v(0.1, 0.05, -1), ls=_v(0.05, 0.2, -0.98), rt=_v(0.2, -0.45, -0.87), rs=_v(0.25, -0.1, -0.96))
+BD_T2 = _pose(lt=_v(0.1, -0.25, -0.95), ls=_v(0.06, 0.2, -0.97),  # bounce
+              rt=_m(_v(0.1, -0.25, -0.95)), rs=_m(_v(0.06, 0.2, -0.97)), spine=(12, 0, 0))
+BD_T3 = _mirror_pose(BD_T1)
+BD_DROP = _pose(
+    hip=(35, 0, 0), spine=(25, 0, 0), head=(-40, 0, 0),
+    la=_v(0.3, -0.6, -0.75), lf=_v(0.05, -0.2, -0.98), ra=_m(_v(0.3, -0.6, -0.75)), rf=_m(_v(0.05, -0.2, -0.98)),
+    lt=SQUAT_LT, ls=SQUAT_LS, rt=_m(SQUAT_LT), rs=_m(SQUAT_LS))
+BD_GRIND = _pose(  # squat on the left leg, right leg swept straight out, hands on the floor
+    hip=(40, 0, 0), spine=(20, 0, 0), head=(-45, 0, 0),
+    la=_v(0.25, -0.45, -0.85), lf=_v(0.05, -0.15, -0.99), ra=_m(_v(0.25, -0.45, -0.85)), rf=_m(_v(0.05, -0.15, -0.99)),
+    lt=SQUAT_LT, ls=SQUAT_LS, rt=_v(-0.85, -0.35, -0.55), rs=_v(-0.85, -0.35, -0.55), rfoot=-30.0)
+BD_FREEZE = _pose(  # one hand down, other arm punched to the sky
+    hip=(25, 0, -15), spine=(5, 15, -10), head=(-30, 15, 0),
+    la=_v(0.6, -0.1, -0.8), lf=_v(0.3, 0.0, -0.95), ra=_v(-0.6, -0.1, 0.8), rf=_v(-0.45, -0.15, 0.9),
+    lt=SQUAT_LT, ls=SQUAT_LS, rt=_m(SQUAT_LT), rs=_m(SQUAT_LS))
+BD_KEYS = [(0, BD_T0), (6, BD_T1), (12, BD_T2), (18, BD_T3), (24, BD_T0), (30, BD_T1), (36, BD_T2),
+           (42, BD_T3), (48, BD_T0), (54, BD_DROP), (58, BD_GRIND), (84, BD_GRIND), (88, BD_FREEZE),
+           (92, BD_FREEZE), (96, BD_T0)]
+SPIN_START, SPIN_END = 58, 84  # two full turns during the sweep
+
+
+def _smooth(t):
+    t = min(max(t, 0.0), 1.0)
+    return t * t * (3 - 2 * t)
+
+
+def _blend(a, b, t):
+    out = {}
+    for k, va in a.items():
+        vb = b[k]
+        if isinstance(va, Vector):
+            out[k] = va.lerp(vb, t).normalized()
+        elif isinstance(va, tuple):
+            out[k] = tuple(x + (y - x) * t for x, y in zip(va, vb))
+        else:
+            out[k] = va + (vb - va) * t
+    return out
+
+
+def _controls(f):
+    for (fa, a), (fb, b) in zip(BD_KEYS, BD_KEYS[1:]):
+        if fa <= f <= fb:
+            p = _blend(a, b, _smooth((f - fa) / (fb - fa)))
+            break
+    if SPIN_START <= f <= SPIN_END:
+        s = (f - SPIN_START) / (SPIN_END - SPIN_START)
+        p["hip"] = (p["hip"][0], 720.0 * _smooth(s), p["hip"][2])
+        # the swept leg also fans forward and back a little on each turn
+        a = math.radians(205 + 25 * math.sin(4 * math.pi * s))
+        sweep = _v(math.cos(a), math.sin(a), -0.55)
+        p["rt"], p["rs"] = sweep, sweep
+    return p
+
+
+def make_breakdance(arm):
+    rest = rest_data(arm)
+    head = {n: m.to_translation() for n, m in rest.items()}
+
+    def seg(a, b):
+        return head["mixamorig:" + b] - head["mixamorig:" + a]
+
+    def swing(a, b, want):
+        return seg(a, b).normalized().rotation_difference(want)
+
+    hips0 = head["mixamorig:Hips"]
+    ankle_z = min(head["mixamorig:LeftFoot"].z, head["mixamorig:RightFoot"].z)
+    frames = []
+    for f in range(BD_FRAMES + 1):
+        p = _controls(f)
+        d_hips = _euler(*p["hip"])
+        # Limbs aim in a yaw-only frame: pelvis/spine tilt must not drag the feet off the
+        # floor or the hands away from it, but the spin still carries everything around.
+        d_yaw = _euler(0, p["hip"][1], 0)
+        sp = _euler(*(c / 3.0 for c in p["spine"]))
+        d_sp = d_hips @ sp
+        d_sp1 = d_sp @ sp
+        d_sp2 = d_sp1 @ sp
+        hd = _euler(*(c / 2.0 for c in p["head"]))
+        rot = {"mixamorig:Hips": d_hips, "mixamorig:Spine": d_sp, "mixamorig:Spine1": d_sp1,
+               "mixamorig:Spine2": d_sp2, "mixamorig:Neck": d_sp2 @ hd, "mixamorig:Head": d_sp2 @ hd @ hd}
+        ankles = []
+        for side, up, lo, foot in (("Left", p["lt"], p["ls"], p["lfoot"]), ("Right", p["rt"], p["rs"], p["rfoot"])):
+            rot[f"mixamorig:{side}Arm"] = d_yaw @ swing(f"{side}Arm", f"{side}ForeArm", p["la" if side == "Left" else "ra"])
+            rot[f"mixamorig:{side}ForeArm"] = d_yaw @ swing(f"{side}ForeArm", f"{side}Hand", p["lf" if side == "Left" else "rf"])
+            d_up = d_yaw @ swing(f"{side}UpLeg", f"{side}Leg", up)
+            d_lo = d_yaw @ swing(f"{side}Leg", f"{side}Foot", lo)
+            rot[f"mixamorig:{side}UpLeg"] = d_up
+            rot[f"mixamorig:{side}Leg"] = d_lo
+            rot[f"mixamorig:{side}Foot"] = d_lo @ Quaternion((1, 0, 0), math.radians(foot))
+            # Where this ankle lands relative to the hips (same FK the bake will do).
+            ankles.append((d_hips @ seg("Hips", f"{side}UpLeg") + d_up @ seg(f"{side}UpLeg", f"{side}Leg")
+                           + d_lo @ seg(f"{side}Leg", f"{side}Foot")).z)
+        dz = ankle_z - (hips0.z + min(ankles)) + p["hop"]
+        frames.append((rot, Vector((p["off"][0], p["off"][1], dz))))
+    return frames
+
+
+def render_dance_strip(arm, hero_id):
+    """Six dance frames side by side from the character-select camera angle."""
+    sc = bpy.context.scene
+    arm.animation_data.action = bpy.data.actions["BreakDance"]
+    paths = []
+    for f in (6, 18, 54, 66, 76, 90):
+        sc.frame_set(f)
+        path = os.path.join(RENDER_DIR, f"_bd_{hero_id}_{f}.png")
+        sc.render.filepath = path
+        bpy.ops.render.render(write_still=True)
+        paths.append(path)
+    return paths
+
+
 def render_sheet(arm, hero_id):
     """Quarter top-down review sheet: idle / walk / run, matching the game camera."""
     sc = bpy.context.scene
@@ -230,7 +393,7 @@ def export(arm, hero_id):
     ad = arm.animation_data
     while len(ad.nla_tracks):
         ad.nla_tracks.remove(ad.nla_tracks[0])
-    for name in ("Idle", "Walking", "Running"):
+    for name in ("Idle", "Walking", "Running", "BreakDance"):
         act = bpy.data.actions[name]
         tr = ad.nla_tracks.new(); tr.name = name
         strip = tr.strips.new(name, int(act.frame_range[0]), act); strip.name = name
@@ -262,6 +425,7 @@ def main():
     walk_src, walk_hips = native_clip(WALK_SOURCE, "Walking")
     run_src, run_hips = native_clip(RUN_SOURCE, "Running")
     assert walk_src and run_src, "source clips missing"
+    dance_strips = {}
     for hero_id in only:
         log(f"hero {hero_id}")
         reset()
@@ -295,9 +459,39 @@ def main():
             if b.parent:
                 children.setdefault(b.parent.name, []).append(b.name)
         bake(arm, "Idle", make_idle(walk, list(rest), children), 1.0)
+        bake(arm, "BreakDance", make_breakdance(arm), 1.0)
         render_sheet(arm, hero_id)
+        dance_strips[hero_id] = render_dance_strip(arm, hero_id)
         export(arm, hero_id)
+    _contact_sheet(dance_strips, os.path.join(RENDER_DIR, "heroes_breakdance.png"))
     log("done")
+
+
+def _contact_sheet(strips, out):
+    """Rows = heroes, columns = dance frames, packed into one PNG for review."""
+    if not strips:
+        return
+    imgs = {k: [bpy.data.images.load(p) for p in v] for k, v in strips.items()}
+    w, h = imgs[next(iter(imgs))][0].size
+    cols, rows = max(len(v) for v in imgs.values()), len(imgs)
+    sheet = bpy.data.images.new("bd_sheet", cols * w, rows * h, alpha=True)
+    px = [0.0] * (cols * w * rows * h * 4)
+    for r, (k, row) in enumerate(imgs.items()):
+        for c, img in enumerate(row):
+            src = list(img.pixels)
+            y0 = (rows - 1 - r) * h  # Blender images start at the bottom row
+            for y in range(h):
+                a = (y * w) * 4
+                b = ((y0 + y) * cols * w + c * w) * 4
+                px[b:b + w * 4] = src[a:a + w * 4]
+    sheet.pixels = px
+    sheet.filepath_raw = out
+    sheet.file_format = "PNG"
+    sheet.save()
+    for row in strips.values():
+        for p in row:
+            os.remove(p)
+    log(f"  dance sheet: {os.path.relpath(out, PROJ)}")
 
 
 main()

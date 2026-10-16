@@ -1,9 +1,9 @@
 extends Control
 
-## Demo character select: pick a hero, see them idle on a turntable, press PLAY to
+## Demo character select: pick a hero, watch them break dance on a pad, press PLAY to
 ## spawn into the court playtest. Built in code like court_playtest.gd.
 ## Keys: Left/Right or A/D to browse, Enter/Space to play. Mouse: click a card, PLAY.
-## `-- --capture-preview` saves user://resbak-character-select.png and quits.
+## `-- --capture-preview [--dance-time=SEC]` saves user://resbak-character-select.png and quits.
 
 const PLAYTEST_SCENE := "res://scenes/court_playtest.tscn"
 
@@ -11,6 +11,7 @@ var index: int = 0
 var cards: Array[Button] = []
 var preview_root: Node3D
 var preview_model: Node3D
+var preview_player: AnimationPlayer
 var name_label: Label
 var role_label: Label
 var play_button: Button
@@ -86,6 +87,10 @@ func _ready() -> void:
 func capture_preview() -> void:
 	for frame in range(30):
 		await get_tree().process_frame
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--dance-time=") and preview_player:
+			preview_player.seek(float(arg.trim_prefix("--dance-time=")), true)
+	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("user://resbak-character-select.png")
 	get_tree().quit()
@@ -170,15 +175,13 @@ func _show_model(hero: Dictionary) -> void:
 		preview_model.position.y = -bounds.position.y * factor
 	for node in preview_model.find_children("*", "AnimationPlayer", true, false):
 		var ap := node as AnimationPlayer
-		for clip in ap.get_animation_list():
-			if clip.to_lower() == "idle":
-				ap.get_animation(clip).loop_mode = Animation.LOOP_LINEAR
-				ap.play(clip)
+		# BreakDance (tools/build_heroes.py) spins on its own, so the pad stays still.
+		var clip := "BreakDance" if ap.has_animation("BreakDance") else "Idle"
+		if ap.has_animation(clip):
+			ap.get_animation(clip).loop_mode = Animation.LOOP_LINEAR
+			ap.play(clip)
+		preview_player = ap
 		break
-
-func _process(delta: float) -> void:
-	if preview_root:
-		preview_root.rotation.y += 0.6 * delta
 
 func start_game() -> void:
 	get_tree().change_scene_to_file(PLAYTEST_SCENE)

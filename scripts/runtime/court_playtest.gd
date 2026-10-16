@@ -19,7 +19,7 @@ var idle_clip := ""
 var walk_clip := ""
 var run_clip := ""
 var base_cam_size := 8.5
-var hero_id := "hamog" ## from HeroRoster.selected_id or --hero=<id>; hamog = skills prototype
+var hero_id := "tutoy" ## from HeroRoster.selected_id or --hero=<id>; --hero=hamog = old skills prototype (dev only)
 
 func block(pos: Vector3, size: Vector3, color: Color) -> void:
 	var body := StaticBody3D.new()
@@ -77,8 +77,9 @@ func _ready() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--hero="):
 			hero_id = arg.trim_prefix("--hero=")
-	if hero_id == "" or hero_id == "hamog":
-		hero_id = "hamog"
+	if hero_id == "":
+		hero_id = "tutoy"
+	if hero_id == "hamog":
 		player = Hamog.new()
 		player.name = "BatangHamogPlayer"
 	else:
@@ -116,7 +117,7 @@ func _ready() -> void:
 WASD/arrows: move  Shift: HARUROT  Ctrl/C: LUSOT  E/LMB: tag  M: map  Esc: heroes" % hero_name
 	else:
 		label.text = "RESBAK  /  BARANGAY COURT  /  %s
-WASD/arrows: run  hold Alt: walk  M: map  Esc: heroes" % hero_name
+WASD/arrows/stick: run (light stick tilt walks)  M: map  Esc: heroes" % hero_name
 	label.position = Vector2(20,15)
 	label.add_theme_color_override("font_outline_color",Color("18232c"))
 	label.add_theme_constant_override("outline_size",6)

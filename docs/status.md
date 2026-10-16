@@ -24,15 +24,17 @@ _Last verified: 2026-10-16 (gate green)._
 
 | Character | Model / rig | Clips | Skill 1 | Skill 2 | Passive |
 | --------- | ----------- | ----- | ------- | ------- | ------- |
-| **Tutoy** (Meshy model; takes Batang Hamog's kit in the design doc) | ✅ `tutoy.glb` (66 bones) | Idle, Walking, Running ✅ `HeroController` blend (gate) | ❌ | ❌ | ❌ |
-| [Batang Hamog](characters/03_batang_hamog.md) (old rig, skills prototype) | ✅ `batang_hamog.glb` | Idle, Walking, Running, Harurot, Lusot_Slide, Lusot_Vault ✅ | **HARUROT!** ✅ `try_harurot` (gate) | **LUSOT!** ✅ slide + vault `try_lusot` (gate) | **DIRE-DIRETSO** ✅ `DireDiretsoComponent` (gate) |
-| [JM (Botsog)](characters/01_jm_botsog.md) | ✅ `jm.glb` (Meshy, 67 bones); older procedural `jm_botsog.glb` unused | Idle, Walking, Running ✅ `HeroController` blend (gate) | TALBOG! ❌ | TAMARAW!!! ❌ | MAKAPAL! ❌ |
-| [Nene](characters/02_nene.md) | ✅ `nene.glb` (66 bones) | Idle, Walking, Running ✅ `HeroController` blend (gate) | IYAK! ❌ | SUMBONG KITA! ❌ | SALING-PUSA ❌ |
-| [Nathan](characters/04_nathan.md) | ✅ `nathan.glb` (66 bones) | Idle, Walking, Running ✅ `HeroController` blend (gate) | BUGA! ❌ | UBO! UBO! ❌ | MAY TIRA PA! ❌ |
-| [Inday](characters/05_inday.md) | ✅ `inday.glb` (66 bones) | Idle, Walking, Running ✅ `HeroController` blend (gate) | IHIP! ❌ | SAGIP! ❌ | TAKBO NA! ❌ |
+| **Tutoy** (Meshy model; takes Batang Hamog's kit in the design doc) | ✅ `tutoy.glb` (66 bones) | Idle, Walking, Running, BreakDance ✅ `HeroController` blend (gate) | ❌ | ❌ | ❌ |
+| [Batang Hamog](characters/03_batang_hamog.md) (old rig, skills prototype; **not in the select**, `--hero=hamog` only) | ✅ `batang_hamog.glb` | Idle, Walking, Running, Harurot, Lusot_Slide, Lusot_Vault ✅ | **HARUROT!** ✅ `try_harurot` (gate) | **LUSOT!** ✅ slide + vault `try_lusot` (gate) | **DIRE-DIRETSO** ✅ `DireDiretsoComponent` (gate) |
+| [JM (Botsog)](characters/01_jm_botsog.md) | ✅ `jm.glb` (Meshy, 67 bones); older procedural `jm_botsog.glb` unused | Idle, Walking, Running, BreakDance ✅ `HeroController` blend (gate) | TALBOG! ❌ | TAMARAW!!! ❌ | MAKAPAL! ❌ |
+| [Nene](characters/02_nene.md) | ✅ `nene.glb` (66 bones) | Idle, Walking, Running, BreakDance ✅ `HeroController` blend (gate) | IYAK! ❌ | SUMBONG KITA! ❌ | SALING-PUSA ❌ |
+| [Nathan](characters/04_nathan.md) | ✅ `nathan.glb` (66 bones) | Idle, Walking, Running, BreakDance ✅ `HeroController` blend (gate) | BUGA! ❌ | UBO! UBO! ❌ | MAY TIRA PA! ❌ |
+| [Inday](characters/05_inday.md) | ✅ `inday.glb` (66 bones) | Idle, Walking, Running, BreakDance ✅ `HeroController` blend (gate) | IHIP! ❌ | SAGIP! ❌ | TAKBO NA! ❌ |
 
-The five Meshy heroes move with the shared `HeroController` (run, Alt-walk, idle; no skills yet).
-Skills exist only on the old Batang Hamog rig, reachable as the "Skills demo" card.
+The five Meshy heroes move with the shared `HeroController` (no skills yet). Movement follows the
+design doc's 2026-10-16 rule: always run (Tutoy 5.4, JM 4.6, others 5.0 m/s), a 15–50 % stick tilt
+walks at half speed, under 15 % stands; keyboard always runs. On the character select each hero
+plays the `BreakDance` clip. Skills exist only on the old Batang Hamog rig (`--hero=hamog`).
 `source_art/heroes/KimKim_Asset.glb` is Nathan's Kimkim packet prop (not used in code yet).
 
 ## Known design ↔ code gaps

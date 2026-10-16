@@ -12,7 +12,8 @@ base snatching). Setting: a sunny barangay covered court.
 - **Language:** GDScript (no C# yet, despite the Mono build)
 - **Assets:** Blender 5.2 headless `bpy` scripts in `tools/`
 - **State today:** a character select (main scene) with five heroes (Tutoy, Nene, Nathan,
-  JM, Inday) that idle/walk/run around the court, plus Batang Hamog's skills prototype. Core
+  JM, Inday) that break dance on the select screen and idle/walk/run around the court. Batang
+  Hamog's skills prototype is only reachable with `--hero=hamog`. Core
   Agawan Base rules are **not implemented yet**. See [`docs/status.md`](docs/status.md).
 
 ## Where to look
@@ -62,7 +63,7 @@ $env:BLENDER = "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 | **Gate (required)** | `& $env:GODOT --headless --path . -s scripts/tests/integration_test.gd` |
 | Refresh import / uid cache (after moving files) | `& $env:GODOT --headless --path . --import` |
 | Play (character select) | `& $env:GODOT --path .` |
-| Playtest one hero | `& $env:GODOT --path . res://scenes/court_playtest.tscn -- --hero=nene` (ids: tutoy nene nathan jm inday hamog; more user args: `--overview --roof --capture-preview --no-shadows`) |
+| Playtest one hero | `& $env:GODOT --path . res://scenes/court_playtest.tscn -- --hero=nene` (ids: tutoy nene nathan jm inday, dev-only hamog; more user args: `--overview --roof --capture-preview --no-shadows`) |
 | Rebuild Batang Hamog | `& $env:BLENDER -b --python tools/build_batang_hamog.py`, then `tools/build_hamog_moveset.py` (order matters) |
 | Rebuild the five heroes | `& $env:BLENDER -b --python tools/build_heroes.py` (one: `... -- nene`) |
 | Rebuild procedural JM (unused) | `& $env:BLENDER -b --python tools/build_jm_botsog.py` |

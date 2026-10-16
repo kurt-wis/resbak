@@ -222,16 +222,16 @@ func run() -> void:
 	root.add_child(floor_body)
 	var hero_ids: Array[String] = []
 	for hero in HeroRoster.HEROES:
-		if hero["id"] != "hamog":
-			hero_ids.append(hero["id"])
-	assert(hero_ids == ["tutoy", "nene", "nathan", "jm", "inday"], "Roster must be the five heroes, got %s" % [hero_ids])
+		hero_ids.append(hero["id"])
+	assert(hero_ids == ["tutoy", "nene", "nathan", "jm", "inday"], "Roster must be the five heroes (no Batang Hamog), got %s" % [hero_ids])
+	var want_speed := {"tutoy": 5.4, "nene": 5.0, "nathan": 5.0, "jm": 4.6, "inday": 5.0}
 	for hid in hero_ids:
 		var hero_glb: PackedScene = load(HeroRoster.get_hero(hid)["glb"])
 		assert(hero_glb != null, "%s GLB must load" % hid)
 		var hnode = hero_glb.instantiate()
 		var hap: AnimationPlayer = hnode.find_child("*AnimationPlayer*", true, false)
 		assert(hap != null, "%s AnimationPlayer must exist" % hid)
-		for clip_name in ["Idle", "Walking", "Running"]:
+		for clip_name in ["Idle", "Walking", "Running", "BreakDance"]:
 			assert(hap.has_animation(clip_name), "%s clip %s must exist" % [hid, clip_name])
 			assert(hap.get_animation(clip_name).get_track_count() >= 60, "%s clip %s must animate full skeleton" % [hid, clip_name])
 		for bad in ["Slide", "Dash"]:
@@ -249,6 +249,9 @@ func run() -> void:
 		assert(hp.anim_tree != null and hp.anim_tree.active, "%s AnimationTree must be active" % hid)
 		var space := (hp.anim_tree.tree_root as AnimationNodeBlendTree).get_node("Locomotion") as AnimationNodeBlendSpace1D
 		assert(space.get_blend_point_count() == 3, "%s blend space must hold idle/walk/run" % hid)
+		assert(is_equal_approx(hp.run_speed, want_speed[hid]), "%s run speed must be %.1f" % [hid, want_speed[hid]])
+		assert(is_equal_approx(hp.walk_speed, hp.run_speed * 0.5), "%s walk must be half run" % hid)
+		assert(hp.speed_for_tilt(0.1) == 0.0 and hp.speed_for_tilt(0.3) == hp.walk_speed and hp.speed_for_tilt(0.5) == hp.run_speed and hp.speed_for_tilt(1.0) == hp.run_speed, "%s stick thresholds 15%%/50%%" % hid)
 		assert(is_equal_approx(space.get_blend_point_position(1), hp.walk_speed), "%s walk point at walk_speed" % hid)
 		assert(is_equal_approx(space.get_blend_point_position(2), hp.run_speed), "%s run point at run_speed" % hid)
 		hp.external_move = Vector2(0, 1)
@@ -257,13 +260,12 @@ func run() -> void:
 		assert(absf(hp.get_ground_speed() - hp.run_speed) < 0.05, "%s must reach run speed, got %.2f" % [hid, hp.get_ground_speed()])
 		assert(absf(float(hp.anim_tree.get(hp.BLEND_PARAM)) - hp.run_speed) < 0.05, "%s blend must sit on Running" % hid)
 		assert(hp.get_facing_dir().distance_to(Vector3(0, 0, 1)) < 0.05, "%s must face its move direction" % hid)
-		hp.walk_held = true
+		hp.external_move = Vector2(0, 0.3) # light stick tilt walks
 		for i in range(40):
 			await physics_frame
 		assert(absf(hp.get_ground_speed() - hp.walk_speed) < 0.05, "%s walk must settle at walk_speed" % hid)
 		assert(absf(float(hp.anim_tree.get(hp.BLEND_PARAM)) - hp.walk_speed) < 0.05, "%s blend must sit on Walking" % hid)
-		hp.external_move = Vector2.ZERO
-		hp.walk_held = false
+		hp.external_move = Vector2(0, 0.1) # inside the 15 % deadzone
 		for i in range(30):
 			await physics_frame
 		assert(hp.get_ground_speed() < 0.01 and float(hp.anim_tree.get(hp.BLEND_PARAM)) < 0.01, "%s must settle into Idle" % hid)
@@ -279,6 +281,7 @@ func run() -> void:
 	assert(select_inst.cards.size() == HeroRoster.HEROES.size(), "Every hero needs a card")
 	select_inst.select(2)
 	assert(HeroRoster.selected_id == "nathan", "Selecting card 2 must pick Nathan")
+	assert(select_inst.preview_player.current_animation == "BreakDance", "Select screen hero must break dance")
 	select_inst.free()
 	HeroRoster.selected_id = "inday"
 	var court_inst = (load("res://scenes/court_playtest.tscn") as PackedScene).instantiate()

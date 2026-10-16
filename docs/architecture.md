@@ -6,8 +6,8 @@ As shipped. If this disagrees with the code, the code wins, so fix this file.
 
 | Scene | Script | Purpose |
 | ----- | ------ | ------- |
-| `scenes/character_select.tscn` (**main scene**) | `scripts/runtime/character_select.gd` | Demo hero picker: cards from `HeroRoster.HEROES`, turntable idle preview in a `SubViewport`, PLAY → `court_playtest.tscn`. Arrows/A-D browse, Enter plays. |
-| `scenes/court_playtest.tscn` | `scripts/runtime/court_playtest.gd` | Full playtest: court + the picked hero + camera + UI. The scene is a 176-byte stub; everything is built in `_ready()`. Run directly, it spawns Batang Hamog. Esc returns to the character select. |
+| `scenes/character_select.tscn` (**main scene**) | `scripts/runtime/character_select.gd` | Demo hero picker: cards from `HeroRoster.HEROES`, the picked hero break dancing (`BreakDance` clip) in a `SubViewport`, PLAY → `court_playtest.tscn`. Arrows/A-D browse, Enter plays. |
+| `scenes/court_playtest.tscn` | `scripts/runtime/court_playtest.gd` | Full playtest: court + the picked hero + camera + UI. The scene is a 176-byte stub; everything is built in `_ready()`. Run directly, it spawns Tutoy. Esc returns to the character select. |
 | `scenes/movement_test.tscn` | `scripts/runtime/movement_test.gd` | **Older, independent** movement rig: loads the Hamog GLB directly, hardcoded WASD + Shift sprint, `base_cam_size 10.0`. It does **not** use `BatangHamogController`. |
 | `scenes/barangay_court.tscn` | none | The map (≈250 KB, hand-edited / pipeline-built). See `docs/pipelines/map_pipeline.md`. |
 | `scenes/court_roof.tscn` | none | Roof with `cutaway_roof.gdshader`. Not instanced anywhere right now. |
@@ -15,7 +15,7 @@ As shipped. If this disagrees with the code, the code wins, so fix this file.
 ## court_playtest.gd `_ready()` build order
 1. Directional "WarmAfternoonSun" light + `WorldEnvironment` (`--no-shadows` disables shadows).
 2. Instance `barangay_court.tscn`, then `style_purple_tricycle`, `add_prop_contact_shadows`, and `collect_roof_materials` (a no-op while the court has no `CourtRoof`).
-3. The player at `(-10, 0.2, 2)`, then toon materials on its model. Which one: `HeroRoster.selected_id` (set by the character select) or the `--hero=<id>` user arg; empty or `hamog` gives `BatangHamogController`, anything else a `HeroController` with that `hero_id`. The DASH/LUSOT touch buttons only show for Hamog.
+3. The player at `(-10, 0.2, 2)`, then toon materials on its model. Which one: `HeroRoster.selected_id` (set by the character select) or the `--hero=<id>` user arg; empty means `tutoy`; `hamog` (dev only, not in the roster) gives `BatangHamogController`; anything else a `HeroController` with that `hero_id`. The DASH/LUSOT touch buttons only show for Hamog.
 4. Orthographic camera, `size 8.5`, offset `(0, 11, 7.5)` from a smoothed focus, clamped to x ∈ [−15, 15] and z ∈ [−7.5, 13]. `illustrated_edges.gdshader` runs as a full-screen quad.
 5. CanvasLayer HUD: a help label, touch D-pad (UP/DOWN/LEFT/RIGHT → `player.external_move`), **DASH** (`try_harurot`), **LUSOT** (`try_lusot`), and **MAP / FOLLOW**.
 
@@ -23,7 +23,7 @@ Keys handled by the playtest itself: **M** toggles map overview (camera size 31)
 CLI user args (after `--`): `--overview`, `--roof`, `--capture-preview` (saves a PNG to `user://` and quits), `--no-shadows`.
 
 ## Heroes: `HeroController` (`scripts/runtime/hero_controller.gd`) + `HeroRoster`
-`HeroRoster` (`hero_roster.gd`) lists id, display name, role, GLB and card color; its static `selected_id` carries the pick between scenes.
+`HeroRoster` (`hero_roster.gd`) lists id, display name, role, GLB, `run_speed` and card color; its static `selected_id` carries the pick between scenes.
 `HeroController` is a `CharacterBody3D` that loads the hero GLB, normalizes it to 1.8 m and builds:
 
 ```
@@ -32,8 +32,8 @@ HeroPlayer (CharacterBody3D)
 └─ CharacterVisual ─ <Hero> (GLB instance) ─ AnimationPlayer + LocomotionTree (AnimationTree)
 ```
 
-`LocomotionTree` = BlendTree: `Locomotion` (BlendSpace1D, `sync` on: Idle @ 0, Walking @ `walk_speed` 1.8, Running @ `run_speed` 5.0) → `Speed` (TimeScale, > 1 only above run speed) → output. Each physics frame the blend position is the horizontal ground speed, so accelerating (14 m/s²) and decelerating (18 m/s²) slide through walk into run and back to idle.
-Input: move_* (analog magnitude scales speed), hold **Alt** (`move_walk`, added at runtime) to walk. `walk_held` / `external_move` let tests and touch UI drive it. Facing follows the Hamog convention (only `CharacterVisual` yaws). No skills yet.
+`LocomotionTree` = BlendTree: `Locomotion` (BlendSpace1D, `sync` on: Idle @ 0, Walking @ `walk_speed` = run/2, Running @ the hero's `run_speed`) → `Speed` (TimeScale, > 1 only above run speed) → output. Each physics frame the blend position is the horizontal ground speed, so accelerating (14 m/s²) and decelerating (18 m/s²) slide through walk into run and back to idle.
+Input (design doc rule): read raw with deadzone 0; tilt < 15 % stands, 15–50 % walks at `walk_speed`, ≥ 50 % runs (`speed_for_tilt()`). Keys give full tilt, so the keyboard always runs; there is no sprint or walk key. `external_move` (stick-scaled) lets tests and touch UI drive it. Facing follows the Hamog convention (only `CharacterVisual` yaws). No skills yet.
 
 ## Player: `BatangHamogController` (`scripts/runtime/batang_hamog.gd`)
 `CharacterBody3D` that builds its own children in `_ready()`:
