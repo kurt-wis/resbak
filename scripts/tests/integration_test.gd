@@ -210,8 +210,88 @@ func run() -> void:
 		box.free()
 	print("  ✓ Lusot vault direction follows facing (4 yaws)")
 
+	# 5. Meshy heroes (tools/build_heroes.py): clips, speed-blended controller, character select
+	print("[INTEGRATION TEST] Verifying heroes...")
+	var floor_body := StaticBody3D.new()
+	var floor_cs := CollisionShape3D.new()
+	var floor_shape := BoxShape3D.new()
+	floor_shape.size = Vector3(200, 1, 200)
+	floor_cs.shape = floor_shape
+	floor_body.add_child(floor_cs)
+	floor_body.position = Vector3(0, -0.5, 0)
+	root.add_child(floor_body)
+	var hero_ids: Array[String] = []
+	for hero in HeroRoster.HEROES:
+		if hero["id"] != "hamog":
+			hero_ids.append(hero["id"])
+	assert(hero_ids == ["tutoy", "nene", "nathan", "jm", "inday"], "Roster must be the five heroes, got %s" % [hero_ids])
+	for hid in hero_ids:
+		var hero_glb: PackedScene = load(HeroRoster.get_hero(hid)["glb"])
+		assert(hero_glb != null, "%s GLB must load" % hid)
+		var hnode = hero_glb.instantiate()
+		var hap: AnimationPlayer = hnode.find_child("*AnimationPlayer*", true, false)
+		assert(hap != null, "%s AnimationPlayer must exist" % hid)
+		for clip_name in ["Idle", "Walking", "Running"]:
+			assert(hap.has_animation(clip_name), "%s clip %s must exist" % [hid, clip_name])
+			assert(hap.get_animation(clip_name).get_track_count() >= 60, "%s clip %s must animate full skeleton" % [hid, clip_name])
+		for bad in ["Slide", "Dash"]:
+			assert(not hap.has_animation(bad), "%s must not have %s" % [hid, bad])
+		# Meshy's stray Icosphere must be stripped: only the skinned body mesh remains.
+		var meshes: Array = hnode.find_children("*", "MeshInstance3D", true, false)
+		assert(meshes.size() == 1, "%s must have exactly one mesh, got %d" % [hid, meshes.size()])
+		hnode.free()
+
+		var hp := HeroController.new()
+		hp.hero_id = hid
+		hp.position = Vector3(0, 0.05, 0)
+		root.add_child(hp)
+		await physics_frame
+		assert(hp.anim_tree != null and hp.anim_tree.active, "%s AnimationTree must be active" % hid)
+		var space := (hp.anim_tree.tree_root as AnimationNodeBlendTree).get_node("Locomotion") as AnimationNodeBlendSpace1D
+		assert(space.get_blend_point_count() == 3, "%s blend space must hold idle/walk/run" % hid)
+		assert(is_equal_approx(space.get_blend_point_position(1), hp.walk_speed), "%s walk point at walk_speed" % hid)
+		assert(is_equal_approx(space.get_blend_point_position(2), hp.run_speed), "%s run point at run_speed" % hid)
+		hp.external_move = Vector2(0, 1)
+		for i in range(40):
+			await physics_frame
+		assert(absf(hp.get_ground_speed() - hp.run_speed) < 0.05, "%s must reach run speed, got %.2f" % [hid, hp.get_ground_speed()])
+		assert(absf(float(hp.anim_tree.get(hp.BLEND_PARAM)) - hp.run_speed) < 0.05, "%s blend must sit on Running" % hid)
+		assert(hp.get_facing_dir().distance_to(Vector3(0, 0, 1)) < 0.05, "%s must face its move direction" % hid)
+		hp.walk_held = true
+		for i in range(40):
+			await physics_frame
+		assert(absf(hp.get_ground_speed() - hp.walk_speed) < 0.05, "%s walk must settle at walk_speed" % hid)
+		assert(absf(float(hp.anim_tree.get(hp.BLEND_PARAM)) - hp.walk_speed) < 0.05, "%s blend must sit on Walking" % hid)
+		hp.external_move = Vector2.ZERO
+		hp.walk_held = false
+		for i in range(30):
+			await physics_frame
+		assert(hp.get_ground_speed() < 0.01 and float(hp.anim_tree.get(hp.BLEND_PARAM)) < 0.01, "%s must settle into Idle" % hid)
+		print("  ✓ %s: clips + idle/walk/run speed blend" % hid)
+		hp.free()
+	floor_body.free()
+
+	# character select -> playtest spawns the picked hero
+	var select_scene: PackedScene = load("res://scenes/character_select.tscn")
+	var select_inst = select_scene.instantiate()
+	root.add_child(select_inst)
+	await process_frame
+	assert(select_inst.cards.size() == HeroRoster.HEROES.size(), "Every hero needs a card")
+	select_inst.select(2)
+	assert(HeroRoster.selected_id == "nathan", "Selecting card 2 must pick Nathan")
+	select_inst.free()
+	HeroRoster.selected_id = "inday"
+	var court_inst = (load("res://scenes/court_playtest.tscn") as PackedScene).instantiate()
+	root.add_child(court_inst)
+	await physics_frame
+	assert(court_inst.player is HeroController and court_inst.player.hero_id == "inday", "Playtest must spawn the selected hero")
+	court_inst.free()
+	HeroRoster.selected_id = ""
+	assert(ProjectSettings.get_setting("application/run/main_scene") == "res://scenes/character_select.tscn", "Main scene must be the character select")
+	print("  ✓ Character select -> playtest spawns the picked hero")
+
 	# scenes still load
-	for scene_path in ["res://scenes/court_playtest.tscn", "res://scenes/movement_test.tscn"]:
+	for scene_path in ["res://scenes/court_playtest.tscn", "res://scenes/movement_test.tscn", "res://scenes/character_select.tscn"]:
 		var scn: PackedScene = load(scene_path)
 		assert(scn != null, "Scene %s must load" % scene_path)
 		var inst = scn.instantiate()

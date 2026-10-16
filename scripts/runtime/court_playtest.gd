@@ -19,6 +19,7 @@ var idle_clip := ""
 var walk_clip := ""
 var run_clip := ""
 var base_cam_size := 8.5
+var hero_id := "hamog" ## from HeroRoster.selected_id or --hero=<id>; hamog = skills prototype
 
 func block(pos: Vector3, size: Vector3, color: Color) -> void:
 	var body := StaticBody3D.new()
@@ -72,8 +73,18 @@ func _ready() -> void:
 	style_purple_tricycle(court)
 	add_prop_contact_shadows(court)
 	collect_roof_materials(court)
-	player = Hamog.new()
-	player.name = "BatangHamogPlayer"
+	hero_id = HeroRoster.selected_id
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--hero="):
+			hero_id = arg.trim_prefix("--hero=")
+	if hero_id == "" or hero_id == "hamog":
+		hero_id = "hamog"
+		player = Hamog.new()
+		player.name = "BatangHamogPlayer"
+	else:
+		player = HeroController.new()
+		player.hero_id = hero_id
+		player.name = "HeroPlayer"
 	player.position = Vector3(-10,0.2,2)
 	add_child(player)
 	# Hamog._ready runs synchronously on add_child; link visual/model now.
@@ -99,7 +110,13 @@ func _ready() -> void:
 	var layer := CanvasLayer.new()
 	add_child(layer)
 	var label := Label.new()
-	label.text = "RESBAK  /  BARANGAY COURT\nWASD/arrows: move  Shift: HARUROT  Ctrl/C: LUSOT  E/LMB: tag  M: map"
+	var hero_name: String = HeroRoster.get_hero(hero_id).get("name", "Batang Hamog")
+	if hero_id == "hamog":
+		label.text = "RESBAK  /  BARANGAY COURT  /  %s
+WASD/arrows: move  Shift: HARUROT  Ctrl/C: LUSOT  E/LMB: tag  M: map  Esc: heroes" % hero_name
+	else:
+		label.text = "RESBAK  /  BARANGAY COURT  /  %s
+WASD/arrows: run  hold Alt: walk  M: map  Esc: heroes" % hero_name
 	label.position = Vector2(20,15)
 	label.add_theme_color_override("font_outline_color",Color("18232c"))
 	label.add_theme_constant_override("outline_size",6)
@@ -138,6 +155,8 @@ func _ready() -> void:
 	lusot_btn.size = Vector2(90,75)
 	lusot_btn.pressed.connect(func(): if player and player.has_method("try_lusot"): player.try_lusot())
 	controls.add_child(lusot_btn)
+	dash_btn.visible = hero_id == "hamog"
+	lusot_btn.visible = hero_id == "hamog"
 	var map_button := Button.new()
 	map_button.text = "MAP / FOLLOW"
 	map_button.anchor_left = 1
@@ -218,6 +237,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		overview = not overview
 	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_R:
 		show_full_roof = not show_full_roof
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_ESCAPE:
+		get_tree().change_scene_to_file("res://scenes/character_select.tscn")
 
 func add_illustrated_edges() -> void:
 	var frame := MeshInstance3D.new()

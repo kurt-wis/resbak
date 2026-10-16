@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="RESBAK"
-run/main_scene="res://scenes/court_playtest.tscn"
+run/main_scene="res://scenes/character_select.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
