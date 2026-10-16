@@ -4,10 +4,10 @@ Short, dated, newest first. Add an entry when you make a choice that a future re
 would otherwise reverse by accident.
 
 ## 2026-10-16: The GDD is the single design source of truth
-- `docs/design/RESBAK_GDD.md` (with `RESBAK_GDD.pdf`, the same text) is now the only design doc. It is written as a precise spec for agents: numbers, states, tick order and scope. **Why:** the old design docs (summary, dossiers, rules spec) disagreed with each other and with the team's latest decisions (Sigla tag rule, no sprint or stamina, Tutoy, rescue by touch, no flag).
+- `docs/design/RESBAK_GDD.md` is now the only design doc: a condensed (~7k words) spec of the team's full GDD, written for agents (numbers, states, tick order, scope). The full GDD is a long PDF kept outside the repo, so it doesn't fill agent context. **Why:** the old design docs (summary, dossiers, rules spec) disagreed with each other and with the team's latest decisions (Unahan tag rule with own-base barrier, no sprint or stamina, Tutoy, rescue by touch, no flag).
 - The superseded docs moved to `docs/archive/` unchanged. Don't implement from them.
-- Removed the Meshy hero GLBs that had been copied into the repo root, with the textures and `.import` files Godot generated from them. The originals stay in `source_art/heroes/` (Godot-ignored). Put raw sources there, never in the root. `docs/` now has a `.gdignore`, and PDFs go through Git LFS.
-- The GDD is edited in the team's design workspace and re-exported here. Don't hand-edit `docs/design/`; ask for a GDD change instead, and note design and code gaps in `status.md`.
+- Removed the Meshy hero GLBs that had been copied into the repo root, with the textures and `.import` files Godot generated from them. The originals stay in `source_art/heroes/` (Godot-ignored). Put raw sources there, never in the root. `docs/` now has a `.gdignore`.
+- The spec is regenerated from the full GDD whenever the GDD changes. Don't hand-edit `docs/design/`; ask for a GDD change instead, and note design and code gaps in `status.md`.
 
 ## 2026-10-16: Nathan's candy is "Kimkim", not Mik-Mik
 - The docs renamed Nathan's powdered-milk candy from Mik-Mik to **Kimkim**. **Why:** Mik-Mik is a real trademark. Don't reintroduce the real name in docs, assets, textures, or code identifiers.

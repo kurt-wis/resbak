@@ -32,7 +32,7 @@ HeroPlayer (CharacterBody3D)
 └─ CharacterVisual ─ <Hero> (GLB instance) ─ AnimationPlayer + LocomotionTree (AnimationTree)
 ```
 
-`LocomotionTree` = BlendTree: `Locomotion` (BlendSpace1D, `sync` on: Idle @ 0, Walking @ `walk_speed` = run/2, Running @ the hero's `run_speed`) → `Speed` (TimeScale, > 1 only above run speed) → output. Each physics frame the blend position is the horizontal ground speed, so accelerating (14 m/s²) and decelerating (18 m/s²) slide through walk into run and back to idle.
+`LocomotionTree` = BlendTree: `Locomotion` (BlendSpace1D, `sync` on: Idle @ 0, Walking @ `walk_speed` = run/2, Running @ the hero's `run_speed`) → `Speed` (TimeScale from `playback_scale()`: the clip rate that makes the planted foot match ground speed, from the roster's `walk_clip_speed` / `run_clip_speed`, 1× at Idle) → output. Each physics frame the blend position is the horizontal ground speed, so accelerating (14 m/s²) and decelerating (18 m/s²) slide through walk into run and back to idle.
 Input (design doc rule): read raw with deadzone 0; tilt < 15 % stands, 15–50 % walks at `walk_speed`, ≥ 50 % runs (`speed_for_tilt()`). Keys give full tilt, so the keyboard always runs; there is no sprint or walk key. `external_move` (stick-scaled) lets tests and touch UI drive it. Facing follows the Hamog convention (only `CharacterVisual` yaws). No skills yet.
 
 ## Player: `BatangHamogController` (`scripts/runtime/batang_hamog.gd`)
@@ -71,7 +71,7 @@ Dire-Diretso: +5% every 1.5 s of continuous motion at ≥ 95% of base speed, up 
 There is no sprint key in the playtest (Shift is Harurot) and no mouse steering.
 
 ## Not yet in code
-Teams, base touch / freshness timestamps, tagging resolution, jail/chain/rescue, win
+Teams, the own-base barrier, Unahan tagging resolution, jail/chain/rescue, win
 conditions, hero skills on `HeroController`, networking. The map already has the
 hooks: `BaseSites/{Yellow,Purple}_Site_{1..3}` and `JailZones/{Yellow,Purple}Jail` are `Area3D`s
 with no scripts attached. See `docs/status.md`.
