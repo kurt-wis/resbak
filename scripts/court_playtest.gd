@@ -239,6 +239,8 @@ func add_illustrated_edges() -> void:
 	frame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var material := ShaderMaterial.new()
 	material.shader = load("res://shaders/illustrated_edges.gdshader")
+	material.set_shader_parameter("playable_min",Vector2(-27.35*map_scale.x,-19.35*map_scale.z))
+	material.set_shader_parameter("playable_max",Vector2(27.35*map_scale.x,28.35*map_scale.z))
 	material.render_priority = 127
 	frame.material_override = material
 	camera.add_child(frame)
