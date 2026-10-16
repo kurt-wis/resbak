@@ -20,6 +20,15 @@ Then run the integration gate (`AGENTS.md` → Commands).
 - Clip names are matched case-insensitively by `BatangHamogController._detect_clips()`: `idle`, `walking`, `running`, `runfast` (fallback for running), `harurot`, `lusot_slide`, `lusot_vault`.
 - **`Slide` and `Dash` must never reappear** (exact-name asserts; `Lusot_Slide` is allowed). They were removed 2026-10-14.
 
+## Definition of done for any model or animation change
+Scripts report success even when a mesh floats or a cycle skates, so check before calling it done:
+1. `& $env:BLENDER -b --python tools/qc_asset.py -- <glb> --speed Walking=<walk m/s> --speed Running=<run m/s>`: no FAIL lines.
+2. Open `renders/qc/<name>_sheet.png` (front, side / top, 3/4) and look at it: floating parts, wrong facing, intersections.
+3. If a clip's foot-plant speed changed, update `walk_clip_speed` / `run_clip_speed` in `hero_roster.gd`.
+- Facing: heroes face -Y in Blender, which exports to +Z (`Vector3.MODEL_FRONT`) in Godot. Floor props have their origin at the bottom centre; held or thrown props (Kimkim) at their middle (`--held`).
+- Prefer bmesh and `bpy.data` edits in builders; `bpy.ops` mesh edits depend on selection and break headless.
+- IK and look-at in Godot 4.7: use `SkeletonModifier3D` nodes (e.g. `LookAtModifier3D`), not the deprecated `SkeletonIK3D`.
+
 ## Current clips
 
 | Character | GLB | Clips (length) |

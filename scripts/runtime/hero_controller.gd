@@ -16,6 +16,11 @@ const WALK_FRACTION := 0.5
 @export var hero_id: String = "tutoy"
 @export var run_speed: float = 5.0 ## replaced by the roster's per-hero run_speed in _ready()
 var walk_speed: float = 2.5
+## Ground speed (m/s, game scale) each clip's planted foot pushes at, measured by
+## tools/qc_asset.py and stored in the roster. Playback is scaled to match the real
+## speed so the feet don't skate; 0 = unknown, play at 1x.
+var walk_clip_speed: float = 0.0
+var run_clip_speed: float = 0.0
 @export var acceleration: float = 14.0
 @export var deceleration: float = 18.0
 @export var turn_speed: float = 15.0
@@ -63,6 +68,8 @@ func _setup_model() -> void:
 	assert(not hero.is_empty(), "Unknown hero id %s" % hero_id)
 	run_speed = hero.get("run_speed", run_speed)
 	walk_speed = run_speed * WALK_FRACTION
+	walk_clip_speed = hero.get("walk_clip_speed", 0.0)
+	run_clip_speed = hero.get("run_clip_speed", 0.0)
 	var packed: PackedScene = load(hero["glb"]) as PackedScene
 	model = packed.instantiate() as Node3D
 	model.name = hero["name"].replace(" ", "")
@@ -165,5 +172,16 @@ func _update_animation() -> void:
 		return
 	var spd := get_ground_speed()
 	anim_tree.set(BLEND_PARAM, clampf(spd, 0.0, run_speed))
-	# Past the run point (e.g. future speed buffs) speed the cycle up instead of sliding.
-	anim_tree.set(TIMESCALE_PARAM, maxf(1.0, spd / run_speed))
+	anim_tree.set(TIMESCALE_PARAM, playback_scale(spd))
+
+## Clip playback rate that makes the planted foot move at the body's speed: walk_speed /
+## walk_clip_speed on the Walking point, run_speed / run_clip_speed on Running, blended in
+## between, 1x at Idle. Past the run point (e.g. future speed buffs) the cycle keeps speeding up.
+func playback_scale(spd: float) -> float:
+	var walk_k := walk_speed / walk_clip_speed if walk_clip_speed > 0.0 else 1.0
+	var run_k := run_speed / run_clip_speed if run_clip_speed > 0.0 else 1.0
+	if spd <= walk_speed:
+		return lerpf(1.0, walk_k, spd / walk_speed)
+	if spd <= run_speed:
+		return lerpf(walk_k, run_k, (spd - walk_speed) / (run_speed - walk_speed))
+	return run_k * spd / run_speed
