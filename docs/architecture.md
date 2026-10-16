@@ -33,10 +33,11 @@ One `step()` per `_physics_process` (60 ticks/s), in spec § 12 order:
 
 ### Systems (`scripts/match/systems/`)
 `TagSystem` (wind-up, hit test, Sabay, evasion hook, guard-break hook, Impact), `BaseSystem` (active site,
-pole and ring, barrier, capture), `JailSystem` (jail spots, chain, rescue incl. ranged SAGIP!), `RoundFlow`
+pole and ring, barrier, capture), `JailSystem` (v0.2 jail line: `post(owner)` slides along `layout.lines[owner]`, `out_dir`, `is_post_holder`, `is_tip`, `can_steer`, `rescue_point`; chain, rescue incl. skill touch points), `RoundFlow`
 (phases COUNTDOWN → PLAYING → SUDDEN_DEATH → ROUND_OVER → MATCH_OVER, score, draws, reset to spawns).
 `MapLayout` reads base sites, jails, markers and spawns from the map (spec names or the court's older names,
-deriving what is missing) and puts small props on the vaultable layer.
+deriving what is missing) and puts small props on the vaultable layer. v0.2: one fixed `BaseSite_<team>` per team and a
+`JailLine_<team>` Path3D per map end (`line_point`, `line_project`, `line_normal`, `line_length`).
 
 ### Heroes
 `Hero` (CharacterBody3D, `scripts/match/hero.gd`): state FREE / TAGGED / JAILED / CHAINED, tick timers
@@ -50,7 +51,8 @@ action layer for state and skill clips (`play_action(clip, duration)`), team rin
 Each hero has two `Skill`s and a `Passive` (scripts in `scripts/match/skills/<hero>/`, wired in
 `data/heroes/<id>.tres`). Skill hooks: `kind`, `_cast`, `on_recast`, `tick_action`, `controls_movement` +
 `move`, `tick`, `end(reason)`, `blocks_tagging`, `blocks_other_skills`, `can_be_pushed`, `fixed_speed`,
-`evade_tag` (LUSOT! perfect), `ranged_rescue_reach` (SAGIP!), `on_owner_event`. Passive hooks: `speed_bonus`,
+`evade_tag` (LUSOT! perfect), `rescue_touch_point` + `rescue_touch_radius` (HILA!: a point that counts as touching a
+chain tip), `absorb_tag` + `warded` (BAWAL!: cancel a landed tag; bots avoid warded heroes), `on_owner_event`. Passive hooks: `speed_bonus`,
 `absorb_tag` (MAKAPAL!), `on_rescue_performed`, `extra_rescue_protection`, `footsteps_silent`, `hud_state`, ...
 Placed things (walls, decoys, clouds, patches, lanes, trails) are `SkillObject`s spawned with `host.spawn_object`;
 `is_tag_decoy` makes the TagSystem treat them as decoys, `hides()` drives cloud vision.
@@ -61,7 +63,10 @@ Placed things (walls, decoys, clouds, patches, lanes, trails) are `SkillObject`s
 
 ### Presentation
 `MatchView` sets per-viewer alpha, outline colour, icons, the aim fan and world feedback.
-`Hud` (`scripts/ui/hud/`) is a set of `HudPart`s on a CanvasLayer built for 1920×1080.
+`Hud` (`scripts/ui/hud/`) is a set of `HudPart`s on a CanvasLayer built for 1920×1080. `HudAnnouncer` turns host
+events into queued MOBA-style call ribbons (streaks counted from events, numbers in Tuning "HUD and senses") and
+sends each to `Audio.announce`. `MatchCamera` is Kurt's orthographic isometric camera; `PlayerInput` reads its
+`view_yaw()` so frames stay in world space.
 
 ## Physics layers (`RB`)
 1 world · 2 hero solid · 3 hero ghost · 4 skill wall (TALBOG!) · 5 vaultable props · 6 base pole.

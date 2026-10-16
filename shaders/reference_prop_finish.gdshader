@@ -5,7 +5,7 @@ uniform float rust_frame=0.;
 void fragment(){
  vec3 c=texture(paint_texture,UV).rgb;
  float luma=dot(c,vec3(.3,.5,.2));
- c=mix(vec3(luma),c,.80)*.94;
+ c=mix(vec3(luma),c,1.02)*1.01;
  float blue=step(c.r*1.06,c.b)*step(.12,c.b);
  vec3 brown=vec3(.47,.36,.23)*(luma/.32);
  ALBEDO=mix(c,brown,blue*rust_frame);

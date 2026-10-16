@@ -7,7 +7,7 @@ void vertex(){p=(MODEL_MATRIX*vec4(VERTEX,1.)).xyz;}
 void fragment(){
  float broad=dot(texture(wear_texture,p.xz*.07).rgb,vec3(.3,.5,.2));
  float grain=dot(texture(fine_texture,p.xz*.65).rgb,vec3(.3,.5,.2));
- float variation=clamp((broad-.27)*.32,-.04,.04)+clamp((grain-.27)*.25,-.025,.025);
- ALBEDO=vec3(.255,.263,.255)*(1.+variation);
+ float variation=clamp((broad-.27)*.65,-.065,.065)+clamp((grain-.27)*.5,-.05,.05);
+ ALBEDO=vec3(.29,.30,.29)*(1.+variation);
  ROUGHNESS=1.;SPECULAR=0.;
 }

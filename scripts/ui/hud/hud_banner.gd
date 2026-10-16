@@ -12,14 +12,14 @@ var _hint_until := 0.0
 
 func _init() -> void:
 	banner = HudStyle.label(self, 96, HORIZONTAL_ALIGNMENT_CENTER, Color.WHITE, 14)
-	hint = HudStyle.label(self, 30, HORIZONTAL_ALIGNMENT_CENTER, HudStyle.GOLD)
+	hint = HudStyle.label(self, 30, HORIZONTAL_ALIGNMENT_CENTER, HudStyle.GOLD, 10)
 
 func _layout() -> void:
 	var s := sz()
 	banner.position = Vector2(0, s.y * 0.3)
 	banner.size = Vector2(s.x, 150)
 	banner.pivot_offset = banner.size * 0.5
-	hint.position = Vector2(0, s.y - 190.0)
+	hint.position = Vector2(0, 236.0) # under the scorebug and capture alerts, clear of the skill bar
 	hint.size = Vector2(s.x, 44)
 
 func _now() -> float:

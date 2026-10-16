@@ -9,6 +9,11 @@ extends Node
 const PROFILE_PATH := "user://profile.json"
 const SETTINGS_PATH := "user://settings.cfg"
 const SAVE_VERSION := 1
+## Demo / development builds (v0.1.1): every launch starts from a fresh profile (name, setup,
+## tutorial, match totals), so each new player at the booth sees first-time setup and the
+## tutorial offer, and stats never pile up. Settings (display, audio, controls) are kept.
+## Set to false for a release build.
+const DEMO_RESET_PROGRESS := true
 
 ## Settings rows and their defaults (spec § 10). Sections match the Settings tabs.
 const SETTINGS_DEFAULTS := {
@@ -19,7 +24,8 @@ const SETTINGS_DEFAULTS := {
 		"frame_cap": 60, "quality": "auto", "shadows": "high", "effects": "high", "brightness": 50, "interface_size": 1.0},
 	"audio": {"master": 80, "music": 60, "effects": 80, "voices": 80, "announcer": 80},
 	"accessibility": {"colour_mode": "default", "subtitles": true, "subtitle_size": "M", "speaker_names": true,
-		"sound_cues": false, "reduce_flashing": false, "reduce_motion": false, "capture_input": "hold"},
+		"sound_cues": false, "reduce_flashing": false, "reduce_motion": false, "capture_input": "hold",
+		"theme": "dark"},
 	"language_network": {"language": "fil_en", "show_ping": false},
 }
 
@@ -27,8 +33,19 @@ var profile := {}
 var settings := ConfigFile.new()
 
 func _ready() -> void:
-	load_profile()
+	if DEMO_RESET_PROGRESS and not _is_test_run():
+		reset_progress()
+	else:
+		load_profile()
 	load_settings()
+
+## A fresh profile on disk (demo builds call this on every launch).
+func reset_progress() -> void:
+	profile = default_profile()
+	save_profile()
+
+func _is_test_run() -> bool:
+	return OS.get_cmdline_args().has("res://scripts/tests/integration_test.gd") or OS.get_cmdline_args().has("scripts/tests/integration_test.gd")
 
 # ---- profile ---------------------------------------------------------------------------
 func default_profile() -> Dictionary:

@@ -75,7 +75,7 @@ func _aim(t: TestCtx, host: MatchHost, n: Hero, offset: Vector3) -> void:
 func _data(t: TestCtx) -> void:
 	var d := HeroData.load_hero("nathan")
 	t.check(d != null and d.id == "nathan", "nathan.tres loads")
-	t.check(d.skill1_cooldown == 10.0 and d.skill2_cooldown == 18.0 and d.run_speed == 5.0 and d.tag_reach == 1.2, "Nathan CDs 10 / 18 s, 5.0 m/s, reach 1.2 m")
+	t.check(d.skill1_cooldown == 10.0 and d.skill2_cooldown == 18.0 and d.run_speed == 4.5 and d.tag_reach == 1.2, "Nathan CDs 10 / 18 s, 4.5 m/s, reach 1.2 m")
 	t.check(d.v("buga_length") == 5.0 and d.v("buga_width_deg") == 60.0 and d.v("buga_slow") == 0.3 and d.v("buga_slow_time") == 1.5 and d.v("buga_trail_time") == 4.0, "BUGA! numbers")
 	t.check(d.v("ubo_range") == 9.0 and d.v("ubo_radius") == 3.5 and d.v("ubo_cloud_time") == 5.0 and d.v("ubo_inside_sight") == 2.0 and d.v("ubo_cough_after") == 1.0, "UBO! UBO! numbers")
 	t.check(d.v("tira_turn_deg") == 90.0 and d.v("tira_turn_window") == 0.5 and d.v("tira_patch_radius") == 1.0 and d.v("tira_reveal_time") == 2.0, "MAY TIRA PA! numbers")

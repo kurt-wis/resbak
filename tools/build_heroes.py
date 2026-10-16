@@ -144,7 +144,7 @@ CORE_ORDER = ("Tag", "Tagged", "Stumble", "Stunned", "Jailed", CHAINED, "Capture
 BREAKDANCE = {
     "tutoy": [("breakdance footwork 2.fbx", 1), ("flair (2).fbx", 2)],   # street kid: footwork into flares
     "nene": [("breakdance uprock var 1.fbx", 2)],                         # bouncy uprock
-    "nathan": [("breakdance footwork 1.fbx", 1)],                         # six-step footwork
+    "nathan": [("breakdance 1990.fbx", 1), ("crossleg freeze.fbx", 1)],  # old-school toprock into a cocky freeze
     "jm": [("breakdance freezes.fbx", 1)],                                # big-man power freezes
     "inday": [("brooklyn uprock.fbx", 1)],                                # Brooklyn uprock, dips to the floor
 }

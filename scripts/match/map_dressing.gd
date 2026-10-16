@@ -4,31 +4,63 @@ extends RefCounted
 ## Lighting, environment and small art passes for a match map (moved from court_playtest.gd
 ## so the match and the dev playtest look the same). Presentation only.
 
-static func add_lighting(parent: Node3D, shadows := true) -> void:
-	RenderingServer.set_default_clear_color(Color("d0c6b7"))
+## Kurt's map-art daylight (court_playtest.gd): cooler sky, crisper sun, lifted ambient.
+## A map that brings its own WorldEnvironment (the construction site) keeps its own lighting:
+## pass it as `map` and only the shadow toggle is applied to its suns.
+static func add_lighting(parent: Node3D, shadows := true, map: Node = null) -> void:
+	if map and not map.find_children("*", "WorldEnvironment", true, false).is_empty():
+		for sun in map.find_children("*", "DirectionalLight3D", true, false):
+			if not shadows:
+				(sun as DirectionalLight3D).shadow_enabled = false
+		return
+	RenderingServer.set_default_clear_color(Color("cad9d9"))
 	var light := DirectionalLight3D.new()
 	light.name = "WarmAfternoonSun"
-	light.rotation_degrees = Vector3(-38, -38, 0)
-	light.light_color = Color("ffe1b8")
-	light.light_energy = 0.80
+	light.rotation_degrees = Vector3(-48, -32, 0)
+	light.light_color = Color("fff0d4")
+	light.light_energy = 0.96
 	light.shadow_enabled = shadows
-	light.shadow_opacity = 0.68
+	light.shadow_opacity = 0.76
 	light.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 	light.directional_shadow_max_distance = 65.0
 	light.directional_shadow_blend_splits = true
-	light.shadow_bias = 1.0
-	light.shadow_normal_bias = 3.0
+	light.shadow_bias = 1.5
+	light.shadow_normal_bias = 1.2
 	parent.add_child(light)
 	var world := WorldEnvironment.new()
 	world.name = "Environment"
 	world.environment = Environment.new()
 	world.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	world.environment.ambient_light_color = Color("9faad9")
-	world.environment.ambient_light_energy = 0.16
+	world.environment.ambient_light_color = Color("9eb9d0")
+	world.environment.ambient_light_energy = 0.29
 	world.environment.adjustment_enabled = true
-	world.environment.adjustment_contrast = 1.06
-	world.environment.adjustment_saturation = 0.95
+	world.environment.adjustment_contrast = 1.05
+	world.environment.adjustment_saturation = 1.02
 	parent.add_child(world)
+
+## Looping map ambience (the court's daylight bed, -25 dB on the Music bus). Silent if missing.
+static func add_ambience(parent: Node, path: String, volume_db := -25.0) -> AudioStreamPlayer:
+	if not ResourceLoader.exists(path):
+		return null
+	var stream := (load(path) as AudioStream)
+	if stream is AudioStreamWAV:
+		stream = stream.duplicate()
+		(stream as AudioStreamWAV).loop_mode = AudioStreamWAV.LOOP_FORWARD
+		(stream as AudioStreamWAV).loop_end = int(stream.get_length() * (stream as AudioStreamWAV).mix_rate)
+	var player := AudioStreamPlayer.new()
+	player.name = "MapAmbience"
+	player.stream = stream
+	player.volume_db = volume_db
+	player.bus = "Music" if AudioServer.get_bus_index("Music") != -1 else "Master"
+	player.autoplay = true
+	parent.add_child(player)
+	return player
+
+## A map's own cameras (Mathew's InspectionCamera) must never take over the view.
+static func disable_map_cameras(map: Node) -> void:
+	for c in map.find_children("*", "Camera3D", true, false):
+		(c as Camera3D).current = false
+		c.queue_free()
 
 static func dress_court(court: Node3D) -> void:
 	var tricycle := court.get_node_or_null("StreetDetails/PurpleStreetTricycle")
@@ -70,8 +102,9 @@ static func dress_court(court: Node3D) -> void:
 			shadow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			group.add_child(shadow)
 
-## Full-screen ink edges on the camera (the court's illustrated look).
-static func add_ink_edges(camera: Camera3D) -> void:
+## Full-screen ink edges on the camera (the court's illustrated look). Outside `play` (XZ) the
+## shader softly blurs and hazes the neighbourhood so the playable court reads first.
+static func add_ink_edges(camera: Camera3D, play := Rect2()) -> ShaderMaterial:
 	var frame := MeshInstance3D.new()
 	frame.name = "IllustratedInkEdges"
 	var quad := QuadMesh.new()
@@ -82,6 +115,10 @@ static func add_ink_edges(camera: Camera3D) -> void:
 	frame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var material := ShaderMaterial.new()
 	material.shader = load("res://shaders/illustrated_edges.gdshader")
+	if play.size != Vector2.ZERO:
+		material.set_shader_parameter("playable_min", play.position - Vector2(0.3, 0.3))
+		material.set_shader_parameter("playable_max", play.end + Vector2(0.3, 0.3))
 	material.render_priority = 127
 	frame.material_override = material
 	camera.add_child(frame)
+	return material

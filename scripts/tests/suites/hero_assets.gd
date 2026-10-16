@@ -1,13 +1,14 @@
 extends RefCounted
 
-## The five hero GLBs and their HeroData files (spec section 4 table).
+## The five hero GLBs and their HeroData files (spec section 4 table; speeds are the v0.1.1
+## pacing values, about 10 % under the spec, see docs/status.md).
 
 const SPEC := {
-	"tutoy": {"speed": 5.4, "reach": 1.0, "cd1": 8.0, "cd2": 6.0},
-	"nene": {"speed": 5.0, "reach": 1.2, "cd1": 14.0, "cd2": 10.0},
-	"nathan": {"speed": 5.0, "reach": 1.2, "cd1": 10.0, "cd2": 18.0},
-	"jm": {"speed": 4.6, "reach": 1.2, "cd1": 12.0, "cd2": 16.0},
-	"inday": {"speed": 5.0, "reach": 1.2, "cd1": 15.0, "cd2": 12.0},
+	"tutoy": {"speed": 4.85, "reach": 1.0, "cd1": 8.0, "cd2": 6.0},
+	"nene": {"speed": 4.5, "reach": 1.2, "cd1": 10.0, "cd2": 14.0}, # v0.2 SIGAW! / BAWAL!
+	"nathan": {"speed": 4.5, "reach": 1.2, "cd1": 10.0, "cd2": 18.0},
+	"jm": {"speed": 4.15, "reach": 1.2, "cd1": 12.0, "cd2": 16.0},
+	"inday": {"speed": 4.5, "reach": 1.2, "cd1": 15.0, "cd2": 14.0}, # v0.2 HILA!
 }
 
 func run(t: TestCtx) -> void:

@@ -2,8 +2,9 @@ extends RefCounted
 
 ## The core Agawan Base rules against docs/RESBAK.md section 2, in small 2v2 / 2v4 matches on the
 ## grey test arena (TestCtx.make_match): manual stepping, scripted input, exact tick counts.
-## Arena facts: base_mode 1 -> Dilaw pole (-12, 0), Lila pole (12, 0); Jail_Dilaw holds Lila
-## prisoners (x -19.6..-13.6, z 5.2..9.2), marker (-13.6, 7.2), hand point (-12.1, 7.2).
+## Arena facts: fixed bases -> Dilaw pole (-12, 0), Lila pole (12, 0); Jail_Dilaw holds Lila
+## prisoners. The arena has no JailLine, so its jail line is the straight fallback along the
+## back of the yard box (x -19.0, z 5.2..9.2); the post starts at its middle (-19.0, 7.2).
 
 const D := RB.DILAW
 const L := RB.LILA
@@ -19,14 +20,15 @@ func run(t: TestCtx) -> void:
 	await _tag_hit_and_jail(t)
 	await _tag_geometry(t)
 	await _failed_tag(t)
+	await _charged_tag(t)
 	await _escape_protection(t)
 	await _sabay(t)
 	await _barrier(t)
 	await _capture(t)
 	await _capture_cancel(t)
 	await _chain_and_rescue(t)
-	await _anchor_let_go(t)
-	await _lone_anchor_rescue(t)
+	await _post_slide(t)
+	await _lone_prisoner_rescue(t)
 	await _same_tick_rescue(t)
 	await _lockdown(t)
 	await _timer_and_sudden_death(t)
@@ -72,10 +74,10 @@ func _until(host: MatchHost, cond: Callable, limit := 2000) -> int:
 		host.step()
 	return -1
 
-## Tag press, then step to the landing tick (press tick + 9 wind-up ticks). 10 steps.
+## Tag tap, then step to the landing tick (press tick + tag_windup ticks).
 func _tag(t: TestCtx, host: MatchHost, h: Hero) -> void:
 	t.inputs(host).press(h, TAG)
-	t.steps(host, 10)
+	t.steps(host, RB.ticks(host.tuning.tag_windup) + 1)
 
 ## Tag `victim` for real (landing + freeze), then step until it is Jailed.
 func _jail(t: TestCtx, host: MatchHost, tagger: Hero, victims: Array) -> void:
@@ -113,15 +115,16 @@ func _countdown(t: TestCtx) -> void:
 	await t.free_match(host)
 
 func _movement(t: TestCtx) -> void:
-	for pair in [["nene", 5.0], ["jm", 4.6], ["nathan", 5.0], ["inday", 5.0], ["tutoy", 5.4]]:
-		var host := _live(t, [pair[0], "inday"], ["nathan", "nene"])
+	for sheet in [["nene", 4.5], ["jm", 4.15], ["nathan", 4.5], ["inday", 4.5], ["tutoy", 4.85]]:
+		var host := _live(t, [sheet[0], "inday"], ["nathan", "nene"])
+		var pair := [sheet[0], sheet[1] * host.tuning.move_speed_scale] # v0.2: everyone x move_speed_scale
 		var a: Hero = host.heroes[0]
 		TestCtx.put(a, -6, 2)
 		var inp := t.inputs(host)
 		inp.move(a, Vector2(1, 0))
 		t.steps(host, 20)
 		if pair[0] == "tutoy": # DIRE-DIRETSO climbs up to +15 % over 3 s
-			t.check(a.ground_speed() >= pair[1] - 0.05 and a.ground_speed() <= pair[1] * 1.15 + 0.05, "tutoy reaches run speed 5.4 (+ Dire-Diretso), got %.2f" % a.ground_speed())
+			t.check(a.ground_speed() >= pair[1] - 0.05 and a.ground_speed() <= pair[1] * 1.15 + 0.05, "tutoy reaches run speed %.2f (+ Dire-Diretso), got %.2f" % [pair[1], a.ground_speed()])
 		else:
 			t.check(t.near(a.ground_speed(), pair[1], 0.05), "%s reaches run speed %.1f (got %.2f)" % [pair[0], pair[1], a.ground_speed()])
 		t.check(absf(a.global_position.z - 2.0) < 0.1, "%s runs straight" % pair[0])
@@ -171,12 +174,13 @@ func _tag_hit_and_jail(t: TestCtx) -> void:
 	TestCtx.put(a, 0, 0)
 	TestCtx.put(c, 1.9, 0) # centres 1.9 apart = 1.1 m edge to edge, inside the 1.2 m reach
 	_face_east(t, host, a)
+	var windup := RB.ticks(host.tuning.tag_windup)
 	t.inputs(host).press(a, TAG)
-	t.steps(host, 9)
-	t.check(c.state == Hero.State.FREE, "the tag has not landed during the 9-tick wind-up")
+	t.steps(host, windup)
+	t.check(c.state == Hero.State.FREE, "the tag has not landed during the %d-tick wind-up" % windup)
 	t.check(a.is_winding_up(), "tagger is winding up")
 	t.steps(host, 1)
-	t.check(c.state == Hero.State.TAGGED, "tag lands on tick 9 after the press")
+	t.check(c.state == Hero.State.TAGGED, "a tapped tag lands tag_windup (%d ticks) after the press" % windup)
 	t.check(not a.is_winding_up(), "wind-up over")
 	t.check(_count("tag") == 1, "tag event")
 	t.check(host.stats[a.slot].tags == 1, "tagger's tags stat")
@@ -187,22 +191,24 @@ func _tag_hit_and_jail(t: TestCtx) -> void:
 	t.check(RB.flat_dist(c.global_position, frozen_at) < 0.05, "a Tagged hero cannot move")
 	t.check(not host.can_tag(a, c), "a Tagged hero is untaggable")
 	t.steps(host, 1)
-	t.check(c.state == Hero.State.JAILED, "jailed after 0.8 s = 48 ticks")
+	t.check(c.state == Hero.State.CHAINED, "after 0.8 s = 48 ticks the prisoner holds the jail post (chained)")
 	t.inputs(host).move(c, Vector2.ZERO)
 	t.check(host.layout.in_jail(D, c.global_position), "the victim is inside the TAGGER's jail (Jail_Dilaw holds Lila), at %s" % c.global_position)
 	t.check(_count("jailed") == 1, "jailed event")
 	t.check(host.jail_system.jailed_count(L) == 1, "jailed count")
-	# Jailed heroes move but cannot tag or capture
+	# prisoners cannot tag or capture
 	t.inputs(host).press(c, TAG)
 	t.steps(host, 15)
-	t.check(not c.is_winding_up(), "a Jailed hero cannot press Tag")
-	# jail barrier keeps free heroes out
+	t.check(not c.is_winding_up(), "a prisoner cannot press Tag")
+	# the post barrier keeps free heroes off the post
 	var b: Hero = host.heroes[1]
-	TestCtx.put(b, -16.6, 3.0)
-	t.inputs(host).move(b, Vector2(0, 1))
+	var post := host.jail_system.post(D)
+	TestCtx.put(b, post.x + 2.5, post.z)
+	t.inputs(host).move(b, Vector2(-1, 0))
 	t.steps(host, 90)
-	t.check(not host.layout.in_jail(D, b.global_position), "the jail barrier blocks free heroes (at %s)" % b.global_position)
-	t.ok("tag hit -> 0.8 s freeze -> tagger's jail, barrier")
+	var keep := host.tuning.jail_post_barrier + host.tuning.body_radius
+	t.check(RB.flat_dist(b.global_position, post) >= keep - 0.02, "free heroes are kept %.1f m from the jail post (%.2f)" % [keep, RB.flat_dist(b.global_position, post)])
+	t.ok("tag hit -> 0.8 s freeze -> tagger's jail post, post barrier")
 	await t.free_match(host)
 
 func _tag_geometry(t: TestCtx) -> void:
@@ -272,6 +278,56 @@ func _failed_tag(t: TestCtx) -> void:
 	t.ok("failed tag -> 0.5 s stumble")
 	await t.free_match(host)
 
+## v0.2 charged hampas: hold Tag to charge (slower while charging), release to swing with
+## up to tag_charge_reach_bonus more reach; the charge bar reads charge_fraction().
+func _charged_tag(t: TestCtx) -> void:
+	var host := _live(t, ["nene", "inday"], ["nathan", "nene"])
+	var a: Hero = host.heroes[0]
+	var c: Hero = host.heroes[2]
+	var tu := host.tuning
+	var inp := t.inputs(host)
+	var full := RB.ticks(tu.tag_charge_time)
+	var plain_edge := a.tag_reach()
+	# out of tap reach, inside full-charge reach
+	var gap := plain_edge * (1.0 + tu.tag_charge_reach_bonus * 0.5)
+	TestCtx.put(a, 0, 0)
+	TestCtx.put(c, gap + tu.body_radius * 2.0, 0)
+	_face_east(t, host, a)
+	inp.hold(a, TAG)
+	t.steps(host, full / 2)
+	t.check(a.is_charging() and not a.is_winding_up(), "holding Tag charges, no swing yet")
+	t.check(a.charge_fraction() > 0.3 and a.charge_fraction() < 0.7, "half-way charge reads about 0.5 (got %.2f)" % a.charge_fraction())
+	t.steps(host, full)
+	t.check(t.near(a.charge_fraction(), 1.0, 0.001), "the charge caps at full")
+	t.check(t.near(a.charged_reach(), plain_edge * (1.0 + tu.tag_charge_reach_bonus), 0.001), "a full charge adds tag_charge_reach_bonus x reach")
+	# moving while charging is slower
+	inp.move(a, Vector2(0, 1))
+	t.steps(host, 20)
+	var slow := a.ground_speed()
+	inp.move(a, Vector2.ZERO)
+	t.steps(host, 15)
+	var run := a.data.run_speed * tu.move_speed_scale
+	t.check(t.near(slow, run * (1.0 - tu.tag_charge_slow), 0.08), "charging slows you to %.2f m/s (got %.2f)" % [run * (1.0 - tu.tag_charge_slow), slow])
+	TestCtx.put(a, 0, 0)
+	_face_east(t, host, a)
+	inp.release(a, TAG)
+	t.steps(host, 1)
+	t.check(a.is_winding_up() and not a.is_charging(), "release swings")
+	t.steps(host, RB.ticks(tu.tag_windup))
+	t.check(c.state == Hero.State.TAGGED, "a charged swing tags beyond the tap reach (gap %.2f m)" % gap)
+	await t.free_match(host)
+	# the same gap with a tap misses
+	var h2 := _live(t, ["nene", "inday"], ["nathan", "nene"])
+	var a2: Hero = h2.heroes[0]
+	var c2: Hero = h2.heroes[2]
+	TestCtx.put(a2, 0, 0)
+	TestCtx.put(c2, gap + tu.body_radius * 2.0, 0)
+	_face_east(t, h2, a2)
+	_tag(t, h2, a2)
+	t.check(c2.state == Hero.State.FREE, "a tap at the same gap misses")
+	t.ok("charged hampas: hold to charge, slower, longer reach on release")
+	await t.free_match(h2)
+
 func _escape_protection(t: TestCtx) -> void:
 	var host := _live(t, ["nene", "inday"], ["nathan", "nene"])
 	var a: Hero = host.heroes[0]
@@ -318,7 +374,7 @@ func _sabay(t: TestCtx) -> void:
 	inp.press(a, TAG)
 	inp.press(c, TAG)
 	inp.press(b, TAG)
-	t.steps(host, 10)
+	t.steps(host, RB.ticks(host.tuning.tag_windup) + 1)
 	t.check(a.state == Hero.State.FREE and c.state == Hero.State.FREE, "Sabay: nobody is jailed")
 	t.check(a.stumble_ticks > 0 and c.stumble_ticks > 0, "Sabay: both stumble")
 	t.check(_count("sabay") == 1, "one sabay event")
@@ -355,18 +411,19 @@ func _capture(t: TestCtx) -> void:
 	t.check(host.base_system.in_capture_range(c), "in capture range at 0.8 m gap")
 	inp.hold(c, USE)
 	inp.move(c, Vector2(0, 1))
-	t.steps(host, 89)
-	t.check(c.capturing and c.capture_ticks == 89, "capturing, progress 89 ticks (got %d)" % c.capture_ticks)
-	t.check(host.round_flow.phase == RoundFlow.Phase.PLAYING and host.round_flow.score == [0, 0], "not captured at 89 ticks")
+	var hold := RB.ticks(host.tuning.capture_hold)
+	t.steps(host, hold - 1)
+	t.check(c.capturing and c.capture_ticks == hold - 1, "capturing, progress %d ticks (got %d)" % [hold - 1, c.capture_ticks])
+	t.check(host.round_flow.phase == RoundFlow.Phase.PLAYING and host.round_flow.score == [0, 0], "not captured one tick early")
 	t.check(t.near(c.global_position.z, 0.0, 0.1), "a capturing hero cannot move")
-	t.check(t.near(host.base_system.capture_progress(L), 89.0 / 90.0, 0.001), "capture progress for the HUD")
+	t.check(t.near(host.base_system.capture_progress(L), float(hold - 1) / hold, 0.001), "capture progress for the HUD")
 	t.steps(host, 1)
-	t.check(host.round_flow.phase == RoundFlow.Phase.ROUND_OVER, "capture completes at 1.5 s = 90 ticks: round over")
+	t.check(host.round_flow.phase == RoundFlow.Phase.ROUND_OVER, "capture completes at capture_hold (%d ticks): round over" % hold)
 	t.check(host.round_flow.score == [0, 1], "capturers get +1 (Lila)")
 	t.check(host.round_flow.last_result.winner == L and host.round_flow.last_result.reason == "capture", "round result: Lila by capture")
 	t.check(_count("capture") == 1 and _count("round_end") == 1, "capture and round_end events")
 	t.check(not c.capturing, "capture cleared at round end")
-	t.ok("capture 1.5 s wins the round")
+	t.ok("holding the capture for capture_hold wins the round")
 	await t.free_match(host)
 
 func _capture_cancel(t: TestCtx) -> void:
@@ -419,74 +476,74 @@ func _chain_and_rescue(t: TestCtx) -> void:
 	var e: Hero = host.heroes[4]
 	var f: Hero = host.heroes[5]
 	var inp := t.inputs(host)
+	var js := host.jail_system
+	var tu := host.tuning
+	var post := js.post(D)
+	var mid := host.layout.line_point(D, host.layout.line_length(D) * 0.5)
+	t.check(RB.flat_dist(post, mid) < 0.01, "the post starts at the middle of Dilaw's jail line (%s)" % post)
 	_jail(t, host, a, [c, d, e])
-	t.check(c.state == Hero.State.JAILED and d.state == Hero.State.JAILED and e.state == Hero.State.JAILED, "three prisoners in jail")
-	var marker := host.layout.marker(D)
-	var hand := host.jail_system.hand_point(D)
-	t.check(t.near(marker.x, -13.6) and t.near(marker.z, 7.2), "marker on the prisoners' side of Jail_Dilaw")
-	t.check(t.near(hand.x, -12.1) and t.near(hand.z, 7.2), "hand point 1.5 m outside the marker")
-	# too far from the marker: no anchor
-	TestCtx.put(e, -18.5, 5.8)
+	t.check(c.state == Hero.State.CHAINED and d.state == Hero.State.CHAINED and e.state == Hero.State.CHAINED, "every prisoner joins the chain by itself")
+	t.check(js.chain(D) == [c, d, e], "chain order = order caught: first holds the post, the last caught is the tip")
+	t.check(RB.flat_dist(c.global_position, post) <= tu.post_hold_offset + 0.36, "the first prisoner holds the post (%.2f m)" % RB.flat_dist(c.global_position, post))
+	t.check(js.can_steer(e) and js.can_steer(c) and not js.can_steer(d), "the tip and the post holder steer; middle links do not")
+	t.check(not host.can_tag(a, d), "a Chained hero is untaggable")
 	inp.press(e, USE)
 	t.steps(host, 2)
-	t.check(e.state == Hero.State.JAILED and host.jail_system.chain(D).is_empty(), "Interact far from the marker does not anchor")
-	# anchor within 1 m of the marker
-	TestCtx.put(c, -14.0, 7.2)
-	inp.press(c, USE)
-	t.steps(host, 1)
-	t.check(c.state == Hero.State.CHAINED and host.jail_system.chain(D) == [c], "Interact near the marker makes the anchor")
-	t.check(not host.jail_system.can_steer(c), "a lone anchor does not move")
-	# join within 1.5 m of the anchor
-	TestCtx.put(d, -15.0, 7.2)
-	inp.press(d, USE)
-	t.steps(host, 1)
-	t.check(d.state == Hero.State.CHAINED and host.jail_system.chain(D) == [c, d], "Interact near the anchor joins the chain; the joiner is the tip")
-	t.check(RB.flat_dist(d.global_position, hand) <= 1.5 + 0.01, "tip is within 1.5 m of the hand point (%.2f)" % RB.flat_dist(d.global_position, hand))
-	# a prisoner too far from anchor and tip cannot join
-	inp.press(e, USE)
-	t.steps(host, 1)
-	t.check(e.state == Hero.State.JAILED, "too far from the anchor or tip: cannot join")
-	# a chained hero can't be tagged, tag, or use skills
-	t.check(not host.can_tag(a, d), "a Chained hero is untaggable")
-	# the tip steers and crosses the jail barrier; the anchor stays
-	var anchor_at := c.global_position
+	t.check(e.state == Hero.State.CHAINED and js.chain(D).size() == 3, "Interact does nothing in jail: nobody can let go")
+	# links in the middle do not move by themselves
+	var d_at := d.global_position
 	inp.move(d, Vector2(1, 0))
-	t.steps(host, 90)
+	t.steps(host, 30)
 	inp.move(d, Vector2.ZERO)
-	t.steps(host, 15)
-	var reach := RB.flat_dist(d.global_position, hand)
-	t.check(reach <= 1.5 + 0.02, "the tip stays within 1.5 m of the hand point (%.2f)" % reach)
-	t.check(d.global_position.x > -13.0, "the chained tip crosses the jail barrier (x %.2f)" % d.global_position.x)
-	t.check(RB.flat_dist(c.global_position, anchor_at) < 0.05, "the anchor is immobile")
-	# let go: the tip returns to a jail spot, the chain shrinks
-	inp.press(d, USE)
-	t.steps(host, 1)
-	t.check(d.state == Hero.State.JAILED and host.jail_system.chain(D) == [c], "letting go returns the tip to jail")
-	t.check(host.layout.in_jail(D, d.global_position), "the one who let go is back in the jail")
-	# rejoin and walk the tip out
-	TestCtx.put(d, -15.0, 7.2)
-	inp.press(d, USE)
-	t.steps(host, 1)
-	inp.move(d, Vector2(1, 0))
-	t.steps(host, 90)
-	inp.move(d, Vector2.ZERO)
-	t.steps(host, 15)
-	var tip := d.global_position
-	# a free teammate 1.5 m from the tip does nothing; touching (<= 0.8) frees the whole chain
+	t.check(RB.flat_dist(d.global_position, d_at) < 0.05, "a middle link ignores its own input")
+	# the tip drags the chain out, slowly, link by link
+	var e0 := e.global_position
+	var d0 := d.global_position
+	inp.move(e, Vector2(1, 0))
+	t.steps(host, 6)
+	t.check(RB.flat_dist(e.global_position, e0) > RB.flat_dist(d.global_position, d0), "the tip moves first, the next link follows after")
+	t.steps(host, 150)
+	inp.move(e, Vector2.ZERO)
+	t.steps(host, 30)
+	var reach := RB.flat_dist(e.global_position, post)
+	t.check(reach > 3.0, "the tip stretched the chain out (%.2f m from the post)" % reach)
+	t.check(reach <= tu.post_hold_offset + 0.35 + tu.chain_link * 2.0 + 0.05, "the tip reaches at most one link per prisoner (%.2f)" % reach)
+	t.check(RB.flat_dist(c.global_position, post) <= tu.post_hold_offset + 0.36, "the post holder never lets go of the post")
+	t.check(RB.flat_dist(c.global_position, d.global_position) <= tu.chain_link + 0.02 and RB.flat_dist(d.global_position, e.global_position) <= tu.chain_link + 0.02, "neighbours stay within one link")
+	# the tip walks slowly
+	var p0 := e.global_position
+	inp.move(e, Vector2(0, -1))
+	t.steps(host, 60)
+	inp.move(e, Vector2.ZERO)
+	t.check(RB.flat_dist(e.global_position, p0) <= tu.chain_tip_speed + 0.05, "the tip moves at most chain_tip_speed (%.2f m in 1 s)" % RB.flat_dist(e.global_position, p0))
+	# the chain never leaves the play area
+	inp.move(e, Vector2(0, 1))
+	t.steps(host, 240)
+	inp.move(e, Vector2.ZERO)
+	var inside := true
+	for p in js.chain(D):
+		inside = inside and host.layout.bounds.grow(0.01).has_point(Vector2((p as Hero).global_position.x, (p as Hero).global_position.z))
+	t.check(inside, "every link stays inside the play bounds")
+	# steer back out and get rescued
+	inp.move(e, Vector2(1, 0))
+	t.steps(host, 120)
+	inp.move(e, Vector2.ZERO)
+	t.steps(host, 30)
+	var tip := e.global_position
 	TestCtx.put(f, tip.x + 1.5, tip.z)
 	t.steps(host, 3)
-	t.check(d.state == Hero.State.CHAINED, "a teammate 1.5 m from the tip does not rescue")
-	t.check(host.jail_system.find_rescues().is_empty(), "no rescue yet")
-	TestCtx.put(f, tip.x + 0.6, tip.z)
+	t.check(e.state == Hero.State.CHAINED, "a teammate 1.5 m from the tip does not rescue")
+	t.check(js.find_rescues().is_empty(), "no rescue yet")
+	TestCtx.put(f, e.global_position.x + 0.6, e.global_position.z)
 	t.steps(host, 1)
-	t.check(c.state == Hero.State.FREE and d.state == Hero.State.FREE, "touching the tip frees the whole chain")
-	t.check(e.state == Hero.State.JAILED, "unchained prisoners stay in jail")
-	t.check(host.jail_system.chain(D).is_empty(), "chain cleared")
+	t.check(c.state == Hero.State.FREE and d.state == Hero.State.FREE and e.state == Hero.State.FREE, "touching the tip frees the whole chain")
+	t.check(js.chain(D).is_empty(), "chain cleared")
+	t.check(RB.flat_dist(c.global_position, post) >= tu.jail_post_barrier + tu.body_radius, "freed heroes are moved off the post")
 	t.check(c.ep_ticks == 240 and d.ep_ticks == 240, "freed heroes get 4 s = 240 ticks of EP (got %d)" % c.ep_ticks)
 	t.check(c.lockout_ticks == 240 and d.lockout_ticks == 240, "capture lockout 4 s after a rescue")
 	t.check(not host.can_tag(a, c), "freed heroes are untaggable (EP)")
 	t.check(_count("rescue") == 1, "rescue event")
-	t.check(host.stats[f.slot].rescues == 2, "rescuer's rescue stat counts both freed")
+	t.check(host.stats[f.slot].rescues == 3, "rescuer's rescue stat counts all three freed")
 	# lockout: a freed hero cannot start a capture for 4 s
 	TestCtx.put(c, -10.6, 0)
 	inp.hold(c, USE)
@@ -496,48 +553,60 @@ func _chain_and_rescue(t: TestCtx) -> void:
 	t.check(c.ep_ticks == 0 and c.lockout_ticks == 0, "EP and lockout expire after 240 ticks")
 	t.steps(host, 2)
 	t.check(c.capturing, "can capture once the lockout is over")
-	t.ok("chain anchor / join / steer / let go, rescue by touching the tip, EP and lockout")
+	t.ok("automatic chain: post holder slides the post, tip steering, drag, bounds, rescue, EP and lockout")
 	await t.free_match(host)
 
-func _anchor_let_go(t: TestCtx) -> void:
-	var host := _live(t, ["nene", "inday"], ["nathan", "nene", "tutoy", "nene"])
+## v0.2 jail line: the post holder walks the post along the map's jail line at
+## chain_post_speed; the post never leaves the line and the holder keeps a hand on it.
+func _post_slide(t: TestCtx) -> void:
+	var host := _live(t, ["nene", "inday"], ["nathan", "nene", "jm"]) # a third Lila: no lockdown
 	var a: Hero = host.heroes[0]
 	var c: Hero = host.heroes[2]
 	var d: Hero = host.heroes[3]
+	var js := host.jail_system
+	var tu := host.tuning
 	var inp := t.inputs(host)
 	_jail(t, host, a, [c, d])
-	TestCtx.put(c, -14.0, 7.2)
-	inp.press(c, USE)
-	t.steps(host, 1)
-	TestCtx.put(d, -15.0, 7.2)
-	inp.press(d, USE)
-	t.steps(host, 1)
-	t.check(host.jail_system.chain(D).size() == 2, "two chained")
-	inp.press(c, USE)
-	t.steps(host, 1)
-	t.check(host.jail_system.chain(D).is_empty() and c.state == Hero.State.JAILED and d.state == Hero.State.JAILED, "the anchor letting go returns everyone to jail")
-	t.ok("anchor let go returns all")
+	t.check(js.is_post_holder(c) and js.can_steer(c), "the first prisoner holds the post and can steer")
+	var s0: float = js.anchor_s[D]
+	var post0 := js.post(D)
+	inp.move(c, Vector2(0, -1))
+	t.steps(host, 60)
+	inp.move(c, Vector2.ZERO)
+	var slid := RB.flat_dist(js.post(D), post0)
+	t.check(float(js.anchor_s[D]) < s0 - 0.3, "the post holder drags the post along the jail line (%.2f -> %.2f m)" % [s0, js.anchor_s[D]])
+	t.check(slid <= tu.chain_post_speed + 0.05, "the post slides at most chain_post_speed (%.2f m in 1 s)" % slid)
+	t.check(host.layout.line_distance(D, js.post(D)) < 0.01, "the post stays on the jail line")
+	t.check(RB.flat_dist(c.global_position, js.post(D)) <= tu.post_hold_offset + 0.36, "the holder keeps a hand on the moving post")
+	t.check(RB.flat_dist(d.global_position, c.global_position) <= tu.chain_link + 0.02, "the tip is dragged along with the post")
+	inp.move(c, Vector2(0, -1))
+	t.steps(host, 600)
+	inp.move(c, Vector2.ZERO)
+	t.check(t.near(float(js.anchor_s[D]), 0.0, 0.01), "the post stops at the end of the line")
+	t.check(host.layout.in_jail(D, c.global_position), "the holder is still in jail at the end of the line")
+	t.ok("jail line: the post holder slides the post along the line")
 	await t.free_match(host)
 
-func _lone_anchor_rescue(t: TestCtx) -> void:
+func _lone_prisoner_rescue(t: TestCtx) -> void:
 	var host := _live(t, ["nene", "inday"], ["nathan", "nene", "tutoy"])
 	var a: Hero = host.heroes[0]
 	var c: Hero = host.heroes[2]
 	var f: Hero = host.heroes[4]
 	var inp := t.inputs(host)
+	var tu := host.tuning
+	var post := host.jail_system.post(D)
 	_jail(t, host, a, [c])
-	TestCtx.put(c, -14.0, 7.2)
-	inp.press(c, USE)
+	t.check(host.jail_system.chain(D) == [c] and host.jail_system.can_steer(c), "a lone prisoner holds the post and is the tip")
+	inp.move(c, Vector2(1, 0))
+	t.steps(host, 120)
+	inp.move(c, Vector2.ZERO)
+	t.check(RB.flat_dist(c.global_position, post) <= tu.chain_link + 0.02, "a lone prisoner leans at most one link from the post (%.2f)" % RB.flat_dist(c.global_position, post))
+	t.check(RB.flat_dist(c.global_position, post) > tu.jail_post_barrier + tu.body_radius, "and can reach past the post barrier")
+	t.check(RB.flat_dist(host.jail_system.rescue_point(D), c.global_position) < 0.01, "the rescue point is the prisoner")
+	TestCtx.put(f, c.global_position.x + 0.6, c.global_position.z)
 	t.steps(host, 1)
-	var hand := host.jail_system.hand_point(D)
-	t.check(t.near(host.jail_system.rescue_point(D).x, hand.x), "the rescue point of a lone anchor is the hand point")
-	TestCtx.put(f, hand.x + 0.6, hand.z)
-	t.steps(host, 3)
-	t.check(c.state == Hero.State.CHAINED, "a lone anchor needs the rescuer within 0.4 m of the hand point (0.6 is too far)")
-	TestCtx.put(f, hand.x + 0.3, hand.z)
-	t.steps(host, 1)
-	t.check(c.state == Hero.State.FREE and c.has_ep(), "within 0.4 m of the hand point frees the lone anchor")
-	t.ok("lone anchor rescue point")
+	t.check(c.state == Hero.State.FREE and c.has_ep(), "touching the lone prisoner frees it")
+	t.ok("lone prisoner rescue")
 	await t.free_match(host)
 
 func _same_tick_rescue(t: TestCtx) -> void:
@@ -547,24 +616,24 @@ func _same_tick_rescue(t: TestCtx) -> void:
 	var d: Hero = host.heroes[2]
 	var inp := t.inputs(host)
 	_jail(t, host, a, [c])
-	TestCtx.put(c, -14.0, 7.2)
-	inp.press(c, USE)
-	t.steps(host, 1)
-	var hand := host.jail_system.hand_point(D)
-	TestCtx.put(a, hand.x + 1.7, hand.z)
-	TestCtx.put(d, hand.x + 4.0, hand.z)
-	inp.aim_at(a, hand)
+	inp.move(c, Vector2(1, 0))
+	t.steps(host, 60)
+	inp.move(c, Vector2.ZERO)
+	t.steps(host, 2)
+	var tip := c.global_position
+	TestCtx.put(a, tip.x + 1.7, tip.z)
+	TestCtx.put(d, tip.x + 4.0, tip.z)
+	inp.aim_at(a, tip)
 	inp.press(a, TAG)
-	t.steps(host, 9)
+	t.steps(host, RB.ticks(host.tuning.tag_windup))
 	t.check(host.round_flow.phase == RoundFlow.Phase.PLAYING, "still playing before the tag lands")
-	TestCtx.put(d, hand.x, hand.z) # the last free Lila hero arrives on the landing tick
+	TestCtx.put(d, tip.x + 0.6, tip.z) # the last free Lila hero touches the tip on the landing tick
 	t.steps(host, 1)
 	t.check(d.state == Hero.State.TAGGED, "the last free hero is tagged on the same tick")
-	t.check(c.state == Hero.State.FREE, "the same-tick rescue freed the anchor")
+	t.check(c.state == Hero.State.FREE, "the same-tick rescue freed the prisoner")
 	t.check(host.round_flow.phase == RoundFlow.Phase.PLAYING, "a same-tick rescue beats lockdown")
 	t.ok("same-tick rescue beats lockdown")
 	await t.free_match(host)
-
 func _lockdown(t: TestCtx) -> void:
 	var host := _live(t, ["nene", "inday"], ["nathan", "nene"])
 	var a: Hero = host.heroes[0]
@@ -635,7 +704,7 @@ func _round_reset(t: TestCtx) -> void:
 	var inp := t.inputs(host)
 	TestCtx.put(c, -10.6, 0)
 	inp.hold(c, USE)
-	t.steps(host, 90)
+	t.steps(host, RB.ticks(host.tuning.capture_hold))
 	t.check(host.round_flow.score == [0, 1], "Lila captured")
 	a.ep_ticks = 100
 	a.stumble_ticks = 50

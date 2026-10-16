@@ -90,7 +90,8 @@ func pre_tick() -> void:
 				phase = Phase.PLAYING
 				host.emit_event("kaboom", {"round": round_number})
 		Phase.PLAYING:
-			timer_ticks -= 1
+			if not bool(host.settings.get("practice", false)):
+				timer_ticks -= 1
 		Phase.SUDDEN_DEATH:
 			if timer_ticks > 0:
 				timer_ticks -= 1
@@ -110,8 +111,8 @@ func post_tick() -> void:
 ## Step 9. landed = successful tags this tick (TagSystem.apply); captured = teams that
 ## completed a capture this tick (BaseSystem.tick_captures).
 func check_end(landed: Array, captured: Array) -> void:
-	if not is_live():
-		return
+	if not is_live() or bool(host.settings.get("practice", false)):
+		return # practice (tutorial): nothing ends the round; the lesson script runs the show
 	var meets := [false, false]
 	var reason := ["", ""]
 	for team in captured:
@@ -151,6 +152,7 @@ func check_end(landed: Array, captured: Array) -> void:
 func _end_round(win_team: int, reason: String) -> void:
 	for h in host.heroes:
 		h.windup_end_tick = -1
+		h.charge_ticks = -1
 		if h.capturing:
 			host.base_system.cancel_capture(h, "round_end")
 		for s in h.skills:

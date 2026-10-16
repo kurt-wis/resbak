@@ -35,3 +35,11 @@ would otherwise reverse by accident.
 
 ## 2026-10-14: Design doc migration
 - `AGAWAN BASE IDEA.md` was replaced by `docs/RESBAK.md`: the 3.8 MB embedded image was removed and the name no longer has spaces. Per-character numbers live in `docs/characters/`, and the dossiers win on numeric conflicts.
+
+## 2026-10-17: v0.2 playtest changes (team requests)
+- **New Nene and Inday skills** replace spec kits: SIGAW! (word projectile: stun enemy 0.5 s / dash teammate), BAWAL! (warning sign; a tag on her is cancelled and the tagger hallucinates), HILA! (stretched hand that pulls a teammate and rescues a chain tip it touches). **Why:** team playtest request; the old IYAK!/SUMBONG KITA!/SAGIP! read poorly. HILA! rescue reuses the JailSystem touch path through `Skill.rescue_touch_point()`, so it obeys the same step 6/7 order as a hand touch.
+- **Jail line**: the jail is a map-authored line (`JailLine_<team>` Path3D) with a post that slides along it, instead of a fixed yard. The post holder and the tip both steer, so captured players can still play. **Why:** team request; lets each map shape its jail (straight, angled, snaking). Bot navmesh no longer carves the post (it moves).
+- **Fixed bases**: one base per team (`BaseSite_<team>`); the roulette shows them without spinning. **Why:** team request; randomised sites made map learning harder.
+- **Slower pace, charged hampas**: `move_speed_scale` 0.8, 0.3 s windup, hold to charge up to +60 % reach with a bar over the head. **Why:** team request; tags were too fast to read.
+- **Announcer**: MOBA-style ribbons driven by host events in the HUD (presentation only, never game state). Calls are Filipino and go through `Audio.announce` so voice lines drop in later by file name (`announcer_<id>`).
+- **Desktop only**: the project targets Windows desktop; no mobile or touch work.

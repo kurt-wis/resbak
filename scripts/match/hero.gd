@@ -35,7 +35,11 @@ var lockout_ticks := 0 ## capture lockout left
 var stumble_ticks := 0
 var stun_ticks := 0
 var tag_block_ticks := 0 ## can't press Tag (LUSOT! recovery, MAKAPAL! guard break)
+var immune_ticks := 0 ## can't be tagged, stays solid (MAKAPAL! rage after a guard break)
 var windup_end_tick := -1 ## host tick this hero's tag lands, or -1
+var charge_ticks := -1 ## ticks Tag has been held (charged hampas), -1 = not charging
+var strike_reach := 0.0 ## reach of the swing in flight (charge included); 0 = tag_reach()
+var hallucinate_ticks := 0 ## BAWAL! curse: the move stick is turned around
 var lunge_dir := Vector3.ZERO
 var tagged_by: Hero = null ## sends us to the tagger's jail
 
@@ -43,7 +47,7 @@ var capturing := false
 var capture_ticks := 0
 var frozen := false ## countdown and round end: nobody moves
 
-var enemy_alpha := 1.0 ## opacity enemies see (IYAK! see-through sets 0.25)
+var enemy_alpha := 1.0 ## opacity enemies see (1 today; the see-through hook IYAK! used)
 var revealed_ticks := [0, 0] ## per viewing team: seen everywhere (BUGA!, cough, patch)
 
 var skills: Array[Skill] = []
@@ -111,6 +115,9 @@ func is_jailed_like() -> bool: ## Tagged, Jailed or Chained all count as jailed 
 func has_ep() -> bool:
 	return ep_ticks > 0
 
+func is_immune() -> bool:
+	return immune_ticks > 0
+
 func is_stunned() -> bool:
 	return stun_ticks > 0
 
@@ -119,6 +126,29 @@ func is_stumbling() -> bool:
 
 func is_winding_up() -> bool:
 	return windup_end_tick >= 0
+
+func is_charging() -> bool:
+	return charge_ticks >= 0
+
+## 0..1 how full the hampas charge is (the bar over the hero).
+func charge_fraction() -> float:
+	if charge_ticks < 0:
+		return 0.0
+	return clampf(float(charge_ticks) / maxf(1.0, float(RB.ticks(tuning.tag_charge_time))), 0.0, 1.0)
+
+## Reach a swing released now would have.
+func charged_reach() -> float:
+	return tag_reach() * (1.0 + tuning.tag_charge_reach_bonus * charge_fraction())
+
+## A skill shows a "don't hit me" warning (BAWAL!).
+func is_warded() -> bool:
+	for s in skills:
+		if s.warded():
+			return true
+	return false
+
+func is_hallucinating() -> bool:
+	return hallucinate_ticks > 0
 
 func is_disabled() -> bool: ## stumble or stun: no move, tag, skill, capture start
 	return stun_ticks > 0 or stumble_ticks > 0
@@ -140,7 +170,7 @@ func can_move() -> bool:
 	return true
 
 func can_press_tag() -> bool:
-	if not round_live() or state != State.FREE or is_disabled() or capturing or is_winding_up():
+	if not round_live() or state != State.FREE or is_disabled() or capturing or is_winding_up() or is_charging():
 		return false
 	if tag_block_ticks > 0:
 		return false
@@ -162,7 +192,7 @@ func can_start_capture() -> bool:
 
 ## Taggable by an enemy right now (state and EP; teams and height are TagSystem's job).
 func is_taggable() -> bool:
-	return state == State.FREE and ep_ticks <= 0
+	return state == State.FREE and ep_ticks <= 0 and immune_ticks <= 0
 
 func tag_reach() -> float:
 	return data.tag_reach
@@ -173,12 +203,15 @@ func base_speed() -> float:
 ## Spec § 4: current = base x (1 + biggest bonus) x (1 - strongest slow). HARUROT! and
 ## TAMARAW!!! fix the speed (no bonus, slows apply).
 func current_speed(walking := false) -> float:
+	if state == State.CHAINED: # the tip drags the whole chain: slow, no bonuses or slows
+		return tuning.chain_tip_speed * (tuning.walk_fraction if walking else 1.0)
 	var slow := strongest_slow()
+	var k := tuning.move_speed_scale * ((1.0 - tuning.tag_charge_slow) if is_charging() else 1.0)
 	for s in skills:
 		if s.active and s.fixed_speed() > 0.0:
-			return s.fixed_speed() * (1.0 - slow)
+			return s.fixed_speed() * (1.0 - slow) * k
 	var base := base_speed() * (tuning.walk_fraction if walking else 1.0)
-	return base * (1.0 + biggest_bonus()) * (1.0 - slow)
+	return base * (1.0 + biggest_bonus()) * (1.0 - slow) * k
 
 func biggest_bonus() -> float:
 	var b := passive.speed_bonus() if passive else 0.0
@@ -273,8 +306,16 @@ func stumble(secs: float) -> void:
 
 func _disrupt() -> void:
 	windup_end_tick = -1
+	charge_ticks = -1
 	if capturing:
 		host.base_system.cancel_capture(self, "disrupted")
+
+## BAWAL! curse: for `secs` the move stick is turned around (and the screen warps for a player).
+func hallucinate(secs: float) -> void:
+	if state != State.FREE:
+		return
+	hallucinate_ticks = maxi(hallucinate_ticks, RB.ticks(secs))
+	host.emit_event("hallucinate", {"hero": self, "seconds": secs})
 
 func reveal_to(viewer_team: int, secs: float) -> void:
 	revealed_ticks[viewer_team] = maxi(revealed_ticks[viewer_team], RB.ticks(secs))
@@ -329,6 +370,8 @@ func on_tagged(tagger: Hero) -> void:
 	if capturing:
 		host.base_system.cancel_capture(self, "tagged")
 	windup_end_tick = -1
+	charge_ticks = -1
+	hallucinate_ticks = 0
 	_push_ticks = 0
 	stun_ticks = 0
 	stumble_ticks = 0
@@ -378,7 +421,11 @@ func reset_for_round(at: Vector3, face: Vector3) -> void:
 	stumble_ticks = 0
 	stun_ticks = 0
 	tag_block_ticks = 0
+	immune_ticks = 0
 	windup_end_tick = -1
+	charge_ticks = -1
+	strike_reach = 0.0
+	hallucinate_ticks = 0
 	capturing = false
 	capture_ticks = 0
 	tagged_by = null
@@ -404,6 +451,8 @@ func set_frame(f: InputFrame) -> void:
 	if d != Vector3.ZERO:
 		aim = d
 	var m := Vector3(f.move.x, 0.0, f.move.y)
+	if hallucinate_ticks > 0 and state == State.FREE:
+		m = -m # BAWAL!: left is right, toward is away
 	wish_dir = m.normalized() if m.length() > tuning.stick_dead_zone else Vector3.ZERO
 
 ## Step 3a: count every timer down once per tick.
@@ -419,6 +468,8 @@ func tick_timers() -> void:
 	stumble_ticks = maxi(0, stumble_ticks - 1)
 	stun_ticks = maxi(0, stun_ticks - 1)
 	tag_block_ticks = maxi(0, tag_block_ticks - 1)
+	immune_ticks = maxi(0, immune_ticks - 1)
+	hallucinate_ticks = maxi(0, hallucinate_ticks - 1)
 	for t in range(2):
 		revealed_ticks[t] = maxi(0, revealed_ticks[t] - 1)
 	for i in range(_mods.size() - 1, -1, -1):

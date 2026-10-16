@@ -11,12 +11,8 @@ const WHITE := Color(1.0, 0.96, 1.0, 0.85)
 
 static func _puff_mesh() -> QuadMesh:
 	var quad := QuadMesh.new()
-	quad.size = Vector2.ONE
-	var m := Vfx.flat_material(Color.WHITE)
-	m.vertex_color_use_as_albedo = true
-	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
-	quad.material = m
+	quad.size = Vector2.ONE * 1.6
+	quad.material = Vfx.particle_material() # soft round puffs, not squares
 	return quad
 
 ## Alpha envelope: fade in, hold, fade out.

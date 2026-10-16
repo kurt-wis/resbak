@@ -120,12 +120,18 @@ func _build_mvp() -> void:
 		var gold: bool = t == data.winner
 		var p := FE.panel(FE.INK2, FE.GOLD if gold else FE.SILVER, 4, 22)
 		p.name = "Mvp_%s" % RB.TEAM_NAMES[t]
-		p.custom_minimum_size = Vector2(560, 300)
+		p.custom_minimum_size = Vector2(560, 440)
 		cards.add_child(p)
 		var col := VBoxContainer.new()
 		col.alignment = BoxContainer.ALIGNMENT_CENTER
 		p.add_child(col)
 		col.add_child(FE.bi_box("MVP" if gold else "Bida ng Talo", "Most valuable" if gold else "Star of the losing side", 40, FE.GOLD if gold else FE.SILVER))
+		var fc := CenterContainer.new()
+		var fb := FaceBadge.new(String(r.get("hero_id", "tutoy")), 132)
+		fb.ring = FE.GOLD if gold else FE.SILVER
+		fb.ring_width = 5.0
+		fc.add_child(fb)
+		col.add_child(fc)
 		col.add_child(FE.label(String(r.get("name", "")), 48, FE.CHALK, HORIZONTAL_ALIGNMENT_CENTER))
 		var hd := HeroData.load_hero(String(r.get("hero_id", "tutoy")))
 		col.add_child(FE.label("%s  ·  %s" % [hd.display_name if hd else "", _team_name(t)], 26, RB.TEAM_COLORS[t], HORIZONTAL_ALIGNMENT_CENTER))
@@ -166,7 +172,8 @@ func _build_board() -> void:
 		tabs.add_child(b)
 	_table = VBoxContainer.new()
 	_table.name = "Table"
-	_table.add_theme_constant_override("separation", 6)
+	_table.add_theme_constant_override("separation", 4)
+	_table.custom_minimum_size = Vector2(1200, 0)
 	v.add_child(_table)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 30)
@@ -180,16 +187,69 @@ func _build_board() -> void:
 	_set_tab(0)
 	again.grab_focus.call_deferred()
 
+const COL_W := [70.0, 70.0, 430.0, 220.0, 220.0, 160.0] ## rank, face, player, hero, team, value
+const ROW_H := 56.0
+
 func _set_tab(i: int) -> void:
 	_tab = i
 	for c in _table.get_children():
+		_table.remove_child(c)
 		c.queue_free()
 	var key := String(ResultsCalc.TABS[i].key)
+	for j in range(ResultsCalc.TABS.size()):
+		var tb: Button = buttons.get("Tab_" + String(ResultsCalc.TABS[j].key))
+		if tb:
+			if j == i:
+				tb.add_theme_stylebox_override("normal", FE.box_style(FE.INK3, FE.DILAW, 4))
+			else:
+				tb.remove_theme_stylebox_override("normal")
 	var rows: Array = data.rows.duplicate()
 	rows.sort_custom(func(a, b): return float(a.stats.get(key, 0)) > float(b.stats.get(key, 0)) or (float(a.stats.get(key, 0)) == float(b.stats.get(key, 0)) and int(a.slot) < int(b.slot)))
-	for r in rows:
-		var line := FE.label("%-22s %-10s %-12s %6d" % [String(r.name).left(22), String(r.hero_id).capitalize(), RB.TEAM_NAMES[int(r.team)], int(r.stats.get(key, 0))], 28, RB.TEAM_COLORS[int(r.team)] if int(r.slot) != int(data.local_slot) else FE.GOLD)
-		_table.add_child(line)
+	_table.add_child(_table_row(["#", "", "Manlalaro", "Katropa", "Koponan", String(ResultsCalc.TABS[i].fil)], {}, -1, true))
+	for n in range(rows.size()):
+		var r: Dictionary = rows[n]
+		var hd := HeroData.load_hero(String(r.hero_id))
+		var vals := [str(n + 1), "", String(r.name), hd.display_name if hd else String(r.hero_id), RB.TEAM_FULL_NAMES[int(r.team)], str(int(r.stats.get(key, 0)))]
+		_table.add_child(_table_row(vals, r, n, false))
 
+## One aligned row: fixed column widths, a face in column 2, the local player highlighted.
+func _table_row(vals: Array, r: Dictionary, n: int, header: bool) -> Control:
+	var p := PanelContainer.new()
+	var mine: bool = not header and int(r.get("slot", -1)) == int(data.local_slot)
+	var fill := FE.INK3 if mine else (FE.INK2 if n % 2 == 0 else Color(FE.INK2, 0.55))
+	if header:
+		fill = Color(0, 0, 0, 0)
+	var sb := FE.box_style(fill, FE.DILAW if mine else Color(0, 0, 0, 0), 3 if mine else 0, 12)
+	sb.content_margin_top = 2
+	sb.content_margin_bottom = 2
+	p.add_theme_stylebox_override("panel", sb)
+	p.custom_minimum_size = Vector2(0, 36 if header else ROW_H)
+	var h := HBoxContainer.new()
+	h.add_theme_constant_override("separation", 0)
+	p.add_child(h)
+	var team_col: Color = RB.TEAM_COLORS[int(r.get("team", 0))] if not header else FE.CHALK_DIM
+	for c in range(vals.size()):
+		var cell: Control
+		if c == 1 and not header:
+			var box := CenterContainer.new()
+			box.add_child(FaceBadge.new(String(r.hero_id), 46))
+			(box.get_child(0) as FaceBadge).ring = team_col
+			cell = box
+		else:
+			var align := HORIZONTAL_ALIGNMENT_RIGHT if c == 5 else (HORIZONTAL_ALIGNMENT_CENTER if c == 0 else HORIZONTAL_ALIGNMENT_LEFT)
+			var col := FE.CHALK_DIM if header else (FE.GOLD if mine else FE.CHALK)
+			if c == 4 and not header:
+				col = team_col
+			var l := FE.label(String(vals[c]), 22 if header else 28, col, align)
+			l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			l.clip_text = true
+			if c == 5 and not header:
+				l.add_theme_font_override("font", UiFonts.display())
+				l.add_theme_font_size_override("font_size", 34)
+			cell = l
+		cell.custom_minimum_size = Vector2(COL_W[c], 0)
+		cell.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		h.add_child(cell)
+	return p
 func current_tab_key() -> String:
 	return String(ResultsCalc.TABS[_tab].key)

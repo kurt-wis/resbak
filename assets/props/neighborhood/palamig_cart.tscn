@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/props/neighborhood/palamig_cart_mesh.res" id="1_7w50d"]
+
+[node name="PalamigCart" type="Node3D" unique_id=315525933]
+metadata/source_model = "Rainbow Refreshment Cart"
+metadata/triangle_count = 2803
+metadata/unit_height = 1.0
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=239445309]
+cast_shadow = 0
+mesh = ExtResource("1_7w50d")

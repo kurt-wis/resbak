@@ -33,7 +33,7 @@ static func default_settings() -> Dictionary:
 	return {
 		"skills": true, ## Tradisyonal = false (actives off; passives, speed, reach stay)
 		"hazards": true,
-		"base_mode": "roulette", ## "roulette" or 1 / 2 / 3 (Fixed site)
+		"base_mode": 1, ## v0.2: bases are fixed (one per team per map); kept for old saves
 		"points_to_win": 3,
 		"round_time": 120.0,
 		"capture_toggle": false, ## Settings > Accessibility > Capture input
@@ -141,10 +141,10 @@ func _actions(h: Hero) -> void:
 		for s in h.skills:
 			if s.active:
 				s.tick_action(f)
-		if f.was_pressed(RB.BTN_TAG) and h.can_press_tag():
-			tag_system.start_windup(h)
+		tag_system.handle_tag_button(h, f)
 		base_system.handle_interact(h, f)
 	else:
+		h.charge_ticks = -1
 		jail_system.handle_interact(h, f)
 	if f.was_pressed(RB.BTN_PING):
 		emit_event("ping", {"hero": h, "point": f.aim_point})

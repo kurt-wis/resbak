@@ -1,7 +1,7 @@
 extends Passive
 
 ## Inday passive TAKBO NA! (docs/RESBAK.md § 4 Inday). After any rescue by Inday (touch or
-## SAGIP!), she and every teammate she freed get +takbo_bonus speed for takbo_time seconds, once
+## HILA!), she and every teammate she freed get +takbo_bonus speed for takbo_time seconds, once
 ## per rescue (source "takbo"; Hero uses the biggest bonus, so it never stacks with IHIP!).
 ## The prisoners she frees also get takbo_extra_protection more seconds of Escape Protection
 ## (4 s -> 5 s); the JailSystem reads that through extra_rescue_protection().

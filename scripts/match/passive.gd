@@ -50,7 +50,7 @@ func on_stunned(_by_enemy_skill: bool) -> void:
 func absorb_tag(_tagger: Hero) -> bool:
 	return false
 
-## This hero just freed `freed` (array of Hero) by touch or SAGIP!.
+## This hero just freed `freed` (array of Hero) by touch or HILA!.
 func on_rescue_performed(_freed: Array, _by_skill: bool) -> void:
 	pass
 

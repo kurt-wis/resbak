@@ -38,6 +38,7 @@ const ROWS := {
 		["audio", "announcer", "Tagapagbalita", "Announcer", "slider", [0.0, 100.0, 1.0]],
 	],
 	"accessibility": [
+		["accessibility", "theme", "Tema ng menu", "Menu theme (dark / light)", "cycle", ["dark", "light"]],
 		["accessibility", "colour_mode", "Kulay", "Colour mode", "cycle", ["default", "deuteranopia", "protanopia", "tritanopia", "high_contrast"]],
 		["accessibility", "subtitles", "Subtitle", "Subtitles", "bool", null],
 		["accessibility", "subtitle_size", "Laki ng subtitle", "Subtitle size", "cycle", ["S", "M", "L"]],
@@ -112,6 +113,17 @@ func set_value(section: String, key: String, value: Variant) -> void:
 	if s:
 		s.set_setting(section, key, value)
 	_apply()
+	if key == "theme": # repaint every panel in the new palette, staying on this tab
+		var keep := tab
+		for c in content.get_children():
+			content.remove_child(c)
+			c.queue_free()
+		buttons.clear()
+		theme = FE.get_theme()
+		if backdrop:
+			backdrop.queue_redraw()
+		build()
+		show_tab(keep)
 
 func _apply() -> void:
 	FE.apply_all()
@@ -163,6 +175,8 @@ func _row(r: Array) -> Control:
 	return h
 
 func _opt_text(v: Variant) -> String:
+	if v is String and v in ["dark", "light"]:
+		return "Madilim  ·  Dark" if v == "dark" else "Maliwanag  ·  Light"
 	if typeof(v) == TYPE_INT:
 		return "Walang limit" if int(v) == 0 else "%d fps" % int(v)
 	return String(v).replace("_", " ").capitalize()

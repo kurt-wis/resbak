@@ -92,7 +92,8 @@ func end(_reason: String) -> void:
 
 ## Things that happened to the owner: "tag_pressed", "skill_cast" (data = the other Skill),
 ## "capture_start", "rescue" (data = Array of freed heroes), "pushed" and "stunned"
-## (data = by_enemy_skill). E.g. IYAK! see-through ends on tag_pressed / skill_cast /
+## (data = by_enemy_skill). E.g. BAWAL!'s sign drops on tag_pressed / capture_start; the old
+## IYAK! see-through ended on tag_pressed / skill_cast /
 ## capture_start / rescue; IHIP! ends on pushed / stunned.
 func on_owner_event(_event: String, _data: Variant) -> void:
 	pass
@@ -123,11 +124,23 @@ func fixed_speed() -> float:
 func evade_tag(_tagger: Hero, _lunge_dir: Vector3) -> bool:
 	return false
 
-## Ranged rescue (SAGIP!): while active, a reach in metres within which this hero frees a
-## chain with a clear line (walls, solid props and TALBOG! walls block; players and clouds
-## don't). -1 = none. The JailSystem checks it in step 6, after touch rescues.
-func ranged_rescue_reach() -> float:
-	return -1.0
+## Rescue by skill (HILA!): a world point that counts as this hero's touch for a chain tip
+## (within rescue_touch_radius() plus the normal rescue touch), or Vector3.INF for none.
+## The JailSystem checks it in step 6, after touch rescues.
+func rescue_touch_point() -> Vector3:
+	return Vector3.INF
+
+func rescue_touch_radius() -> float:
+	return 0.0
+
+## An enemy tag landed on this hero (step 7). Return true to cancel it: no tag, no stats
+## (BAWAL! curses the tagger instead). Asked before the passive's absorb_tag.
+func absorb_tag(_tagger: Hero) -> bool:
+	return false
+
+## While true this hero shows a "don't hit me" warning (BAWAL!); bots think twice.
+func warded() -> bool:
+	return false
 
 ## Seconds the tagger is stunned after evade_tag() returned true.
 func evade_stun_seconds() -> float:

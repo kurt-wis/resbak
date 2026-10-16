@@ -20,6 +20,7 @@ func draws_backdrop() -> bool:
 
 func build() -> void:
 	FE.apply_all()
+	Portraits.request_all() # render the five faces while the splash plays
 	var bg := ColorRect.new()
 	bg.color = FE.INK
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)

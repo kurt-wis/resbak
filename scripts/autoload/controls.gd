@@ -21,14 +21,15 @@ const DEFS := {
 	"interact": {"keys": [KEY_F], "buttons": [JOY_BUTTON_A]},
 	"ping": {"keys": [KEY_G], "mouse": [MOUSE_BUTTON_MIDDLE], "buttons": [JOY_BUTTON_DPAD_UP]},
 	"banter": {"keys": [KEY_T], "buttons": [JOY_BUTTON_DPAD_DOWN]},
-	"scoreboard": {"keys": [KEY_TAB], "buttons": [JOY_BUTTON_BACK]},
+	"scoreboard": {"keys": [KEY_C], "buttons": [JOY_BUTTON_BACK]}, ## not Tab: Alt+Tab would open it
 	"menu": {"keys": [KEY_ESCAPE], "buttons": [JOY_BUTTON_START]},
 	"hide_hud": {"keys": [KEY_F10]},
+	"camera_flip": {"keys": [KEY_V], "buttons": [JOY_BUTTON_RIGHT_STICK]}, ## turn the view 180 deg
 }
 
 ## Human-readable key labels for HUD prompts (keyboard/mouse; gamepad labels via Button icons later).
-const KEY_LABELS := {"tag": "LMB", "skill_1": "Q", "skill_2": "E", "interact": "F", "ping": "G", "scoreboard": "Tab"}
-const PAD_LABELS := {"tag": "RT", "skill_1": "LB", "skill_2": "RB", "interact": "A", "ping": "D-pad up", "scoreboard": "View"}
+const KEY_LABELS := {"tag": "LMB", "skill_1": "Q", "skill_2": "E", "interact": "F", "ping": "G", "scoreboard": "C", "camera_flip": "V"}
+const PAD_LABELS := {"tag": "RT", "skill_1": "LB", "skill_2": "RB", "interact": "A", "ping": "D-pad up", "scoreboard": "View", "camera_flip": "R3"}
 
 static func ensure() -> void:
 	for action in DEFS:

@@ -85,10 +85,10 @@ func _data(t: TestCtx) -> void:
 		t.check(hd.values.has(key), "jm.tres has %s" % key)
 	t.check(t.near(hd.values.talbog_range, 6.0) and t.near(hd.values.talbog_air_time, 0.6) and t.near(hd.values.talbog_push_radius, 2.5) and t.near(hd.values.talbog_push_distance, 3.0), "TALBOG! numbers match the spec")
 	t.check(t.near(hd.values.talbog_wall_width, 5.0) and t.near(hd.values.talbog_wall_offset, 1.5) and t.near(hd.values.talbog_wall_height, 1.5) and t.near(hd.values.talbog_wall_time, 4.0), "TALBOG! wall numbers match the spec")
-	t.check(t.near(hd.values.tamaraw_speed, 9.0) and t.near(hd.values.tamaraw_time, 1.5) and t.near(hd.values.tamaraw_turn_rate_deg, 90.0) and t.near(hd.values.tamaraw_push_side, 2.0), "TAMARAW!!! numbers match the spec")
+	t.check(t.near(hd.values.tamaraw_speed, 8.2) and t.near(hd.values.tamaraw_time, 1.5) and t.near(hd.values.tamaraw_turn_rate_deg, 90.0) and t.near(hd.values.tamaraw_push_side, 2.0), "TAMARAW!!! numbers (8.2 m/s: v0.1.1 pacing, spec 9)")
 	t.check(t.near(hd.values.tamaraw_wall_slow, 0.4) and t.near(hd.values.tamaraw_wall_slow_time, 1.0) and t.near(hd.values.tamaraw_wall_radius, 2.5) and t.near(hd.values.tamaraw_self_stun, 0.8), "TAMARAW!!! wall-hit numbers match the spec")
-	t.check(t.near(hd.values.makapal_no_tag_time, 1.5) and t.near(hd.values.makapal_regen_time, 15.0), "MAKAPAL! numbers match the spec")
-	t.check(t.near(hd.skill1_cooldown, 12.0) and t.near(hd.skill2_cooldown, 16.0) and t.near(hd.run_speed, 4.6), "JM cooldowns 12 / 16 s and speed 4.6")
+	t.check(t.near(hd.values.makapal_no_tag_time, 1.5) and t.near(hd.values.makapal_regen_time, 18.0) and t.near(hd.values.makapal_rage_time, 2.0) and t.near(hd.values.makapal_spin_radius, 2.5), "MAKAPAL! numbers (v0.1.1 rage: 2 s untaggable, spin shove; regen 18 s)")
+	t.check(t.near(hd.skill1_cooldown, 12.0) and t.near(hd.skill2_cooldown, 16.0) and t.near(hd.run_speed, 4.15), "JM cooldowns 12 / 16 s and speed 4.15 (v0.1.1 pacing, spec 4.6)")
 	t.ok("JM data and spec numbers")
 
 # ---- TALBOG! ---------------------------------------------------------------------------
@@ -171,7 +171,7 @@ func _talbog_core(t: TestCtx) -> void:
 		# open ends are passable: run past a tip
 		TestCtx.put(far_enemy, 4.0, -3.4)
 		inp.move(far_enemy, Vector2(-1, 0))
-		t.steps(host, 70)
+		t.steps(host, 90)
 		t.check(far_enemy.global_position.x < -1.0, "open ends are passable (x=%.2f)" % far_enemy.global_position.x)
 		inp.move(far_enemy, Vector2.ZERO)
 		t.check(not wall.expired, "wall still up after ~3.4 s")
@@ -273,13 +273,14 @@ func _talbog_clamps(t: TestCtx) -> void:
 	inp.press(jm, S1)
 	t.steps(host, 38)
 	t.check(jm.global_position.x > 19.2 and jm.global_position.x < 19.7, "lands just before the solid wall (x=%.2f)" % jm.global_position.x)
-	# jail barrier (Jail_Dilaw: x -19.6..-13.6, z 5.2..9.2)
+	# jail barrier: the band around the Dilaw jail line (x = -19, z 5.2..9.2)
 	sk.cd_ticks = 0
-	TestCtx.put(jm, -10.0, 7.2)
+	TestCtx.put(jm, -13.0, 7.2)
 	inp.aim_at(jm, Vector3(-20.0, 0, 7.2))
 	inp.press(jm, S1)
 	t.steps(host, 38)
-	t.check(jm.global_position.x > -13.5 and jm.global_position.x < -12.9, "lands just before the jail barrier (x=%.2f)" % jm.global_position.x)
+	var band_edge := -19.0 + host.tuning.jail_band + host.tuning.body_radius
+	t.check(jm.global_position.x > band_edge - 0.02 and jm.global_position.x < band_edge + 0.35, "lands just before the jail barrier (x=%.2f)" % jm.global_position.x)
 	# own base barrier (pole at -12,0, radius 2.4)
 	sk.cd_ticks = 0
 	TestCtx.put(jm, -7.0, 0.0)
@@ -329,10 +330,11 @@ func _tamaraw_charge(t: TestCtx) -> void:
 	inp.aim_at(jm, Vector3(30.0, 0, 3.0))
 	inp.press(jm, S2)
 	t.steps(host, 1)
-	t.check(sk.active and t.near(jm.current_speed(), 9.0, 0.001), "charging at a fixed 9 m/s")
+	var tam: float = jm.data.v("tamaraw_speed") * host.tuning.move_speed_scale
+	t.check(sk.active and t.near(jm.current_speed(), tam, 0.001), "charging at a fixed %.1f m/s" % tam)
 	t.check(sk.cd_ticks >= 958 and sk.cd_ticks <= 960, "cooldown 16 s starts on cast (%d)" % sk.cd_ticks)
 	t.steps(host, 59)
-	t.check(t.near(jm.global_position.x, -5.0 + 9.0, 0.3), "60 ticks of charging cover 9 m (x=%.2f)" % jm.global_position.x)
+	t.check(t.near(jm.global_position.x, -5.0 + tam, 0.3), "60 ticks of charging cover %.1f m (x=%.2f)" % [tam, jm.global_position.x])
 	t.check(jm.collision_layer == RB.L_GHOST, "JM is off the hero layer while charging")
 	inp.press(jm, TAG)
 	t.steps(host, 1)
@@ -344,7 +346,7 @@ func _tamaraw_charge(t: TestCtx) -> void:
 	t.check(sk.active, "still charging at 89 ticks")
 	t.steps(host, 1)
 	t.check(not sk.active, "charge ends after 1.5 s = 90 ticks")
-	t.check(t.near(jm.global_position.x, -5.0 + 13.5, 0.4), "1.5 s covers 13.5 m (x=%.2f)" % jm.global_position.x)
+	t.check(t.near(jm.global_position.x, -5.0 + tam * 1.5, 0.4), "1.5 s covers %.1f m (x=%.2f)" % [tam * 1.5, jm.global_position.x])
 	t.check(jm.collision_layer == RB.L_HERO, "solid body back after the charge")
 	t.check(not jm.is_stunned(), "no stun when the charge times out")
 	# slows still apply to the fixed speed
@@ -353,7 +355,7 @@ func _tamaraw_charge(t: TestCtx) -> void:
 	jm.add_slow(0.4, 3.0, "test_slow", true)
 	inp.press(jm, S2)
 	t.steps(host, 2)
-	t.check(t.near(jm.current_speed(), 5.4, 0.001), "slows apply to the fixed 9 m/s (got %.2f)" % jm.current_speed())
+	t.check(t.near(jm.current_speed(), tam * 0.6, 0.001), "slows apply to the fixed charge speed (got %.2f)" % jm.current_speed())
 	await t.free_match(host)
 	t.ok("TAMARAW!!! fixed speed, duration, can't tag, cooldown")
 
@@ -375,7 +377,7 @@ func _tamaraw_shove(t: TestCtx) -> void:
 	t.check(t.near(e_north.global_position.z, 0.7, 0.2) and t.near(e_north.global_position.x, 4.0, 0.1), "enemy on the -z side is shoved the other way (got %s)" % e_north.global_position)
 	t.check(_count("tamaraw_shove") == 2, "each enemy is shoved exactly once (%d events)" % _count("tamaraw_shove"))
 	t.check(t.near(ally.global_position.x, 2.0, 0.05) and t.near(ally.global_position.z, 3.0, 0.05), "allies are unaffected and don't block")
-	t.check(jm.global_position.x > 7.5, "the charge ran through them all (x=%.2f)" % jm.global_position.x)
+	t.check(jm.global_position.x > 4.5, "the charge ran through them all (x=%.2f)" % jm.global_position.x)
 	await t.free_match(host)
 	t.ok("TAMARAW!!! shoves enemies sideways once, ignores allies")
 
@@ -417,7 +419,7 @@ func _tamaraw_crash(t: TestCtx) -> void:
 	t.check(jm.is_stunned() and jm.stun_ticks == 48, "JM is stunned 0.8 s = 48 ticks by the crash (%d)" % jm.stun_ticks)
 	t.check(near.has_modifier("tamaraw_wall") and t.near(near.strongest_slow(), 0.4, 0.001), "enemy within 2.5 m is slowed 40 %")
 	t.check(not far.has_modifier("tamaraw_wall"), "enemy beyond 2.5 m is not slowed")
-	t.check(t.near(near.current_speed(), near.base_speed() * 0.6, 0.01), "the slow lowers the speed to 60 %")
+	t.check(t.near(near.current_speed(), near.base_speed() * 0.6 * host.tuning.move_speed_scale, 0.01), "the slow lowers the speed to 60 %")
 	inp.press(jm, S1)
 	inp.press(jm, TAG)
 	t.steps(host, 1)
@@ -490,12 +492,12 @@ func _tamaraw_recast_and_tag(t: TestCtx) -> void:
 	t.ok("TAMARAW!!! recast and tag end the charge")
 
 # ---- MAKAPAL! --------------------------------------------------------------------------
-## `tagger` presses Tag aimed at `victim`, then steps to the landing tick (10 steps).
+## `tagger` taps Tag aimed at `victim`, then steps to the landing tick (windup + 1 steps).
 func _tag_jm(t: TestCtx, host: MatchHost, tagger: Hero, victim: Hero) -> void:
 	var inp := t.inputs(host)
 	inp.aim_at(tagger, victim.global_position)
 	inp.press(tagger, TAG)
-	t.steps(host, 10)
+	t.steps(host, RB.ticks(host.tuning.tag_windup) + 1)
 
 func _makapal_break(t: TestCtx) -> void:
 	var host := _live(t, ["inday"], ["nathan"])
@@ -537,13 +539,14 @@ func _makapal_regen_and_jail(t: TestCtx) -> void:
 	TestCtx.put(jm, 0.0, 0.0)
 	TestCtx.put(nathan, 1.5, 0.0)
 	_tag_jm(t, host, nathan, jm)
-	t.steps(host, 899)
-	t.check(not pas.guard, "guard still down 899 ticks after the break")
+	var regen := RB.ticks(jm.data.v("makapal_regen_time"))
+	t.steps(host, regen - 1)
+	t.check(not pas.guard, "guard still down one tick before it returns")
 	t.check(pas.hud_state().fill > 0.99 and not pas.hud_state().on, "HUD fill nearly full just before the guard returns")
 	t.steps(host, 1)
-	t.check(pas.guard, "guard returns 15 s (900 ticks) after the break")
+	t.check(pas.guard, "guard returns %d ticks after the break" % regen)
 	await t.free_match(host)
-	# a second tag before the guard returns jails; the timer keeps running in jail
+	# GALIT!: right after the break JM spins, shoves the tagger away and can't be tagged
 	host = _live(t, ["inday"], ["nathan"])
 	jm = host.heroes[0]
 	nathan = host.heroes[2]
@@ -551,19 +554,41 @@ func _makapal_regen_and_jail(t: TestCtx) -> void:
 	TestCtx.put(jm, 0.0, 0.0)
 	TestCtx.put(nathan, 1.5, 0.0)
 	_tag_jm(t, host, nathan, jm)
-	t.steps(host, 100)
+	var rage := RB.ticks(jm.data.v("makapal_rage_time"))
+	t.check(jm.is_immune() and not host.can_tag(nathan, jm), "GALIT!: JM can't be tagged right after the break")
+	t.check(_count("jm_rage") == 1, "jm_rage event")
+	t.steps(host, 15)
+	t.check(RB.flat_dist(nathan.global_position, jm.global_position) > 3.0, "the angry spin shoved the tagger away (%.2f m)" % RB.flat_dist(nathan.global_position, jm.global_position))
+	TestCtx.put(nathan, jm.global_position.x + 1.5, jm.global_position.z)
+	t.steps(host, 30)
 	TestCtx.put(nathan, jm.global_position.x + 1.5, jm.global_position.z)
 	_tag_jm(t, host, nathan, jm)
-	t.check(jm.state == Hero.State.TAGGED, "the next tag jails JM (tagged state)")
+	t.check(jm.state == Hero.State.FREE, "a tag during the rage does nothing")
+	t.steps(host, rage)
+	t.check(not jm.is_immune(), "the rage ends after %d ticks" % rage)
+	await t.free_match(host)
+	# a second tag after the rage, before the guard returns, jails; the timer keeps running in jail
+	host = _live(t, ["inday"], ["nathan"])
+	jm = host.heroes[0]
+	nathan = host.heroes[2]
+	pas = jm.passive
+	regen = RB.ticks(jm.data.v("makapal_regen_time"))
+	TestCtx.put(jm, 0.0, 0.0)
+	TestCtx.put(nathan, 1.5, 0.0)
+	_tag_jm(t, host, nathan, jm)
+	t.steps(host, rage + 10)
+	TestCtx.put(nathan, jm.global_position.x + 1.5, jm.global_position.z)
+	_tag_jm(t, host, nathan, jm)
+	t.check(jm.state == Hero.State.TAGGED, "the next tag after the rage jails JM (tagged state)")
 	t.check(_count("tag") == 1 and _count("guard_break") == 1, "one guard break then one real tag")
 	t.steps(host, 60)
 	t.check(jm.state == Hero.State.JAILED or jm.state == Hero.State.CHAINED, "JM is in jail")
-	t.steps(host, 900)
-	t.check(not pas.guard and pas.regen_pending, "15 s ran out in jail: guard waits for the rescue")
+	t.steps(host, regen)
+	t.check(not pas.guard and pas.regen_pending, "the regen time ran out in jail: guard waits for the rescue")
 	jm.on_freed(nathan, 4.0, 4.0)
 	t.check(pas.guard, "the guard is back the moment JM is freed")
 	await t.free_match(host)
-	# freed before the 15 s are up: still broken until then
+	# freed before the regen time is up: still broken until then
 	host = _live(t, ["inday"], ["nathan"])
 	jm = host.heroes[0]
 	nathan = host.heroes[2]
@@ -571,19 +596,19 @@ func _makapal_regen_and_jail(t: TestCtx) -> void:
 	TestCtx.put(jm, 0.0, 0.0)
 	TestCtx.put(nathan, 1.5, 0.0)
 	_tag_jm(t, host, nathan, jm) # break at tick B
-	t.steps(host, 100)
+	t.steps(host, rage + 10)
 	TestCtx.put(nathan, jm.global_position.x + 1.5, jm.global_position.z)
 	_tag_jm(t, host, nathan, jm)
 	t.steps(host, 60)
 	jm.on_freed(nathan, 4.0, 4.0)
 	t.check(not pas.guard and not pas.regen_pending, "freed early: guard still down")
-	t.steps(host, 900 - 170 - 1)
-	t.check(not pas.guard, "guard still down 899 ticks after the break")
+	var tag_steps := RB.ticks(host.tuning.tag_windup) + 1
+	t.steps(host, regen - (rage + 10 + tag_steps + 60) - 1)
+	t.check(not pas.guard, "guard still down one tick before it returns")
 	t.steps(host, 1)
-	t.check(pas.guard, "guard returns 15 s after the break even after a jail visit")
+	t.check(pas.guard, "guard returns on time even after a jail visit")
 	await t.free_match(host)
-	t.ok("MAKAPAL! regen 15 s, next tag jails, jail keeps the timer and restores on rescue")
-
+	t.ok("MAKAPAL! rage (untaggable + spin shove), regen, next tag jails, jail keeps the timer")
 func _makapal_capture(t: TestCtx) -> void:
 	var host := _live(t, ["inday"], ["nathan"])
 	var jm: Hero = host.heroes[0]

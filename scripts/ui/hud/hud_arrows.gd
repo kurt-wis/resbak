@@ -37,7 +37,7 @@ func refresh(_delta: float) -> void:
 		if p != me:
 			held += 1
 	if held > 0:
-		raw.append({"kind": "jail", "label": "RESBAK", "color": hud.team_color(me.team), "pos": host.layout.jail_centre(enemy), "pulse": true})
+		raw.append({"kind": "jail", "label": "RESBAK", "color": hud.team_color(me.team), "pos": host.jail_system.post(enemy), "pulse": true})
 	var area := Rect2(Vector2.ZERO, sz())
 	for r in raw:
 		var pos: Vector3 = r.pos

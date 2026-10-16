@@ -1,17 +1,25 @@
 class_name JailSystem
 extends RefCounted
 
-## Jail, human chain and rescue (docs/RESBAK.md § 2 "Jail and chain", "Rescue and EP").
-## Tagged heroes freeze 0.8 s, then go to a random free spot in the tagger's jail (own side;
-## Jail_Dilaw holds Lila). The jail barrier blocks every free player; only chained prisoners
-## cross it. Interact near the marker makes the anchor; near the anchor or tip joins (moved to
-## the old tip, becomes the tip). Only the tip is steered, within 1.5 m of the hand point per
-## link after the anchor; the other links sit evenly on the hand point -> tip line. A free
-## teammate touching the tip (centres <= 0.8 m; lone anchor: <= 0.4 m from the hand point)
-## frees the whole chain with Escape Protection (4 s, 5 s via Inday) and capture lockout 4 s.
+## Jail, human chain and rescue (docs/RESBAK.md § 2 "Jail and chain", "Rescue and EP"; the
+## automatic chain is a v0.1.1 change logged in docs/status.md and docs/decisions.md).
+## Tagged heroes freeze 0.8 s, then join the tagger's jail chain automatically: the first
+## prisoner holds the jail post, the second holds the first, and so on. Only the LAST prisoner
+## caught (the tip) steers, slowly; every other link only moves when the rope pulls it, one
+## after the other, so the chain drags behind the tip. Links never sit more than chain_link
+## from their neighbour (the post counts as link 0), so the tip reaches at most
+## chain_link x prisoners from the post.
+## v0.2 jail line (docs/status.md): the post is not fixed. It slides along the map's jail line
+## (MapLayout.lines), dragged by the post holder (the first prisoner, who steers too) at
+## chain_post_speed, so a chain can walk up and down the map's end and pick where it reaches
+## out. Links stay inside the play bounds.
+## A free teammate touching the tip (centres <= rescue_touch) frees the whole chain with
+## Escape Protection (4 s, 5 s via Inday) and capture lockout 4 s. Free players are kept
+## jail_post_barrier away from the post so nobody can stand on it.
 
 var host: MatchHost
-var chains := [[], []] ## per jail owner team: Array[Hero], anchor first, tip last
+var chains := [[], []] ## per jail owner team: Array[Hero], post holder first, tip last
+var anchor_s := [0.0, 0.0] ## per jail owner team: where the post is, metres along the jail line
 
 func _init(p_host: MatchHost) -> void:
 	host = p_host
@@ -33,124 +41,186 @@ func is_tip(h: Hero) -> bool:
 	var c: Array = chains[RB.other_team(h.team)]
 	return not c.is_empty() and c[-1] == h
 
-func can_steer(h: Hero) -> bool:
+func is_post_holder(h: Hero) -> bool:
 	var c: Array = chains[RB.other_team(h.team)]
-	return c.size() >= 2 and c[-1] == h
+	return not c.is_empty() and c[0] == h
 
-func hand_point(owner_team: int) -> Vector3:
-	return host.layout.hand_point(owner_team, host.tuning.hand_point_offset)
+## The tip reaches out; the post holder walks the post along the line.
+func can_steer(h: Hero) -> bool:
+	return h.state == Hero.State.CHAINED and (is_tip(h) or is_post_holder(h))
 
-## Where a rescuer must touch for this jail's chain (tip, or the hand point for a lone
-## anchor), or Vector3.INF if nobody is chained.
+func post(owner_team: int) -> Vector3:
+	return host.layout.line_point(owner_team, anchor_s[owner_team])
+
+## Into the field from the post (the line's normal where the post stands).
+func out_dir(owner_team: int) -> Vector3:
+	return host.layout.line_normal(owner_team, anchor_s[owner_team])
+
+## Where the first prisoner stands: just out from the post, toward the prisoners' home.
+func post_spot(owner_team: int) -> Vector3:
+	return post(owner_team) + out_dir(owner_team) * host.tuning.post_hold_offset
+
+## The previous link of chain position `idx` (the post for the first prisoner).
+func link_before(owner_team: int, idx: int) -> Vector3:
+	var c: Array = chains[owner_team]
+	if idx <= 0:
+		return post(owner_team)
+	return (c[idx - 1] as Hero).global_position
+
+## Where a rescuer must touch for this jail's chain (the tip), or Vector3.INF if empty.
 func rescue_point(owner_team: int) -> Vector3:
 	var c: Array = chains[owner_team]
 	if c.is_empty():
 		return Vector3.INF
-	if c.size() == 1:
-		return hand_point(owner_team)
 	return (c[-1] as Hero).global_position
 
-func rescue_radius(owner_team: int) -> float:
-	return host.tuning.lone_anchor_touch if chains[owner_team].size() == 1 else host.tuning.rescue_touch
+func rescue_radius(_owner_team: int) -> float:
+	return host.tuning.rescue_touch
 
-# ---- step 2: Interact by prisoners ------------------------------------------------------
-func handle_interact(h: Hero, f: InputFrame) -> void:
-	if not f.was_pressed(RB.BTN_INTERACT) or not host.round_live():
-		return
-	var owner := RB.other_team(h.team)
-	var c: Array = chains[owner]
-	var t := host.tuning
-	if h.state == Hero.State.CHAINED:
-		_let_go(owner, c.find(h))
-		return
-	if h.state != Hero.State.JAILED:
-		return
-	if c.is_empty():
-		if RB.flat_dist(h.global_position, host.layout.marker(owner)) <= t.anchor_range:
-			c.append(h)
-			h.set_state(Hero.State.CHAINED)
-			host.emit_event("chain_anchor", {"hero": h})
-		return
-	if c.size() >= t.chain_max:
-		return
-	var anchor: Hero = c[0]
-	var tip: Hero = c[-1]
-	if RB.flat_dist(h.global_position, anchor.global_position) <= t.join_range or RB.flat_dist(h.global_position, tip.global_position) <= t.join_range:
-		var old_tip_pos := tip.global_position
-		c.append(h)
-		h.set_state(Hero.State.CHAINED)
-		h.teleport(old_tip_pos)
-		_layout_links(owner)
-		host.emit_event("chain_join", {"hero": h, "size": c.size()})
+## The farthest the tip of a chain of `n` can be from the post.
+func reach(n: int) -> float:
+	return host.tuning.chain_link * mini(n, host.tuning.chain_max)
 
-## Let go: that prisoner and all beyond it return to random jail spots (anchor = everyone).
-func _let_go(owner: int, idx: int) -> void:
-	var c: Array = chains[owner]
-	if idx < 0:
-		return
-	var dropped := c.slice(idx)
-	chains[owner] = c.slice(0, idx)
-	for p in dropped:
-		(p as Hero).set_state(Hero.State.JAILED)
-		(p as Hero).teleport(_free_spot(owner, p))
-	host.emit_event("chain_leave", {"heroes": dropped})
+# ---- step 2: prisoners have no buttons --------------------------------------------------
+## The chain forms by itself; Interact does nothing in jail (kept for the call in MatchHost).
+func handle_interact(_h: Hero, _f: InputFrame) -> void:
+	pass
 
-func _free_spot(owner: int, exclude: Hero) -> Vector3:
-	var taken: Array = []
-	for p in prisoners(owner):
-		if p != exclude:
-			taken.append(p.global_position)
-	return host.layout.random_jail_spot(owner, host.rng, taken, host.tuning.body_radius)
-
-# ---- step 3: freeze -> jail, chain layout ------------------------------------------------
+# ---- step 3: freeze -> chain, rope ------------------------------------------------------
 func after_move() -> void:
 	for h in host.heroes:
 		if h.state == Hero.State.TAGGED:
 			h.tagged_ticks -= 1
 			if h.tagged_ticks <= 0:
 				var owner := h.tagged_by.team if h.tagged_by else RB.other_team(h.team)
-				h.on_jailed(_free_spot(owner, h))
-				host.emit_event("jailed", {"hero": h, "jail": owner})
+				_join(owner, h)
 	for owner in range(2):
-		_layout_links(owner)
+		_pull(owner)
 
-## Keep the tip within reach of the hand point and space the middle links on the line.
-func _layout_links(owner: int) -> void:
+## A prisoner arrives: it holds the post if the chain is empty, else the current tip's free
+## hand, standing one link further out. It becomes the new tip.
+func _join(owner: int, h: Hero) -> void:
+	var c: Array = chains[owner]
+	var at := post_spot(owner)
+	if not c.is_empty():
+		var tip: Hero = c[-1]
+		var from := link_before(owner, c.size() - 1)
+		var dir := RB.flat(tip.global_position - from)
+		if dir.length() < 0.05:
+			dir = out_dir(owner)
+		at = tip.global_position + dir.normalized() * host.tuning.chain_link * 0.8
+	at = _in_field(at)
+	h.on_jailed(at)
+	c.append(h)
+	h.set_state(Hero.State.CHAINED)
+	host.emit_event("jailed", {"hero": h, "jail": owner})
+	host.emit_event("chain_join", {"hero": h, "size": c.size()})
+
+## The rope. The tip has already moved (Hero.tick_move, slow, walls block). Walk from the tip
+## back toward the post: a link that is pulled past the slack length steps toward its outer
+## neighbour at chain_follow_speed (never faster: that is the drag). Then walk from the post
+## out: nobody may be more than chain_link from the link before it (this is what holds the
+## tip back while the links behind are still catching up). Everything stays in the yard.
+func _pull(owner: int) -> void:
 	var c: Array = chains[owner]
 	if c.is_empty():
 		return
-	var hp := hand_point(owner)
-	var anchor: Hero = c[0]
-	anchor.velocity = Vector3.ZERO
-	if c.size() == 1:
-		return
-	var tip: Hero = c[-1]
-	var reach := host.tuning.chain_link * (c.size() - 1)
-	var off := RB.flat(tip.global_position - hp)
-	if off.length() > reach:
-		off = off.normalized() * reach
-		tip.global_position = Vector3(hp.x + off.x, tip.global_position.y, hp.z + off.z)
-	var n := c.size() - 1
-	for k in range(1, n):
-		var link: Hero = c[k]
-		var p := hp + off * (float(k) / n)
-		link.global_position = Vector3(p.x, link.global_position.y, p.z)
-		link.velocity = Vector3.ZERO
+	var t := host.tuning
+	var dt := 1.0 / RB.TICK_RATE
+	var step := t.chain_follow_speed * dt
+	var link := t.chain_link
+	var before := {} # hero -> position at the start of this pass (for presentation velocity)
+	for p in c:
+		before[p] = (p as Hero).global_position
+	# 0. The post holder drags the post along the line toward where it stands.
+	var holder: Hero = c[0]
+	var want_s := host.layout.line_project(owner, holder.global_position)
+	var ds := want_s - float(anchor_s[owner])
+	var post_step := t.chain_post_speed * dt
+	anchor_s[owner] = float(anchor_s[owner]) + clampf(ds, -post_step, post_step)
+	# 1. Pulled links follow the tip, outermost first, one after the other.
+	for k in range(c.size() - 2, -1, -1):
+		var me: Hero = c[k]
+		if k == 0 and me.wish_dir != Vector3.ZERO:
+			continue # a steering post holder walks the post; the rope doesn't pull it back
+		var outer: Vector3 = (c[k + 1] as Hero).global_position
+		var inner := link_before(owner, k)
+		var to_outer := RB.flat(outer - me.global_position)
+		if to_outer.length() <= link * t.chain_slack:
+			continue
+		# Best spot: on the line toward the outer link, one link from it, but still within one
+		# link of the inner neighbour (the post for the first prisoner).
+		var want := outer - to_outer.normalized() * link * t.chain_slack
+		want = _clamp_to(want, inner, _limit(c, k))
+		var move := RB.flat(want - me.global_position)
+		if move.length() > step:
+			move = move.normalized() * step
+		me.global_position += move
+	# 2. Hard limits from the post outward.
+	for k in range(c.size()):
+		var me: Hero = c[k]
+		var inner := link_before(owner, k)
+		var p := _clamp_to(me.global_position, inner, _limit(c, k))
+		p = _in_field(p)
+		me.global_position = Vector3(p.x, me.global_position.y, p.z)
+	# Presentation: links that were dragged walk; the tip keeps its own velocity.
+	for k in range(c.size()):
+		var me: Hero = c[k]
+		var moved := RB.flat(me.global_position - before[me])
+		if k < c.size() - 1:
+			me.velocity = Vector3(moved.x / dt, me.velocity.y, moved.z / dt) if moved.length() > 0.0005 else Vector3(0, me.velocity.y, 0)
+		# Everyone looks out along the chain, toward the tip and the rescuers beyond it.
+		var out := RB.flat(me.global_position - link_before(owner, k))
+		if k == c.size() - 1:
+			var v := RB.flat(me.velocity)
+			out = v if v.length() > 0.3 else out
+		if out.length() > 0.05:
+			me.facing = out.normalized()
+
+## How far link k may be from the link before it. The post holder keeps a hand on the post
+## (short), unless it is alone: then it is the tip and leans out a full link.
+func _limit(c: Array, k: int) -> float:
+	var t := host.tuning
+	if k == 0 and c.size() > 1:
+		return t.post_hold_offset + 0.35
+	return t.chain_link
+
+func _clamp_to(p: Vector3, centre: Vector3, radius: float) -> Vector3:
+	var d := RB.flat(p - centre)
+	if d.length() <= radius:
+		return p
+	var q := centre + d.normalized() * radius
+	return Vector3(q.x, p.y, q.z)
+
+func _in_field(p: Vector3) -> Vector3:
+	var r := host.layout.bounds.grow(-host.tuning.body_radius)
+	if r.size.x <= 0.0 or r.size.y <= 0.0:
+		return p
+	return Vector3(clampf(p.x, r.position.x, r.end.x), p.y, clampf(p.z, r.position.y, r.end.y))
 
 # ---- step 4: jail barrier ---------------------------------------------------------------
+## Free players can't stand on the post (prisoners are ghosts and pass).
 func enforce_barriers() -> void:
-	var r := host.tuning.body_radius
+	var r := host.tuning.jail_post_barrier + host.tuning.body_radius
 	for h in host.heroes:
-		match h.state:
-			Hero.State.FREE:
-				for owner in range(2):
-					if host.layout.in_jail(owner, h.global_position, r):
-						h.global_position = host.layout.nearest_outside(owner, h.global_position, r)
-			Hero.State.JAILED:
-				var owner := RB.other_team(h.team)
-				var rect := host.layout.jail_rect(owner).grow(-r)
-				var p := h.global_position
-				h.global_position = Vector3(clampf(p.x, rect.position.x, rect.end.x), p.y, clampf(p.z, rect.position.y, rect.end.y))
+		if h.state != Hero.State.FREE:
+			continue
+		for owner in range(2):
+			var p := post(owner)
+			var d := RB.flat(h.global_position - p)
+			if d.length() < r:
+				var dir := d.normalized() if d.length() > 0.001 else out_dir(owner)
+				h.global_position = Vector3(p.x + dir.x * r, h.global_position.y, p.z + dir.z * r)
+
+## Nearest spot outside the post barrier (rescued prisoners standing on the post move here).
+func outside_post(owner: int, at: Vector3) -> Vector3:
+	var r := host.tuning.jail_post_barrier + host.tuning.body_radius + 0.05
+	var p := post(owner)
+	var d := RB.flat(at - p)
+	if d.length() >= r:
+		return at
+	var dir := d.normalized() if d.length() > 0.001 else out_dir(owner)
+	return Vector3(p.x + dir.x * r, at.y, p.z + dir.z * r)
 
 # ---- step 6: find rescues ---------------------------------------------------------------
 ## Returns [{jail: owner_team, rescuer: Hero, by_skill: bool}], one per jail at most.
@@ -176,8 +246,10 @@ func find_rescues() -> Array:
 				if not h.is_free():
 					continue
 				for s in h.skills:
-					var reach: float = s.ranged_rescue_reach() if s.active else -1.0
-					if reach > 0.0 and RB.flat_dist(h.global_position, point) <= reach and host.los_clear(h.global_position, point):
+					var at: Vector3 = s.rescue_touch_point()
+					if at == Vector3.INF or absf(at.y - point.y) > host.tuning.height_gap + 1.0:
+						continue
+					if RB.flat_dist(at, point) <= radius + s.rescue_touch_radius() + 0.001:
 						if best == null or h.slot < best.slot:
 							best = h
 							by_skill = true
@@ -196,7 +268,7 @@ func apply_rescues(rescues: Array) -> void:
 		var ep := t.escape_protection + (rescuer.passive.extra_rescue_protection() if rescuer.passive else 0.0)
 		for p in freed:
 			var h := p as Hero
-			h.global_position = host.layout.nearest_outside(owner, h.global_position, t.body_radius)
+			h.global_position = outside_post(owner, h.global_position)
 			h.on_freed(rescuer, ep, t.capture_lockout)
 		var last_free := true
 		for a in host.allies_of(rescuer):
@@ -227,3 +299,5 @@ func jailed_count(team: int) -> int:
 
 func reset_round() -> void:
 	chains = [[], []]
+	for owner in range(2):
+		anchor_s[owner] = host.layout.line_length(owner) * 0.5

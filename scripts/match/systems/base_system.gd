@@ -2,7 +2,8 @@ class_name BaseSystem
 extends RefCounted
 
 ## Bases and capture (docs/RESBAK.md § 2 "Bases and capture").
-## One site number per match (roulette or Fixed), mirrored; others inert. Active base = solid
+## v0.2: bases are fixed. Each team has one base per map (MapLayout site 1 / BaseSite_<team>);
+## the base roulette and settings.base_mode are gone (docs/status.md). Active base = solid
 ## pole r 0.2 + ring r 2 in team colour. The own-ring barrier keeps the base's own team at
 ## >= 2.4 m from its pole (enemies pass). Capture: hold Interact with the body-to-enemy-pole gap
 ## <= 1 m for 1.5 s (90 ticks); capturing heroes can't move, tag or cast but can be pushed;
@@ -12,21 +13,14 @@ var host: MatchHost
 var site_number := 1
 var poles := [Vector3.ZERO, Vector3.ZERO] ## per team, flat
 var pole_bodies: Array[StaticBody3D] = []
-var ring_nodes: Array[Node3D] = []
 var completed := [] ## teams that completed a capture this tick (filled in tick_captures)
 
 func _init(p_host: MatchHost) -> void:
 	host = p_host
 
-## Match start: pick the site (spec § 6 roulette happens in the front end; the result arrives
-## in settings.base_mode as a number, "roulette" rolls here), build poles and rings.
+## Match start: the map's fixed base for each team, then poles and rings.
 func setup_match() -> void:
-	var mode: Variant = host.settings.get("base_mode", "roulette")
-	var count := mini(host.layout.site_count(RB.DILAW), host.layout.site_count(RB.LILA))
-	if typeof(mode) == TYPE_INT or typeof(mode) == TYPE_FLOAT:
-		site_number = clampi(int(mode), 1, count)
-	else:
-		site_number = host.rng.randi_range(1, count)
+	site_number = 1
 	host.settings["base_site"] = site_number
 	for t in range(2):
 		poles[t] = host.layout.site(t, site_number)
@@ -53,42 +47,13 @@ func _build_pole(team: int) -> void:
 	body.global_position = p
 	body.force_update_transform() # the solid pole must be at the site before the first physics step
 	pole_bodies.append(body)
-	# Move the map's pole art to the active site; draw one if the map has none.
+	# Older maps drew their own poles: move that art to the active site. The basketball stand
+	# and the painted ring are presentation (ArenaArt, added by MatchView).
 	var art: Array = host.layout.pole_nodes[team]
-	if art.is_empty():
-		var mi := MeshInstance3D.new()
-		var cm := CylinderMesh.new()
-		cm.top_radius = t.pole_radius
-		cm.bottom_radius = t.pole_radius
-		cm.height = 2.4
-		mi.mesh = cm
-		mi.position.y = 1.2
-		var m := StandardMaterial3D.new()
-		m.albedo_color = RB.TEAM_COLORS[team]
-		mi.material_override = m
-		body.add_child(mi)
-	else:
-		var anchor: Vector3 = host.layout.site(team, 1)
-		for node in art:
-			var n := node as Node3D
-			n.global_position = Vector3(p.x + (n.global_position.x - anchor.x), n.global_position.y, p.z + (n.global_position.z - anchor.z))
-	var ring := MeshInstance3D.new()
-	ring.name = "ActiveRing_%s" % RB.TEAM_NAMES[team]
-	var torus := TorusMesh.new()
-	torus.inner_radius = t.base_ring_radius - 0.08
-	torus.outer_radius = t.base_ring_radius + 0.08
-	torus.rings = 48
-	torus.ring_segments = 6
-	ring.mesh = torus
-	ring.scale = Vector3(1, 0.05, 1)
-	var rm := StandardMaterial3D.new()
-	rm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	rm.albedo_color = RB.TEAM_COLORS[team]
-	ring.material_override = rm
-	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	host.world.add_child(ring)
-	ring.global_position = p + Vector3(0, 0.07, 0)
-	ring_nodes.append(ring)
+	var anchor: Vector3 = host.layout.site(team, 1)
+	for node in art:
+		var n := node as Node3D
+		n.global_position = Vector3(p.x + (n.global_position.x - anchor.x), n.global_position.y, p.z + (n.global_position.z - anchor.z))
 
 func in_own_ring(h: Hero) -> bool:
 	return RB.flat_dist(h.global_position, poles[h.team]) <= host.tuning.base_ring_radius

@@ -14,7 +14,7 @@ func build() -> void:
 	if DisplayServer.get_name() != "headless":
 		_build_live_court()
 	var dim := ColorRect.new()
-	dim.color = Color(0.05, 0.04, 0.09, 0.50)
+	dim.color = Color(FE.INK, 0.6) if FE.light else Color(0.05, 0.04, 0.09, 0.50)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(dim)

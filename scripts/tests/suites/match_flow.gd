@@ -27,8 +27,9 @@ func run(t: TestCtx) -> void:
 	t.check(host.heroes.size() == 10, "5v5: ten heroes (got %d)" % host.heroes.size())
 	t.check(scene.local_hero != null and scene.local_hero.slot == 0 and scene.local_hero.data.id == "tutoy", "the local hero is the picked one in slot 0")
 	t.check(scene.hud != null and scene.camera != null and scene.view != null and scene.player_input != null, "HUD, camera, view and player input exist")
-	t.check(host.layout.site_count(RB.DILAW) == 3 and host.layout.site_count(RB.LILA) == 3, "the Barangay Court has three base sites per side")
-	t.check(host.base_system.site_number == 1, "fixed base site 1 from the settings")
+	t.check(host.layout.site_count(RB.DILAW) >= 1 and host.layout.site_count(RB.LILA) >= 1, "the Barangay Court has a base per side")
+	t.check(host.base_system.site_number == 1, "v0.2: the base is fixed (site 1)")
+	t.check(host.layout.line_length(RB.DILAW) > 10.0 and host.layout.line_length(RB.LILA) > 10.0, "the Barangay Court has a jail line at each end (%.1f / %.1f m)" % [host.layout.line_length(RB.DILAW), host.layout.line_length(RB.LILA)])
 	# all ten heroes bot-driven, as with --autoplay
 	var brains: Array[BotBrain] = []
 	for h in host.heroes:
@@ -49,7 +50,8 @@ func run(t: TestCtx) -> void:
 	for h in host.heroes:
 		if RB.flat_dist(h.global_position, start_pos[h.slot]) > 1.0:
 			moved += 1
-		t.check(h.global_position.y > -1.0 and h.global_position.y < 6.0, "%s stayed on the court (y %.2f)" % [h.name, h.global_position.y])
+		var inside: bool = host.layout.bounds.grow(0.5).has_point(Vector2(h.global_position.x, h.global_position.z))
+		t.check(inside and h.global_position.y > -1.8 and h.global_position.y < 6.0, "%s stayed in the play area: court, stands or the street flank (%s)" % [h.name, h.global_position])
 	t.check(moved >= 6, "bots move once the round is live (%d of 10 moved > 1 m)" % moved)
 	t.check("kaboom" in events, "KABOOM fired during the run")
 	t.check(host.round_live() or host.round_flow.phase == RoundFlow.Phase.ROUND_OVER, "the round is live or just ended")

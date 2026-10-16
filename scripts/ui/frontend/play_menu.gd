@@ -8,9 +8,11 @@ extends FrontScreen
 var mode_sel := "bots" ## "bots" | "tradisyonal"
 var diff := 1
 var map_choice := "roulette" ## "roulette" or a map id
+var team_choice := RB.DILAW ## v0.1.1: play as Purok Dilaw or Purok Lila
 var cards := {}
 var diff_btns: Array[Button] = []
 var map_btns := {}
+var team_btns := {}
 
 func build() -> void:
 	var title := FE.bi_box("LARO", "Play", 72, FE.GOLD, HORIZONTAL_ALIGNMENT_LEFT)
@@ -71,8 +73,8 @@ func _card(key: String, fil: String, en: String, summary: String, greyed: bool) 
 func _build_options() -> void:
 	var panel := FE.panel(FE.INK2, FE.CHALK_DIM, 2, 22)
 	panel.name = "Options"
-	panel.position = Vector2(100, 670)
-	panel.custom_minimum_size = Vector2(1300, 260)
+	panel.position = Vector2(100, 640)
+	panel.custom_minimum_size = Vector2(1300, 340)
 	content.add_child(panel)
 	var grid := GridContainer.new()
 	grid.columns = 2
@@ -98,7 +100,7 @@ func _build_options() -> void:
 	var r2 := HBoxContainer.new()
 	r2.add_theme_constant_override("separation", 16)
 	grid.add_child(r2)
-	var maps := [["barangay_court", "Barangay Court", "Showcase map"], ["roulette", "Roulette", "Random map"]]
+	var maps := [["barangay_court", "Barangay Court", "Showcase map"], ["construction_site", "Konstruksyon", "Construction site"], ["roulette", "Roulette", "Random map"]]
 	for m in maps:
 		var b := btn("Map_" + m[0], m[1], m[2], Vector2(280, 80), 30)
 		b.pressed.connect(func():
@@ -106,6 +108,24 @@ func _build_options() -> void:
 			_refresh())
 		r2.add_child(b)
 		map_btns[m[0]] = b
+	var l3 := FE.bi_box("Koponan", "Team", 30, FE.CHALK, HORIZONTAL_ALIGNMENT_LEFT)
+	grid.add_child(l3)
+	var r3 := HBoxContainer.new()
+	r3.add_theme_constant_override("separation", 16)
+	grid.add_child(r3)
+	for tm in [[RB.DILAW, "Purok Dilaw", "Yellow"], [RB.LILA, "Purok Lila", "Purple"]]:
+		var b := btn("Team_%d" % tm[0], tm[1], tm[2], Vector2(280, 80), 30)
+		var sw := ColorRect.new()
+		sw.color = RB.TEAM_COLORS[tm[0]]
+		sw.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sw.set_anchors_preset(Control.PRESET_LEFT_WIDE)
+		sw.offset_right = 12
+		b.add_child(sw)
+		b.pressed.connect(func():
+			team_choice = tm[0]
+			_refresh())
+		r3.add_child(b)
+		team_btns[tm[0]] = b
 	var go := btn("SIMULAN", "SIMULAN", "Start", Vector2(380, 190), 54, false, true)
 	go.position = Vector2(1440, 720)
 	content.add_child(go)
@@ -125,6 +145,8 @@ func _refresh() -> void:
 		_mark(diff_btns[i], i == diff)
 	for k in map_btns:
 		_mark(map_btns[k], k == map_choice)
+	for k in team_btns:
+		_mark(team_btns[k], k == team_choice)
 
 ## Write the room settings and head to the roulette.
 func start() -> void:
@@ -139,9 +161,9 @@ func apply_to_session() -> void:
 		s.apply_tradisyonal()
 	s.settings["difficulty"] = diff
 	s.settings["map_choice"] = map_choice
-	s.settings["base_choice"] = s.settings["base_mode"]
 	if map_choice != "roulette":
 		s.settings["map"] = map_choice
 	s.settings["capture_toggle"] = String(FE.setting("accessibility", "capture_input")) == "toggle"
+	s.settings["human_team"] = team_choice
 	s.lineup = []
-	s.local_slot = 0
+	s.local_slot = team_choice * 5

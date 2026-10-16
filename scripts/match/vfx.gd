@@ -15,6 +15,90 @@ static func flat_material(color: Color, unshaded := true) -> StandardMaterial3D:
 	m.cull_mode = BaseMaterial3D.CULL_DISABLED
 	return m
 
+static var _soft: Texture2D
+static var _paper: Texture2D
+
+## A soft round sprite (white, alpha falling off to the edge). Every particle uses it, so
+## puffs, dust and wind read as soft blobs instead of square quads (v0.1.1: "blocky effects").
+static func soft_texture() -> Texture2D:
+	if _soft == null:
+		var g := Gradient.new()
+		g.set_color(0, Color(1, 1, 1, 1))
+		g.set_color(1, Color(1, 1, 1, 0))
+		g.add_point(0.45, Color(1, 1, 1, 0.8))
+		var t := GradientTexture2D.new()
+		t.gradient = g
+		t.fill = GradientTexture2D.FILL_RADIAL
+		t.fill_from = Vector2(0.5, 0.5)
+		t.fill_to = Vector2(1.0, 0.5)
+		t.width = 64
+		t.height = 64
+		_soft = t
+	return _soft
+
+## A small paper chip with rounded corners and a fold shade (KABOOM! confetti).
+static func paper_texture() -> Texture2D:
+	if _paper == null:
+		var n := 32
+		var img := Image.create(n, n, false, Image.FORMAT_RGBA8)
+		for y in range(n):
+			for x in range(n):
+				var u := (x + 0.5) / n * 2.0 - 1.0
+				var v := (y + 0.5) / n * 2.0 - 1.0
+				var d := Vector2(maxf(absf(u) - 0.6, 0.0), maxf(absf(v) - 0.6, 0.0)).length()
+				if d > 0.4:
+					continue
+				var a := clampf((0.4 - d) * 12.0, 0.0, 1.0)
+				var shade := 0.82 + 0.18 * (0.5 + 0.5 * u)
+				img.set_pixel(x, y, Color(shade, shade, shade, a))
+		_paper = ImageTexture.create_from_image(img)
+	return _paper
+
+## Unshaded, vertex-coloured, billboarded material with the soft sprite.
+static func particle_material(tex: Texture2D = null) -> StandardMaterial3D:
+	var m := flat_material(Color.WHITE)
+	m.vertex_color_use_as_albedo = true
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	m.billboard_keep_scale = true # without this every particle drew 1 m wide: the old 'blocky' look
+	m.albedo_texture = tex if tex else soft_texture()
+	return m
+
+## KABOOM! confetti: small paper chips that tumble and flutter down. Frees itself.
+static func confetti(parent: Node, pos: Vector3, colors: Array, amount := 90) -> void:
+	for col in colors:
+		var p := CPUParticles3D.new()
+		p.one_shot = true
+		p.amount = maxi(8, amount / colors.size())
+		p.lifetime = 2.2
+		p.explosiveness = 0.95
+		p.direction = Vector3.UP
+		p.spread = 70.0
+		p.initial_velocity_min = 4.0
+		p.initial_velocity_max = 8.5
+		p.gravity = Vector3(0, -6.0, 0)
+		p.damping_min = 2.0
+		p.damping_max = 3.5
+		p.angle_min = 0.0
+		p.angle_max = 360.0
+		p.angular_velocity_min = -540.0
+		p.angular_velocity_max = 540.0
+		p.scale_amount_min = 0.07
+		p.scale_amount_max = 0.12
+		var ramp := Gradient.new()
+		ramp.set_color(0, col)
+		ramp.set_color(1, Color(col.r, col.g, col.b, 0.0))
+		ramp.add_point(0.8, col)
+		p.color_ramp = ramp
+		var quad := QuadMesh.new()
+		quad.size = Vector2(1.0, 0.6)
+		quad.material = particle_material(paper_texture())
+		p.mesh = quad
+		parent.add_child(p)
+		p.global_position = pos
+		p.emitting = true
+		p.finished.connect(p.queue_free)
+
 ## One-shot particle burst at `pos` (world). Frees itself.
 static func burst(parent: Node, pos: Vector3, color: Color, amount := 24, speed := 3.0, life := 0.6, size := 0.15, gravity := -4.0, spread := 180.0, dir := Vector3.UP) -> CPUParticles3D:
 	var p := CPUParticles3D.new()
@@ -35,13 +119,10 @@ static func burst(parent: Node, pos: Vector3, color: Color, amount := 24, speed 
 	ramp.set_color(1, Color(color.r, color.g, color.b, 0.0))
 	p.color_ramp = ramp
 	var quad := QuadMesh.new()
-	quad.size = Vector2.ONE
-	var m := flat_material(Color.WHITE)
-	m.vertex_color_use_as_albedo = true
-	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
-	quad.material = m
+	quad.size = Vector2.ONE * 1.6 # the soft sprite fades at its edge: draw it a bit larger
+	quad.material = particle_material()
 	p.mesh = quad
+	p.scale_amount_curve = _puff_curve()
 	parent.add_child(p)
 	p.global_position = pos
 	p.emitting = true
@@ -66,12 +147,10 @@ static func emitter(parent: Node3D, color: Color, amount := 32, life := 0.8, siz
 	ramp.set_color(1, Color(color.r, color.g, color.b, 0.0))
 	p.color_ramp = ramp
 	var quad := QuadMesh.new()
-	var m := flat_material(Color.WHITE)
-	m.vertex_color_use_as_albedo = true
-	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
-	quad.material = m
+	quad.size = Vector2.ONE * 1.6 # the soft sprite fades at its edge: draw it a bit larger
+	quad.material = particle_material()
 	p.mesh = quad
+	p.scale_amount_curve = _puff_curve()
 	p.position = offset
 	p.emitting = false
 	parent.add_child(p)
@@ -175,3 +254,14 @@ static func fade_and_free(node: Node3D, time := 0.3) -> void:
 			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			tw.tween_property(m, "albedo_color:a", 0.0, time)
 	tw.chain().tween_callback(node.queue_free)
+
+static var _curve: Curve
+
+## Particles swell in quickly and shrink away at the end of their life.
+static func _puff_curve() -> Curve:
+	if _curve == null:
+		_curve = Curve.new()
+		_curve.add_point(Vector2(0.0, 0.35))
+		_curve.add_point(Vector2(0.2, 1.0))
+		_curve.add_point(Vector2(1.0, 0.55))
+	return _curve

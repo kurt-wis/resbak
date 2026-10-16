@@ -1,8 +1,8 @@
 class_name SkillObject
 extends Node3D
 
-## Base for anything a skill leaves in the world: TALBOG! walls, IYAK! decoys, SUMBONG KITA!
-## fakes, UBO! UBO! packets and clouds, BUGA! trails, MAY TIRA PA! patches, IHIP! lanes.
+## Base for anything a skill leaves in the world: TALBOG! walls, SIGAW! words,
+## UBO! UBO! packets and clouds, BUGA! trails, MAY TIRA PA! patches, IHIP! lanes.
 ## Spawn with host.spawn_object(obj); the host ticks it in step 3 and removes it when it
 ## expires, at round reset and at round end. Objects are part of the host's world state,
 ## so they must only change in tick(), never in _process (that is presentation only).

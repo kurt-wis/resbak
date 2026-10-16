@@ -15,7 +15,7 @@ secondary_role = "Disruption"
 color = Color(0.949, 0.7137, 0.1961, 1)
 glb = "res://assets/characters/jm.glb"
 model_height = 1.8
-run_speed = 4.6
+run_speed = 4.15
 tag_reach = 1.2
 walk_clip_speed = 0.52
 run_clip_speed = 3.72
@@ -28,8 +28,8 @@ skill1_script = ExtResource("2")
 skill2_script = ExtResource("3")
 passive_script = ExtResource("4")
 skill1_text = "Jump up to 6 m and slam: enemies within 2.5 m are pushed 3 m and a curved earth wall rises in front of you for 4 s."
-skill2_text = "Charge at 9 m/s for up to 1.5 s, shoving enemies aside. Hitting a wall slows nearby enemies but stuns you."
-passive_text = "Your first tag only breaks your guard instead of jailing you. The guard returns 15 s later."
+skill2_text = "Charge at 8.2 m/s for up to 1.5 s, shoving enemies aside. Hitting a wall slows nearby enemies but stuns you."
+passive_text = "Your first tag only breaks your guard. Then you get angry: 2 s nobody can tag you and you spin, shoving everyone near you away. The guard returns 18 s later."
 values = {
 "talbog_range": 6.0,
 "talbog_air_time": 0.6,
@@ -40,7 +40,7 @@ values = {
 "talbog_wall_offset": 1.5,
 "talbog_wall_height": 1.5,
 "talbog_wall_time": 4.0,
-"tamaraw_speed": 9.0,
+"tamaraw_speed": 8.2,
 "tamaraw_time": 1.5,
 "tamaraw_turn_rate_deg": 90.0,
 "tamaraw_push_side": 2.0,
@@ -49,5 +49,9 @@ values = {
 "tamaraw_wall_radius": 2.5,
 "tamaraw_self_stun": 0.8,
 "makapal_no_tag_time": 1.5,
-"makapal_regen_time": 15.0
+"makapal_regen_time": 18.0,
+"makapal_rage_time": 2.0,
+"makapal_spin_time": 1.0,
+"makapal_spin_radius": 2.5,
+"makapal_spin_push": 2.5
 }

@@ -1,14 +1,18 @@
 extends FrontScreen
 
 ## First-time setup (docs/RESBAK.md § 6 Setup): Wika, Pangalan, readability (colour mode),
-## Kontrol. Skip keeps the default (at Pangalan it takes the dice name); Back = previous step;
-## the last step writes profile.setup_done. Never prompts the tutorial.
+## Tema (dark or light menus), Kontrol, Turo. Skip keeps the default (at Pangalan it takes the
+## dice name); Back = previous step; the last step writes profile.setup_done. v0.1.1 adds the
+## menu theme and offers the short tutorial at the end (a change from the spec, which never
+## prompts it: logged in docs/status.md).
 
 const STEPS := [
 	{"fil": "Wika", "en": "Language"},
 	{"fil": "Pangalan", "en": "Name"},
 	{"fil": "Linaw ng Kulay", "en": "Readability"},
+	{"fil": "Tema", "en": "Menu theme"},
 	{"fil": "Kontrol", "en": "Controls"},
+	{"fil": "Turo", "en": "Tutorial"},
 ]
 const LANGS := [
 	{"v": "fil_en", "fil": "Filipino", "en": "with English labels"},
@@ -112,7 +116,9 @@ func show_step(i: int) -> void:
 		0: _build_language()
 		1: _build_name()
 		2: _build_colour()
-		3: _build_controls()
+		3: _build_theme()
+		4: _build_controls()
+		5: _build_tutorial()
 	_focus_first.call_deferred()
 
 # ---- step bodies ------------------------------------------------------------------------
@@ -193,13 +199,49 @@ func _build_colour() -> void:
 		buttons["Cycle"].grab_focus.call_deferred())
 	body.add_child(cycle)
 
+func _build_theme() -> void:
+	body.add_child(FE.label("Madilim o maliwanag na mga menu?  Dark or light menus? (Mababago sa Settings.)", 22, FE.CHALK_DIM))
+	var cur := String(FE.setting("accessibility", "theme"))
+	for th in [["dark", "Madilim", "Dark"], ["light", "Maliwanag", "Light"]]:
+		var b := _option_button("Theme_" + th[0], th[1], th[2], cur == th[0])
+		b.pressed.connect(func():
+			FE.save().set_setting("accessibility", "theme", th[0])
+			_retheme(th[0]))
+		body.add_child(b)
+
+## Swap the palette and rebuild this screen in place (keeps the step).
+func _retheme(mode: String) -> void:
+	var keep_name := pname
+	var keep_device := device
+	FE.apply_theme(mode)
+	theme = FE.get_theme()
+	if backdrop:
+		backdrop.queue_redraw()
+	for c in content.get_children():
+		content.remove_child(c)
+		c.queue_free()
+	buttons.clear()
+	build()
+	pname = keep_name
+	device = keep_device
+	show_step(3)
+
+func _build_tutorial() -> void:
+	body.add_child(FE.label("Bago ka ba sa Agawan Base? May maikling turo si Kuya Tanod (mga 2 minuto).  New to the game? A short tutorial (about 2 minutes).", 22, FE.CHALK_DIM))
+	var yes := _option_button("TutorialYes", "Oo, turuan mo ako", "Yes, teach me", false)
+	yes.pressed.connect(func(): finish(true))
+	body.add_child(yes)
+	var no := _option_button("TutorialNo", "Laktawan, maglaro na", "Skip, take me Home", false)
+	no.pressed.connect(func(): finish(false))
+	body.add_child(no)
+
 func _build_controls() -> void:
 	body.add_child(FE.label("Anong gamit mo ngayon?  What are you playing with?", 24, FE.CHALK_DIM))
 	for d in [["keyboard", "Keyboard at mouse", "Keyboard and mouse"], ["gamepad", "Gamepad", "Controller"]]:
 		var b := _option_button("Dev_" + d[0], d[1], d[2], device == d[0])
 		b.pressed.connect(func():
 			device = d[0]
-			show_step(3))
+			show_step(4))
 		body.add_child(b)
 
 # ---- flow -------------------------------------------------------------------------------
@@ -216,7 +258,7 @@ func next_step(skipped := false) -> void:
 	else:
 		finish()
 
-func finish() -> void:
+func finish(tutorial := false) -> void:
 	var s := FE.save()
 	if s:
 		var r := NameRules.validate(pname)
@@ -224,4 +266,9 @@ func finish() -> void:
 		s.profile["setup_done"] = true
 		s.save_profile()
 		s.set_setting("controls", "last_device", device)
-	go("home")
+	if tutorial:
+		var hid := String(s.get_profile().get("home_hero", "jm")) if s else "jm"
+		Tutorial.prepare_session(hid)
+		go_call("tutorial", func(): Session.start_match())
+	else:
+		go("home")

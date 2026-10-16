@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode diffuse_lambert,specular_disabled,cull_disabled,depth_draw_never;
+render_mode diffuse_lambert,specular_disabled,cull_disabled,depth_draw_opaque;
 uniform vec2 panel_size=vec2(3.,2.);
 void fragment(){
  vec2 p=UV*panel_size*3.2;
@@ -9,7 +9,8 @@ void fragment(){
  float aa=max(fwidth(diamond.x),fwidth(diamond.y))*.55;
  float wire=1.-smoothstep(.018,.018+aa,line);
  ALBEDO=vec3(.40,.42,.38);
- ALPHA=wire*.72;
+ ALPHA=wire;
+ ALPHA_SCISSOR_THRESHOLD=.4;
  ROUGHNESS=1.;SPECULAR=0.;
 }
 

@@ -76,17 +76,17 @@ func _data(t: TestCtx) -> void:
 	t.check(d != null, "tutoy.tres loads")
 	if d == null:
 		return
-	t.check(t.near(d.run_speed, 5.4), "Tutoy runs at 5.4 m/s")
+	t.check(t.near(d.run_speed, 4.85), "Tutoy runs at 4.85 m/s (v0.1.1 pacing, spec 5.4)")
 	t.check(t.near(d.tag_reach, 1.0), "Tutoy tag reach is 1.0 m")
 	t.check(t.near(d.skill1_cooldown, 8.0) and t.near(d.skill2_cooldown, 6.0), "HARUROT! cooldown 8 s, LUSOT! cooldown 6 s")
 	var want := {
-		"harurot_speed": 9.0, "harurot_time": 1.2, "harurot_trail_part_time": 2.0,
+		"harurot_speed": 8.2, "harurot_time": 1.3, "harurot_trail_part_time": 2.0,
 		"lusot_distance": 4.0, "lusot_time": 0.4, "lusot_no_tag_after": 0.3,
 		"lusot_perfect_window": 0.1, "lusot_perfect_stun": 0.6,
 		"dire_max_bonus": 0.15, "dire_build_time": 3.0, "dire_sharp_turn_deg": 45.0, "dire_sharp_turn_window": 0.5}
 	for k in want:
 		t.check(d.values.has(k) and t.near(float(d.values[k]), want[k], 0.0001), "tutoy value %s = %s (got %s)" % [k, want[k], d.values.get(k)])
-	t.check(RB.ticks(float(d.values.harurot_time)) == 72 and RB.ticks(float(d.values.lusot_time)) == 24, "HARUROT! 72 ticks, LUSOT! 24 ticks")
+	t.check(RB.ticks(float(d.values.harurot_time)) == 78 and RB.ticks(float(d.values.lusot_time)) == 24, "HARUROT! 78 ticks, LUSOT! 24 ticks")
 	t.check(RB.ticks(float(d.values.lusot_perfect_window)) == 6 and RB.ticks(float(d.values.lusot_no_tag_after)) == 18, "perfect window 6 ticks, no-tag recovery 18 ticks")
 	t.ok("tutoy data matches spec § 4")
 
@@ -103,27 +103,27 @@ func _harurot_basics(t: TestCtx) -> void:
 	inp.press(tu, S1)
 	t.steps(host, 1)
 	t.check(hs.active, "HARUROT! is active after the press")
-	t.check(is_equal_approx(hs.fixed_speed(), 9.0), "fixed speed 9 m/s")
+	t.check(is_equal_approx(hs.fixed_speed(), 8.2), "fixed speed 8.2 m/s")
 	t.steps(host, 3)
-	t.check(t.near(tu.ground_speed(), 9.0, 0.05), "9 m/s straight away, no acceleration ramp (got %.2f)" % tu.ground_speed())
+	t.check(t.near(tu.ground_speed(), 8.2 * _sc(), 0.05), "8.2 m/s straight away, no acceleration ramp (got %.2f)" % tu.ground_speed())
 	# no turn limit: swing the stick 90 degrees, the very next tick runs the new heading
 	inp.move(tu, Vector2(0, 1))
 	t.steps(host, 1)
-	t.check(tu.velocity.z > 8.9 and absf(tu.velocity.x) < 0.1, "turns 90 deg in one tick, still 9 m/s (v=%s)" % tu.velocity)
+	t.check(tu.velocity.z > 8.1 * _sc() and absf(tu.velocity.x) < 0.1, "turns 90 deg in one tick, still 8.2 m/s (v=%s)" % tu.velocity)
 	inp.move(tu, Vector2(-1, 0))
 	t.steps(host, 1)
-	t.check(tu.velocity.x < -8.9 and absf(tu.velocity.z) < 0.1, "turns 90 deg again in one tick")
+	t.check(tu.velocity.x < -8.1 * _sc() and absf(tu.velocity.z) < 0.1, "turns 90 deg again in one tick")
 	inp.move(tu, Vector2.ZERO)
 	t.steps(host, 2)
-	t.check(t.near(tu.ground_speed(), 9.0, 0.05), "releasing the stick keeps the burst heading at 9 m/s")
-	# 72 ticks in total, counting the cast tick: 1 + 3 + 1 + 1 + 2 = 8 steps done so far
-	t.steps(host, 63)
-	t.check(hs.active, "still active 71 ticks after the cast press")
+	t.check(t.near(tu.ground_speed(), 8.2 * _sc(), 0.05), "releasing the stick keeps the burst heading at 8.2 m/s")
+	# 78 ticks in total, counting the cast tick: 1 + 3 + 1 + 1 + 2 = 8 steps done so far
+	t.steps(host, 69)
+	t.check(hs.active, "still active 77 ticks after the cast press")
 	t.steps(host, 1)
-	t.check(not hs.active, "HARUROT! ends after exactly 72 ticks (1.2 s)")
+	t.check(not hs.active, "HARUROT! ends after exactly 78 ticks (1.3 s)")
 	await t.free_match(host)
 
-	# straight-line distance 9 m/s x 1.2 s = 10.8 m, and the cooldown
+	# straight-line distance 8.2 m/s x 1.3 s = 10.66 m, and the cooldown
 	host = _live(t)
 	tu = _stand(t, host, -15, -6)
 	hs = tu.skills[0]
@@ -132,19 +132,19 @@ func _harurot_basics(t: TestCtx) -> void:
 	t.steps(host, 4) # reach top speed first
 	var start := tu.global_position
 	inp.press(tu, S1)
-	t.steps(host, 72)
+	t.steps(host, 78)
 	var run := RB.flat_dist(start, tu.global_position)
-	# the 4 steps before the press already ran; the burst itself is 72 ticks of 9 m/s
-	t.check(t.near(run, 10.8, 0.15), "HARUROT! covers 10.8 m in 1.2 s (got %.2f)" % run)
-	t.check(not hs.active, "inactive after 72 steps")
+	# the 4 steps before the press already ran; the burst itself is 78 ticks of 8.2 m/s
+	t.check(t.near(run, 10.66 * _sc(), 0.15), "HARUROT! covers 10.66 m x scale in 1.3 s (got %.2f)" % run)
+	t.check(not hs.active, "inactive after 78 steps")
 	inp.move(tu, Vector2.ZERO)
 	var n := 0
 	while not hs.is_ready() and n < 1000:
 		host.step()
 		n += 1
-	t.check(n + 72 == 480, "HARUROT! cooldown is 8 s = 480 ticks from the cast (ready after %d)" % (n + 72))
+	t.check(n + 78 == 480, "HARUROT! cooldown is 8 s = 480 ticks from the cast (ready after %d)" % (n + 78))
 	t.check(_count("skill_cast") == 1, "one skill_cast event")
-	t.ok("HARUROT! 9 m/s, 72 ticks, no turn limit, 10.8 m, 8 s cooldown")
+	t.ok("HARUROT! 8.2 m/s, 78 ticks, no turn limit, 10.66 m, 8 s cooldown")
 	await t.free_match(host)
 
 func _harurot_trail(t: TestCtx) -> void:
@@ -190,7 +190,7 @@ func _harurot_tagging(t: TestCtx) -> void:
 	inp.press(tu, S1)
 	t.steps(host, 2)
 	inp.press(tu, TAG)
-	t.steps(host, 10)
+	t.steps(host, _land())
 	t.check(foe.state == Hero.State.TAGGED, "Tutoy can tag during HARUROT! (foe state %d)" % foe.state)
 	await t.free_match(host)
 	# and be tagged: the burst ends
@@ -204,7 +204,7 @@ func _harurot_tagging(t: TestCtx) -> void:
 	inp.press(tu, S1)
 	t.steps(host, 21)
 	inp.press(foe, TAG)
-	t.steps(host, 10) # lands on step 31: Tutoy is about 1.35 m away by then
+	t.steps(host, _land()) # lands on step 40: Tutoy is about 1.7 m away by then
 	t.check(tu.state == Hero.State.TAGGED, "Tutoy can be tagged during HARUROT! (state %d, x %.2f)" % [tu.state, tu.global_position.x])
 	t.check(not tu.skills[0].active, "being tagged ends HARUROT!")
 	t.ok("HARUROT! can tag and be tagged")
@@ -219,10 +219,10 @@ func _harurot_modifiers(t: TestCtx) -> void:
 	t.check(t.near(tu.passive.speed_bonus(), 0.15, 0.001), "DIRE-DIRETSO is full before the burst")
 	inp.press(tu, S1)
 	t.steps(host, 5)
-	t.check(t.near(tu.ground_speed(), 9.0, 0.05), "HARUROT! is 9 m/s flat, no DIRE-DIRETSO bonus on top (got %.2f)" % tu.ground_speed())
+	t.check(t.near(tu.ground_speed(), 8.2 * _sc(), 0.05), "HARUROT! is 8.2 m/s flat, no DIRE-DIRETSO bonus on top (got %.2f)" % tu.ground_speed())
 	tu.add_slow(0.3, 1.0, "test_slow", true)
 	t.steps(host, 3)
-	t.check(t.near(tu.ground_speed(), 6.3, 0.1), "slows still apply to the burst (9 x 0.7 = 6.3, got %.2f)" % tu.ground_speed())
+	t.check(t.near(tu.ground_speed(), 5.74 * _sc(), 0.1), "slows still apply to the burst (8.2 x 0.7 = 5.74, got %.2f)" % tu.ground_speed())
 	tu.clear_modifier("test_slow")
 	# a stun ends it
 	tu.stun(0.2, true)
@@ -237,6 +237,14 @@ func _harurot_modifiers(t: TestCtx) -> void:
 	t.check(not tu.skills[0].active and tu.skills[0].is_ready(), "round reset ends HARUROT! and clears the cooldown")
 	t.ok("HARUROT! fixed speed, slows, stun, reset")
 	await t.free_match(host)
+
+## v0.2: everyone moves at tuning.move_speed_scale of the sheet speed.
+func _sc() -> float:
+	return Tuning.get_default().move_speed_scale
+
+## Steps from a Tag tap to its landing tick.
+func _land() -> int:
+	return RB.ticks(Tuning.get_default().tag_windup) + 1
 
 # ---- LUSOT! ----------------------------------------------------------------------------
 func _lusot_basics(t: TestCtx) -> void:
@@ -415,6 +423,11 @@ func _lusot_vault(t: TestCtx) -> void:
 	await t.free_match(host)
 
 # ---- perfect slide ---------------------------------------------------------------------
+## The checks below were written for the spec's 9-tick wind-up; v0.2 swings slower
+## (tuning.tag_windup), so every "ticks after the press" moves by the difference.
+func _shift() -> int:
+	return RB.ticks(Tuning.get_default().tag_windup) - 9
+
 ## Foe (Lila Nathan) at (1.5, 0) winds up a tag west at Tutoy standing at (0, 0). Tutoy casts
 ## LUSOT! `k` ticks after the foe's press tick P (the tag lands on tick P + 9).
 ## dir = Tutoy's slide direction. Returns the host (caller frees it) after the landing tick.
@@ -430,7 +443,7 @@ func _perfect_setup(t: TestCtx, k: int, dir: Vector2) -> MatchHost:
 	log_events = []
 	await _ps(t, host, 1)
 	inp.press(foe, TAG)
-	await _ps(t, host, k)
+	await _ps(t, host, k + _shift())
 	inp.move(tu, dir)
 	inp.press(tu, S2)
 	await _ps(t, host, 10 - k)
@@ -496,7 +509,7 @@ func _lusot_perfect_edges(t: TestCtx) -> void:
 	t.steps(host, 2)
 	log_events = []
 	inp.press(foe, TAG)
-	t.steps(host, 4)
+	t.steps(host, 4 + _shift())
 	inp.press(tu, S2)
 	t.steps(host, 6)
 	t.check(_count("perfect_slide") == 0 and foe.stun_ticks == 0, "no perfect dodge of a tag that would not have reached")
@@ -511,7 +524,7 @@ func _lusot_perfect_edges(t: TestCtx) -> void:
 	inp = t.inputs(host)
 	inp.aim_at(ally, Vector3(-5, 0, 0))
 	inp.press(ally, TAG)
-	t.steps(host, 4)
+	t.steps(host, 4 + _shift())
 	inp.aim_at(tu, Vector3(0, 0, 5))
 	inp.press(tu, S2)
 	t.steps(host, 6)
@@ -533,7 +546,7 @@ func _lusot_perfect_edges(t: TestCtx) -> void:
 	log_events = []
 	inp.press(f1, TAG)
 	inp.press(f2, TAG)
-	t.steps(host, 5)
+	t.steps(host, 5 + _shift())
 	inp.press(tu, S2)
 	t.steps(host, 5)
 	t.check(tu.state == Hero.State.FREE and f1.stun_ticks == 36 and f2.stun_ticks == 36, "each enemy whose tag would have hit is stunned 0.6 s (%d, %d)" % [f1.stun_ticks, f2.stun_ticks])
@@ -558,9 +571,9 @@ func _dire_ramp(t: TestCtx) -> void:
 	t.steps(host, 90)
 	t.check(t.near(_bonus(tu), 0.15, 0.0005), "full +15 %% after 3 s = 180 ticks (got %.4f)" % _bonus(tu))
 	t.check(t.near(tu.passive.hud_state().fill, 1.0, 0.01), "HUD fill is 1.0 at full")
-	t.check(t.near(tu.current_speed(), 5.4 * 1.15, 0.01), "current speed is 5.4 x 1.15 = 6.21 (got %.3f)" % tu.current_speed())
+	t.check(t.near(tu.current_speed(), 4.85 * 1.15 * _sc(), 0.01), "current speed is 4.85 x 1.15 = 5.58 (got %.3f)" % tu.current_speed())
 	t.steps(host, 60)
-	t.check(t.near(tu.ground_speed(), 6.21, 0.05), "actually runs at 6.21 m/s (got %.2f)" % tu.ground_speed())
+	t.check(t.near(tu.ground_speed(), 5.58 * _sc(), 0.05), "actually runs at 5.58 m/s (got %.2f)" % tu.ground_speed())
 	t.check(t.near(_bonus(tu), 0.15, 0.0005), "the bonus holds at +15 %")
 	# it rose evenly: sample the middle of a fresh ramp
 	inp.move(tu, Vector2.ZERO)
@@ -661,7 +674,7 @@ func _dire_resets(t: TestCtx) -> void:
 	tu = _stand(t, host, -17.0, -6)
 	inp = t.inputs(host)
 	inp.move(tu, Vector2(-1, 0))
-	t.steps(host, 40)
+	t.steps(host, 80)
 	t.check(is_zero_approx(_bonus(tu)), "pressing into a wall is not moving: no bonus")
 	await t.free_match(host)
 

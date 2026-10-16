@@ -2,8 +2,9 @@ class_name BotNav
 extends RefCounted
 
 ## Runtime navigation for bots (docs/RESBAK.md § 11 via the task brief): one NavigationMesh baked
-## once per match from the static colliders under the map root (agent radius = body radius),
-## with both jail rectangles carved out (the jail barrier blocks every free player). It lives on
+## once per match from the static colliders under the map root (agent radius = body radius).
+## v0.2: the jail posts slide along the jail line, so they are not carved out (the post barrier
+## is enforced by JailSystem and bots steer around it like a player). It lives on
 ## its own navigation map, so several matches in one process (tests) never share a mesh.
 ## If baking gives nothing (no colliders, headless oddities), `ready` stays false and bots fall
 ## back to straight steering.
@@ -12,6 +13,7 @@ var map := RID()
 var region := RID()
 var ready := false
 var polygons := 0
+var _synced := false
 
 ## The nav for a host, baked on first use and kept on the host (freed with it).
 static func of(host: MatchHost) -> BotNav:
@@ -38,12 +40,6 @@ func _bake(host: MatchHost) -> void:
 	NavigationServer3D.parse_source_geometry_data(nm, src, host.map_root)
 	if not src.has_data():
 		return
-	for owner in range(2):
-		var r: Rect2 = host.layout.jail_rect(owner)
-		var verts := PackedVector3Array([
-			Vector3(r.position.x, 0, r.position.y), Vector3(r.end.x, 0, r.position.y),
-			Vector3(r.end.x, 0, r.end.y), Vector3(r.position.x, 0, r.end.y)])
-		src.add_projected_obstruction(verts, -0.5, 3.0, true)
 	NavigationServer3D.bake_from_source_geometry_data(nm, src)
 	polygons = nm.get_polygon_count()
 	if polygons == 0:
@@ -60,9 +56,15 @@ func _bake(host: MatchHost) -> void:
 	NavigationServer3D.map_force_update(map)
 	ready = true
 
-## The server syncs a new map on its next update; until then queries would fail.
+## The server syncs a new map asynchronously, and the first iterations can come before the
+## region has joined it (queries then answer the origin). Synced = the region owns the answers.
 func synced() -> bool:
-	return ready and NavigationServer3D.map_get_iteration_id(map) > 0
+	if _synced:
+		return true
+	if not ready or NavigationServer3D.map_get_iteration_id(map) <= 0:
+		return false
+	_synced = NavigationServer3D.map_get_closest_point_owner(map, Vector3.ZERO) == region
+	return _synced
 
 ## Path from `from` to `to` (corner points, first = start), or an empty array without a mesh.
 func path(from: Vector3, to: Vector3) -> PackedVector3Array:

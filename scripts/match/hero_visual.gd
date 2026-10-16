@@ -24,6 +24,10 @@ var _faded: Array = []
 var _alpha := 1.0
 var ring: MeshInstance3D
 var icon: Label3D
+var charge_bg: MeshInstance3D ## the hampas charge bar over the head (v0.2)
+var charge_fill: MeshInstance3D
+const CHARGE_W := 0.9
+const CHARGE_H := 0.11
 var shield: MeshInstance3D
 var extras: Node3D ## skills and passives may parent presentation nodes here
 
@@ -38,6 +42,15 @@ var _cur_serial := -1
 var _tag_anim_until := 0.0
 var _victory := false
 
+# Human chain: two-bone IK on both arms so prisoners really hold the post and each other.
+const ARM_BONES := [["mixamorig:RightArm", "mixamorig:RightForeArm", "mixamorig:RightHand"],
+		["mixamorig:LeftArm", "mixamorig:LeftForeArm", "mixamorig:LeftHand"]]
+const HAND_HEIGHT := 0.6 ## hand grip height as a fraction of the model height
+var arm_ik: TwoBoneIK3D
+var _hand_targets: Array[Marker3D] = [] ## 0 = rear hand (post / inner link), 1 = front hand
+var _hand_poles: Array[Marker3D] = []
+var _ik_weight := 0.0
+
 func setup(p_hero: Hero) -> void:
 	hero = p_hero
 	extras = Node3D.new()
@@ -46,6 +59,7 @@ func setup(p_hero: Hero) -> void:
 	_load_model()
 	_build_tree()
 	_build_markers()
+	_build_arm_ik()
 
 # ---- public API ------------------------------------------------------------------------
 func has_clip(clip: String) -> bool:
@@ -73,6 +87,16 @@ func stop_action(clip := "") -> void:
 
 func show_victory(on: bool) -> void:
 	_victory = on
+
+var _spin_until := 0.0
+var _spin_rate := 0.0
+
+## Spin the model in place (`turns` full turns over `secs`), e.g. JM's angry MAKAPAL! spin.
+func spin(secs: float, turns: float) -> void:
+	if secs <= 0.0:
+		return
+	_spin_until = _now() + secs
+	_spin_rate = TAU * turns / secs
 
 ## Viewer-dependent look, set by the match presentation every frame.
 ## alpha 0 = hidden (cloud, Taguan), 0.25 = IYAK! see-through, 1 = normal.
@@ -236,6 +260,13 @@ func _build_markers() -> void:
 	icon.position.y = hero.data.model_height + 0.45
 	icon.visible = false
 	add_child(icon)
+	charge_bg = _bar_quad(CHARGE_W + 0.06, CHARGE_H + 0.06, Color("1a1020"), 0)
+	charge_fill = _bar_quad(CHARGE_W, CHARGE_H, Color("ffd27a"), 1)
+	charge_bg.name = "ChargeBar"
+	charge_bg.add_child(charge_fill)
+	charge_bg.position.y = hero.data.model_height + 0.3
+	charge_bg.visible = false
+	add_child(charge_bg)
 	shield = MeshInstance3D.new()
 	shield.name = "ProtectionShield"
 	var sph := SphereMesh.new()
@@ -253,16 +284,142 @@ func _build_markers() -> void:
 	shield.visible = false
 	add_child(shield)
 
+func _build_arm_ik() -> void:
+	if model == null:
+		return
+	var skel := model.find_children("*", "Skeleton3D", true, false)
+	if skel.is_empty():
+		return
+	var sk := skel[0] as Skeleton3D
+	for arm in ARM_BONES:
+		for b in arm:
+			if sk.find_bone(b) < 0:
+				return
+	arm_ik = TwoBoneIK3D.new()
+	arm_ik.name = "ChainArms"
+	sk.add_child(arm_ik)
+	arm_ik.setting_count = 2
+	for i in range(2):
+		var target := Marker3D.new()
+		target.name = "HandTarget%d" % i
+		add_child(target)
+		_hand_targets.append(target)
+		var pole := Marker3D.new()
+		pole.name = "ElbowPole%d" % i
+		add_child(pole)
+		_hand_poles.append(pole)
+		arm_ik.set_root_bone_name(i, ARM_BONES[i][0])
+		arm_ik.set_middle_bone_name(i, ARM_BONES[i][1])
+		arm_ik.set_end_bone_name(i, ARM_BONES[i][2])
+		arm_ik.set_target_node(i, arm_ik.get_path_to(target))
+		arm_ik.set_pole_node(i, arm_ik.get_path_to(pole))
+	arm_ik.influence = 0.0
+	arm_ik.active = false
+
+## Where this prisoner's hands go: [rear grip, front grip] in world space, or [] when free.
+## The rear hand holds the post (first prisoner) or the inner neighbour's front hand; the front
+## hand holds the outer neighbour's rear hand, and the tip reaches toward the nearest free ally.
+func chain_grips() -> Array:
+	if hero.host == null or hero.state != Hero.State.CHAINED:
+		return []
+	var js := hero.host.jail_system
+	var owner := RB.other_team(hero.team)
+	var c: Array = js.chain(owner)
+	var k := c.find(hero)
+	if k < 0:
+		return []
+	var y := hero.global_position.y + hero.data.model_height * HAND_HEIGHT
+	var me := hero.global_position
+	var inner: Vector3 = js.link_before(owner, k)
+	var rear := (me + inner) * 0.5 if k > 0 else inner
+	rear.y = y + (0.15 if k == 0 else 0.0)
+	var front: Vector3
+	if k < c.size() - 1:
+		front = (me + (c[k + 1] as Hero).global_position) * 0.5
+		front.y = y
+	else: # the tip stretches out toward the rescue
+		var reach_to := me + hero.facing * 1.0
+		var best := INF
+		for a in hero.host.allies_of(hero):
+			if a.is_free():
+				var d := RB.flat_dist(a.global_position, me)
+				if d < best:
+					best = d
+					reach_to = a.global_position
+		var dir := RB.flat(reach_to - me)
+		dir = dir.normalized() if dir.length() > 0.05 else hero.facing
+		front = me + dir * 0.75
+		front.y = y + 0.25
+	return [rear, front]
+
+func _update_arm_ik(delta: float) -> void:
+	if arm_ik == null:
+		return
+	var grips := chain_grips()
+	var want := 1.0 if not grips.is_empty() else 0.0
+	_ik_weight = move_toward(_ik_weight, want, delta * 4.0)
+	arm_ik.active = _ik_weight > 0.001
+	arm_ik.influence = _ik_weight
+	if grips.is_empty():
+		return
+	var side := hero.facing.cross(Vector3.UP).normalized()
+	for i in range(2):
+		_hand_targets[i].global_position = grips[i]
+		# elbows bend down and outward, away from the body
+		var shoulder := hero.global_position + Vector3(0, hero.data.model_height * 0.78, 0)
+		var out := side * (1.0 if i == 0 else -1.0)
+		_hand_poles[i].global_position = shoulder + out * 0.6 + Vector3(0, -0.8, 0) - hero.facing * 0.2
+
+## Chained prisoners turn sideways to the chain so one arm reaches back and one forward.
+func _chain_turn() -> float:
+	if hero.state != Hero.State.CHAINED:
+		return 0.0
+	return deg_to_rad(-55.0)
+
 # ---- per frame -------------------------------------------------------------------------
 func _process(delta: float) -> void:
 	if hero == null:
 		return
-	var want := atan2(hero.facing.x, hero.facing.z)
-	if model:
+	var want := atan2(hero.facing.x, hero.facing.z) + _chain_turn()
+	if model and _now() < _spin_until:
+		model.rotation.y = wrapf(model.rotation.y + _spin_rate * delta, -PI, PI)
+	elif model:
 		model.rotation.y = lerp_angle(model.rotation.y, want, minf(TURN_RATE * delta, 1.0))
 	if hero.is_winding_up():
 		_tag_anim_until = _now() + 0.35
+	_update_charge_bar()
 	_update_animation()
+	_update_arm_ik(delta)
+
+## Billboarded, unshaded quad; the mesh is offset (not the node) so it survives billboarding.
+func _bar_quad(w: float, h: float, color: Color, priority: int) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	var q := QuadMesh.new()
+	q.size = Vector2(w, h)
+	mi.mesh = q
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	m.no_depth_test = true
+	m.render_priority = priority
+	m.albedo_color = color
+	mi.material_override = m
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mi
+
+## Fills left to right while Tag is held; turns orange-white at full charge.
+func _update_charge_bar() -> void:
+	if charge_bg == null:
+		return
+	var on := hero.is_charging() and _alpha > 0.01
+	charge_bg.visible = on
+	if not on:
+		return
+	var k := hero.charge_fraction()
+	var q := charge_fill.mesh as QuadMesh
+	q.size.x = maxf(0.001, CHARGE_W * k)
+	q.center_offset.x = -CHARGE_W * 0.5 + q.size.x * 0.5
+	(charge_fill.material_override as StandardMaterial3D).albedo_color = Color("ffd27a").lerp(Color("ff5a1f"), k) if k < 1.0 else Color("fff4e0")
 
 func _now() -> float:
 	return Time.get_ticks_msec() / 1000.0

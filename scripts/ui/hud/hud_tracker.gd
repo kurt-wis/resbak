@@ -1,13 +1,15 @@
 class_name HudTracker
 extends HudPart
 
-## Prisoner tracker beside the score (docs/RESBAK.md § 7): five portraits per team, own team
-## left. Colour = free, bars = jailed (Tagged and Jailed), linked hands = chained, a bot badge
-## when bot-controlled. Portraits use the hero colour and initials.
+## Prisoner tracker beside the scorebug (docs/RESBAK.md § 7): five faces per team, own team
+## left, nearest the score = team slot 1. Each face is the hero's rendered portrait (Portraits;
+## initials until it renders). Free = full colour; Tagged/Jailed = darkened with bars; Chained
+## = darkened with a chain-link badge; a BOT tag when bot-controlled; the local player wears a
+## white ring and a small arrow.
 
-const PORTRAIT := 48.0
-const GAP := 6.0
-const INSET := 190.0 ## from the screen centre to the nearest portrait
+const R := 31.0 ## portrait radius
+const STEP := 68.0
+const GAP := 20.0 ## from the scorebug edge to the first face
 
 func state_of(h: Hero) -> String:
 	match h.state:
@@ -25,11 +27,9 @@ func lineup(team: int) -> Array[Hero]:
 
 func portrait_rect(side: int, index: int) -> Rect2:
 	var cx := sz().x * 0.5
-	var y := 14.0
-	if side == 0:
-		var x := cx - INSET - PORTRAIT - index * (PORTRAIT + GAP)
-		return Rect2(x, y, PORTRAIT, PORTRAIT)
-	return Rect2(cx + INSET + index * (PORTRAIT + GAP), y, PORTRAIT, PORTRAIT)
+	var edge := HudTimer.W * 0.5 + GAP + R
+	var x := cx - edge - index * STEP if side == 0 else cx + edge + index * STEP
+	return Rect2(x - R, 72.0 - R, R * 2.0, R * 2.0)
 
 func refresh(_delta: float) -> void:
 	queue_redraw()
@@ -47,26 +47,28 @@ func _draw() -> void:
 func _portrait(h: Hero, r: Rect2, team_color: Color) -> void:
 	var st := state_of(h)
 	var c := r.get_center()
-	var col: Color = h.data.color
-	draw_circle(c, PORTRAIT * 0.5 + 3.0, team_color)
-	draw_circle(c, PORTRAIT * 0.5, col.darkened(0.15) if st == "free" else col.darkened(0.55))
-	HudStyle.text_in(self, HudStyle.initials(h), r, 20, Color.WHITE if st == "free" else Color(0.8, 0.8, 0.85))
+	draw_circle(c, R + 5.0, HudStyle.INK)
+	var dim := 0.0 if st == "free" else 0.6
+	Portraits.draw_face(self, h.data.id, c, R, h.data.color.darkened(0.35), team_color, 4.0, dim, HudStyle.font())
 	if h == hud.local:
-		draw_arc(c, PORTRAIT * 0.5 + 6.0, 0.0, TAU, 32, Color.WHITE, 2.0, true)
+		draw_arc(c, R + 6.0, 0.0, TAU, 40, Color.WHITE, 3.0, true)
+		draw_colored_polygon(PackedVector2Array([c + Vector2(-8, R + 10), c + Vector2(8, R + 10), c + Vector2(0, R + 2)]), Color.WHITE)
 	match st:
 		"jailed":
 			for k in range(-2, 3):
-				var x := c.x + k * 10.0
-				var half := sqrt(maxf(0.0, pow(PORTRAIT * 0.5, 2) - pow(k * 10.0, 2)))
-				draw_line(Vector2(x, c.y - half), Vector2(x, c.y + half), Color(0.9, 0.92, 0.96), 4.0)
+				var x := c.x + k * 12.0
+				var half := sqrt(maxf(0.0, R * R - pow(k * 12.0, 2)))
+				draw_line(Vector2(x, c.y - half), Vector2(x, c.y + half), Color(0.92, 0.94, 0.98, 0.9), 4.0)
 		"chained":
-			# linked hands: two interlocked rings
-			draw_arc(c + Vector2(-7, 0), 10.0, 0.0, TAU, 20, Color(1, 1, 1), 4.0, true)
-			draw_arc(c + Vector2(7, 0), 10.0, 0.0, TAU, 20, Color(1, 1, 1), 4.0, true)
-	if h.is_bot:
-		var b := Rect2(r.end.x - 20.0, r.position.y - 4.0, 22.0, 18.0)
-		draw_rect(b, Color(0.1, 0.12, 0.16))
-		draw_rect(b, Color.WHITE, false, 1.5)
-		draw_circle(b.position + Vector2(6, 9), 2.5, Color.WHITE)
-		draw_circle(b.position + Vector2(16, 9), 2.5, Color.WHITE)
-		draw_line(b.position + Vector2(11, 0), b.position + Vector2(11, -4), Color.WHITE, 2.0)
+			var b := c + Vector2(R * 0.62, R * 0.62)
+			draw_circle(b, 13.0, HudStyle.INK)
+			draw_arc(b + Vector2(-4, 0), 6.0, 0.0, TAU, 16, HudStyle.GOLD, 2.5, true)
+			draw_arc(b + Vector2(4, 0), 6.0, 0.0, TAU, 16, HudStyle.GOLD, 2.5, true)
+	if h.has_ep() or h.is_immune():
+		var s := c + Vector2(-R * 0.62, -R * 0.62)
+		draw_circle(s, 10.0, Color("7fd0ff"))
+		draw_arc(s, 10.0, 0.0, TAU, 16, HudStyle.INK, 2.0, true)
+	if h.is_bot and h != hud.local:
+		var tag := Rect2(c.x - 18.0, c.y + R - 4.0, 36.0, 18.0)
+		HudStyle.panel(self, tag, Color(1, 1, 1, 0.5), Color(0.08, 0.09, 0.12, 0.95), 6, 1)
+		HudStyle.text_in(self, "BOT", tag, 18, HudStyle.DIM, 0)

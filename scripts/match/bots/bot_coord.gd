@@ -3,11 +3,14 @@ extends RefCounted
 
 ## Per-match bot coordination (docs/RESBAK.md § 11): the shared navigation mesh and the team
 ## roles. Every 1 s per team: if a teammate is jailed, the free bot nearest the enemy jail is
-## Resbak; the free bot nearest its own base is Bantay; the rest alternate Atake, Pain
-## (Atake first). A jailed bot is Kapit. Stored on the host, shared by every BotBrain.
+## Resbak (two Resbak once two or more teammates are caught and the team can spare them); if the
+## team is holding prisoners and has three or more free bots, the one nearest its own jail is
+## Tanod (guards the chain tip: a v0.1.1 addition, logged in docs/status.md); the free bot
+## nearest its own base is Bantay; the rest alternate Atake, Pain (Atake first). A jailed bot is
+## Kapit. Stored on the host, shared by every BotBrain.
 
-enum Role { ATAKE, PAIN, BANTAY, RESBAK, KAPIT }
-const ROLE_NAMES := ["Atake", "Pain", "Bantay", "Resbak", "Kapit"]
+enum Role { ATAKE, PAIN, BANTAY, RESBAK, KAPIT, TANOD }
+const ROLE_NAMES := ["Atake", "Pain", "Bantay", "Resbak", "Kapit", "Tanod"]
 
 var host: MatchHost
 var nav: BotNav
@@ -42,10 +45,17 @@ func _assign(team: int) -> void:
 		if h.is_free() and _is_bot(h):
 			rest.append(h)
 	rest.sort_custom(func(a: Hero, b: Hero): return a.slot < b.slot)
-	if host.jail_system.jailed_count(team) > 0 and not rest.is_empty():
-		var jail := host.layout.jail_centre(RB.other_team(team))
-		var pick := _nearest(rest, jail)
-		roles[pick.slot] = Role.RESBAK
+	var caught := host.jail_system.jailed_count(team)
+	if caught > 0 and not rest.is_empty():
+		var jail := host.jail_system.post(RB.other_team(team)) # v0.2: the post moves along the jail line
+		var rescuers := 2 if caught >= 2 and rest.size() >= 4 else 1
+		for i in range(rescuers):
+			var pick := _nearest(rest, jail)
+			roles[pick.slot] = Role.RESBAK
+			rest.erase(pick)
+	if host.jail_system.jailed_count(RB.other_team(team)) > 0 and rest.size() >= 3:
+		var pick := _nearest(rest, host.jail_system.post(team))
+		roles[pick.slot] = Role.TANOD
 		rest.erase(pick)
 	if not rest.is_empty():
 		var pick := _nearest(rest, host.base_system.pole_pos(team))

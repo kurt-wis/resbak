@@ -1,20 +1,21 @@
 class_name MatchView
 extends Node3D
 
-## What the local player sees of the host state (docs/RESBAK.md § 2 "Outlines", § 7 Feedback):
+## What the local player sees of the host state (docs/RESBAK.md Â§ 2 "Outlines", Â§ 7 Feedback):
 ## per-hero visibility (clouds hide, IYAK! see-through at 25 %, reveals), outline colour
 ## (taggable enemy orange + "!" icon, untaggable grey, EP shield), the local aim marker, and
 ## world feedback for host events (HULI!, whiff, NAKUHA!, RESBAK!, guard break, PERFECT!).
 ## Presentation only: reads the host, never changes it.
 
 const ORANGE := Color("ff8a1f")
-const GREY := Color("8c8c96")
+const GREY := Color(0.24, 0.24, 0.3) ## untaggable: a dark slate (a light grey bleeds through hair on the hull outline)
 const INK := Color(0.055, 0.045, 0.075)
 
 var host: MatchHost
 var local: Hero
 var camera: MatchCamera
 var aim_marker: Node3D
+var arena: ArenaArt
 var danger := false ## any enemy within danger range can tag the local hero (HUD reads it)
 
 func setup(p_host: MatchHost, p_local: Hero, p_camera: MatchCamera) -> void:
@@ -22,6 +23,9 @@ func setup(p_host: MatchHost, p_local: Hero, p_camera: MatchCamera) -> void:
 	local = p_local
 	camera = p_camera
 	host.event.connect(_on_event)
+	arena = ArenaArt.new()
+	add_child(arena)
+	arena.setup(host)
 	aim_marker = Node3D.new()
 	aim_marker.name = "AimMarker"
 	add_child(aim_marker)
@@ -31,20 +35,22 @@ func setup(p_host: MatchHost, p_local: Hero, p_camera: MatchCamera) -> void:
 	if local:
 		local.visual.set_ring_color(Color.WHITE.lerp(RB.TEAM_COLORS[local.team], 0.35))
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if host == null:
 		return
+	if arena:
+		arena.refresh(delta)
 	danger = false
 	for h in host.heroes:
 		var alpha := host.visibility(local, h) if local else 1.0
 		h.visual.set_view_alpha(alpha)
 		if local == null or h.team == local.team:
 			h.visual.set_outline(INK)
-			h.visual.set_markers(false, h.has_ep())
+			h.visual.set_markers(false, h.has_ep() or h.is_immune())
 			continue
 		var taggable := host.can_tag(local, h)
 		h.visual.set_outline(ORANGE if taggable else GREY)
-		h.visual.set_markers(taggable, h.has_ep())
+		h.visual.set_markers(taggable, h.has_ep() or h.is_immune())
 		if local.is_free() and host.can_tag(h, local) and RB.flat_dist(h.global_position, local.global_position) <= host.tuning.danger_border_range:
 			danger = true
 	_update_aim()
@@ -54,7 +60,7 @@ func _update_aim() -> void:
 		aim_marker.visible = false
 		return
 	aim_marker.visible = local.is_free() and host.round_live()
-	var reach := local.tag_reach() + host.tuning.body_radius * 2.0
+	var reach := local.charged_reach() + host.tuning.body_radius * 2.0 # grows with the hampas charge
 	aim_marker.global_position = local.global_position
 	aim_marker.scale = Vector3(reach, 1, reach)
 	aim_marker.rotation.y = atan2(local.aim.x, local.aim.z)
@@ -92,11 +98,10 @@ func _on_event(kind: String, d: Dictionary) -> void:
 		"barrier_bump":
 			pass
 
-## KABOOM! confetti (spec § 7); none with Reduce flashing or Reduce camera motion.
+## KABOOM! confetti (spec Â§ 7); none with Reduce flashing or Reduce camera motion.
 func _confetti() -> void:
 	var save := get_node_or_null("/root/Save")
 	if save and (bool(save.get_setting("accessibility", "reduce_flashing")) or bool(save.get_setting("accessibility", "reduce_motion"))):
 		return
 	var centre := local.global_position if local else Vector3.ZERO
-	for color in [Color("ffd34d"), Color("9b59d6"), Color("ff5a3c"), Color("5ad1ff"), Color("ffffff")]:
-		Vfx.burst(self, centre + Vector3(0, 3.5, 0), color, 28, 7.0, 1.6, 0.16, -5.0, 75.0)
+	Vfx.confetti(self, centre + Vector3(0, 3.0, 0), [Color("ffd34d"), Color("9b59d6"), Color("ff5a3c"), Color("5ad1ff"), Color("ffffff")], 110)

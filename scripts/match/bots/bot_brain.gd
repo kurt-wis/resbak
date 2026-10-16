@@ -103,6 +103,18 @@ func _sense(h: Hero) -> void:
 		else:
 			_seen.erase(e.slot)
 
+## Falls for BAWAL! (hits the warded hero anyway): bot_fooled_chance per difficulty, rolled
+## once per episode like _chance.
+func _fooled(e: Hero) -> bool:
+	var key := "fooled_%d" % e.slot
+	var r: Variant = _rolls.get(key)
+	if r == null or host.tick - int(r[0]) > 40:
+		r = [host.tick, rng.randf() < host.tuning.bot_fooled_chance[difficulty]]
+	else:
+		r[0] = host.tick
+	_rolls[key] = r
+	return bool(r[1])
+
 ## A random chance that holds for the whole "episode" (re-rolled after 40 ticks without asking):
 ## bot_skill_use of the valid chances are taken.
 func _chance(key: String) -> bool:
@@ -153,14 +165,18 @@ func _free(h: Hero, f: InputFrame) -> void:
 		elif mode == "base" or mode == "rescue" or mode == "go":
 			stop = 0.25
 		_move_to(h, f, _goal, stop)
-	if f.pressed & RB.BTN_TAG == 0:
+	if f.pressed & RB.BTN_TAG == 0 and not h.is_charging():
 		_use_skills(h, f)
 
 # ---- tagging --------------------------------------------------------------------------------
-## Press Tag when an enemy will be inside reach and the lunge arc when the wind-up lands.
+## Charged hampas (v0.2): tap Tag when an enemy will be inside plain reach when the wind-up
+## lands; if one is just beyond it (inside the full-charge reach), hold Tag and release as soon
+## as the charge covers the gap (or the target escapes).
 func _try_tag(h: Hero, f: InputFrame) -> void:
-	if not h.can_press_tag():
+	var charging := h.is_charging()
+	if not charging and not h.can_press_tag():
 		return
+	var max_reach := h.tag_reach() * (1.0 + host.tuning.tag_charge_reach_bonus)
 	var lead := host.tuning.tag_windup
 	var r := host.tuning.body_radius
 	var my_p := h.global_position + RB.flat(h.velocity) * lead
@@ -168,11 +184,13 @@ func _try_tag(h: Hero, f: InputFrame) -> void:
 	var best_edge := INF
 	var best_pt := Vector3.ZERO
 	for e in perceived:
-		if not host.can_tag(h, e):
+		if not host.can_tag(h, e) or not host.tag_system.reach_clear(h, e.global_position):
 			continue
+		if e.is_warded() and not _fooled(e):
+			continue # BAWAL!: a wary bot doesn't hit the warded Nene
 		var ep := e.global_position + RB.flat(e.velocity) * lead
 		var edge := RB.flat_dist(my_p, ep) - 2.0 * r
-		if edge > h.tag_reach() - 0.12 or edge >= best_edge:
+		if edge > max_reach - 0.12 or edge >= best_edge:
 			continue
 		var dir := RB.flat(ep - h.global_position)
 		var land := RB.flat(ep - my_p)
@@ -181,9 +199,17 @@ func _try_tag(h: Hero, f: InputFrame) -> void:
 		best = e
 		best_edge = edge
 		best_pt = ep
+	if charging:
+		if best:
+			f.aim_point = best_pt
+			f.has_aim = true
+			if best_edge > h.charged_reach() - 0.12 and h.charge_fraction() < 1.0:
+				f.held |= RB.BTN_TAG # keep charging; letting go swings
+		return
 	if best:
 		f.pressed |= RB.BTN_TAG
-		f.held |= RB.BTN_TAG
+		if best_edge > h.tag_reach() - 0.12:
+			f.held |= RB.BTN_TAG # start a charge
 		f.aim_point = best_pt
 		f.has_aim = true
 
@@ -378,49 +404,41 @@ func _plan_resbak(h: Hero) -> void:
 	var jail_owner := RB.other_team(h.team)
 	var rp := host.jail_system.rescue_point(jail_owner)
 	if rp == Vector3.INF:
-		rp = host.jail_system.hand_point(jail_owner) # wait where the anchor will stand
+		rp = host.jail_system.post_spot(jail_owner) # wait where the first prisoner will stand
 	_goal = rp
 	mode = "rescue"
 	if RB.flat_dist(h.global_position, rp) <= 8.0:
 		_exempt_retreat = true # rushing the rescue
 
 # ---- jailed heroes ----------------------------------------------------------------------------
+## The chain forms by itself; the tip (last caught) and the post holder (first caught) steer.
+## The tip stretches toward the teammate coming to the rescue (the Resbak, else the nearest
+## free ally); the post holder walks the post along the jail line toward that teammate.
 func _jailed(h: Hero, f: InputFrame) -> void:
 	mode = "kapit"
+	if not host.jail_system.can_steer(h):
+		return
+	var best: Hero = null
+	var bd := INF
+	for a in host.allies_of(h):
+		if not a.is_free():
+			continue
+		var d := RB.flat_dist(a.global_position, h.global_position)
+		if coord.roles.get(a.slot, -1) == BotCoord.Role.RESBAK:
+			d -= 6.0 # the rescuer coming for us beats a closer ally doing something else
+		if d < bd:
+			bd = d
+			best = a
 	var owner := RB.other_team(h.team)
-	var chain: Array = host.jail_system.chain(owner)
-	var t := host.tuning
-	if h.state == Hero.State.CHAINED:
-		if host.jail_system.can_steer(h):
-			var best: Hero = null
-			var bd := INF
-			for a in host.allies_of(h):
-				if a.is_free():
-					var d := RB.flat_dist(a.global_position, h.global_position)
-					if d < bd:
-						bd = d
-						best = a
-			if best and bd > 0.6:
-				_steer_direct(h, f, best.global_position)
-		return
-	if chain.size() >= t.chain_max:
-		return
-	var goal: Vector3
-	var reach: float
-	if chain.is_empty():
-		goal = host.layout.marker(owner)
-		reach = t.anchor_range
-	else:
-		var anchor: Hero = chain[0]
-		var tip: Hero = chain[-1]
-		var near: Hero = tip
-		if RB.flat_dist(h.global_position, anchor.global_position) < RB.flat_dist(h.global_position, tip.global_position):
-			near = anchor
-		goal = near.global_position
-		reach = t.join_range
-	if RB.flat_dist(h.global_position, goal) <= reach - 0.15:
-		f.pressed |= RB.BTN_INTERACT
-	else:
+	var goal := host.jail_system.post(owner) + host.jail_system.out_dir(owner) * 6.0
+	if best:
+		goal = best.global_position
+	# v0.2 jail line: a post holder (not also the tip) walks the post along the line to the
+	# point nearest the rescuer, so the tip starts its reach from there
+	if host.jail_system.is_post_holder(h) and not host.jail_system.is_tip(h):
+		var s := host.layout.line_project(owner, goal)
+		goal = host.layout.line_point(owner, s) + host.layout.line_normal(owner, s) * host.tuning.post_hold_offset
+	if RB.flat_dist(h.global_position, goal) > 0.5:
 		_steer_direct(h, f, goal)
 
 func _steer_direct(h: Hero, f: InputFrame, to: Vector3) -> void:
@@ -563,25 +581,39 @@ func _skills_tutoy(h: Hero, f: InputFrame) -> void:
 func _skills_nene(h: Hero, f: InputFrame) -> void:
 	var s1 := h.skills[0]
 	var s2 := h.skills[1]
-	if s1.can_cast() and _is_chased(h) and _chance("iyak"):
-		_cast(f, 0)
+	# BAWAL!: a chaser about to swing gets cursed
+	if s2.can_cast() and _is_chased(h) and _threat and _dist_to(h, _threat) <= 3.5 and _chance("bawal"):
+		_cast(f, 1)
 		return
-	if not s2.can_cast():
+	if not s1.can_cast():
 		return
-	if role == BotCoord.Role.RESBAK and host.jail_system.jailed_count(h.team) > 0:
-		var jc := host.layout.jail_centre(RB.other_team(h.team))
-		var to := RB.flat(jc - h.global_position)
-		if to.length() > 6.0 and to.length() <= 20.0 and _chance("sumbong_jail"):
-			_cast(f, 1, h.global_position + to.normalized() * minf(12.0, to.length()))
+	var reach: float = h.data.v("sigaw_range")
+	# SIGAW! at a chaser (stun) ...
+	if _threat and _is_chased(h) and _dist_to(h, _threat) <= reach * 0.7 and _clear_shot(h, _threat) and _chance("sigaw_stun"):
+		_cast(f, 0, _threat.global_position + RB.flat(_threat.velocity) * 0.2)
+		return
+	# ... or at a teammate running for a rescue or a capture (a dash)
+	for a in host.team_heroes(h.team):
+		if a == h or not a.is_free() or RB.flat(a.velocity).length() < 2.0:
+			continue
+		var d := _dist_to(h, a)
+		if d >= 2.0 and d <= reach * 0.6 and _clear_shot(h, a) and _chance("sigaw_dash"):
+			_cast(f, 0, a.global_position + RB.flat(a.velocity) * 0.2)
 			return
-	elif (role == BotCoord.Role.ATAKE or role == BotCoord.Role.PAIN) and _goal != Vector3.INF and _nearest_perceived(h, 14.0) != null:
-		var fwd := RB.flat(_goal - h.global_position).normalized()
-		if fwd != Vector3.ZERO and _chance("sumbong_bait"):
-			var side := fwd.rotated(Vector3.UP, deg_to_rad(90.0))
-			var p := h.global_position + side * 10.0
-			if not host.layout.bounds.has_point(Vector2(p.x, p.z)):
-				p = h.global_position - side * 10.0
-			_cast(f, 1, p)
+
+## Nothing else stands between h and target for a straight shot (walls or other heroes).
+func _clear_shot(h: Hero, target: Hero) -> bool:
+	if not host.los_clear(h.global_position, target.global_position, RB.L_WORLD | RB.L_SKILL_WALL):
+		return false
+	var seg := RB.flat(target.global_position - h.global_position)
+	for o in host.heroes:
+		if o == h or o == target or not o.is_free():
+			continue
+		var rel := RB.flat(o.global_position - h.global_position)
+		var k := clampf(rel.dot(seg) / maxf(0.0001, seg.length_squared()), 0.0, 1.0)
+		if rel.distance_to(seg * k) < 0.9:
+			return false
+	return true
 
 func _skills_nathan(h: Hero, f: InputFrame) -> void:
 	var s1 := h.skills[0]
@@ -631,10 +663,23 @@ func _skills_inday(h: Hero, f: InputFrame) -> void:
 	var s1 := h.skills[0]
 	var s2 := h.skills[1]
 	if s2.can_cast():
+		# HILA! at a chain tip within reach (a rescue by hand) ...
+		var reach: float = float(h.data.v("hila_range")) * 0.9
 		var rp := host.jail_system.rescue_point(RB.other_team(h.team))
-		if rp != Vector3.INF and RB.flat_dist(h.global_position, rp) <= 9.0 and _chance("sagip"):
-			_cast(f, 1)
+		if rp != Vector3.INF and RB.flat_dist(h.global_position, rp) <= reach and host.los_clear(h.global_position, rp) and _chance("hila_rescue"):
+			_cast(f, 1, rp)
 			return
+		# ... or at a teammate an enemy is about to tag (pull them out)
+		for a in host.allies_of(h):
+			if not a.is_free():
+				continue
+			var d := _dist_to(h, a)
+			if d < 3.0 or d > reach or not _clear_shot(h, a):
+				continue
+			for e in perceived:
+				if host.can_tag(e, a) and RB.flat_dist(e.global_position, a.global_position) <= 2.5 and _chance("hila_save"):
+					_cast(f, 1, a.global_position)
+					return
 	if s1.can_cast() and _nearest_perceived(h, 9.0) == null and (mode == "go" or mode == "rescue"):
 		var dir := RB.flat(_enemy_pole(h) - h.global_position)
 		if dir.length() < 8.0:

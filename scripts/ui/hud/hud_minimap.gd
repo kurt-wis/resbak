@@ -5,7 +5,7 @@ extends HudPart
 ## ally and not hidden (cloud), or revealed (BUGA!, cough, patch). Nene's IYAK! decoy shows
 ## as an enemy Nene. Top right by default (Settings > Gameplay: size S/M/L, position).
 
-const SIZES := {"S": 200.0, "M": 260.0, "L": 330.0}
+const SIZES := {"S": 240.0, "M": 300.0, "L": 370.0}
 
 var rect := Rect2()
 
@@ -19,7 +19,7 @@ func _layout() -> void:
 	var w: float = SIZES.get(hud.minimap_size, 260.0)
 	var h := w * b.size.y / b.size.x
 	var margin := 24.0
-	var y := margin if hud.minimap_position != "bottom_right" else sz().y - margin - h
+	var y := 132.0 if hud.minimap_position != "bottom_right" else sz().y - margin - h # top: under the face row
 	rect = Rect2(sz().x - margin - w, y, w, h)
 
 func world_to_map(p: Vector3) -> Vector2:
@@ -43,7 +43,7 @@ func visible_enemies() -> Array[Hero]:
 			out.append(e)
 	return out
 
-## Enemy-side markers of decoys (IYAK!) that the enemy minimap draws as the hero.
+## Enemy-side markers of decoys (objects with minimap_as_hero; none since IYAK! left in v0.2).
 func visible_decoys() -> Array:
 	var out: Array = []
 	var me := hud.local
@@ -74,17 +74,20 @@ func _draw() -> void:
 	if hud == null or hud.host == null or hud.host.layout == null or rect.size == Vector2.ZERO:
 		return
 	var host := hud.host
-	draw_rect(rect.grow(4), Color(0, 0, 0, 0.5))
-	draw_rect(rect, Color(0.12, 0.15, 0.13, 0.82))
-	draw_rect(rect, HudStyle.PANEL_EDGE, false, 2.0)
+	HudStyle.panel(self, rect.grow(6), Color(1, 1, 1, 0.22), Color(0.06, 0.07, 0.1, 0.84), 14, 2)
+	draw_rect(rect, Color(0.16, 0.14, 0.12, 0.55))
 	var s := scale_m()
-	for t in range(2):
-		var jr: Rect2 = host.layout.jail_rect(t)
-		var a := world_to_map(Vector3(jr.position.x, 0, jr.position.y))
-		var jrect := Rect2(a, Vector2(jr.size.x, jr.size.y) * s)
+	for t in range(2): # v0.2 jail line: the band, its chalk line and the post where it stands now
 		var col := hud.team_color(t)
-		draw_rect(jrect, Color(col, 0.28))
-		draw_rect(jrect, Color(col, 0.9), false, 2.0)
+		var line := PackedVector2Array()
+		for q in (host.layout.lines[t] as PackedVector3Array):
+			line.append(world_to_map(q))
+		if line.size() >= 2:
+			draw_polyline(line, Color(col, 0.28), maxf(2.0, host.tuning.jail_band * 2.0 * s), true)
+			draw_polyline(line, Color(col, 0.9), 2.0, true)
+		var post := world_to_map(host.jail_system.post(t))
+		draw_circle(post, 4.0, Color(0.95, 0.95, 0.95))
+		draw_arc(post, 4.0, 0.0, TAU, 12, col, 1.5, true)
 	for t in range(2):
 		var c := world_to_map(host.base_system.pole_pos(t))
 		var col := hud.team_color(t)

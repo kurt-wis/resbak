@@ -5,9 +5,11 @@ extends Node3D
 ## builds a quick vs Bots lineup. User args (after --): --hero=<id> --difficulty=0|1|2
 ## --seed=<n> --tradisyonal --no-shadows --autoplay (the local hero is a bot too, for demos).
 
-const MAPS := {"barangay_court": "res://scenes/barangay_court.tscn"}
+const MAPS := {"barangay_court": "res://scenes/barangay_court.tscn", "construction_site": "res://scenes/construction_site.tscn"}
+const AMBIENCE := {"barangay_court": "res://assets/audio/barangay_daylight.wav"}
 const RESULTS_SCENE := "res://scenes/frontend/results.tscn"
 const TITLE_SCENE := "res://scenes/frontend/title.tscn"
+const HOME_SCENE := "res://scenes/frontend/home.tscn"
 
 var host: MatchHost
 var world: Node3D
@@ -18,9 +20,11 @@ var hud: Hud
 var player_input: PlayerInput
 var local_hero: Hero
 var bots: Array[BotBrain] = []
+var tutorial: Tutorial
 
 func _ready() -> void:
 	Controls.ensure()
+	Portraits.request_all()
 	var session := get_node_or_null("/root/Session")
 	var args := OS.get_cmdline_user_args()
 	var settings: Dictionary = session.settings.duplicate() if session else MatchHost.default_settings()
@@ -41,10 +45,16 @@ func _ready() -> void:
 	if lineup.is_empty():
 		lineup = session.quick_lineup(hero_arg) if session else _fallback_lineup(hero_arg)
 		local_slot = 0
-	MapDressing.add_lighting(self, not ("--no-shadows" in args))
-	map_root = (load(MAPS.get(settings.get("map", "barangay_court"), MAPS.barangay_court)) as PackedScene).instantiate()
+	var map_id := String(settings.get("map", "barangay_court"))
+	if not MAPS.has(map_id):
+		map_id = "barangay_court"
+	map_root = (load(MAPS[map_id]) as PackedScene).instantiate()
+	MapDressing.disable_map_cameras(map_root)
+	MapDressing.add_lighting(self, not ("--no-shadows" in args), map_root)
 	add_child(map_root)
 	MapDressing.dress_court(map_root)
+	if AMBIENCE.has(map_id):
+		MapDressing.add_ambience(self, AMBIENCE[map_id])
 	world = Node3D.new()
 	world.name = "World"
 	add_child(world)
@@ -54,13 +64,18 @@ func _ready() -> void:
 	host.setup(world, map_root, lineup, settings)
 	local_hero = host.hero_by_slot(local_slot)
 	if session:
-		session.last_map = String(settings.get("map", "barangay_court"))
+		session.last_map = map_id
 	camera = MatchCamera.new()
 	camera.name = "MatchCamera"
 	camera.target = local_hero
+	camera.bounds = host.layout.bounds
+	if local_hero:
+		var own := host.base_system.pole_pos(local_hero.team)
+		var enemy := host.base_system.pole_pos(RB.other_team(local_hero.team))
+		camera.enemy_dir = RB.flat(enemy - own).normalized()
 	add_child(camera)
+	camera.ink = MapDressing.add_ink_edges(camera, host.layout.bounds)
 	camera.snap()
-	MapDressing.add_ink_edges(camera)
 	player_input = PlayerInput.new()
 	player_input.name = "PlayerInput"
 	player_input.camera = camera
@@ -87,6 +102,10 @@ func _ready() -> void:
 	hud.resume_requested.connect(_set_pause.bind(false))
 	hud.leave_requested.connect(_leave_match)
 	host.event.connect(_on_event)
+	if session and session.mode == "tutorial":
+		tutorial = Tutorial.new()
+		add_child(tutorial)
+		tutorial.setup(host, local_hero, hud)
 
 func _fallback_lineup(local: String) -> Array:
 	var out: Array = []
@@ -138,12 +157,13 @@ func _set_pause(on: bool) -> void:
 	if player_input:
 		player_input.enabled = not on
 
-## UMALIS confirmed: vs Bots / tutorial end with no result and return to the origin menu;
-## Custom Room disconnects (no front end yet: back to the title or quit).
+## UMALIS confirmed: vs Bots / tutorial end with no result and return to the origin menu
+## (Home). Leaving steps back one screen at a time: match -> Home -> title -> quit.
 func _leave_match() -> void:
 	host.paused = true
-	if ResourceLoader.exists(TITLE_SCENE):
-		get_tree().change_scene_to_file(TITLE_SCENE)
+	var to := HOME_SCENE if ResourceLoader.exists(HOME_SCENE) else TITLE_SCENE
+	if ResourceLoader.exists(to):
+		FE.go(self, to)
 	else:
 		get_tree().quit()
 

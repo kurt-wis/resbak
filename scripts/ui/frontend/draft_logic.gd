@@ -12,14 +12,16 @@ extends RefCounted
 const ORDER := [[0, 0], [1, 0], [1, 1], [0, 1], [0, 2], [1, 2], [1, 3], [0, 3], [0, 4], [1, 4]]
 const TURN_SECS := 12.0
 const BOT_LOCK_SECS := 2.0
-const HUMAN_TEAM := 0
+const HUMAN_TEAM := 0 ## default human team (Dilaw); see human_team
 const HUMAN_SLOT := 0
 
 var picks: Array = [[], []] ## per team: hero ids in team_slot order
 var turn := 0
 var rng := RandomNumberGenerator.new()
+var human_team := HUMAN_TEAM ## v0.1.1: the player may pick Purok Lila in the Play menu
 
-func _init(seed_value := 0) -> void:
+func _init(seed_value := 0, p_human_team := HUMAN_TEAM) -> void:
+	human_team = p_human_team
 	if seed_value != 0:
 		rng.seed = seed_value
 	else:
@@ -35,7 +37,7 @@ func slot_now() -> int:
 	return ORDER[turn][1]
 
 func is_human_turn() -> bool:
-	return not is_done() and team_now() == HUMAN_TEAM and slot_now() == HUMAN_SLOT
+	return not is_done() and team_now() == human_team and slot_now() == HUMAN_SLOT
 
 ## Heroes this team can still take (roster order).
 func available(team: int) -> Array:
@@ -63,13 +65,13 @@ func auto_pick(hovered := "") -> String:
 	pick(choice)
 	return choice
 
-## Session lineup: Dilaw 0-4 then Lila 0-4, the human on Dilaw slot 1.
+## Session lineup: Dilaw 0-4 then Lila 0-4, the human on slot 1 of their chosen team.
 func lineup(player_name: String) -> Array:
 	var out: Array = []
 	for team in range(2):
 		for ts in range(picks[team].size()):
 			var hid: String = picks[team][ts]
-			var human: bool = team == HUMAN_TEAM and ts == HUMAN_SLOT
+			var human: bool = team == human_team and ts == HUMAN_SLOT
 			var data := HeroData.load_hero(hid)
 			out.append({"hero_id": hid, "team": team, "team_slot": ts, "is_bot": not human,
 				"name": player_name if human else data.display_name + " (Bot)"})

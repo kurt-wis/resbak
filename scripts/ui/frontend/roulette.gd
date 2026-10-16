@@ -1,10 +1,10 @@
 extends FrontScreen
 
-## Map and base roulette (docs/RESBAK.md § 6 "Roulette and draft"). Map wheel 4 s with the Kuya
-## Tanod map line; then, in the overhead view, the base sites flicker for 2 s and lock; the
-## draft starts 1 s later. A chosen map skips the wheel and a Fixed base skips the flicker;
-## each shows its choice for 2 s. No repeat of the previous map (Session.last_map) when more
-## than one map can be played. Writes Session.settings.map and .base_mode (a number).
+## Map roulette (docs/RESBAK.md § 6 "Roulette and draft"). Map wheel 4 s with the Kuya Tanod
+## map line; then the overhead view shows the map's fixed bases for 2 s (v0.2: bases no longer
+## roll, docs/status.md); the draft starts 1 s later. A chosen map skips the wheel and shows its
+## choice for 2 s. No repeat of the previous map (Session.last_map) when more than one map can
+## be played. Writes Session.settings.map (and base_mode = 1 for older readers).
 
 const WHEEL_SECS := 4.0
 const SHOW_SECS := 2.0
@@ -30,7 +30,7 @@ var _line_said := false
 
 signal finished
 
-## The overhead schematic: court, centre circle and the three candidate sites per side.
+## The overhead schematic: court, centre circle and each side's fixed base.
 class Overhead extends Control:
 	var site_hi := 0 ## highlighted site (1..3), 0 = none
 	var locked := false
@@ -43,13 +43,12 @@ class Overhead extends Control:
 		for team in range(2):
 			var x := size.x * (0.13 if team == 0 else 0.87)
 			var col: Color = RB.TEAM_COLORS[team]
-			for n in range(1, 4):
-				var c := Vector2(x, size.y * (0.2 + 0.3 * (n - 1)))
-				var on := n == site_hi
-				draw_circle(c, 34.0 if on else 24.0, Color(col, 1.0 if on else 0.35))
-				draw_arc(c, 34.0 if on else 24.0, 0, TAU, 32, FE.INK, 4.0 if on else 2.0)
-				if on and locked:
-					draw_arc(c, 46.0, 0, TAU, 32, FE.CHALK, 5.0)
+			var c := Vector2(x, size.y * 0.5)
+			var on := site_hi > 0
+			draw_circle(c, 34.0 if on else 24.0, Color(col, 1.0 if on else 0.35))
+			draw_arc(c, 34.0 if on else 24.0, 0, TAU, 32, FE.INK, 4.0 if on else 2.0)
+			if on and locked:
+				draw_arc(c, 46.0, 0, TAU, 32, FE.CHALK, 5.0)
 
 func build() -> void:
 	var s := Session
@@ -59,11 +58,10 @@ func build() -> void:
 	else:
 		rng.randomize()
 	var map_choice := String(s.settings.get("map_choice", "roulette"))
-	var base_choice: Variant = s.settings.get("base_choice", s.settings.get("base_mode", "roulette"))
 	map_spins = map_choice == "roulette"
-	base_spins = typeof(base_choice) == TYPE_STRING
+	base_spins = false # v0.2: fixed bases
 	map_id = _pick_map(map_choice)
-	site = rng.randi_range(1, 3) if base_spins else clampi(int(base_choice), 1, 3)
+	site = 1
 	_flick = site
 	_build_ui()
 	_enter(Phase.MAP)
@@ -154,16 +152,13 @@ func _enter(p: Phase) -> void:
 			Session.settings["map"] = map_id
 			Session.last_map = map_id
 			_say_line()
-			if base_spins:
-				_set_status("Pinipili ang base...", "Picking the base")
-			else:
-				_set_status("Nakapirming base", "Fixed base site")
+			_set_status("Nakapirming base", "Fixed bases")
 		Phase.LOCKED:
 			Session.settings["base_mode"] = site
 			overhead.site_hi = site
 			overhead.locked = true
 			overhead.queue_redraw()
-			_set_status("Base %d ang laro!" % site, "Base site %d locked" % site)
+			_set_status("Tara na!", "Bases set")
 		Phase.DONE:
 			finished.emit()
 			go("draft")

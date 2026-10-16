@@ -26,7 +26,8 @@ var _selected := ""
 var _built_turn := -1
 
 func build() -> void:
-	draft = DraftLogic.new(int(Session.settings.get("seed", 0)))
+	draft = DraftLogic.new(int(Session.settings.get("seed", 0)), int(Session.settings.get("human_team", RB.DILAW)))
+	Portraits.request_all()
 	_build_top()
 	_build_slots()
 	_build_grid()
@@ -42,7 +43,7 @@ func on_back() -> void:
 
 # ---- layout -----------------------------------------------------------------------------
 func _build_top() -> void:
-	var t := FE.bi_box("Pumili ng Bayani", "Draft", 52, FE.GOLD, HORIZONTAL_ALIGNMENT_LEFT)
+	var t := FE.bi_box("Pumili ng Katropa", "Pick your crew", 52, FE.GOLD, HORIZONTAL_ALIGNMENT_LEFT)
 	t.position = Vector2(60, 28)
 	t.size = Vector2(600, 110)
 	content.add_child(t)
@@ -57,7 +58,7 @@ func _build_top() -> void:
 	timer_label.size = Vector2(200, 100)
 	content.add_child(timer_label)
 	var map: Dictionary = FE.map_info(String(Session.settings.get("map", "barangay_court")))
-	var mb := FE.bi_box(map.fil, "Base %d" % int(Session.settings.get("base_mode", 1)), 36, FE.CHALK, HORIZONTAL_ALIGNMENT_RIGHT)
+	var mb := FE.bi_box(map.fil, "Fixed bases", 36, FE.CHALK, HORIZONTAL_ALIGNMENT_RIGHT)
 	mb.name = "MapTag"
 	mb.position = Vector2(1360, 28)
 	mb.size = Vector2(500, 100)
@@ -65,8 +66,9 @@ func _build_top() -> void:
 
 func _build_slots() -> void:
 	for team in range(2):
-		var x := 60 if team == 0 else 1460
-		var head := FE.label(RB.TEAM_FULL_NAMES[team], 30, RB.TEAM_COLORS[team], HORIZONTAL_ALIGNMENT_LEFT if team == 0 else HORIZONTAL_ALIGNMENT_RIGHT)
+		var own: bool = team == draft.human_team # your team is always on the left
+		var x := 60 if own else 1460
+		var head := FE.label(RB.TEAM_FULL_NAMES[team] + ("  (ikaw)" if own else ""), 30, RB.TEAM_COLORS[team], HORIZONTAL_ALIGNMENT_LEFT if own else HORIZONTAL_ALIGNMENT_RIGHT)
 		head.position = Vector2(x, 150)
 		head.size = Vector2(400, 40)
 		content.add_child(head)
@@ -87,7 +89,7 @@ func _build_slots() -> void:
 			col.add_theme_constant_override("separation", -4)
 			col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(col)
-			var who := Session.player_name() if (team == 0 and i == 0) else "Bot %d" % (i + 1)
+			var who := Session.player_name() if (own and i == 0) else "Bot %d" % (i + 1)
 			var nl := FE.label(who, 24, FE.CHALK)
 			var hl := FE.label("", 22, FE.GOLD)
 			col.add_child(nl)
@@ -119,10 +121,14 @@ func _build_grid() -> void:
 		swatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		swatch.add_theme_stylebox_override("panel", FE.box_style(data.color.darkened(0.2), Color(0, 0, 0, 0), 0, 10))
 		v.add_child(swatch)
-		var ini := FE.shout(data.display_name.substr(0, 1), 96, FE.CHALK, data.color.darkened(0.6))
-		ini.set_anchors_preset(Control.PRESET_FULL_RECT)
-		ini.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		swatch.add_child(ini)
+		var face := FaceBadge.new(hid, 138)
+		face.bg = data.color.darkened(0.45)
+		face.ring = FE.CHALK
+		var centre := CenterContainer.new()
+		centre.set_anchors_preset(Control.PRESET_FULL_RECT)
+		centre.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		swatch.add_child(centre)
+		centre.add_child(face)
 		v.add_child(FE.label(data.display_name, 30, FE.CHALK, HORIZONTAL_ALIGNMENT_CENTER))
 		v.add_child(FE.label(data.role, 20, FE.CHALK_DIM, HORIZONTAL_ALIGNMENT_CENTER))
 		var dots := FE.label("", 22, FE.GOLD, HORIZONTAL_ALIGNMENT_CENTER)
@@ -211,7 +217,7 @@ func _lock(hid: String) -> void:
 	var sp: Dictionary = slot_panels[team][slot]
 	var d := HeroData.load_hero(hid)
 	sp.hero.text = d.display_name
-	if not (team == 0 and slot == 0):
+	if not (team == draft.human_team and slot == 0):
 		sp.name.text = d.display_name + " (Bot)"
 	_selected = ""
 	_refresh_cards()
@@ -256,7 +262,7 @@ func _refresh_cards() -> void:
 			if hid in draft.picks[t]:
 				taken += "●"
 		(b.find_child("Taken", true, false) as Label).text = taken
-		var mine_gone: bool = hid in draft.picks[DraftLogic.HUMAN_TEAM]
+		var mine_gone: bool = hid in draft.picks[draft.human_team]
 		b.modulate = Color(1, 1, 1, 0.45) if (mine_gone and draft.is_human_turn()) else Color.WHITE
 		if hid == _selected and draft.is_human_turn():
 			b.add_theme_stylebox_override("normal", FE.box_style(FE.INK3, FE.DILAW, 6))
@@ -293,7 +299,7 @@ func advance(delta: float) -> void:
 func start_match() -> void:
 	var s := Session
 	s.lineup = draft.lineup(s.player_name())
-	s.local_slot = 0
+	s.local_slot = draft.human_team * 5
 	s.mode = "vs_bots"
 	go_call("match", func(): s.start_match())
 

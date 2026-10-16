@@ -39,6 +39,7 @@ func build(dir: Vector3, p_length: float, tint: Color) -> void:
 func _mat(col: Color, alpha: float) -> StandardMaterial3D:
 	var m := Vfx.flat_material(Color(col.r, col.g, col.b, alpha))
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.albedo_texture = Vfx.soft_texture() # a soft streak, not a hard rectangle
 	m.set_meta("base_alpha", alpha)
 	_mats.append(m)
 	return m

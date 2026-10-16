@@ -13,13 +13,13 @@
    "clip": "BreakDance",
    "frames": [
     0,
-    76
+    101
    ],
-   "seconds": 3.167,
+   "seconds": 4.208,
    "tracks": 660,
-   "foot_plant_speed_mps": 0.47,
-   "loop_seam_m": 0.008,
-   "hips_root_motion_m": 0.008
+   "foot_plant_speed_mps": 0.53,
+   "loop_seam_m": 0.026,
+   "hips_root_motion_m": 0.026
   },
   {
    "clip": "Buga",
@@ -91,8 +91,7 @@
    "tracks": 660,
    "foot_plant_speed_mps": 2.99,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0,
-   "skate_ratio": 1.67
+   "hips_root_motion_m": 0.0
   },
   {
    "clip": "Stumble",
@@ -176,8 +175,7 @@
    "tracks": 660,
    "foot_plant_speed_mps": 0.28,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0,
-   "skate_ratio": 8.93
+   "hips_root_motion_m": 0.0
   }
  ],
  "sheet": "renders\\qc\\nathan_sheet.png",
@@ -219,8 +217,8 @@
   },
   {
    "check": "clip BreakDance",
-   "status": "PASS",
-   "detail": "3.167 s, 660 channels, foot plant 0.47 m/s, loop seam 0.008 m, root motion 0.008 m"
+   "status": "WARN",
+   "detail": "4.208 s, 660 channels, foot plant 0.53 m/s, loop seam 0.026 m, root motion 0.026 m"
   },
   {
    "check": "clip Buga",
@@ -251,11 +249,6 @@
    "check": "clip Running",
    "status": "PASS",
    "detail": "0.625 s, 660 channels, foot plant 2.99 m/s, loop seam 0.0 m, root motion 0.0 m"
-  },
-  {
-   "check": "foot slide Running",
-   "status": "FAIL",
-   "detail": "moves 5.0 m/s, feet push 2.99 m/s: x1.67 (play the clip at x1.67 or put its blend point at 2.99 m/s)"
   },
   {
    "check": "clip Stumble",
@@ -291,11 +284,6 @@
    "check": "clip Walking",
    "status": "PASS",
    "detail": "2.833 s, 660 channels, foot plant 0.28 m/s, loop seam 0.0 m, root motion 0.0 m"
-  },
-  {
-   "check": "foot slide Walking",
-   "status": "FAIL",
-   "detail": "moves 2.5 m/s, feet push 0.28 m/s: x8.93 (play the clip at x8.93 or put its blend point at 0.28 m/s)"
   }
  ]
 }

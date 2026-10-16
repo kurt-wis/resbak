@@ -191,9 +191,7 @@ func _draw() -> void:
 		HudStyle.text(self, result_text(), Vector2(0, s.y - 32), 44, hud.team_color(win) if win >= 0 else Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER, s.x)
 	elif stage == "card":
 		draw_rect(Rect2(Vector2.ZERO, s), Color(0, 0, 0, 0.4))
-		HudStyle.panel(self, _card, HudStyle.PANEL_EDGE, Color(0.05, 0.07, 0.1, 0.92))
+		HudStyle.panel(self, _card, HudStyle.PANEL_EDGE, Color(0.05, 0.07, 0.1, 0.92), 24)
 		if _best:
 			var c := _card.position + Vector2(100, 300)
-			draw_circle(c, 66.0, hud.team_color(_best.team))
-			draw_circle(c, 60.0, _best.data.color.darkened(0.15))
-			HudStyle.text_in(self, HudStyle.initials(_best), Rect2(c - Vector2(60, 60), Vector2(120, 120)), 44)
+			Portraits.draw_face(self, _best.data.id, c, 64.0, _best.data.color.darkened(0.3), hud.team_color(_best.team), 5.0, 0.0, HudStyle.font())

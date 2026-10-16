@@ -8,7 +8,7 @@ you to the file that holds each fact rather than copying the fact here.
 **Agawan Base**: 5v5, anyone away from their base can be tagged and the first clean tag wins
 (Unahan), each team is barred from its own base, tagged players go to the enemy jail and are
 freed by touching the tip of a human chain, and a team scores by capturing the enemy base.
-Setting: an open-air barangay court. Entry build: LAN plus bots, Windows only, due 25 Oct 2026.
+Setting: an open-air barangay court. Entry build: LAN plus bots, Windows desktop only (no mobile or touch), due 25 Oct 2026.
 
 **The design spec is [`docs/RESBAK.md`](docs/RESBAK.md)**, the single source of truth (a
 condensed spec of the team's full GDD, which is a long PDF kept outside the repo).

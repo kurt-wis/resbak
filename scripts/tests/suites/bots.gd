@@ -99,7 +99,7 @@ func _perception(t: TestCtx) -> void:
 	host.heroes[1].enemy_alpha = 0.25 # see-through: visibility 0.25 < 0.5
 	brain = _install(host, [0], 1)[0]
 	t.go_live(host)
-	t.steps(host, 90)
+	t.steps(host, 150) # long enough for the bot to settle on its guard spot
 	t.check(not (host.heroes[1] in brain.perceived), "a see-through enemy 8 m away is not seen")
 	TestCtx.put(host.heroes[1], host.heroes[0].global_position.x + 2.0, host.heroes[0].global_position.z)
 	t.steps(host, 40)
@@ -147,12 +147,17 @@ func _bantay_tags(t: TestCtx) -> void:
 
 # ---- retreat ---------------------------------------------------------------------------------------
 func _retreat(t: TestCtx) -> void:
-	# JM (4.6 m/s, 1.2 reach) against a standing Tutoy (5.4 m/s, 1.0): the Tutoy lands first,
+	# JM (4.15 m/s, 1.2 reach) against a standing Tutoy (4.85 m/s, 1.0): the Tutoy lands first,
 	# there is no skill to use (Tradisyonal), Mahirap never ignores the rule -> back away.
 	var host := t.make_match([_entry("jm", RB.DILAW), _entry("tutoy", RB.LILA)], {"skills": false, "difficulty": 2})
 	TestCtx.put(host.heroes[0], -5, 0)
-	TestCtx.put(host.heroes[1], 0.2, 0)
+	TestCtx.put(host.heroes[1], -0.5, 0) # within 6 m even after JM's first steps home (v0.2 speeds)
 	var brain: BotBrain = _install(host, [0], 2)[0]
+	for k in range(30): # real navmesh, not the unsynced always-walkable fallback
+		if brain.nav.synced():
+			break
+		await t.tree.physics_frame
+	t.check(brain.nav.synced() and brain.nav.walkable(Vector3(-8, 0, 0)), "the bot navmesh syncs with its region (queries no longer answer the origin)")
 	t.go_live(host)
 	var retreated := false
 	for i in range(60):
@@ -211,10 +216,10 @@ func _chain(t: TestCtx) -> void:
 		all_chained = all_chained and host.heroes[i].state == Hero.State.CHAINED
 	t.check(all_chained, "every jailed bot ends up chained")
 	if chain.size() == 3:
-		var hp := host.jail_system.hand_point(RB.DILAW)
+		var post := host.jail_system.post(RB.DILAW)
 		var tip: Hero = chain[-1]
-		t.check(tip.global_position.x > hp.x + 1.5, "the tip steers toward the nearest free teammate (tip x %.2f, hand point x %.2f)" % [tip.global_position.x, hp.x])
-	t.ok("Kapit: jailed bots anchor, join and the tip steers")
+		t.check(tip.global_position.x > post.x + 3.0, "the tip stretches toward the nearest free teammate (tip x %.2f, post x %.2f)" % [tip.global_position.x, post.x])
+	t.ok("Kapit: jailed bots chain up and the tip steers")
 	await t.free_match(host)
 
 func _rescue(t: TestCtx) -> void:

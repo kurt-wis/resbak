@@ -1,12 +1,12 @@
 class_name HudScoreboard
 extends HudPart
 
-## Scoreboard, shown while Tab / View is held (docs/RESBAK.md § 7, § 9): name, hero, tags,
+## Scoreboard, shown while C / View is held (not Tab: Alt+Tab would open it) (docs/RESBAK.md § 7, § 9): name, hero, tags,
 ## rescues, captures and state for all ten players, own team first. Also allowed between
 ## rounds.
 
-const COLS := [20.0, 360.0, 580.0, 700.0, 840.0, 990.0] ## x of name, hero, tags, rescues, captures, state
-const WIDTHS := [330.0, 210.0, 110.0, 130.0, 140.0, 150.0]
+const COLS := [84.0, 400.0, 600.0, 720.0, 860.0, 1000.0] ## x of name, hero, tags, rescues, captures, state
+const WIDTHS := [310.0, 190.0, 110.0, 130.0, 140.0, 150.0]
 const ROW := 40.0
 const PANEL_W := 1160.0
 
@@ -116,4 +116,12 @@ func _draw() -> void:
 	if not held:
 		return
 	draw_rect(Rect2(Vector2.ZERO, sz()), Color(0, 0, 0, 0.35))
-	HudStyle.panel(self, _panel, HudStyle.PANEL_EDGE, Color(0.05, 0.07, 0.1, 0.9))
+	HudStyle.panel(self, _panel, HudStyle.PANEL_EDGE, Color(0.05, 0.07, 0.1, 0.92), 20)
+	for h in hud.host.heroes:
+		if not rows.has(h.slot):
+			continue
+		var name_cell: Label = rows[h.slot][0]
+		var c := Vector2(_panel.position.x + 46.0, name_cell.position.y + ROW * 0.5)
+		if h == hud.local:
+			HudStyle.panel(self, Rect2(_panel.position.x + 8, name_cell.position.y + 1, _panel.size.x - 16, ROW - 2), Color(0, 0, 0, 0), Color(hud.team_color(h.team), 0.18), 8, 0)
+		Portraits.draw_face(self, h.data.id, c, 17.0, h.data.color.darkened(0.35), hud.team_color(h.team), 2.0, 0.0 if h.is_free() else 0.55, HudStyle.font())

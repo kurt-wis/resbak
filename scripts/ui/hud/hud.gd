@@ -5,8 +5,9 @@ extends CanvasLayer
 ## stretch scales it; text is sans-serif and at least 18 px). Presentation only: it reads the
 ## host, the local hero and the MatchView, and never changes game state.
 ## Parts (scripts/ui/hud/hud_*.gd): sinking-sun timer + scores + point dots, prisoner tracker,
-## minimap, tag feed, S1/S2 + passive, danger border, off-screen arrows, capture rings, jail
-## prompt, countdown and between-rounds sequence, scoreboard (hold Tab), banners, and the
+## minimap, tag feed, S1/S2 + passive, danger border, BAWAL! hallucination, off-screen arrows, capture rings, jail
+## prompt, countdown and between-rounds sequence, scoreboard (hold Tab), banners, MOBA-style
+## announcer ribbons (HudAnnouncer), and the
 ## Escape overlay. F10 hides everything but the overlay.
 
 signal resume_requested
@@ -25,11 +26,13 @@ var minimap: HudMinimap
 var feed: HudFeed
 var skills: HudSkills
 var danger: HudDanger
+var hallucinate: HudHallucinate
 var arrows: HudArrows
 var rings: HudCaptureRings
 var jail: HudJail
 var round_ui: HudRound
 var banner_part: HudBanner
+var announcer: HudAnnouncer
 var scoreboard: HudScoreboard
 var pause: HudPause
 
@@ -62,6 +65,7 @@ func setup(p_host: MatchHost, p_local: Hero, p_view: MatchView) -> void:
 	overlay = _full_control("Overlay")
 	add_child(overlay)
 	danger = _add(HudDanger.new(), root) as HudDanger
+	hallucinate = _add(HudHallucinate.new(), root) as HudHallucinate
 	rings = _add(HudCaptureRings.new(), root) as HudCaptureRings
 	arrows = _add(HudArrows.new(), root) as HudArrows
 	timer = _add(HudTimer.new(), root) as HudTimer
@@ -72,6 +76,7 @@ func setup(p_host: MatchHost, p_local: Hero, p_view: MatchView) -> void:
 	jail = _add(HudJail.new(), root) as HudJail
 	round_ui = _add(HudRound.new(), root) as HudRound
 	banner_part = _add(HudBanner.new(), root) as HudBanner
+	announcer = _add(HudAnnouncer.new(), root) as HudAnnouncer
 	scoreboard = _add(HudScoreboard.new(), root) as HudScoreboard
 	pause = _add(HudPause.new(), overlay) as HudPause
 	timer_label = timer.timer_label
@@ -166,6 +171,8 @@ func _on_event(kind: String, d: Dictionary) -> void:
 	match kind:
 		"kaboom":
 			show_banner("KABOOM!", HudStyle.GOLD, 1.2)
+			if int(d.get("round", 1)) == 1 and banner_part:
+				banner_part.show_hint("Agawin ang bola ng kalaban, hulihin sila, iligtas ang kakampi!", 4.0)
 		"sudden_death":
 			show_banner("TAKIPSILIM!", HudStyle.RED, 2.0)
 		"match_end":

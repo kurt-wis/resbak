@@ -3,23 +3,15 @@ extends HudPart
 
 ## Tag feed on the left (docs/RESBAK.md § 7, strings § 13): tags (guard breaks too), rescues,
 ## captures and lockdown, both teams. 5 s per line, at most 5 lines; times count in host
-## ticks so a paused match keeps its lines.
+## ticks so a paused match keeps its lines. Each line is a dark pill with a stripe in the
+## acting team's colour.
 
 const MARGIN := 24.0
+const TOP := 150.0
+const LINE_H := 40.0
+const FONT := 24
 
 var lines: Array[Dictionary] = [] ## {text, color, tick}
-var labels: Array[Label] = []
-
-func _init() -> void:
-	for i in range(8):
-		var l := HudStyle.label(self, 24, HORIZONTAL_ALIGNMENT_LEFT)
-		l.visible = false
-		labels.append(l)
-
-func _layout() -> void:
-	for i in range(labels.size()):
-		labels[i].position = Vector2(MARGIN, 250.0 + i * 36.0)
-		labels[i].size = Vector2(700, 34)
 
 func texts() -> PackedStringArray:
 	var out := PackedStringArray()
@@ -61,13 +53,19 @@ func refresh(_delta: float) -> void:
 		if now - int(lines[i].tick) >= life:
 			lines.remove_at(i)
 	visible = hud.feed_visible
-	for i in range(labels.size()):
-		var l := labels[i]
-		if i < lines.size():
-			l.visible = true
-			l.text = lines[i].text
-			HudStyle.set_color(l, lines[i].color)
-			var left := life - (now - int(lines[i].tick))
-			l.modulate.a = clampf(float(left) / 30.0, 0.0, 1.0)
-		else:
-			l.visible = false
+	queue_redraw()
+
+func _draw() -> void:
+	if hud == null or hud.host == null:
+		return
+	var life := RB.ticks(hud.host.tuning.tag_feed_seconds)
+	var now := hud.host.tick
+	for i in range(lines.size()):
+		var l: Dictionary = lines[i]
+		var left := life - (now - int(l.tick))
+		var a := clampf(float(left) / 30.0, 0.0, 1.0)
+		var w := HudStyle.text_width(l.text, FONT) + 40.0
+		var r := Rect2(MARGIN, TOP + i * (LINE_H + 6.0), w, LINE_H)
+		HudStyle.panel(self, r, Color(0, 0, 0, 0), Color(0.05, 0.06, 0.09, 0.72 * a), 10, 0)
+		draw_rect(Rect2(r.position + Vector2(0, 4), Vector2(6, LINE_H - 8)), Color(l.color, a))
+		HudStyle.text(self, l.text, Vector2(r.position.x + 20, r.get_center().y + FONT * 0.36), FONT, Color(l.color.lightened(0.15), a), HORIZONTAL_ALIGNMENT_LEFT, -1, 6 if a > 0.5 else 0)

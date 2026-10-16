@@ -31,5 +31,11 @@ The original run order was not recorded. All of them landed in the initial commi
 `NeighborhoodSurroundings`, `PaintedWallGraffiti`. **No `CourtRoof` node**;
 `scenes/court_roof.tscn` exists separately but nothing currently instances it.
 
+## Match markers a map needs (v0.2)
+- `BaseSite_Dilaw` and `BaseSite_Lila` (any Node3D): the one fixed base per team. Older maps fall back to site 1 of `BaseSites/{Yellow,Purple}_Site_N`.
+- `JailLine_Dilaw` and `JailLine_Lila` (`Path3D`, anywhere): the jail line on that team's end (the jail of team T holds T's prisoners' enemies). Any shape: straight, angled or snaking; `MapLayout` samples the curve. Without one, a straight line is derived along the back of the old jail box.
+- Optional `Gameplay` node with `metadata/play_bounds` (Rect2, XZ) for the camera, minimap, bots and chain.
+- `scenes/construction_site.tscn` (Konstruksyon) carries its own WorldEnvironment; `MapDressing` leaves its lighting alone.
+
 The old `scripts/tests/legacy/verify_*.gd` checks were snapshots taken between these
 passes and no longer match the map (see `scripts/tests/README.md`).

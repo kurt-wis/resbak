@@ -5,24 +5,57 @@ extends RefCounted
 ## Filipino-over-English label rule, button builders, scene routing with the 0.3 s chalk
 ## wipe, and Settings application (display, volumes, key bindings). Presentation only.
 
-const INK := Color("15141c")
-const INK2 := Color("25222f")
-const INK3 := Color("34303f")
-const CHALK := Color("f1ebdd")
-const CHALK_DIM := Color("b9b2a3")
+## Palette. INK* are backgrounds and panels, CHALK* the text on them; Settings > Accessibility >
+## Menu theme (dark or light, also asked in first-time setup) swaps them through apply_theme().
+## OUTLINE and ON_ACCENT stay dark in both themes (logo outlines, text on yellow buttons).
+static var INK := Color("15141c")
+static var INK2 := Color("25222f")
+static var INK3 := Color("34303f")
+static var CHALK := Color("f1ebdd")
+static var CHALK_DIM := Color("b9b2a3")
+static var GOLD := Color("ffd34d")
+static var GREY := Color("77747f")
+static var ORANGE := Color("ff8a3d")
+static var SILVER := Color("c9d1da")
+static var light := false
 const DILAW := Color("f5c518")
 const LILA := Color("9b59d6")
-const ORANGE := Color("ff8a3d")
-const GOLD := Color("ffd34d")
-const SILVER := Color("c9d1da")
-const GREY := Color("77747f")
+const OUTLINE := Color("15141c")
+const ON_ACCENT := Color("15141c")
+
+const THEMES := {
+	"dark": {"INK": "15141c", "INK2": "25222f", "INK3": "34303f", "CHALK": "f1ebdd", "CHALK_DIM": "b9b2a3",
+		"GOLD": "ffd34d", "GREY": "77747f", "ORANGE": "ff8a3d", "SILVER": "c9d1da"},
+	"light": {"INK": "f3ece0", "INK2": "fffaf1", "INK3": "eadfcc", "CHALK": "211e29", "CHALK_DIM": "5b5566",
+		"GOLD": "a86f00", "GREY": "8d8796", "ORANGE": "c4520f", "SILVER": "596270"},
+}
 
 const SCENE_DIR := "res://scenes/frontend/"
-const VERSION := "0.1 (Entry build)"
+const VERSION := "0.1.1 (Demo build)"
+
+## Apply the saved menu theme ("dark" / "light"). Rebuilds the shared Theme.
+static func apply_theme(mode := "") -> void:
+	if mode == "":
+		mode = String(setting("accessibility", "theme"))
+	if not THEMES.has(mode):
+		mode = "dark"
+	var p: Dictionary = THEMES[mode]
+	INK = Color(p.INK)
+	INK2 = Color(p.INK2)
+	INK3 = Color(p.INK3)
+	CHALK = Color(p.CHALK)
+	CHALK_DIM = Color(p.CHALK_DIM)
+	GOLD = Color(p.GOLD)
+	GREY = Color(p.GREY)
+	ORANGE = Color(p.ORANGE)
+	SILVER = Color(p.SILVER)
+	light = mode == "light"
+	_theme = null
 
 ## Maps: id -> display. Only maps the match scene can load are playable.
 const MAP_POOL := [
 	{"id": "barangay_court", "fil": "Barangay Court", "en": "Barangay Court", "line": "Sa Barangay Court tayo!"},
+	{"id": "construction_site", "fil": "Konstruksyon", "en": "Construction Site", "line": "Sa Konstruksyon tayo!"},
 	{"id": "plaza", "fil": "Plaza", "en": "Plaza", "line": "Sa Plaza tayo!"},
 	{"id": "tambakan", "fil": "Tambakan", "en": "Tambakan", "line": "Sa Tambakan tayo!"},
 ]
@@ -87,8 +120,9 @@ static func label(text: String, size := 24, color := CHALK, align := HORIZONTAL_
 	return l
 
 ## Outlined chalk-poster text for logos and banners.
-static func shout(text: String, size: int, color := GOLD, outline := INK) -> Label:
+static func shout(text: String, size: int, color := GOLD, outline := OUTLINE) -> Label:
 	var l := label(text, size, color, HORIZONTAL_ALIGNMENT_CENTER)
+	l.add_theme_font_override("font", UiFonts.display())
 	l.add_theme_color_override("font_outline_color", outline)
 	l.add_theme_constant_override("outline_size", maxi(6, size / 8))
 	return l
@@ -103,11 +137,17 @@ static func bi_box(fil: String, en: String, fsize := 28, color := CHALK, align :
 	var l1 := label(p[0], fsize, color, align)
 	l1.name = "Fil"
 	box.add_child(l1)
-	var l2 := label(p[1], maxi(18, int(fsize * 0.62)), color.darkened(0.25) if color != INK else INK3, align)
+	var l2 := label(p[1], maxi(18, int(fsize * 0.62)), _secondary(color), align)
 	l2.name = "En"
 	l2.visible = p[1] != ""
 	box.add_child(l2)
 	return box
+
+## The smaller English line under a Filipino label: a quieter shade of the same colour.
+static func _secondary(color: Color) -> Color:
+	if color == ON_ACCENT:
+		return Color(ON_ACCENT, 0.75)
+	return color.darkened(0.25) if not light else color.lightened(0.25)
 
 static func set_bi(box: Node, fil: String, en: String) -> void:
 	var p := pair(fil, en)
@@ -139,15 +179,16 @@ static func button(fil: String, en := "", size := Vector2(300, 72), fsize := 30,
 	b.custom_minimum_size = size
 	b.set_meta("fil", fil)
 	b.clip_contents = true
-	var box := bi_box(fil, en, fsize, INK if primary else CHALK)
+	var box := bi_box(fil, en, fsize, ON_ACCENT if primary else CHALK)
+	(box.get_node("Fil") as Label).add_theme_font_override("font", UiFonts.display())
 	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	box.name = "Text"
 	b.add_child(box)
 	if primary:
-		b.add_theme_stylebox_override("normal", box_style(DILAW, INK, 3))
-		b.add_theme_stylebox_override("hover", box_style(DILAW.lightened(0.18), CHALK, 3))
-		b.add_theme_stylebox_override("pressed", box_style(DILAW.darkened(0.15), CHALK, 3))
-		b.add_theme_stylebox_override("focus", box_style(DILAW.lightened(0.1), CHALK, 6))
+		b.add_theme_stylebox_override("normal", box_style(DILAW, OUTLINE, 3))
+		b.add_theme_stylebox_override("hover", box_style(DILAW.lightened(0.18), OUTLINE, 4))
+		b.add_theme_stylebox_override("pressed", box_style(DILAW.darkened(0.15), OUTLINE, 3))
+		b.add_theme_stylebox_override("focus", box_style(DILAW.lightened(0.1), OUTLINE, 6))
 	if greyed:
 		set_greyed(b, true)
 	return b
@@ -165,6 +206,12 @@ static func set_greyed(b: Button, greyed: bool) -> void:
 		tag.offset_left = -170
 		tag.offset_right = -10
 		tag.offset_top = 4
+		if b.custom_minimum_size.x < 320.0: # small tiles: the tag sits under the label
+			tag.add_theme_font_size_override("font_size", 16)
+			tag.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+			tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			tag.offset_top = -22
+			tag.offset_bottom = -2
 		b.add_child(tag)
 	elif not greyed and tag:
 		tag.queue_free()
@@ -184,11 +231,13 @@ static func get_theme() -> Theme:
 	if _theme:
 		return _theme
 	var t := Theme.new()
+	t.set_default_font(UiFonts.body())
 	t.set_default_font_size(24)
 	t.set_color("font_color", "Label", CHALK)
 	t.set_color("font_color", "Button", CHALK)
-	t.set_color("font_hover_color", "Button", Color.WHITE)
-	t.set_color("font_focus_color", "Button", Color.WHITE)
+	t.set_color("font_hover_color", "Button", CHALK if light else Color.WHITE)
+	t.set_color("font_focus_color", "Button", CHALK if light else Color.WHITE)
+	t.set_color("font_pressed_color", "Button", CHALK if light else Color.WHITE)
 	t.set_color("font_disabled_color", "Button", GREY)
 	t.set_font_size("font_size", "Button", 24)
 	t.set_stylebox("normal", "Button", box_style(INK2, Color(CHALK, 0.45), 2))
@@ -257,6 +306,7 @@ const QUALITY_PRESETS := {
 }
 
 static func apply_all() -> void:
+	apply_theme()
 	apply_display()
 	apply_audio()
 	apply_bindings()
@@ -332,7 +382,7 @@ static func reset_bindings() -> void:
 # ---- logo -------------------------------------------------------------------------------
 ## The RESBAK! wordmark: chalk-yellow poster lettering, orange offset shadow, slight tilt.
 static func logo(size := 180) -> Label:
-	var l := shout("RESBAK!", size, GOLD, INK)
+	var l := shout("RESBAK!", size, Color("ffd34d"), OUTLINE)
 	l.add_theme_color_override("font_shadow_color", ORANGE)
 	l.add_theme_constant_override("shadow_offset_x", maxi(4, size / 22))
 	l.add_theme_constant_override("shadow_offset_y", maxi(4, size / 22))
