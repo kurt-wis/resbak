@@ -29,7 +29,7 @@ Then run the integration gate (`AGENTS.md` → Commands).
 | Tutoy, Nene, Nathan, JM, Inday | `assets/characters/{tutoy,nene,nathan,jm,inday}.glb` | Idle 2.00 s (48 f), Walking 1.04 s (25 f), Running 0.67 s (16 f) @ 24 fps; 462–469 tracks; 66 bones (JM 67) |
 
 ## Meshy heroes (`build_heroes.py`)
-Sources are the Meshy auto-rigged GLBs in `source_art/heroes/` (copies of the files dropped in the repo root; `Dodong_Character.glb` is **Tutoy**). Each arrived with Mixamo names, an A-pose, facing −Y, and one clip (Running; JM: Walking), plus a stray 2 m `Icosphere` the builder deletes.
+Sources are the Meshy auto-rigged GLBs in `source_art/heroes/` (copies of the files dropped in the repo root; Tutoy was called Dodong until 2026-10-16). Each arrived with Mixamo names, an A-pose, facing −Y, and one clip (Running; JM: Walking), plus a stray 2 m `Icosphere` the builder deletes.
 - **Retarget in armature space**: per bone, offset `D = R_pose · R_rest⁻¹` from the source, applied as `D · R_rest` on the target. Bone rolls differ between Meshy rigs, so copying local rotations would twist limbs; armature-space offsets don't care about roll. Hips translation is scaled by hip height.
 - Walking ← JM's native walk for everyone; Running ← each hero's own, JM's from Tutoy. Native clips are re-baked too so every clip has the same tracks.
 - **Idle** is generated: hips/legs at rest (feet planted), upper body = quaternion average of the hero's walk cycle (arms relaxed), plus a 2 s breathing/head/arm sway.

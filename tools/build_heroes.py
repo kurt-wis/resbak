@@ -29,7 +29,7 @@ OUT_DIR = os.path.join(PROJ, "assets", "characters")
 RENDER_DIR = os.path.join(PROJ, "renders")
 
 HEROES = {  # id -> source file
-    "tutoy": "Dodong_Character.glb",  # file keeps its old name; the hero is Tutoy
+    "tutoy": "Tutoy_Character.glb",
     "nene": "Nene_Character.glb",
     "nathan": "Nathan_Character.glb",
     "jm": "JM_Character.glb",
