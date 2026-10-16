@@ -2,7 +2,7 @@
 build_heroes.py - Idle / Walking / Running / BreakDance for the five Meshy-rigged heroes.
 
 Input : source_art/heroes/<Name>_Character.glb (Meshy auto-rig, Mixamo bone names, A-pose, faces -Y)
-        source_art/mocap/quaternius/UAL1_Standard.glb (Quaternius Universal Animation Library, CC0)
+        mixamo/Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard.glb (Quaternius, CC0)
         mixamo/breakdance-pack/*.fbx (Mixamo breakdance pack on X Bot)
 Output: assets/characters/<id>.glb with NLA clips Idle, Walking, Running, BreakDance,
         renders/heroes_<id>_*.png stills, renders/heroes_breakdance.png dance sheet.
@@ -30,7 +30,7 @@ SRC_DIR = os.path.join(PROJ, "source_art", "heroes")
 OUT_DIR = os.path.join(PROJ, "assets", "characters")
 RENDER_DIR = os.path.join(PROJ, "renders")
 MOCAP_DIR = os.path.join(PROJ, "source_art", "mocap")  # optional <id>_walk / <id>_run clips
-QUATERNIUS = os.path.join(MOCAP_DIR, "quaternius", "UAL1_Standard.glb")
+QUATERNIUS = os.path.join(PROJ, "mixamo", "Universal Animation Library[Standard]", "Unreal-Godot", "UAL1_Standard.glb")
 MIXAMO_DIR = os.path.join(PROJ, "mixamo", "breakdance-pack")
 
 HEROES = {  # id -> source file
