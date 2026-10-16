@@ -26,6 +26,7 @@
 | **Buga** | to blow out | Nathan skill 1, a powder cone slow | — |
 | **Ubo** | cough | Nathan skill 2, a vision-restricting cloud | — |
 | **May Tira Pa** | "there's some left" | Nathan passive, a leftover patch | — |
+| **Kimkim** | invented brand: a parody of the real powdered-milk candy sold in straw packets | Nathan's powder candy, the source of his Buga, Ubo and May Tira Pa powder | planned `kimkim_packet.glb` |
 | **Ihip** | blow (wind) | Inday skill 1, an ally speed tunnel | — |
 | **Takbo Na** | "run now!" | Inday passive, a post-jailbreak surge | — |
 | **Sari-sari store / tricycle / monobloc** | corner shop / motor-sidecar taxi / plastic chair | Environment props | `assets/props/*` |

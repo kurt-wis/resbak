@@ -5,8 +5,13 @@ you to the file that holds each fact rather than copying the fact here.
 
 ## What this is
 **RESBAK** is a stylized 3D competitive action game based on the Filipino street game
-**Agawan Base** (two teams, base freshness decides who can tag, jail + chain rescue,
-base snatching). Setting: a sunny barangay covered court.
+**Agawan Base**: 5v5, whoever touched their own base more recently can tag (Sigla), tagged
+players go to the enemy jail and are freed by touching the tip of a human chain, and a team
+scores by capturing the enemy base. Setting: an open-air barangay court. Entry build: LAN plus
+bots, Windows only, due 25 Oct 2026.
+
+**The design spec is [`docs/design/RESBAK_GDD.md`](docs/design/RESBAK_GDD.md)** (PDF copy
+alongside). Build from it.
 
 - **Engine:** Godot 4.7 Mono · GL Compatibility · Jolt Physics · 1280×720, `canvas_items`/`expand`
 - **Language:** GDScript (no C# yet, despite the Mono build)
@@ -22,8 +27,12 @@ base snatching). Setting: a sunny barangay covered court.
 | ---- | ----- |
 | What's built vs. designed | [`docs/status.md`](docs/status.md) |
 | How the runtime fits together (scenes, controller, input) | [`docs/architecture.md`](docs/architecture.md) |
-| Game rules (freshness, jail, rescue, win) | [`docs/gameplay/agawan_base_rules.md`](docs/gameplay/agawan_base_rules.md) |
-| A character's skills and numbers | [`docs/characters/0N_*.md`](docs/characters/) (summary: [`docs/RESBAK.md`](docs/RESBAK.md)) |
+| Game rules (Sigla, tagging, jail, chain, rescue, round end) | GDD § Core rules, plus § Player states and timing |
+| Every tuning number | GDD § Numbers at a glance (the code's tuning values must match it) |
+| A character's skills and numbers | GDD § Characters |
+| Maps, HUD, screens, settings, bots | GDD § Maps, § The match screen, § Settings, § Bots |
+| Networking, tick order, save data | GDD § Technical notes for Godot |
+| Is a feature in the 25 Oct entry, the finals or later? | GDD § What ships when (that table wins) |
 | Filipino terms | [`docs/glossary.md`](docs/glossary.md) |
 | Hero roster, locomotion, character select | `scripts/runtime/hero_roster.gd`, `hero_controller.gd`, `character_select.gd` |
 | Skills prototype code (Batang Hamog) | `scripts/runtime/batang_hamog.gd`, `scripts/runtime/dire_diretso.gd` |
@@ -47,7 +56,7 @@ source_art/           raw character sources + .blend (Godot-ignored); heroes/ = 
 tools/                Blender builders (see tools/README.md)
 renders/              Blender review stills (Godot-ignored)
 addons/               meshy-godot-plugin (third-party; don't edit)
-docs/                 design + reality docs (index: docs/README.md)
+docs/                 design/ = the GDD (spec) · reality docs · archive/ = superseded design docs (index: docs/README.md)
 ```
 
 ## Commands
@@ -78,16 +87,18 @@ $env:BLENDER = "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 5. **Move or rename a `.gd` together with its `.gd.uid`**, and an asset together with its `.import`. Then grep for `res://` references to update and run `--import`.
 6. Use `res://` paths in GDScript and repo-relative paths in `tools/*.py`. Never use absolute machine paths.
 7. Don't edit `addons/` or `.godot/`. Don't commit `.opencode/` or `__pycache__/`.
-8. Large binaries (`*.glb *.png *.jpg *.blend *.res`) go through **Git LFS** (`.gitattributes`).
+8. Large binaries (`*.glb *.png *.jpg *.blend *.res *.pdf`) go through **Git LFS** (`.gitattributes`).
 
 ## Source of truth
-- **Design intent:** `docs/RESBAK.md` > `docs/characters/*` (dossiers win on numbers) ≈ `docs/gameplay/agawan_base_rules.md`.
+- **Design intent:** `docs/design/RESBAK_GDD.md`, and nothing else. `docs/archive/` is history only; never implement from it.
+- **Scope:** the GDD's "What ships when" table. Build entry features first; don't build finals or later features unless asked.
+- **Don't edit `docs/design/`.** It is exported from the team's design workspace. If the GDD is wrong, unclear or missing something, say so and log the gap in `docs/status.md`.
 - **Shipped behavior:** the code. **If code and docs disagree, the code wins.** Fix the doc in the same change, and note any design ↔ code gap in `docs/status.md`.
 
 ## Keeping docs true (do this in the same change)
 | You changed… | Also update |
 | ------------ | ----------- |
-| A skill, passive, or game system | `docs/status.md`, and `docs/architecture.md` if structure or input changed |
+| A skill, passive, or game system | `docs/status.md`, and `docs/architecture.md` if structure or input changed. Use the GDD's numbers; if you must deviate, log it in `docs/status.md` |
 | An animation clip or rig | `docs/pipelines/blender.md` (clip table), plus the gate asserts |
 | Folder layout, commands, or a hard rule | this file |
 | A non-obvious choice | `docs/decisions.md` (dated entry) |

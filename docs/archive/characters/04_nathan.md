@@ -4,7 +4,7 @@
 - **Name**: Nathan
 - **Archetype / Primary Role**: **Disruption**
 - **Secondary Specialty**: **Deception**
-- **Vibe & Concept**: The mischievous neighborhood kid perpetually clutching straw packets of powdery sweet Mik-Mik candy. Nathan turns everyday street snacks into battlefield hazards, blinding enemies, tracking them with candy powder trails, and laying footstep traps.
+- **Vibe & Concept**: The mischievous neighborhood kid perpetually clutching straw packets of powdery sweet Kimkim candy. Nathan turns everyday street snacks into battlefield hazards, blinding enemies, tracking them with candy powder trails, and laying footstep traps.
 
 ---
 
@@ -13,7 +13,7 @@
 ### Active Skill 1: BUGA!
 - **Category**: Frontal Cone Slow & Tracking
 - **Mechanics**:
-  - Nathan pauses briefly (0.35s inhale animation) and blows a wide forward cone (60° arc, 7.0-meter range) of powdered Mik-Mik.
+  - Nathan pauses briefly (0.35s inhale animation) and blows a wide forward cone (60° arc, 7.0-meter range) of powdered Kimkim.
   - Opponents caught in the powder blast suffer a 35% movement speed reduction for 3.0 seconds.
   - Affected enemies leave a bright, glowing powder footstep trail behind them, making their escape or flanking route obvious across the court.
 - **Fair Play Constraints**:
@@ -23,7 +23,7 @@
 ### Active Skill 2: UBO! UBO!
 - **Category**: Area Obscuration & Cough Interruption
 - **Mechanics**:
-  - Nathan hurls a sealed Mik-Mik packet that bursts on impact into a lingering cloud of powder haze (4.0-meter radius, lasting 6.0 seconds).
+  - Nathan hurls a sealed Kimkim packet that bursts on impact into a lingering cloud of powder haze (4.0-meter radius, lasting 6.0 seconds).
   - Both allies and enemies inside the cloud experience restricted vision.
   - Enemies who remain inside the cloud for longer than 1.0 second trigger a coughing fit:
     - Coughing emits loud audio cues and ping markers revealing their exact position.

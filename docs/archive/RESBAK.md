@@ -88,7 +88,7 @@
 
 ### **Skill 1 — BUGA!**
 
-* Nathan blows a cone of mikmik powder in front of him.
+* Nathan blows a cone of Kimkim powder in front of him.
 
 * Enemies caught in the blast receive a brief movement slow and leave a visible powder trail, making their escape route easier to track. The blast does not tag or cancel a flag capture.
 
@@ -96,7 +96,7 @@
 
 ### **Skill 2 — UBO! UBO!**
 
-* Nathan throws a mikmik packet that bursts into a lingering powder cloud.
+* Nathan throws a Kimkim packet that bursts into a lingering powder cloud.
 
 * Players inside have reduced vision through the cloud. Enemies who remain inside too long cough, briefly revealing their location and interrupting sprinting—but they can still move, tag, and use skills.
 
