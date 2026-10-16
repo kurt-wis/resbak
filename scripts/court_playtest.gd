@@ -10,6 +10,8 @@ var overview := false
 var show_full_roof := false
 var roof_paints: Array[ShaderMaterial] = []
 var camera_focus := Vector3.ZERO
+var reference_camera: Dictionary
+var map_scale := Vector3.ONE
 
 func block(pos: Vector3, size: Vector3, color: Color) -> void:
 	var body := StaticBody3D.new()
@@ -36,14 +38,14 @@ func _ready() -> void:
 	light.name = "WarmAfternoonSun"
 	light.rotation_degrees = Vector3(-38,-38,0)
 	light.light_color = Color("ffe1b8")
-	light.light_energy = 0.80
+	light.light_energy = 1.0
 	light.shadow_enabled = true
 	light.shadow_opacity = 0.68
 	light.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 	light.directional_shadow_max_distance = 65.0
 	light.directional_shadow_blend_splits = true
-	light.shadow_bias = 1.0
-	light.shadow_normal_bias = 3.0
+	light.shadow_bias = 1.5
+	light.shadow_normal_bias = 2.0
 	add_child(light)
 	if "--no-shadows" in OS.get_cmdline_user_args():
 		light.shadow_enabled = false
@@ -51,13 +53,15 @@ func _ready() -> void:
 	world.environment = Environment.new()
 	world.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	world.environment.ambient_light_color = Color("9faad9")
-	world.environment.ambient_light_energy = 0.16
+	world.environment.ambient_light_energy = 0.23
 	world.environment.adjustment_enabled = true
 	world.environment.adjustment_contrast = 1.06
 	world.environment.adjustment_saturation = 0.95
 	add_child(world)
 	var court = load("res://scenes/barangay_court.tscn").instantiate()
 	add_child(court)
+	reference_camera=court.get_meta("reference_camera",{})
+	map_scale=court.scale
 	style_purple_tricycle(court)
 	add_prop_contact_shadows(court)
 	collect_roof_materials(court)
@@ -65,7 +69,7 @@ func _ready() -> void:
 	player.name = "BatangHamogPlayer"
 	player.floor_snap_length = 0.35
 	player.floor_constant_speed = true
-	player.position = Vector3(-10,0.2,2)
+	player.position = Vector3(-10.*map_scale.x,1.7,2.*map_scale.z)
 	var collision := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = 0.35
@@ -106,6 +110,7 @@ func _ready() -> void:
 				animator.pause()
 				break
 	camera = Camera3D.new()
+	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	camera.size = 8.5
 	camera.current = true
@@ -172,14 +177,16 @@ func _physics_process(delta: float) -> void:
 		if animator:
 			animator.pause()
 	if overview:
-		camera.size = 31
-		camera.position = Vector3(0,34,24)
-		camera.look_at(Vector3(0,0,1))
+		camera.projection = Camera3D.PROJECTION_PERSPECTIVE
+		camera.fov = reference_camera.get("fov",46.0)
+		camera.position = reference_camera.get("position",Vector3(0,31,27))
+		camera.look_at(reference_camera.get("target",Vector3(0,1.5,3.8)))
 	else:
+		camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 		camera.size = 8.5
 		var target := player.position + Vector3(input.x*0.55,0.65,input.y*0.55)
-		target.x = clampf(target.x,-15.0,15.0)
-		target.z = clampf(target.z,-7.5,13.0)
+		target.x = clampf(target.x,-22.*map_scale.x,22.*map_scale.x)
+		target.z = clampf(target.z,-12.*map_scale.z,24.*map_scale.z)
 		camera_focus = camera_focus.lerp(target,1.0-exp(-9.0*delta))
 		camera.position = camera_focus + Vector3(0,11,7.5)
 		camera.look_at(camera_focus)
@@ -243,16 +250,17 @@ func add_illustrated_edges() -> void:
 
 
 func style_purple_tricycle(court: Node3D) -> void:
-	var tricycle := court.get_node("StreetDetails/PurpleStreetTricycle")
-	for mesh in tricycle.find_children("*", "MeshInstance3D", true, false):
-		for surface in range(mesh.mesh.get_surface_count()):
-			var original := mesh.get_active_material(surface) as StandardMaterial3D
-			if original:
-				var paint := ShaderMaterial.new()
-				paint.resource_name = "PurpleTricyclePaint"
-				paint.shader = load("res://shaders/purple_vehicle.gdshader")
-				paint.set_shader_parameter("paint_texture", original.albedo_texture)
-				mesh.set_surface_override_material(surface,paint)
+	for tricycle in court.get_node("StreetDetails").get_children():
+		if not String(tricycle.name).begins_with("PurpleStreetTricycle"): continue
+		for mesh in tricycle.find_children("*", "MeshInstance3D", true, false):
+			for surface in range(mesh.mesh.get_surface_count()):
+				var original := mesh.get_active_material(surface) as StandardMaterial3D
+				if original:
+					var paint := ShaderMaterial.new()
+					paint.resource_name = "PurpleTricyclePaint"
+					paint.shader = load("res://shaders/purple_vehicle.gdshader")
+					paint.set_shader_parameter("paint_texture", original.albedo_texture)
+					mesh.set_surface_override_material(surface,paint)
 
 func add_prop_contact_shadows(court: Node3D) -> void:
 	var paint := ShaderMaterial.new()
@@ -300,6 +308,16 @@ func update_roof_cutaway() -> void:
 		material.set_shader_parameter("cutaway",not show_full_roof)
 		material.set_shader_parameter("focus_uv",focus)
 		material.set_shader_parameter("cutaway_radius",0.65 if overview else 0.92)
+
+
+
+
+
+
+
+
+
+
 
 
 
