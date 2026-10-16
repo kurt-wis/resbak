@@ -1,0 +1,10 @@
+[
+  {
+    "mesh_path": "StreetDetails/RoadsideConcreteBarrier6/ContinuousConcreteSurface",
+    "transform": "Transform3D(0.8633098, 0, 0.5046747, 0, 1, 0, -0.50467455, 0, 0.86331016, 0.103331566, 0.18866552, -1.0912743)"
+  },
+  {
+    "mesh_path": "StreetDetails/RoadsideConcreteBarrier6/ContinuousConcreteSurface2",
+    "transform": "Transform3D(0.7965911, 0, -0.60451925, 0, 1, 0, 0.60451883, 0, 0.79659176, 0.10333347, 0.18866552, -53.2375)"
+  }
+]
