@@ -143,7 +143,7 @@ func _build_preview() -> void:
 	# Same high three-quarter angle as the in-game camera, just closer.
 	var cam := Camera3D.new()
 	cam.projection = Camera3D.PROJECTION_ORTHOGONAL
-	cam.size = 2.6
+	cam.size = 3.1
 	cam.position = Vector3(0, 3.1, 2.7)
 	vp.add_child(cam)
 	cam.look_at(Vector3(0, 0.85, 0))

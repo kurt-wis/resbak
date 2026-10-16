@@ -89,7 +89,7 @@ $env:BLENDER = "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 5. **Move or rename a `.gd` together with its `.gd.uid`**, and an asset together with its `.import`. Then grep for `res://` references to update and run `--import`.
 6. Use `res://` paths in GDScript and repo-relative paths in `tools/*.py`. Never use absolute machine paths.
 7. Don't edit `addons/` or `.godot/`. Don't commit `.opencode/` or `__pycache__/`.
-8. Large binaries (`*.glb *.png *.jpg *.blend *.res *.pdf`) go through **Git LFS** (`.gitattributes`).
+8. Large binaries (`*.glb *.png *.jpg *.blend *.res *.pdf *.fbx`) go through **Git LFS** (`.gitattributes`).
 
 ## Source of truth
 - **Design intent:** `docs/design/RESBAK_GDD.md`, and nothing else. `docs/archive/` is history only; never implement from it.

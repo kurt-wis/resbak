@@ -34,15 +34,15 @@ _Last verified: 2026-10-16 (gate green)._
 The five Meshy heroes move with the shared `HeroController` (no skills yet). Movement follows the
 design doc's 2026-10-16 rule: always run (Tutoy 5.4, JM 4.6, others 5.0 m/s), a 15–50 % stick tilt
 walks at half speed, under 15 % stands; keyboard always runs. On the character select each hero
-plays the `BreakDance` clip. Skills exist only on the old Batang Hamog rig (`--hero=hamog`).
+plays their own Mixamo `BreakDance` routine. Skills exist only on the old Batang Hamog rig (`--hero=hamog`).
 `source_art/heroes/KimKim_Asset.glb` is Nathan's Kimkim packet prop (not used in code yet).
 
 ## Known design ↔ code gaps
 - **No flag in the GDD**: base capture is a 1.5 s Interact hold at the pole. There is no flag to carry, and no capture code exists yet.
 - **`is_carrying_flag` is legacy**: it survives on `BatangHamogController` only because Dire-Diretso's reset (and its gate assert) uses it. Replace it when capture is built.
 - **Tutoy vs Batang Hamog**: the design doc gives Tutoy the speed burst + slide kit, but Harurot / Lusot / Dire-Diretso still live in `BatangHamogController` on the old model. Porting them onto `tutoy.glb` needs Harurot/Lusot clips for the new rig.
-- **Walk/run clips are shared**: every hero's Walking is retargeted from JM's walk, and JM's Running from Tutoy's; Idle is generated. Fine for the demo, but per-hero personality clips would read better.
-- Walk/run playback is scaled to the measured foot speed (hero_roster *_clip_speed); walking plays near 1.9x until heroes get longer-stride walks.
+- **Walk/run clips are shared**: Idle and Running are Quaternius mocap and Walking is JM's Meshy walk, for all five. Only BreakDance is per hero. Per-hero personality walks/runs would read better.
+- Walk/run playback is scaled to the measured foot speed (hero_roster *_clip_speed): running plays at 0.76–1.11×, walking near 1.7–2.2× until heroes get longer-stride walks.
 - **Harurot speed**: the dossier says "120% speed multiplier"; the code reads it as +120%, `harurot_speed_multiplier = 2.2`. The clip is 1.0 s but the burst lasts 1.2 s, and the last 0.2 s holds the clip's final pose.
 - **`movement_test.gd`** still has the pre-controller Shift-sprint rig and does not use `BatangHamogController`.
 - The touch button labelled **DASH** triggers Harurot. That label is a leftover from before the rename.

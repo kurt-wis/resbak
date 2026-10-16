@@ -35,14 +35,15 @@ Scripts report success even when a mesh floats or a cycle skates, so check befor
 | --------- | --- | -------------- |
 | Batang Hamog | `assets/characters/batang_hamog.glb` | Idle 3.00 s, Walking 1.04 s, Running 0.67 s, Harurot 1.00 s (24 f @ 24 fps), Lusot_Slide 0.96 s, Lusot_Vault 0.58 s; RunFast exported but not gate-checked |
 | JM (Botsog), procedural, unused | `assets/characters/jm_botsog.glb` | Idle 2.00 s, Walking 1.07 s, Running 0.60 s (30 fps); 55 bones |
-| Tutoy, Nene, Nathan, JM, Inday | `assets/characters/{tutoy,nene,nathan,jm,inday}.glb` | Idle 2.00 s (48 f), Walking 1.04 s (25 f), Running 0.67 s (16 f), BreakDance 4.00 s (96 f) @ 24 fps; 462–469 tracks; 66 bones (JM 67) |
+| Tutoy, Nene, Nathan, JM, Inday | `assets/characters/{tutoy,nene,nathan,jm,inday}.glb` | Idle 2.50 s, Walking 1.04 s, Running 0.92 s, BreakDance per hero (Tutoy 3.0 s, Nene 3.9 s, Nathan 3.2 s, JM 6.7 s, Inday 4.9 s) @ 24 fps; 660 tracks (JM 670); 66 bones (JM 67) |
 
 ## Meshy heroes (`build_heroes.py`)
-Sources are the Meshy auto-rigged GLBs in `source_art/heroes/` (copies of the files dropped in the repo root; Tutoy was called Dodong until 2026-10-16). Each arrived with Mixamo names, an A-pose, facing −Y, and one clip (Running; JM: Walking), plus a stray 2 m `Icosphere` the builder deletes.
-- **Retarget in armature space**: per bone, offset `D = R_pose · R_rest⁻¹` from the source, applied as `D · R_rest` on the target. Bone rolls differ between Meshy rigs, so copying local rotations would twist limbs; armature-space offsets don't care about roll. Hips translation is scaled by hip height.
-- Walking ← JM's native walk for everyone; Running ← each hero's own, JM's from Tutoy. Native clips are re-baked too so every clip has the same tracks.
-- **Idle** is generated: hips/legs at rest (feet planted), upper body = quaternion average of the hero's walk cycle (arms relaxed), plus a 2 s breathing/head/arm sway.
-- **BreakDance** (character select only) is hand-keyed in code: 2 bars of toprock, drop, a two-turn spinning leg sweep, a one-arm freeze, pop up; frame 96 = frame 0. Poses are limb *directions* in the hero's yaw frame (pelvis tilt doesn't drag limbs), turned into rotations per rig with `rotation_difference`, so one choreography fits all five A-poses. The hips height is solved each frame so the lowest foot touches the floor.
+Sources are the Meshy auto-rigged GLBs in `source_art/heroes/` (Tutoy was called Dodong until 2026-10-16): Mixamo names, A-pose, facing −Y, plus a stray 2 m `Icosphere` the builder deletes. Clips come from mocap through `tools/retarget_clip.py`:
+- **Retarget**: per bone, the source's world motion offset `D = R_pose · R_rest⁻¹`, applied after swinging the target bone onto the source's rest direction. That ignores bone roll and fixes T-pose sources (Mixamo, Quaternius) on our A-pose heroes. Resampled to 24 fps; hips height scaled to the hero.
+- **Idle** = Quaternius `Idle_Loop`, **Running** = Quaternius `Jog_Fwd_Loop` (`source_art/mocap/quaternius/UAL1_Standard.glb`, CC0). **Walking** = the walk Meshy shipped with JM, for everyone: Quaternius `Walk_Loop` is a stroll (feet ~0.8 m/s) that would play ~3× at the design's 2.5 m/s walk. A file `source_art/mocap/<id>_walk.*` / `<id>_run.*` overrides per hero.
+- Locomotion clips are shifted so their lowest sole touches the floor (`bake_grounded`).
+- **BreakDance** (character select only) = each hero's own Mixamo routine (`BREAKDANCE` in the builder, files in the repo-root `mixamo/breakdance-pack/`): Tutoy footwork 2 → 2× flair, Nene 2× uprock var 1, Nathan footwork 1, JM freezes, Inday Brooklyn uprock. Each move's travel, height change and spin are removed, moves cross-fade over 8 frames, floor travel is shrunk to a 0.35 m radius so the dancer stays on the pad, the end eases into frame 0 (seamless loop), and any frame where the mesh dips under the floor is lifted (smoothed). Uprock footsteps slide a little as a result.
+- After rebuilding, run `tools/qc_asset.py` and copy the Walking / Running foot-plant speeds into `hero_roster.gd`.
 - Review stills: `renders/heroes_<id>_{idle,walking,running}.png` from the game's 3/4 top-down angle, and `renders/heroes_breakdance.png` (rows = heroes, six dance frames each).
 
 ## Harurot keyframe structure (Hamog)
