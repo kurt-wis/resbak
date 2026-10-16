@@ -2,6 +2,7 @@
 
 [ext_resource type="Shader" path="res://shaders/reference_paint.gdshader" id="1_brpvb"]
 [ext_resource type="Texture2D" path="res://assets/environment/reference_roof_paint.res" id="2_c7qef"]
+[ext_resource type="Texture2D" path="res://assets/environment/concrete.png" id="2_m1jpt"]
 [ext_resource type="Texture2D" path="res://assets/environment/painted_concrete_tile.png" id="3_m1jpt"]
 [ext_resource type="Shader" path="res://shaders/reference_closed_concrete.gdshader" id="4_2vay2"]
 [ext_resource type="Shader" path="res://shaders/reference_chainlink.gdshader" id="5_tm4xl"]
@@ -15,7 +16,6 @@
 [ext_resource type="Texture2D" path="res://imported_models/crowd_barrier_1800tri/crowd_barrier_1800tri_texture_0.png" id="13_rug01"]
 [ext_resource type="Shader" path="res://shaders/reference_asphalt.gdshader" id="14_8glkx"]
 [ext_resource type="PackedScene" path="res://assets/props/street_tricycle.tscn" id="15_8s3tp"]
-[ext_resource type="Shader" path="res://shaders/reference_damp_patch.gdshader" id="16_rsgbo"]
 [ext_resource type="Shader" path="res://shaders/reference_bunting.gdshader" id="17_or7ld"]
 [ext_resource type="PackedScene" path="res://assets/decals/front_wall_decals.tscn" id="18_c7qef"]
 
@@ -28,6 +28,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_f55ty"]
 top_radius = 0.008
@@ -470,6 +471,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_yhovv"]
 top_radius = 0.035
@@ -552,6 +554,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_kxppm"]
 size = Vector3(0.15, 3.5, 0.15)
@@ -574,6 +577,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_hnp6t"]
 size = Vector3(0.12, 1.35, 2.25)
@@ -587,6 +591,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_sjej1"]
 size = Vector3(0.025, 1.35, 0.035)
@@ -621,6 +626,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_ftq1d"]
 top_radius = 0.0225
@@ -1171,12 +1177,13 @@ radial_segments = 6
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gnxw5"]
 render_priority = 0
 shader = ExtResource("1_brpvb")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_e6ehd"]
 size = Vector3(0.38, 2.3, 24.55)
@@ -1187,12 +1194,13 @@ size = Vector3(0.38, 2.3, 24.55)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fhu0i"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_brpvb"]
 _surfaces = [{
@@ -1528,12 +1536,13 @@ size = Vector3(0.38, 2.3, 24.55)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_23buw"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_c7qef"]
 _surfaces = [{
@@ -2622,12 +2631,13 @@ points = PackedVector3Array(16.7, 2.3, 13.96, 16.7, 2.3, 14.04, 25, 2.3, 13.96, 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_triri"]
 render_priority = 0
 shader = ExtResource("1_brpvb")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_4k1j4"]
 size = Vector3(5.5, 1.3, 0.35)
@@ -2710,12 +2720,13 @@ size = Vector3(5.5, 0.2, 0.3)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vj5dg"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_2wq3e"]
 _surfaces = [{
@@ -2740,12 +2751,13 @@ radial_segments = 6
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kbocp"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_hxrrc"]
 _surfaces = [{
@@ -2848,12 +2860,13 @@ size = Vector3(5.5, 0.2, 0.3)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vaby0"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_knrx4"]
 _surfaces = [{
@@ -2878,12 +2891,13 @@ radial_segments = 6
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vu6bd"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_mmmlk"]
 _surfaces = [{
@@ -2986,12 +3000,13 @@ size = Vector3(5.5, 0.2, 0.3)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pksri"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_6fauq"]
 _surfaces = [{
@@ -3016,12 +3031,13 @@ radial_segments = 6
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fng8p"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_6irwx"]
 _surfaces = [{
@@ -3046,12 +3062,13 @@ radial_segments = 6
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3pm3c"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_igw7x"]
 _surfaces = [{
@@ -3076,6 +3093,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_fxqdj"]
 size = Vector3(6.7, 0.002, 0.035)
@@ -3098,12 +3116,13 @@ size = Vector3(6.7, 0.002, 0.035)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wycn3"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_ndh1g"]
 _surfaces = [{
@@ -3146,6 +3165,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_pje44"]
 size = Vector3(1.16, 0.002, 0.065)
@@ -3192,12 +3212,13 @@ size = Vector3(1.16, 0.002, 0.065)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8pvcs"]
 render_priority = 0
 shader = ExtResource("1_brpvb")
-shader_parameter/base_color = Color(0.6392157, 0.62352943, 0.56078434, 1)
+shader_parameter/base_color = Color(0.6392157, 0.627451, 0.57254905, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_22aik"]
 size = Vector3(1.2, 0.3, 1.21)
@@ -3205,12 +3226,13 @@ size = Vector3(1.2, 0.3, 1.21)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c0aao"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.6392157, 0.62352943, 0.56078434, 1)
+shader_parameter/base_color = Color(0.6392157, 0.627451, 0.57254905, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_wxg3g"]
 _surfaces = [{
@@ -3270,12 +3292,13 @@ size = Vector3(1.2, 0.3, 1.21)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bxori"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.6392157, 0.62352943, 0.56078434, 1)
+shader_parameter/base_color = Color(0.6392157, 0.627451, 0.57254905, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_ajit1"]
 _surfaces = [{
@@ -3290,12 +3313,13 @@ _surfaces = [{
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hmg3q"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_m1jpt"]
 _surfaces = [{
@@ -3316,12 +3340,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_48ahr"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_2vay2"]
 _surfaces = [{
@@ -3363,12 +3388,13 @@ size = Vector3(18.6, 0.3, 1.21)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5s3te"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_vb4k0"]
 _surfaces = [{
@@ -3405,12 +3431,13 @@ size = Vector3(9.5, 0.002, 0.035)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_l6m7j"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_jd3le"]
 _surfaces = [{
@@ -3492,12 +3519,13 @@ size = Vector3(1.2, 0.3, 1.21)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8hm84"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.6392157, 0.62352943, 0.56078434, 1)
+shader_parameter/base_color = Color(0.6392157, 0.627451, 0.57254905, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_c5v1a"]
 _surfaces = [{
@@ -3557,12 +3585,13 @@ size = Vector3(1.2, 0.3, 1.21)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wlkcv"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.6392157, 0.62352943, 0.56078434, 1)
+shader_parameter/base_color = Color(0.6392157, 0.627451, 0.57254905, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_eti1v"]
 _surfaces = [{
@@ -3577,12 +3606,13 @@ _surfaces = [{
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2qwch"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_tm4xl"]
 _surfaces = [{
@@ -3603,12 +3633,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sa3w7"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.70980394, 0.5294118, 0.33333334, 1)
+shader_parameter/base_color = Color(0.70980394, 0.5529412, 0.3764706, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 1.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_44gsf"]
 _surfaces = [{
@@ -3727,6 +3758,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_wp6dy"]
 size = Vector3(8, 2.5, 0.22)
@@ -3767,6 +3799,7 @@ shader_parameter/roof_axis = 1.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_qd856"]
 size = Vector3(8.8, 0.14, 5.85)
@@ -4162,12 +4195,13 @@ size = Vector3(0.7919199, 0.96599996, 0.81654465)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_neyk2"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_t5w6t"]
 _surfaces = [{
@@ -4880,12 +4914,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xsh6p"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_p2jpg"]
 _surfaces = [{
@@ -4904,12 +4939,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fue8o"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_d4xqx"]
 _surfaces = [{
@@ -4928,12 +4964,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h375s"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_r42gc"]
 _surfaces = [{
@@ -4952,12 +4989,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4sf52"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_asgvv"]
 _surfaces = [{
@@ -4979,12 +5017,13 @@ size = Vector3(4.2, 8, 0.45)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1qheq"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_2eoai"]
 _surfaces = [{
@@ -5013,12 +5052,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lsr6s"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_kte6l"]
 _surfaces = [{
@@ -5037,12 +5077,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dm6ll"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_grbxa"]
 _surfaces = [{
@@ -5061,12 +5102,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g2htt"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_nfslx"]
 _surfaces = [{
@@ -5085,12 +5127,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ifrsc"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_ph4jj"]
 _surfaces = [{
@@ -5113,6 +5156,7 @@ size = Vector3(4.2, 8, 0.45)
 render_priority = 0
 shader = ExtResource("14_8glkx")
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_87ed3"]
 size = Vector3(58, 0.02, 8)
@@ -5126,6 +5170,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_pn4p1"]
 size = Vector3(53, 0.006, 0.075)
@@ -5142,6 +5187,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_etrht"]
 size = Vector3(1.35, 0.006, 0.1)
@@ -5353,12 +5399,13 @@ size = Vector3(0.035, 0.015, 0.4)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_f5eob"]
 render_priority = 0
 shader = ExtResource("1_brpvb")
-shader_parameter/base_color = Color(0.5529412, 0.5294118, 0.47058824, 1)
+shader_parameter/base_color = Color(0.5882353, 0.5686275, 0.50980395, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_jngq7"]
 size = Vector3(8, 0.025, 57)
@@ -5462,12 +5509,13 @@ size = Vector3(0.018, 0.004, 2.18)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k1k2j"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_o5xou"]
 _surfaces = [{
@@ -5486,12 +5534,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dlbpx"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_fjuxm"]
 _surfaces = [{
@@ -5510,12 +5559,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g0hwi"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_m5h24"]
 _surfaces = [{
@@ -5534,12 +5584,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1brhj"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_upnjn"]
 _surfaces = [{
@@ -5558,12 +5609,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cljfd"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_se261"]
 _surfaces = [{
@@ -5582,12 +5634,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_18jg0"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_8rrmb"]
 _surfaces = [{
@@ -5606,12 +5659,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bbkcs"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_qp6fn"]
 _surfaces = [{
@@ -5630,12 +5684,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u8ks1"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_pltqk"]
 _surfaces = [{
@@ -5654,12 +5709,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_a17s1"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_q8qmd"]
 _surfaces = [{
@@ -5678,12 +5734,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_a770b"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_vsv5o"]
 _surfaces = [{
@@ -5702,12 +5759,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ps52q"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_hpmm8"]
 _surfaces = [{
@@ -5726,12 +5784,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6bsdx"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_5piyv"]
 _surfaces = [{
@@ -5750,12 +5809,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b054t"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_kpcfc"]
 _surfaces = [{
@@ -5774,12 +5834,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_14ryl"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_w3mix"]
 _surfaces = [{
@@ -5798,12 +5859,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tvw0t"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_4d0pw"]
 _surfaces = [{
@@ -5822,12 +5884,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jtusq"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_f7qoa"]
 _surfaces = [{
@@ -5846,12 +5909,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_86cys"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_qtu6w"]
 _surfaces = [{
@@ -5870,12 +5934,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wrcm0"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_l1q0h"]
 _surfaces = [{
@@ -5894,12 +5959,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_f5xy0"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_3551w"]
 _surfaces = [{
@@ -5918,12 +5984,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6scx5"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_j8oln"]
 _surfaces = [{
@@ -5942,12 +6009,13 @@ backface_collision = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kp8au"]
 render_priority = 0
 shader = ExtResource("4_2vay2")
-shader_parameter/base_color = Color(0.72156864, 0.7058824, 0.627451, 1)
+shader_parameter/base_color = Color(0.7254902, 0.7176471, 0.6666667, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_a0t7h"]
 _surfaces = [{
@@ -5975,90 +6043,6 @@ size = Vector3(58, 8, 0.3)
 [sub_resource type="BoxShape3D" id="BoxShape3D_i2p3a"]
 size = Vector3(58, 8, 0.3)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ylox0"]
-render_priority = 0
-shader = ExtResource("16_rsgbo")
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_kix7m"]
-_surfaces = [{
-"aabb": AABB(-13.489865, 0.039, 24.322237, 2.9222536, 1e-05, 0.9334812),
-"format": 34359738375,
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 36,
-"vertex_data": PackedByteArray("AABAwXe+Hz1mZsZBgtkrwXe+Hz3rQshBSOEqwXe+Hz1mZsZBAABAwXe+Hz1mZsZB9N42wXe+Hz0P7shBgtkrwXe+Hz3rQshBAABAwXe+Hz1mZsZBAABAwXe+Hz22C8pB9N42wXe+Hz0P7shBAABAwXe+Hz1mZsZBh+FKwXe+Hz1ZaslBAABAwXe+Hz22C8pBAABAwXe+Hz1mZsZBYRtQwXe+Hz1N48dBh+FKwXe+Hz1ZaslBAABAwXe+Hz1mZsZBfdZXwXe+Hz1mZsZBYRtQwXe+Hz1N48dBAABAwXe+Hz1mZsZBZ1ZRwXe+Hz1lzMRBfdZXwXe+Hz1mZsZBAABAwXe+Hz1mZsZBKe9JwXe+Hz2epcNBZ1ZRwXe+Hz1lzMRBAABAwXe+Hz1mZsZBAABAwXe+Hz3xk8JBKe9JwXe+Hz2epcNBAABAwXe+Hz1mZsZBl6g2wXe+Hz2sz8NBAABAwXe+Hz3xk8JBAABAwXe+Hz1mZsZBWEstwXe+Hz0LrMRBl6g2wXe+Hz2sz8NBAABAwXe+Hz1mZsZB8BQpwXe+Hz1mZsZBWEstwXe+Hz0LrMRB/3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/")
-}]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ol2b2"]
-render_priority = 0
-shader = ExtResource("16_rsgbo")
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_561nf"]
-_surfaces = [{
-"aabb": AABB(7.907432, 0.039, 18.581959, 2.1429858, 1e-05, 0.81679535),
-"format": 34359738375,
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 36,
-"vertex_data": PackedByteArray("AAAQQXe+Hz0AAJhB5cYeQXe+Hz31oJlB7nwfQXe+Hz0AAJhBAAAQQXe+Hz0AAJhB1bEWQXe+Hz20NppB5cYeQXe+Hz31oJlBAAAQQXe+Hz0AAJhBAAAQQXe+Hz2mMJtB1bEWQXe+Hz20NppBAAAQQXe+Hz0AAJhBSAUIQXe+Hz10o5pBAAAQQXe+Hz2mMJtBAAAQQXe+Hz0AAJhBMTAEQXe+Hz1KTZlBSAUIQXe+Hz10o5pBAAAQQXe+Hz0AAJhBrwn9QHe+Hz0AAJhBMTAEQXe+Hz1KTZlBAAAQQXe+Hz0AAJhBLEkDQXe+Hz1AmZZBrwn9QHe+Hz0AAJhBAAAQQXe+Hz0AAJhBBLcIQXe+Hz1Rl5VBLEkDQXe+Hz1AmZZBAAAQQXe+Hz0AAJhBAAAQQXe+Hz3ap5RBBLcIQXe+Hz1Rl5VBAAAQQXe+Hz0AAJhBs9kWQXe+Hz0dvJVBAAAQQXe+Hz3ap5RBAAAQQXe+Hz0AAJhBrrcdQXe+Hz3wfJZBs9kWQXe+Hz0dvJVBAAAQQXe+Hz0AAJhBg84gQXe+Hz0AAJhBrrcdQXe+Hz3wfJZB/3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/")
-}]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ow5kk"]
-render_priority = 0
-shader = ExtResource("16_rsgbo")
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_28xd5"]
-_surfaces = [{
-"aabb": AABB(22.80473, 0.039, 24.52177, 1.363718, 1e-05, 0.73900604),
-"format": 34359738375,
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 36,
-"vertex_data": PackedByteArray("AAC8QXe+Hz0zM8dBprPAQXe+Hz1yrMhBke3AQXe+Hz0zM8dBAAC8QXe+Hz0zM8dBUCG+QXe+Hz3uM8lBprPAQXe+Hz1yrMhBAAC8QXe+Hz0zM8dBAAC8QXe+Hz0SFspBUCG+QXe+Hz3uM8lBAAC8QXe+Hz0zM8dBC3a5QXe+Hz1TlslBAAC8QXe+Hz0SFspBAAC8QXe+Hz0zM8dB4T24QXe+Hz2/YMhBC3a5QXe+Hz1TlslBAAC8QXe+Hz0zM8dBFnC2QXe+Hz0zM8dB4T24QXe+Hz2/YMhBAAC8QXe+Hz0zM8dBX/S3QXe+Hz2d7sVBFnC2QXe+Hz0zM8dBAAC8QXe+Hz0zM8dBmK65QXe+Hz0/BcVBX/S3QXe+Hz2d7sVBAAC8QXe+Hz0zM8dBAAC8QXe+Hz2WLMRBmK65QXe+Hz0/BcVBAAC8QXe+Hz0zM8dB/y2+QXe+Hz2KJsVBAAC8QXe+Hz2WLMRBAAC8QXe+Hz0zM8dBWl3AQXe+Hz0A1cVB/y2+QXe+Hz2KJsVBAAC8QXe+Hz0zM8dB+1jBQXe+Hz0zM8dBWl3AQXe+Hz0A1cVB/3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/")
-}]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_raon1"]
-render_priority = 0
-shader = ExtResource("16_rsgbo")
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_ldpbl"]
-_surfaces = [{
-"aabb": AABB(-32.291218, 0.039, 6.4027967, 2.5326214, 1e-05, 1.166851),
-"format": 34359738375,
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 36,
-"vertex_data": PackedByteArray("AAD4wXe+Hz0AAOBAp0TvwXe+Hz2bTulAFtnuwXe+Hz0AAOBAAAD4wXe+Hz0AAOBASAv0wXe+Hz1OpuxAp0TvwXe+Hz2bTulAAAD4wXe+Hz0AAOBAAAD4wXe+Hz2OOvJASAv0wXe+Hz1OpuxAAAD4wXe+Hz0AAOBAELf8wXe+Hz29E+9AAAD4wXe+Hz2OOvJAAAD4wXe+Hz0AAOBAzPr+wXe+Hz2CcOdAELf8wXe+Hz29E+9AAAD4wXe+Hz0AAOBANSoBwne+Hz0AAOBAzPr+wXe+Hz2CcOdAAAD4wXe+Hz0AAOBAT4P/wXe+Hz39/ddANSoBwne+Hz0AAOBAAAD4wXe+Hz0AAOBACU78wXe+Hz0YPNJAT4P/wXe+Hz39/ddAAAD4wXe+Hz0AAOBAAAD4wXe+Hz2248xACU78wXe+Hz0YPNJAAAD4wXe+Hz0AAOBAufPzwXe+Hz1eDtNAAAD4wXe+Hz2248xAAAD4wXe+Hz0AAOBA6+TvwXe+Hz03XNdAufPzwXe+Hz1eDtNAAAD4wXe+Hz0AAOBAmxHuwXe+Hz0AAOBA6+TvwXe+Hz03XNdA/3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/")
-}]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_y6b18"]
-render_priority = 0
-shader = ExtResource("16_rsgbo")
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_q85kn"]
-_surfaces = [{
-"aabb": AABB(29.609459, 0.039, -6.696737, 2.727436, 1e-05, 1.3613257),
-"format": 34359738375,
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 36,
-"vertex_data": PackedByteArray("AAD4QXe+Hz0AAMDAprMAQne+Hz1LJLXAke0AQne+Hz0AAMDAAAD4QXe+Hz0AAMDAn0L8QXe+Hz36PbHAprMAQne+Hz1LJLXAAAD4QXe+Hz0AAMDAAAD4QXe+Hz2wu6rAn0L8QXe+Hz36PbHAAAD4QXe+Hz0AAMDAFuzyQXe+Hz35aK7AAAD4QXe+Hz2wu6rAAAD4QXe+Hz0AAMDAwnvwQXe+Hz0TUrfAFuzyQXe+Hz35aK7AAAD4QXe+Hz0AAMDALODsQXe+Hz0AAMDAwnvwQXe+Hz0TUrfAAAD4QXe+Hz0AAMDAv+jvQXe+Hz2uV8nALODsQXe+Hz0AAMDAAAD4QXe+Hz0AAMDAMV3zQXe+Hz06D9DAv+jvQXe+Hz2uV8nAAAD4QXe+Hz0AAMDAAAD4QXe+Hz2rS9bAMV3zQXe+Hz06D9DAAAD4QXe+Hz0AAMDA/lv8QXe+Hz3oGc/AAAD4QXe+Hz2rS9bAAAD4QXe+Hz0AAMDAWl0AQne+Hz1qFMrA/lv8QXe+Hz3oGc/AAAD4QXe+Hz0AAMDA+1gBQne+Hz0AAMDAWl0AQne+Hz1qFMrA/3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/")
-}]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_r38cy"]
-render_priority = 0
-shader = ExtResource("16_rsgbo")
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_tn2v2"]
-_surfaces = [{
-"aabb": AABB(10.41081, 0.039, 30.35303, 3.1170702, 1e-05, 1.2640896),
-"format": 34359738375,
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 36,
-"vertex_data": PackedByteArray("AABAQXe+Hz0AAPhBZH5VQXe+Hz1KhfpBK4dWQXe+Hz0AAPhBAABAQXe+Hz0AAPhB2bxJQXe+Hz0LbftBZH5VQXe+Hz1KhfpBAABAQXe+Hz0AAPhBAABAQXe+Hz3c7/xB2bxJQXe+Hz0LbftBAABAQXe+Hz0AAPhBxmQ0QXe+Hz1ZFfxBAABAQXe+Hz3c7/xBAABAQXe+Hz0AAPhBu9EuQXe+Hz3OA/pBxmQ0QXe+Hz1ZFfxBAABAQXe+Hz0AAPhBrpImQXe+Hz0AAPhBu9EuQXe+Hz3OA/pBAABAQXe+Hz0AAPhBtIEtQXe+Hz3K1PVBrpImQXe+Hz0AAPhBAABAQXe+Hz0AAPhBS2c1QXe+Hz2cRfRBtIEtQXe+Hz3K1PVBAABAQXe+Hz0AAPhBAABAQXe+Hz0B0/JBS2c1QXe+Hz2cRfRBAABAQXe+Hz0AAPhB1vZJQXe+Hz2PfvRBAABAQXe+Hz0B0/JBAABAQXe+Hz0AAPhB5vNTQXe+Hz36qPVB1vZJQXe+Hz2PfvRBAABAQXe+Hz0AAPhBM3JYQXe+Hz0AAPhB5vNTQXe+Hz36qPVB/3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/")
-}]
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pjbht"]
 render_priority = 0
 shader = ExtResource("1_brpvb")
@@ -6068,6 +6052,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_26lc5"]
 top_radius = 0.085
@@ -10558,6 +10543,7 @@ shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_pbve4"]
 size = Vector3(84, 0.4, 76)
@@ -10574,12 +10560,13 @@ size = Vector3(50, 1.5, 31)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6561d"]
 render_priority = 0
 shader = ExtResource("1_brpvb")
-shader_parameter/base_color = Color(0.6431373, 0.5137255, 0.3529412, 1)
+shader_parameter/base_color = Color(0.70980394, 0.4745098, 0.34117648, 1)
 shader_parameter/roof = 0.0
 shader_parameter/roof_axis = 0.0
 shader_parameter/roof_texture = ExtResource("2_c7qef")
 shader_parameter/stucco = 0.0
 shader_parameter/wear_texture = ExtResource("3_m1jpt")
+shader_parameter/fine_texture = ExtResource("2_m1jpt")
 
 [sub_resource type="BoxMesh" id="BoxMesh_vr0r2"]
 size = Vector3(43, 0.014, 18.8)
@@ -16484,36 +16471,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, -19.5)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StreetDetails/RearWorldBoundary" unique_id=1443775219]
 shape = SubResource("BoxShape3D_i2p3a")
-
-[node name="FlatDampRoadPatch" type="MeshInstance3D" parent="StreetDetails" unique_id=1852119822]
-material_override = SubResource("ShaderMaterial_ylox0")
-cast_shadow = 0
-mesh = SubResource("ArrayMesh_kix7m")
-
-[node name="FlatDampRoadPatch2" type="MeshInstance3D" parent="StreetDetails" unique_id=1045119261]
-material_override = SubResource("ShaderMaterial_ol2b2")
-cast_shadow = 0
-mesh = SubResource("ArrayMesh_561nf")
-
-[node name="FlatDampRoadPatch3" type="MeshInstance3D" parent="StreetDetails" unique_id=1215618656]
-material_override = SubResource("ShaderMaterial_ow5kk")
-cast_shadow = 0
-mesh = SubResource("ArrayMesh_28xd5")
-
-[node name="FlatDampRoadPatch4" type="MeshInstance3D" parent="StreetDetails" unique_id=2032396483]
-material_override = SubResource("ShaderMaterial_raon1")
-cast_shadow = 0
-mesh = SubResource("ArrayMesh_ldpbl")
-
-[node name="FlatDampRoadPatch5" type="MeshInstance3D" parent="StreetDetails" unique_id=1481750126]
-material_override = SubResource("ShaderMaterial_y6b18")
-cast_shadow = 0
-mesh = SubResource("ArrayMesh_q85kn")
-
-[node name="FlatDampRoadPatch6" type="MeshInstance3D" parent="StreetDetails" unique_id=1394471762]
-material_override = SubResource("ShaderMaterial_r38cy")
-cast_shadow = 0
-mesh = SubResource("ArrayMesh_tn2v2")
 
 [node name="PerimeterUtilityPole" type="MeshInstance3D" parent="StreetDetails" unique_id=1435299317]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.6, 3.4, -20.4)

@@ -18,10 +18,12 @@ var bleacher_setback=-1.65
 var bleacher_aisles={-1:[-16.,-5.3],1:[5.3,16.]}
 func _initialize():call_deferred("build")
 func paint(hex: String,roof: float=0.)->ShaderMaterial:
+ var palette={"a4835a":"b57957","b8b4a0":"b9b7aa","b58755":"b58d60","a39f8f":"a3a092","8d8778":"969182"}
+ hex=palette.get(hex,hex)
  var key=hex+str(roof)
  if paint_cache.has(key):return paint_cache[key]
  var m=ShaderMaterial.new();m.shader=load("res://shaders/reference_paint.gdshader")
- m.set_shader_parameter("base_color",Color(hex));m.set_shader_parameter("stucco",1.0 if hex=="b58755" else 0.0);m.set_shader_parameter("roof",roof);m.set_shader_parameter("wear_texture",load("res://assets/environment/painted_concrete_tile.png"));m.set_shader_parameter("roof_texture",roof_texture);paint_cache[key]=m;return m
+ m.set_shader_parameter("fine_texture",load("res://assets/environment/concrete.png"));m.set_shader_parameter("base_color",Color(hex));m.set_shader_parameter("stucco",1.0 if hex=="b58d60" else 0.0);m.set_shader_parameter("roof",roof);m.set_shader_parameter("wear_texture",load("res://assets/environment/painted_concrete_tile.png"));m.set_shader_parameter("roof_texture",roof_texture);paint_cache[key]=m;return m
 func roof_paint(hex: String,axis: int)->ShaderMaterial:
  var key="roof_"+hex+str(axis)
  if paint_cache.has(key):return paint_cache[key]
@@ -487,6 +489,7 @@ func build():
   # Close the full side-alley mouth while leaving the front pavement accessible.
   invisible_block(homes,"SideAlleyBoundary",Vector3(side*27.,4.,14.3),Vector3(4.2,8.,.45))
  var asphalt=ShaderMaterial.new();asphalt.shader=load("res://shaders/reference_asphalt.gdshader")
+ asphalt.set_shader_parameter("fine_texture",load("res://assets/environment/concrete.png"))
  asphalt.set_shader_parameter("wear_texture",load("res://assets/environment/painted_concrete_tile.png"))
  box(homes,"Road",Vector3(0,.013,22),Vector3(58.,.02,8),asphalt)
  for z in [18.25,25.75]:box(homes,"RoadEdgeMarking",Vector3(0,.027,z),Vector3(53.,.006,.075),paint("c4c1b1")).cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -515,18 +518,7 @@ func build():
  for side in [-1,1]:invisible_block(homes,"OpenWorldSideBoundary",Vector3(side*29.,4.,4.7),Vector3(.3,8.,48.))
  invisible_block(homes,"FarRoadBoundary",Vector3(0,4.,28.9),Vector3(58.,8.,.3))
  invisible_block(homes,"RearWorldBoundary",Vector3(0,4.,-19.5),Vector3(58.,8.,.3))
- for data in [[-12.,24.8,1.5,.48],[9.,19.0,1.1,.42],[23.5,24.9,.7,.38],[-31.,7.,1.3,.6],[31.,-6.,1.4,.7],[12.,31.0,1.6,.65]]:
-  var tool=SurfaceTool.new();tool.begin(Mesh.PRIMITIVE_TRIANGLES)
-  var center=Vector3(data[0],.039,data[1]);var edge=[]
-  for i in range(13):
-   var angle=i*TAU/12.;var radius=.88+.12*sin(i*2.3)
-   edge.append(center+Vector3(cos(angle)*data[2]*radius,0,sin(angle)*data[3]*radius))
-  for i in range(12):
-   tool.set_normal(Vector3.UP);tool.add_vertex(center)
-   tool.set_normal(Vector3.UP);tool.add_vertex(edge[i+1])
-   tool.set_normal(Vector3.UP);tool.add_vertex(edge[i])
-  var damp_finish=ShaderMaterial.new();damp_finish.shader=load("res://shaders/reference_damp_patch.gdshader")
-  var damp=mesh(homes,"FlatDampRoadPatch",Vector3.ZERO,tool.commit(),damp_finish);damp.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+ # Damp patches removed: dry court surroundings.
  ramp("OppositeSidewalkAccess",0,54,25.5,.2,24.4,0.)
  ramp("OppositeSidewalkLanding",0,54,26.4,.2,25.5,.2)
  ramp("StreetSidewalkRamp",0,54,19.3,0.,18.6,.2)
