@@ -1,0 +1,32 @@
+[
+  {
+    "asset": "shade_tree",
+    "normalized_size": "(1.104004, 1.0, 0.583426)",
+    "texture": "(1024, 1024)",
+    "triangles": 2010
+  },
+  {
+    "asset": "banana_plant",
+    "normalized_size": "(1.053746, 1.0, 0.877308)",
+    "texture": "(512, 512)",
+    "triangles": 1055
+  },
+  {
+    "asset": "palamig_cart",
+    "normalized_size": "(1.361672, 1.0, 0.710801)",
+    "texture": "(1024, 1024)",
+    "triangles": 2803
+  },
+  {
+    "asset": "park_bench",
+    "normalized_size": "(1.642379, 1.0, 0.94221)",
+    "texture": "(512, 512)",
+    "triangles": 812
+  },
+  {
+    "asset": "croton_plant",
+    "normalized_size": "(0.702565, 1.0, 0.753334)",
+    "texture": "(512, 512)",
+    "triangles": 435
+  }
+]

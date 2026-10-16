@@ -50,71 +50,30 @@ func crown(pos: Vector3, size: Vector3, key: String, color: String) -> void:
 	mesh.height = 2
 	add_mesh(mesh,Transform3D(Basis.IDENTITY.scaled(size),pos),key,color)
 
+# Reuse one mesh and texture per asset. Region batches retain frustum culling.
+var imported_batches: Dictionary = {}
+
+func model(key: String, pos: Vector3, height: float, yaw: float = 0.0):
+	var batch_key := region+"_"+key
+	if not imported_batches.has(batch_key): imported_batches[batch_key] = {"asset":key,"transforms":[]}
+	# Cancel the map's nonuniform scale on the model itself, preserving its proportions.
+	var basis := Basis(Vector3.UP,yaw).scaled(Vector3(height/.864618, height, height/.765034))
+	imported_batches[batch_key].transforms.append(Transform3D(basis,pos))
+
 func tree(pos: Vector3, height: float) -> void:
-	cylinder(pos+Vector3(0,height*0.4,0),0.18,height*0.8,"Timber","91734e")
-	crown(pos+Vector3(0,height*0.8,0),Vector3(2.0,1.3,1.8),"Leaf","6e8859")
-	crown(pos+Vector3(-1.0,height*0.71,0.1),Vector3(1.35,1.1,1.45),"Leaf","6e8859")
-	crown(pos+Vector3(0.8,height*0.91,-0.2),Vector3(1.4,1.2,1.4),"YoungLeaf","8c9b66")
-	for i in range(3):
-		crown(pos+Vector3(-1.5+i*1.5,0.38,1.0),Vector3(0.8,0.45,0.7),"Shrub","7f8b59")
+	model("shade_tree",pos,height,rng.randf_range(-PI,PI))
 
 func palm(pos: Vector3) -> void:
-	cylinder(pos+Vector3(0,2.3,0),0.16,4.6,"Timber","91734e")
-	var leaf := SurfaceTool.new()
-	leaf.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for i in range(7):
-		var angle := float(i)*TAU/7.0
-		var along := Vector3(cos(angle),0,sin(angle))
-		var side := Vector3(-sin(angle),0,cos(angle))
-		var start := Vector3(0,4.6,0)
-		var middle := start+along*1.3+Vector3.UP*0.3
-		var tip := start+along*3.0-Vector3.UP*0.65
-		var vertices = [start,middle+side*0.4,middle, middle,middle+side*0.4,tip, start,middle,middle-side*0.4, middle,tip,middle-side*0.4]
-		for index in range(0,vertices.size(),3):
-			leaf.add_vertex(vertices[index])
-			leaf.add_vertex(vertices[index+2])
-			leaf.add_vertex(vertices[index+1])
-	leaf.generate_normals()
-	var mesh := leaf.commit()
-	add_mesh(mesh,Transform3D(Basis.IDENTITY,pos),"Palm","879b62")
-
+	model("banana_plant",pos,3.8,rng.randf_range(-PI,PI))
 
 func planter(pos: Vector3) -> void:
-	cylinder(pos+Vector3(0,0.26,0),0.36,0.52,"Pot","b47a58")
-	crown(pos+Vector3(0,0.75,0),Vector3(0.55,0.58,0.5),"YoungLeaf","8c9b66")
+	model("croton_plant",pos,1.05,rng.randf_range(-PI,PI))
 
 func bench(pos: Vector3, yaw: float = 0.0) -> void:
-	for x in [-0.85,0.85]:
-		box(pos+Basis(Vector3.UP,yaw)*Vector3(x,0.3,0),Vector3(0.2,0.6,0.65),"Stone","bdb4a0",yaw)
-	for z in [-0.24,0.0,0.24]:
-		box(pos+Basis(Vector3.UP,yaw)*Vector3(0,0.64,z),Vector3(2.4,0.12,0.2),"Timber","91734e",yaw)
-	box(pos+Basis(Vector3.UP,yaw)*Vector3(0,1.0,0.36),Vector3(2.4,0.45,0.1),"Timber","91734e",yaw)
+	model("park_bench",pos,1.05,yaw)
 
-func stall(pos: Vector3, tint: String, title: String) -> void:
-	box(pos+Vector3(0,0.72,0),Vector3(2.4,1.2,1.1),tint,"9aaba0" if tint=="Sage" else "c19466")
-	box(pos+Vector3(0,1.37,0),Vector3(2.7,0.12,1.4),"Stone","bdb4a0")
-	for x in [-1.15,1.15]:
-		box(pos+Vector3(x,1.8,0.35),Vector3(0.065,1.2,0.065),"Timber","91734e")
-	for i in range(8):
-		box(pos+Vector3(-1.4+i*0.4,2.45,0),Vector3(0.4,0.10,1.9),"Cream" if i%2==0 else tint,"e0d4b6" if i%2==0 else ("9aaba0" if tint=="Sage" else "c19466"))
-	for x in [-0.9,0.9]:
-		cylinder(pos+Vector3(x,0.13,0),0.13,0.24,"Timber","91734e")
-	for i in range(4):
-		cylinder(pos+Vector3(-0.8+i*0.48,1.57,0),0.13,0.28,"Pot","b47a58")
-	var sign_mesh := TextMesh.new()
-	sign_mesh.text = title
-	sign_mesh.font_size = 64
-	sign_mesh.pixel_size = 0.006
-	sign_mesh.depth = 0.008
-	var sign := MeshInstance3D.new()
-	sign.name = title+"Sign"
-	sign.mesh = sign_mesh
-	sign.position = pos+Vector3(0,1.0,-0.557)
-	sign.rotation.y = PI
-	sign.material_override = paint("Sign","e0d4b6")
-	sign.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	scenery.add_child(sign)
-	sign.owner = scenery
+func stall(pos: Vector3, _tint: String, _title: String) -> void:
+	model("palamig_cart",pos,2.35,PI)
 
 func ground_strip(pos: Vector3, size: Vector3) -> void:
 	box(pos,size,"Soil","b4a283")
@@ -161,12 +120,37 @@ func build():
 		instance.visibility_range_end = 95.0
 		scenery.add_child(instance)
 		instance.owner = scenery
-	scenery.set_meta("background_batch_count",batches.size())
+	var total_instances := 0
+	for batch_key in imported_batches:
+		var data: Dictionary = imported_batches[batch_key]
+		var prepared = load("res://assets/props/neighborhood/"+data.asset+".tscn").instantiate()
+		var shared_mesh: Mesh = prepared.get_node("Model").mesh
+		var multimesh := MultiMesh.new()
+		multimesh.transform_format = MultiMesh.TRANSFORM_3D
+		multimesh.mesh = shared_mesh
+		multimesh.instance_count = data.transforms.size()
+		for i in range(data.transforms.size()): multimesh.set_instance_transform(i,data.transforms[i])
+		var instance := MultiMeshInstance3D.new()
+		instance.name = "Meshy_"+batch_key
+		instance.multimesh = multimesh
+		instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		instance.visibility_range_end = 95.0
+		scenery.add_child(instance)
+		instance.owner = scenery
+		total_instances += multimesh.instance_count
+		prepared.free()
+	# Allow MultiMesh buffers to reach the renderer before serializing them.
+	for i in range(3): await RenderingServer.frame_post_draw
+	scenery.set_meta("meshy_instances",total_instances)
+	scenery.set_meta("background_batch_count",batches.size()+imported_batches.size())
 	scenery.set_meta("visual_only",true)
 	var packed := PackedScene.new()
 	assert(packed.pack(scenery)==OK)
 	assert(ResourceSaver.save(packed,"res://scenes/neighborhood_backdrop.tscn")==OK)
 	var court = load("res://scenes/barangay_court.tscn").instantiate()
+	for child in court.get_children():
+		if String(child.name) in ["Meshy_Autumn Croton_1","Meshy_Weathered Park Bench","Meshy_Twisted Canopy","Meshy_Rainbow Refreshment Cart","Meshy_Banana Tree"]:
+			child.free()
 	var previous = court.get_node_or_null("NeighborhoodBackdrop")
 	if previous: previous.free()
 	var instance = load("res://scenes/neighborhood_backdrop.tscn").instantiate()
@@ -175,9 +159,10 @@ func build():
 	var saved := PackedScene.new()
 	assert(saved.pack(court)==OK)
 	assert(ResourceSaver.save(saved,"res://scenes/barangay_court.tscn")==OK)
-	print("NEIGHBORHOOD SAVED: ",batches.size()," material/region batches; low-poly vegetation, benches, low walls and 2 market carts; no new physics bodies or lights.")
+	print("NEW MESHY BACKDROP SAVED: ",total_instances," instances in ",imported_batches.size()," shared model batches; old proxy trees/plants/benches/carts replaced; ground and walls retained.")
 	court.free()
 	scenery.free()
 	quit()
+
 
 

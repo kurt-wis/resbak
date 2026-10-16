@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/props/neighborhood/shade_tree_mesh.res" id="1_jrnyj"]
+
+[node name="ShadeTree" type="Node3D" unique_id=1438736705]
+metadata/source_model = "Twisted Canopy"
+metadata/triangle_count = 2010
+metadata/unit_height = 1.0
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1600034697]
+cast_shadow = 0
+mesh = ExtResource("1_jrnyj")

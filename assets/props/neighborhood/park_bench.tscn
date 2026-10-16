@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/props/neighborhood/park_bench_mesh.res" id="1_8hma6"]
+
+[node name="ParkBench" type="Node3D" unique_id=413371004]
+metadata/source_model = "Weathered Park Bench"
+metadata/triangle_count = 812
+metadata/unit_height = 1.0
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=898791868]
+cast_shadow = 0
+mesh = ExtResource("1_8hma6")
