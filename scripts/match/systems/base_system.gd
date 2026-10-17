@@ -4,8 +4,9 @@ extends RefCounted
 ## Bases and capture (docs/RESBAK.md § 2 "Bases and capture").
 ## v0.2: bases are fixed. Each team has one base per map (MapLayout site 1 / BaseSite_<team>);
 ## the base roulette and settings.base_mode are gone (docs/status.md). Active base = solid
-## pole r 0.2 + ring r 2 in team colour. The own-ring barrier keeps the base's own team at
-## >= 2.4 m from its pole (enemies pass). Capture: hold Interact with the body-to-enemy-pole gap
+## pole r 0.2 + ring r 2 in team colour. There is no own-ring barrier (2026-10-17, spec
+## deviation, docs/decisions.md): defenders may stand and fight inside their own ring; only the
+## solid pole blocks. Capture: hold Interact with the body-to-enemy-pole gap
 ## <= 1 m for 1.5 s (90 ticks); capturing heroes can't move, tag or cast but can be pushed;
 ## progress resets on tag, release, or being pushed out of range. Toggle input: tap start/stop.
 
@@ -25,6 +26,14 @@ func setup_match() -> void:
 	for t in range(2):
 		poles[t] = host.layout.site(t, site_number)
 		_build_pole(t)
+
+## The map's own base visual (Konstruksyon: a sand castle), or null. Collision, pole and
+## capture rules are the same either way; ArenaArt draws it in place of the court's stand.
+func base_prop_scene() -> PackedScene:
+	var path := host.layout.base_prop
+	if path != "" and ResourceLoader.exists(path):
+		return load(path) as PackedScene
+	return null
 
 func pole_pos(team: int) -> Vector3:
 	return poles[team]
@@ -89,21 +98,6 @@ func cancel_capture(h: Hero, reason: String) -> void:
 	h.capturing = false
 	h.capture_ticks = 0
 	host.emit_event("capture_cancel", {"hero": h, "reason": reason})
-
-# ---- step 4: barriers -------------------------------------------------------------------
-func enforce_barriers() -> void:
-	var r := host.tuning.base_barrier_radius
-	for h in host.heroes:
-		if not h.is_free():
-			continue
-		var p: Vector3 = poles[h.team]
-		var d := RB.flat(h.global_position - p)
-		var len := d.length()
-		if len >= r:
-			continue
-		var dir := d / len if len > 0.001 else (Vector3.RIGHT if h.team == RB.LILA else Vector3.LEFT)
-		h.global_position = Vector3(p.x + dir.x * r, h.global_position.y, p.z + dir.z * r)
-		host.emit_event("barrier_bump", {"hero": h})
 
 # ---- step 8: captures -------------------------------------------------------------------
 ## Returns the teams that completed a capture this tick.

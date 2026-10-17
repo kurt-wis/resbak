@@ -56,6 +56,46 @@ static func add_ambience(parent: Node, path: String, volume_db := -25.0) -> Audi
 	parent.add_child(player)
 	return player
 
+## Drifting dust (Konstruksyon's hot afternoon; a map opts in with `dust = true` on Gameplay).
+## One CPUParticles3D (Compatibility-safe, no GPU particles) filling the play bounds, a slow
+## cross-wind drift with soft warm specks. Skipped with Reduce motion.
+static func add_dust(parent: Node, bounds: Rect2) -> CPUParticles3D:
+	var save := parent.get_node_or_null("/root/Save")
+	if save and bool(save.get_setting("accessibility", "reduce_motion")):
+		return null
+	var p := CPUParticles3D.new()
+	p.name = "DriftingDust"
+	var quad := QuadMesh.new()
+	quad.size = Vector2(0.12, 0.12)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.albedo_color = Color(0.93, 0.8, 0.58, 0.45)
+	m.vertex_color_use_as_albedo = true
+	quad.material = m
+	p.mesh = quad
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	p.amount = 140
+	p.lifetime = 9.0
+	p.preprocess = 9.0 # already drifting when the map appears
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(bounds.size.x * 0.5, 1.6, bounds.size.y * 0.5)
+	p.position = Vector3(bounds.get_center().x, 1.8, bounds.get_center().y)
+	p.direction = Vector3(1, 0.05, 0.25)
+	p.spread = 25.0
+	p.initial_velocity_min = 0.5
+	p.initial_velocity_max = 1.3
+	p.gravity = Vector3(0, 0.02, 0)
+	p.scale_amount_min = 0.5
+	p.scale_amount_max = 1.6
+	var fade := Gradient.new()
+	fade.offsets = PackedFloat32Array([0.0, 0.2, 0.8, 1.0])
+	fade.colors = PackedColorArray([Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)])
+	p.color_ramp = fade
+	parent.add_child(p)
+	return p
+
 ## A map's own cameras (Mathew's InspectionCamera) must never take over the view.
 static func disable_map_cameras(map: Node) -> void:
 	for c in map.find_children("*", "Camera3D", true, false):

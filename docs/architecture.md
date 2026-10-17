@@ -23,7 +23,7 @@ One `step()` per `_physics_process` (60 ticks/s), in spec § 12 order:
 1. inputs: `hero.set_frame(source.frame_for(hero, host))` for every slot (`input_sources[slot]`)
 2. actions: skill presses (`Skill.try_cast` / `on_recast` / `tick_action`), Tag press → `TagSystem.start_windup`, Interact → `BaseSystem.handle_interact` (free) or `JailSystem.handle_interact` (jailed)
 3. movement: timers, `Hero.tick_move` (push > movement skill > normal running), chain layout and Tagged → jail, `SkillObject.tick`, skills' and passives' `tick`
-4. barriers: own-base ring, jail barrier
+4. barriers: jail barrier (the own-base ring barrier was removed 2026-10-17)
 5. tags resolved (stored), 6. rescues found, 7. both applied, 8. captures, 9. round end (`RoundFlow.check_end`)
 10. events are emitted as they happen through the `event(kind, data)` signal (HUD, view, audio, bots, tests listen)
 
@@ -34,7 +34,7 @@ One `step()` per `_physics_process` (60 ticks/s), in spec § 12 order:
 ### Systems (`scripts/match/systems/`)
 `TagSystem` (wind-up, hit test, Sabay, evasion hook, guard-break hook, Impact), `BaseSystem` (active site,
 pole and ring, barrier, capture), `JailSystem` (v0.2 jail line: `post(owner)` slides along `layout.lines[owner]`, `out_dir`, `is_post_holder`, `is_tip`, `can_steer`, `rescue_point`; chain, rescue incl. skill touch points), `RoundFlow`
-(phases COUNTDOWN → PLAYING → SUDDEN_DEATH → ROUND_OVER → MATCH_OVER, score, draws, reset to spawns).
+(phases INTRO (round 1 only, unless the `skip_intro` setting is true) → COUNTDOWN → PLAYING → SUDDEN_DEATH → ROUND_OVER → MATCH_OVER, score, draws, reset to spawns).
 `MapLayout` reads base sites, jails, markers and spawns from the map (spec names or the court's older names,
 deriving what is missing) and puts small props on the vaultable layer. v0.2: one fixed `BaseSite_<team>` per team and a
 `JailLine_<team>` Path3D per map end (`line_point`, `line_project`, `line_normal`, `line_length`).
@@ -62,7 +62,8 @@ Placed things (walls, decoys, clouds, patches, lanes, trails) are `SkillObject`s
 `BotNav` bakes a navmesh from the map once per match. Same rules and frames as players.
 
 ### Presentation
-`MatchView` sets per-viewer alpha, outline colour, icons, the aim fan and world feedback.
+`MatchView` sets per-viewer alpha, outline colour, icons, the aim arrow (tip = reach of a swing released now, fills in with the charge) and world feedback; during INTRO it also drives the camera flyover (`MatchCamera.intro_w` / `intro_focus` / `intro_size`) and calls `Audio.play` for host events (`SFX` table). `HudIntro` draws the INTRO banners (map title, both teams, faceoff) and the skip prompt. `ArenaArt` draws the bases: the court's basketball stand, or the map's `Gameplay.base_prop` scene (Konstruksyon's sand castle, which crumbles on capture). `OcclusionFade` (`scripts/match/occlusion_fade.gd`, maps with `Gameplay.occlusion_fade`) fades tall props between the camera and the local hero by swapping alpha-blended duplicate materials (the Compatibility renderer ignores `GeometryInstance3D.transparency`); presentation only. `MapDressing.add_dust` adds drifting dust when `Gameplay.dust` is set.
+`Audio` (autoload): `play(name, text, pos)` cues, `play_music(name, fade)` / `stop_music(fade)` / `set_music_layer(layer, on, fade)` (a `<name>_<layer>` stem, e.g. `music_construction_site_tension`, that crossfades with the base track; `match_scene` turns it on at the host's `final_stretch` event, 30 s left, or at sudden death). `MatchScene.MUSIC` / `AMBIENCE` map a map id to its music name and ambience file. Missing audio files are silent, never errors.
 `Hud` (`scripts/ui/hud/`) is a set of `HudPart`s on a CanvasLayer built for 1920×1080. `HudAnnouncer` turns host
 events into queued MOBA-style call ribbons (streaks counted from events, numbers in Tuning "HUD and senses") and
 sends each to `Audio.announce`. `MatchCamera` is Kurt's orthographic isometric camera; `PlayerInput` reads its

@@ -139,6 +139,15 @@ CHAIN_CALM = tuple(f"mixamorig:{b}" for b in ("Spine", "Spine1", "Spine2", "Neck
 LOCOMOTION = ("Idle", "Walking", "Running")
 CORE_ORDER = ("Tag", "Tagged", "Stumble", "Stunned", "Jailed", CHAINED, "Capture", "Victory")
 
+# TagCharge (2026-10-17): the held hampas wind-up, played while Hero.is_charging(). Its source is
+# one Meshy Prime text-to-motion clip on an SMPL-H rig (retarget_clip maps it; see docs/pipelines/
+# blender.md "TagCharge"). The entry only switches on when the file exists, so a checkout without
+# it still builds (HeroVisual skips clips a hero does not have).
+TAG_CHARGE_SRC = "meshy/shared_tag_charge.glb"
+if os.path.exists(os.path.join(MOCAP_DIR, *TAG_CHARGE_SRC.split("/"))):
+    SHARED["TagCharge"] = clip(TAG_CHARGE_SRC, loop=True, in_place=True, blend=6)
+    CORE_ORDER = CORE_ORDER[:1] + ("TagCharge",) + CORE_ORDER[1:]
+
 # Each hero's own breakdance: Mixamo moves played in order, (file, repeats). Every move here
 # starts and ends in the same pose, so the routine loops cleanly.
 BREAKDANCE = {

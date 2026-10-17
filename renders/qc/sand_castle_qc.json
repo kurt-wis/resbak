@@ -1,0 +1,49 @@
+{
+ "file": "assets\\props\\sand_castle.glb",
+ "real_height_m": 2.329,
+ "game_scale": 1.0,
+ "dims_m": [
+  1.393,
+  1.418,
+  2.329
+ ],
+ "triangles": 534,
+ "sheet": "renders\\qc\\sand_castle_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = -0.009 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.008, -0.003) m"
+  },
+  {
+   "check": "normals Flag",
+   "status": "PASS",
+   "detail": "100% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology Flag",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (24 open edges, normal at UV seams)"
+  },
+  {
+   "check": "normals SandCastle",
+   "status": "PASS",
+   "detail": "71% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology SandCastle",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (952 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "534 (budget 3000)"
+  }
+ ]
+}

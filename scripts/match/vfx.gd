@@ -215,6 +215,44 @@ static func fan_mesh(length: float, angle_deg: float, color: Color, segments := 
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mi
 
+## Flat arrow on the floor pointing +Z: a shaft from z = `start` to the head, whose tip is at
+## `length`. Used for the tag aim arrow (the charge adds reach, so the mesh is rebuilt as it grows).
+static func arrow_array_mesh(length: float, width: float, head_len: float, head_width: float, start := 0.0) -> ArrayMesh:
+	var head := minf(head_len, maxf(0.0, length - start))
+	var neck := length - head
+	var hw := width * 0.5
+	var hh := head_width * 0.5
+	var v := PackedVector3Array([
+		Vector3(-hw, 0, start), Vector3(hw, 0, start), Vector3(hw, 0, neck),
+		Vector3(-hw, 0, start), Vector3(hw, 0, neck), Vector3(-hw, 0, neck),
+		Vector3(-hh, 0, neck), Vector3(hh, 0, neck), Vector3(0, 0, length)])
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = v
+	var normals := PackedVector3Array()
+	for i in range(v.size()):
+		normals.append(Vector3.UP)
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return mesh
+
+static func arrow_mesh(length: float, width: float, head_len: float, head_width: float, color: Color, start := 0.0) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.mesh = arrow_array_mesh(length, width, head_len, head_width, start)
+	mi.material_override = flat_material(color)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mi
+
+## The two meshes of the aim arrow, as [fill, outline]: the outline is a wider, slightly longer
+## copy of the fill, so a dark edge surrounds the bright core on any floor (the plain arrow used
+## to vanish into the orange Konstruksyon ground).
+static func aim_arrow_meshes(length: float, width: float, head_len: float, head_width: float,
+		start := 0.0, outset := 1.4, edge := 0.05) -> Array:
+	return [arrow_array_mesh(length, width, head_len, head_width, start),
+			arrow_array_mesh(length + edge, width * outset, head_len, head_width * outset,
+					maxf(0.0, start - edge * 0.5))]
+
 ## Flat rectangle from the origin along +Z (`length` x `width`). Used for IHIP! lanes.
 static func lane_mesh(length: float, width: float, color: Color) -> MeshInstance3D:
 	var mi := MeshInstance3D.new()

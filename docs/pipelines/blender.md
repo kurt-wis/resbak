@@ -55,6 +55,7 @@ Sources are the Meshy auto-rigged GLBs in `source_art/heroes/` (Tutoy was called
 | Clip | Source (`source_art/mocap/`) | Length | Loop |
 | ---- | ---------------------------- | ------ | ---- |
 | Tag | `meshy/shared_tag.glb` (text-to-motion), frames 11–27, in place. Wind-up, lunge, back: the body turns ~65° but the tagging hand reaches straight ahead | 0.667 s | no |
+| TagCharge | `meshy/shared_tag_charge.glb` (text-to-motion, SMPL-H rig), whole clip, in place. Wide braced stance, slapping arm drawn back (see "TagCharge" below) | 1.958 s | yes |
 | Tagged | `meshy/tutoy_moves.glb` Slap_Reaction, 18–40 | 0.917 s | no |
 | Stumble | `meshy/tutoy_moves.glb` Stumble_Walk, 18–36, in place (failed tag) | 0.750 s | no |
 | Stunned | `meshy/tutoy_moves.glb` Head_Hold_in_Pain, 51.2–76.8 | 1.083 s | yes |
@@ -62,6 +63,14 @@ Sources are the Meshy auto-rigged GLBs in `source_art/heroes/` (Tutoy was called
 | Chained | the hero's own Idle with the arms out to the sides (authored) | = Idle | yes |
 | Capture | `quaternius/UAL1_Standard.glb` Push_Loop (CC0), planted | 2.667 s | yes |
 | Victory | `meshy/nene_moves.glb` Victory_Cheer, 0–33, planted | 1.375 s | yes (seamless, but not in `LOOP_CLIPS` yet) |
+
+### TagCharge
+The held hampas wind-up: `HeroVisual._desired()` plays `TagCharge` (in `LOOP_CLIPS`) while `Hero.is_charging()`; a hero without the clip keeps the normal pose. `build_heroes.py` bakes it into every hero from `source_art/mocap/meshy/shared_tag_charge.glb` (loop, in place, blend 6), then `tools/qc_asset.py -- assets/characters/<id>.glb --clip TagCharge` per hero. Source: one Meshy Prime `meshy_text_to_motion` task (10 credits, 2026-10-17), prompt "a kid leaning back in a stable wide stance, right arm drawn far back at shoulder height with an open palm, left arm forward for balance, tense and ready to slap, subtle breathing loop", 2 s.
+
+**SMPL-H source rig.** Meshy text-to-motion (Prime) now returns FBX on an SMPL-H 52-bone rig (`Pelvis`, `L_Hip`, `Spine1..3`, `L_Collar`, ...) instead of Meshy's 24-bone rig; convert it to GLB in Blender (keep the mesh: `_import` measures the floor from it). `retarget_clip.py` maps it with `SMPL_TO_MIXAMO` (`is_smpl_rig()`). Every SMPL-H bone rests with +Y pointing up whatever its real direction, so for these rigs the swing step measures each bone's rest direction head → head of the bone matching the target's own child (leaves continue their parent). Without that the legs folded up into the body and grounding dropped the clip about 1.3 m, while every QC metric still passed: **look at the sheet**. The whole-clip grounding still logs about −0.8 to −1.1 m for this clip (SMPL-H keeps the pelvis at its standing height above an origin-level rest); that offset is constant and the grounded result is correct.
+
+### Sand castle (Konstruksyon base prop)
+`tools/build_sand_castle.py` (`& $env:BLENDER -b --python tools/build_sand_castle.py`) builds `assets/props/sand_castle.glb` + `.tscn`: `SandCastle` (mound, keep, four turrets, tall tower, pole; 534 tris) and a separate white `Flag` that `ArenaArt` tints per team and waves. Origin at the base, about 2.3 m tall. No rig, no clips. QC: `& $env:BLENDER -b --python tools/qc_asset.py -- assets/props/sand_castle.glb --height 0 --max-tris 3000` writes `renders/qc/sand_castle_sheet.png`.
 
 ### Per-hero clips
 Meshy presets from `source_art/mocap/meshy/<id>_moves.glb` unless noted; frame numbers at 24 fps.

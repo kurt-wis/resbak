@@ -39,7 +39,6 @@ const PATH := "res://data/tuning.tres"
 
 @export_group("Bases")
 @export var base_ring_radius := 2.0
-@export var base_barrier_radius := 2.4 ## own team kept this far (centre to centre) from its own pole
 @export var pole_radius := 0.2
 @export var capture_range := 1.0 ## gap, attacker body to pole
 @export var capture_hold := 1.5
@@ -62,8 +61,13 @@ const PATH := "res://data/tuning.tres"
 
 @export_group("Rounds and match")
 @export var countdown := 3.0
+## Round-1 intro flyover (2026-10-17): the arena, each team's spawn (x2), then the faceoff.
+@export var intro_arena := 2.0
+@export var intro_team := 2.5
+@export var intro_faceoff := 1.0
 @export var round_time := 120.0
 @export var sudden_death_time := 30.0
+@export var final_stretch_time := 30.0 ## round-clock seconds left when the music turns tense (spec § 7)
 @export var untimed_sudden_death_after_draws := 2
 @export var points_to_win := 3
 @export var between_rounds_banner := 2.0

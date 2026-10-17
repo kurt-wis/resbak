@@ -4,7 +4,7 @@ extends Skill
 ## with a landing marker everyone can see; while airborne JM can't steer, tag or be pushed but
 ## can be tagged (the arc peaks at talbog_jump_height <= the 1 m height gap, so tags still
 ## reach). The landing is cut short just before a blocking wall, solid prop, pole, the jail
-## barrier or JM's own base barrier. On landing: enemies with their centre within 2.5 m are
+## barrier. On landing: enemies with their centre within 2.5 m are
 ## pushed 3 m away from the landing point, and a crescent earth wall (talbog_wall.gd) rises 1.5 m
 ## in front of the landing point along the aim for 4 s. Tagged mid-air: the jump ends where JM is,
 ## he falls, and no impact or wall happens.
@@ -61,7 +61,7 @@ func _cast(frame: InputFrame) -> void:
 	host.emit_event("talbog_jump", {"hero": hero, "from": _start, "to": _target})
 
 ## How far along `dir` JM may land: stops just before a blocking wall/solid (ray), a pole, the jail
-## barrier or his own base barrier.
+## barrier.
 func _clamp_reach(dir: Vector3, reach: float) -> float:
 	var t := host.tuning
 	var limit := reach
@@ -89,7 +89,7 @@ func _blocked_spot(p: Vector3) -> bool:
 		if host.layout.in_jail(owner, p, t.body_radius):
 			return true
 	var own := host.base_system.pole_pos(hero.team)
-	if RB.flat_dist(p, own) < t.base_barrier_radius:
+	if RB.flat_dist(p, own) < t.pole_radius + t.body_radius:
 		return true
 	var enemy := host.base_system.pole_pos(RB.other_team(hero.team))
 	return RB.flat_dist(p, enemy) < t.pole_radius + t.body_radius

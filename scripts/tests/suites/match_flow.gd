@@ -14,6 +14,7 @@ func run(t: TestCtx) -> void:
 	session.settings = MatchHost.default_settings()
 	session.settings["seed"] = 77
 	session.settings["base_mode"] = 1
+	session.settings["skip_intro"] = true
 
 	var scene := (load("res://scenes/match.tscn") as PackedScene).instantiate()
 	t.tree.root.add_child(scene)
@@ -55,9 +56,29 @@ func run(t: TestCtx) -> void:
 	t.check(moved >= 6, "bots move once the round is live (%d of 10 moved > 1 m)" % moved)
 	t.check("kaboom" in events, "KABOOM fired during the run")
 	t.check(host.round_live() or host.round_flow.phase == RoundFlow.Phase.ROUND_OVER, "the round is live or just ended")
+	# Kurt's distance focus: the ink pass stays sharp around the local hero, softer further out
+	var ink: ShaderMaterial = scene.camera.ink
+	if t.check(ink != null, "the camera drives the illustrated-edges pass"):
+		var fw: Vector3 = ink.get_shader_parameter("focus_world")
+		t.check(RB.flat_dist(fw, scene.local_hero.global_position) < 1.5, "the focus follows the local hero (%s vs %s)" % [fw, scene.local_hero.global_position])
+		t.check(float(ink.get_shader_parameter("distance_focus_enabled")) > 0.99, "the distance blur is on outside the intro flyover")
+		var clear_r := _ink_param(ink, "clear_radius")
+		var blur_r := _ink_param(ink, "blur_radius")
+		t.check(clear_r >= 3.0 and blur_r > clear_r + 4.0, "a sharp circle round the hero, blurring further out (%.1f -> %.1f m)" % [clear_r, blur_r])
 	t.ok("match scene ran 600 physics frames with bots, %d events" % events.size())
 
 	scene.queue_free()
 	await t.frames(2)
 	session.lineup = saved_lineup
 	session.settings = saved_settings
+
+
+## A float uniform as the pass uses it: the material's value, else the shader's declared default
+## (unset uniforms read back null, and headless has no renderer to ask for defaults).
+func _ink_param(ink: ShaderMaterial, uniform: String) -> float:
+	var v: Variant = ink.get_shader_parameter(uniform)
+	if v != null:
+		return float(v)
+	var re := RegEx.create_from_string("uniform\\s+float\\s+%s\\s*=\\s*([0-9.]+)" % uniform)
+	var m := re.search(ink.shader.code)
+	return float(m.get_string(1)) if m else -1.0

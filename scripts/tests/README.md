@@ -10,7 +10,8 @@
 | `core_rules` | tagging, Sabay, EP, barriers, capture, chain, rescue, lockdown, timer, sudden death, draws, reset, match end |
 | `kit_tutoy`, `kit_nene`, `kit_nathan`, `kit_jm`, `kit_inday` | each hero's skills and passive against spec § 4 |
 | `bots` | roles, perception, tagging, retreat, chain, rescue, a bot-only 5v5 |
-| `hud` | HUD parts, timer, tag feed, scoreboard, hide, pause |
+| `hud` | HUD parts, timer, tag feed, scoreboard, hide, pause, announcer, round-1 intro overlay and flyover, aim arrow |
+| `konstruksyon` | the real Konstruksyon map: mirrored bases, spawns and base rings clear, jail lines, vaultables, three 2 m routes between the halves, camera occlusion fade, sand-castle base prop and crumble, haze/sun/dust, music/ambience entries and the Audio music API, a 45 s bot soak (nobody stuck 3 s) |
 | `frontend` | every front-end screen builds, draft, names, results maths, settings persist |
 | `match_flow` | `scenes/match.tscn` runs 600 frames with bots |
 

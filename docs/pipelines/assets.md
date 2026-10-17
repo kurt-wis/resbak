@@ -16,6 +16,13 @@ shaders/                       all spatial shaders (toon, outline, painted surfa
 Each prop scene has a `SolidCollision` body matching its visible mesh.
 `scenes/barangay_court.tscn` instances them under `CourtProps` and `StreetDetails`.
 
+**Konstruksyon vehicles** (`assets/props/vehicles/`): `jeepney`, `pickup`, `hauler`, `digger`,
+`wheel_loader`, Mathew's Meshy models (raw downloads in `source_art/props/vehicles/`). Each is a
+`<name>.glb` plus a `<name>.tscn` wrapper; `scenes/construction_site.tscn` instances the wrapper as a
+`Model` child of each vehicle node, which keeps its own `StaticBody3D` box (the prop scenes carry no
+collider). Rebuild with `& $env:BLENDER -b --python tools/build_vehicle_props.py` (`-- <name>` for one),
+then `tools/qc_asset.py`.
+
 ## Characters
 Game-ready GLBs in `assets/characters/`; character visuals get `character_toon.gdshader`
 applied at runtime (`court_playtest.gd: apply_illustrated_materials`).

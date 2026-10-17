@@ -1,15 +1,14 @@
 shader_type spatial;
 render_mode unshaded, cull_disabled, depth_draw_never, shadows_disabled;
 // Painted floor markings for the match, drawn on a flat quad (UV 0..1 over `extent` metres).
-// mode 0 = base ring: a solid ring at `radius`, a faint fill, a dashed barrier ring at
-//          `barrier` (own team only) and a capture progress arc in `progress_color`.
+// mode 0 = base ring: a solid ring at `radius`, a faint fill and a capture progress arc in
+//          `progress_color`.
 // mode 1 = jail yard: dashed chalk border, diagonal "bars" hatching, darker near the post.
 uniform int mode = 0;
 uniform vec4 color : source_color = vec4(1.0, 0.8, 0.1, 1.0);
 uniform vec4 progress_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 uniform vec2 extent = vec2(6.0, 6.0); // quad size in metres
 uniform float radius = 2.0;
-uniform float barrier = 2.4;
 uniform float progress = 0.0;
 uniform float pulse = 0.0;
 uniform vec2 post_uv = vec2(0.1, 0.5);
@@ -27,11 +26,9 @@ void fragment() {
 		float ring = band(r - radius, 0.16);
 		float fill = (1.0 - smoothstep(radius - 0.05, radius, r)) * (0.10 + 0.06 * pulse);
 		float ang = atan(p.x, -p.y); // 0 at "north", clockwise
-		float dash = step(0.5, fract(ang * 6.0 / 3.14159));
-		float bar = band(r - barrier, 0.07) * dash * 0.55;
 		float t = (ang < 0.0 ? ang + 6.28318 : ang) / 6.28318;
 		float arc = band(r - (radius + 0.22), 0.18) * step(t, progress) * step(0.001, progress);
-		a = max(max(ring * 0.95, fill), bar);
+		a = max(ring * 0.95, fill);
 		c = mix(c, progress_color.rgb, arc);
 		a = max(a, arc);
 	} else {

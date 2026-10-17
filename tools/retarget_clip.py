@@ -9,6 +9,8 @@ How it works:
   (Hips, Spine02, Spine01, Spine, neck, Head, ...) through MESHY_TO_MIXAMO. Meshy's spine
   runs Hips -> Spine02 -> Spine01 -> Spine -> neck, so its LOWEST spine bone is Spine02:
   the rig-aware mapping is used whenever a source has both Spine02 and Spine01.
+  Meshy's newer text-to-motion clips use a 52-bone SMPL-H body (Pelvis, L_Hip, Spine1..3, ...),
+  mapped through SMPL_TO_MIXAMO whenever a source has both L_Hip and Spine3.
 - Per bone, in world space, the source's motion offset D = R_pose * R_rest^-1 is taken,
   and the target bone is first swung from its own rest direction onto the source's rest
   direction (C). The result D * C * R_target_rest copies the motion but ignores bone roll
@@ -43,6 +45,15 @@ CORE = ("Hips", "Spine", "LeftUpLeg", "LeftLeg", "LeftFoot", "RightUpLeg", "Righ
         "LeftArm", "LeftForeArm", "RightArm", "RightForeArm", "Head")
 # Meshy auto-rig (24 bones). Its spine chain is Hips -> Spine02 -> Spine01 -> Spine -> neck.
 MESHY_TO_MIXAMO = {"Spine02": "Spine", "Spine01": "Spine1", "Spine": "Spine2", "neck": "Neck"}
+# Meshy text-to-motion "prime" clips (since 2026-10-17) come on a 52-bone SMPL-H body. Its
+# spine is Spine1 -> Spine2 -> Spine3, one above Mixamo's numbering; fingers are left unmapped.
+SMPL_TO_MIXAMO = {
+    "Pelvis": "Hips", "Spine1": "Spine", "Spine2": "Spine1", "Spine3": "Spine2", "Neck": "Neck", "Head": "Head",
+    "L_Hip": "LeftUpLeg", "L_Knee": "LeftLeg", "L_Ankle": "LeftFoot", "L_Foot": "LeftToeBase",
+    "R_Hip": "RightUpLeg", "R_Knee": "RightLeg", "R_Ankle": "RightFoot", "R_Foot": "RightToeBase",
+    "L_Collar": "LeftShoulder", "L_Shoulder": "LeftArm", "L_Elbow": "LeftForeArm", "L_Wrist": "LeftHand",
+    "R_Collar": "RightShoulder", "R_Shoulder": "RightArm", "R_Elbow": "RightForeArm", "R_Wrist": "RightHand",
+}
 LOOP_SEAM_DEG = 3.0  # a loop whose first and last keys differ more than this is open: wrap it
 
 
@@ -55,10 +66,19 @@ def is_meshy_rig(bone_names):
     return "Spine02" in names and "Spine01" in names
 
 
-def mixamo_name(src_name, meshy=False):
+def is_smpl_rig(bone_names):
+    names = set(bone_names)
+    return "L_Hip" in names and "Spine3" in names
+
+
+def mixamo_name(src_name, meshy=False, smpl=False):
     """'mixamorig5:LeftArm' -> 'mixamorig:LeftArm'; 'upperarm_l' -> 'mixamorig:LeftArm';
-    with meshy=True, Meshy's 'Spine02' -> 'mixamorig:Spine' (its lowest spine bone)."""
+    with meshy=True, Meshy's 'Spine02' -> 'mixamorig:Spine' (its lowest spine bone);
+    with smpl=True, SMPL-H names through SMPL_TO_MIXAMO only."""
     base = src_name.split(":")[-1]
+    if smpl:
+        m = SMPL_TO_MIXAMO.get(base)
+        return "mixamorig:" + m if m else None
     if meshy:
         if base in MESHY_TO_MIXAMO:
             return "mixamorig:" + MESHY_TO_MIXAMO[base]
@@ -219,9 +239,10 @@ def offsets_from_rig(src, act, tgt_arm, fps=24, label="clip", trim=None, warp=No
            appended that blends back into the first frame, so the result closes exactly.
     """
     meshy = is_meshy_rig(b.name for b in src.data.bones)
+    smpl = is_smpl_rig(b.name for b in src.data.bones)
     names = {}
     for b in src.data.bones:
-        m = mixamo_name(b.name, meshy)
+        m = mixamo_name(b.name, meshy, smpl)
         if m and m in tgt_arm.data.bones and m not in names:
             names[m] = b.name
     missing = [c for c in CORE if "mixamorig:" + c not in names]
@@ -229,7 +250,7 @@ def offsets_from_rig(src, act, tgt_arm, fps=24, label="clip", trim=None, warp=No
         raise SystemExit(f"{label}: no match for bones {missing}; "
                          f"source bones: {[b.name for b in src.data.bones][:40]}")
 
-    yaw = _yaw_to_front(src, names, meshy)
+    yaw = _yaw_to_front(src, names, meshy or smpl)
     s_w = yaw @ src.matrix_world.to_quaternion()            # source armature -> world (facing -Y)
     t_w = tgt_arm.matrix_world.to_quaternion()               # target armature -> world
     t_inv = t_w.inverted()
@@ -238,9 +259,28 @@ def offsets_from_rig(src, act, tgt_arm, fps=24, label="clip", trim=None, warp=No
     t_rest = {b.name: t_w @ b.matrix_local.to_quaternion() for b in tgt_arm.data.bones}
 
     # C: swing each target bone from its rest direction onto the source's rest direction.
+    # SMPL-H bones all rest with +Y pointing up (identity orientation), so their axis says nothing
+    # about where the bone points: measure the source direction head -> head of the bone that
+    # matches the target's own +Y child instead (leaf bones continue their parent's direction).
+    def src_dir(m):
+        tb = tgt_arm.data.bones[m]
+        td_local = (tb.matrix_local.to_quaternion() @ Vector((0, 1, 0)))
+        best, best_dot = None, -2.0
+        for tc in tb.children:
+            if tc.name in names and (tc.head_local - tb.head_local).length > 1e-5:
+                d = (tc.head_local - tb.head_local).normalized().dot(td_local)
+                if d > best_dot:
+                    best, best_dot = tc.name, d
+        if best is None:
+            return src_dir(tb.parent.name) if tb.parent and tb.parent.name in names else None
+        sb, sc = src.data.bones[names[m]], src.data.bones[names[best]]
+        return s_w @ (sc.head_local - sb.head_local).normalized()
+
     swing = {}
     for m, s in names.items():
-        sd = (s_rest[m] @ Vector((0, 1, 0)))
+        sd = src_dir(m) if smpl else None
+        if sd is None:
+            sd = (s_rest[m] @ Vector((0, 1, 0)))
         td = (t_rest[m] @ Vector((0, 1, 0)))
         swing[m] = td.rotation_difference(sd)
 
@@ -384,7 +424,8 @@ if __name__ == "__main__" and "--" in sys.argv:
     bpy.ops.wm.read_factory_settings(use_empty=True)
     src, clips = load_clips(path)
     meshy = is_meshy_rig(b.name for b in src.data.bones)
-    matched = {b.name: mixamo_name(b.name, meshy) for b in src.data.bones}
+    smpl = is_smpl_rig(b.name for b in src.data.bones)
+    matched = {b.name: mixamo_name(b.name, meshy, smpl) for b in src.data.bones}
     log(f"{os.path.basename(path)}: {len(src.data.bones)} bones{' (Meshy rig)' if meshy else ''}, "
         f"floor {float(src.get('floor_z', 0.0)):+.3f} m")
     for name, act in sorted(clips.items()):

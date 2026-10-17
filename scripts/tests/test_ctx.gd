@@ -94,7 +94,7 @@ func make_match(lineup: Array, settings: Dictionary = {}) -> MatchHost:
 	var host := MatchHost.new()
 	host.manual_step = true
 	holder.add_child(host)
-	var s := {"seed": 1234, "base_mode": 1}
+	var s := {"seed": 1234, "base_mode": 1, "skip_intro": true}
 	s.merge(settings, true)
 	var full: Array = []
 	var per_team := [0, 0]

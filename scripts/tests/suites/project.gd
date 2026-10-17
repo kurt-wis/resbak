@@ -32,7 +32,7 @@ func run(t: TestCtx) -> void:
 	t.check(tu.chain_post_speed > 0.0 and tu.jail_band > 0.0, "jail line tuning (post speed, band)")
 	t.check(t.near(tu.tagged_freeze, 0.8), "tagged freeze 0.8 s")
 	t.check(t.near(tu.failed_tag_stumble, 0.5), "failed tag stumble 0.5 s")
-	t.check(t.near(tu.base_barrier_radius, 2.4) and t.near(tu.base_ring_radius, 2.0), "base ring 2 / barrier 2.4")
+	t.check(t.near(tu.base_ring_radius, 2.0), "base ring 2 (no own-ring barrier since 2026-10-17)")
 	t.check(t.near(tu.capture_hold, 2.0) and RB.ticks(tu.capture_hold) == 120, "capture hold 2.0 s = 120 ticks (v0.1.1 pacing; spec 1.5 s)")
 	t.check(t.near(tu.escape_protection, 4.0) and t.near(tu.capture_lockout, 4.0), "EP and lockout 4 s")
 	t.check(t.near(tu.round_time, 120.0) and t.near(tu.sudden_death_time, 30.0) and tu.points_to_win == 4, "round 120 s / sudden death 30 s / first to 4 (v0.1.1 pacing; spec 3)")

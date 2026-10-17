@@ -79,6 +79,7 @@ $env:BLENDER = "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 | Refresh import / class cache (after adding `class_name` scripts or moving files) | `& $env:GODOT --headless --path . --import` |
 | Play (front end) | `& $env:GODOT --path .` (add `--windowed --resolution 1600x900` for a window) |
 | Straight into a match | `& $env:GODOT --path . res://scenes/match.tscn -- --hero=nene` (also `--difficulty=0..2 --seed=N --tradisyonal --autoplay --no-shadows`) |
+| Rebuild the Konstruksyon vehicles | `& $env:BLENDER -b --python tools/build_vehicle_props.py` (one: `... -- digger`), then `tools/qc_asset.py` |
 | Rebuild the five heroes | `& $env:BLENDER -b --python tools/build_heroes.py` (one: `... -- nene`), then `tools/qc_asset.py` |
 | Rebuild Batang Hamog (legacy) | `& $env:BLENDER -b --python tools/build_batang_hamog.py`, then `tools/build_hamog_moveset.py` |
 

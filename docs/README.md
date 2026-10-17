@@ -24,6 +24,7 @@
 - [`architecture.md`](architecture.md): scenes, player controller, state machine, input, project settings.
 - [`pipelines/`](pipelines/): [blender](pipelines/blender.md) · [map_pipeline](pipelines/map_pipeline.md) · [assets](pipelines/assets.md).
 - [`decisions.md`](decisions.md): dated decision log.
+- [`plans/`](plans/): dated implementation plans for in-flight work. Delete a plan once it has fully shipped.
 
 **History**
 - [`archive/`](archive/): superseded design docs (old summary, character dossiers, rules spec). Kept for reference only. Never implement from them.

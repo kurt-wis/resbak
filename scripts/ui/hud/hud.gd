@@ -6,7 +6,7 @@ extends CanvasLayer
 ## host, the local hero and the MatchView, and never changes game state.
 ## Parts (scripts/ui/hud/hud_*.gd): sinking-sun timer + scores + point dots, prisoner tracker,
 ## minimap, tag feed, S1/S2 + passive, danger border, BAWAL! hallucination, off-screen arrows, capture rings, jail
-## prompt, countdown and between-rounds sequence, scoreboard (hold Tab), banners, MOBA-style
+## prompt, round-1 intro overlay, countdown and between-rounds sequence, scoreboard (hold Tab), banners, MOBA-style
 ## announcer ribbons (HudAnnouncer), and the
 ## Escape overlay. F10 hides everything but the overlay.
 
@@ -31,6 +31,7 @@ var arrows: HudArrows
 var rings: HudCaptureRings
 var jail: HudJail
 var round_ui: HudRound
+var intro_ui: HudIntro
 var banner_part: HudBanner
 var announcer: HudAnnouncer
 var scoreboard: HudScoreboard
@@ -75,6 +76,7 @@ func setup(p_host: MatchHost, p_local: Hero, p_view: MatchView) -> void:
 	skills = _add(HudSkills.new(), root) as HudSkills
 	jail = _add(HudJail.new(), root) as HudJail
 	round_ui = _add(HudRound.new(), root) as HudRound
+	intro_ui = _add(HudIntro.new(), root) as HudIntro
 	banner_part = _add(HudBanner.new(), root) as HudBanner
 	announcer = _add(HudAnnouncer.new(), root) as HudAnnouncer
 	scoreboard = _add(HudScoreboard.new(), root) as HudScoreboard

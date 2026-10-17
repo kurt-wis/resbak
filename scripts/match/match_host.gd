@@ -3,7 +3,7 @@ extends Node
 
 ## The host simulation (docs/RESBAK.md § 12 "Tick order"). One tick per _physics_process
 ## at 60 ticks/s. Everything that changes game state happens inside step(), in spec order:
-##   1 inputs  2 actions  3 movement  4 base barriers  5 tags  6 rescues  7 apply 5+6
+##   1 inputs  2 actions  3 movement  4 jail barriers  5 tags  6 rescues  7 apply 5+6
 ##   8 captures  9 round end  10 events (emitted as they happen through `event`)
 ## Offline (vs Bots, tutorial) the same host runs locally; for LAN, clients will send
 ## InputFrames and draw snapshots, so keep all rules here and in the systems.
@@ -36,6 +36,7 @@ static func default_settings() -> Dictionary:
 		"base_mode": 1, ## v0.2: bases are fixed (one per team per map); kept for old saves
 		"points_to_win": 3,
 		"round_time": 120.0,
+		"skip_intro": false, ## tests, --autoplay and the tutorial leave out the round-1 flyover
 		"capture_toggle": false, ## Settings > Accessibility > Capture input
 		"difficulty": 1, ## 0 Madali, 1 Katamtaman, 2 Mahirap
 		"map": "barangay_court",
@@ -102,8 +103,7 @@ func step(dt: float = 1.0 / RB.TICK_RATE) -> void:
 			o.tick(dt)
 	for h in heroes:
 		h.tick_abilities(dt)
-	# 4. Base (and jail) barriers
-	base_system.enforce_barriers()
+	# 4. Jail barriers (the own-ring base barrier is gone: docs/decisions.md 2026-10-17)
 	jail_system.enforce_barriers()
 	if round_flow.is_live():
 		# 5. Tags, against the state after step 4; stored, not applied

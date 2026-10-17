@@ -19,6 +19,7 @@ const SUITES := [
 	"res://scripts/tests/suites/kit_inday.gd",
 	"res://scripts/tests/suites/bots.gd",
 	"res://scripts/tests/suites/hud.gd",
+	"res://scripts/tests/suites/konstruksyon.gd",
 	"res://scripts/tests/suites/frontend.gd",
 	"res://scripts/tests/suites/match_flow.gd",
 ]

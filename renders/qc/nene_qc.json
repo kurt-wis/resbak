@@ -91,8 +91,7 @@
    "tracks": 660,
    "foot_plant_speed_mps": 3.06,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0,
-   "skate_ratio": 1.63
+   "hips_root_motion_m": 0.0
   },
   {
    "clip": "Stumble",
@@ -143,6 +142,18 @@
    "hips_root_motion_m": 0.014
   },
   {
+   "clip": "TagCharge",
+   "frames": [
+    0,
+    47
+   ],
+   "seconds": 1.958,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.02,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
    "clip": "Tagged",
    "frames": [
     0,
@@ -176,8 +187,7 @@
    "tracks": 660,
    "foot_plant_speed_mps": 1.21,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0,
-   "skate_ratio": 2.07
+   "hips_root_motion_m": 0.0
   }
  ],
  "sheet": "renders\\qc\\nene_sheet.png",
@@ -253,11 +263,6 @@
    "detail": "0.917 s, 660 channels, foot plant 3.06 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
-   "check": "foot slide Running",
-   "status": "FAIL",
-   "detail": "moves 5.0 m/s, feet push 3.06 m/s: x1.63 (play the clip at x1.63 or put its blend point at 3.06 m/s)"
-  },
-  {
    "check": "clip Stumble",
    "status": "WARN",
    "detail": "0.75 s, 660 channels, foot plant 0.94 m/s, loop seam 0.376 m, root motion 0.058 m"
@@ -278,6 +283,11 @@
    "detail": "0.667 s, 660 channels, foot plant 0.85 m/s, loop seam 0.62 m, root motion 0.014 m"
   },
   {
+   "check": "clip TagCharge",
+   "status": "PASS",
+   "detail": "1.958 s, 660 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
    "check": "clip Tagged",
    "status": "WARN",
    "detail": "0.917 s, 660 channels, foot plant 0.12 m/s, loop seam 0.615 m, root motion 0.1 m"
@@ -291,11 +301,6 @@
    "check": "clip Walking",
    "status": "PASS",
    "detail": "2.875 s, 660 channels, foot plant 1.21 m/s, loop seam 0.0 m, root motion 0.0 m"
-  },
-  {
-   "check": "foot slide Walking",
-   "status": "FAIL",
-   "detail": "moves 2.5 m/s, feet push 1.21 m/s: x2.07 (play the clip at x2.07 or put its blend point at 1.21 m/s)"
   }
  ]
 }

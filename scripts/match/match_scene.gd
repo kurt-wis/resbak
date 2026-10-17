@@ -6,7 +6,14 @@ extends Node3D
 ## --seed=<n> --tradisyonal --no-shadows --autoplay (the local hero is a bot too, for demos).
 
 const MAPS := {"barangay_court": "res://scenes/barangay_court.tscn", "construction_site": "res://scenes/construction_site.tscn"}
-const AMBIENCE := {"barangay_court": "res://assets/audio/barangay_daylight.wav"}
+const AMBIENCE := {
+	"barangay_court": "res://assets/audio/barangay_daylight.wav",
+	"construction_site": "res://assets/audio/construction_ambience.ogg", # harbour, engines, distant hammering
+}
+## Match music per map (Audio.play_music names). With final_stretch_time left on the round clock
+## (spec § 7: "faster music") the base crossfades to its "<name>_tension" stem, which carries on
+## through sudden death; the next countdown crossfades back.
+const MUSIC := {"barangay_court": "music_barangay_court", "construction_site": "music_construction_site"}
 const RESULTS_SCENE := "res://scenes/frontend/results.tscn"
 const TITLE_SCENE := "res://scenes/frontend/title.tscn"
 const HOME_SCENE := "res://scenes/frontend/home.tscn"
@@ -21,6 +28,8 @@ var player_input: PlayerInput
 var local_hero: Hero
 var bots: Array[BotBrain] = []
 var tutorial: Tutorial
+var _music_started := false
+var occlusion: OcclusionFade ## tall props fade when they hide the hero (maps that opt in)
 
 func _ready() -> void:
 	Controls.ensure()
@@ -38,6 +47,8 @@ func _ready() -> void:
 			settings["difficulty"] = int(a.trim_prefix("--difficulty="))
 		elif a.begins_with("--seed="):
 			settings["seed"] = int(a.trim_prefix("--seed="))
+		elif a == "--skip-intro" or a == "--autoplay":
+			settings["skip_intro"] = true
 		elif a == "--tradisyonal":
 			settings["skills"] = false
 			settings["hazards"] = false
@@ -55,6 +66,14 @@ func _ready() -> void:
 	MapDressing.dress_court(map_root)
 	if AMBIENCE.has(map_id):
 		MapDressing.add_ambience(self, AMBIENCE[map_id])
+	if MUSIC.has(map_id):
+		var audio := get_node_or_null("/root/Audio")
+		if audio:
+			audio.play_music(MUSIC[map_id])
+			_music_started = true
+	var gameplay := map_root.get_node_or_null("Gameplay")
+	if gameplay and bool(gameplay.get_meta("dust", false)):
+		MapDressing.add_dust(map_root, _play_bounds(gameplay))
 	world = Node3D.new()
 	world.name = "World"
 	add_child(world)
@@ -99,6 +118,11 @@ func _ready() -> void:
 	add_child(hud)
 	hud.setup(host, local_hero, view)
 	hud.input_source = player_input
+	if OcclusionFade.wanted(map_root):
+		occlusion = OcclusionFade.new()
+		occlusion.name = "OcclusionFade"
+		add_child(occlusion)
+		occlusion.setup(camera, map_root, local_hero, host.layout.bounds)
 	hud.resume_requested.connect(_set_pause.bind(false))
 	hud.leave_requested.connect(_leave_match)
 	host.event.connect(_on_event)
@@ -106,6 +130,9 @@ func _ready() -> void:
 		tutorial = Tutorial.new()
 		add_child(tutorial)
 		tutorial.setup(host, local_hero, hud)
+
+func _play_bounds(gameplay: Node) -> Rect2:
+	return gameplay.get_meta("play_bounds", Rect2(-19.5, -11.5, 39.0, 29.0))
 
 func _fallback_lineup(local: String) -> Array:
 	var out: Array = []
@@ -119,7 +146,18 @@ func _fallback_lineup(local: String) -> Array:
 			out.append({"hero_id": hid, "team": team, "team_slot": ts, "is_bot": not (team == 0 and ts == 0), "name": hid.capitalize()})
 	return out
 
+func _exit_tree() -> void:
+	var audio := get_node_or_null("/root/Audio")
+	if audio and _music_started:
+		audio.stop_music(0.4)
+
 func _on_event(kind: String, d: Dictionary) -> void:
+	var audio := get_node_or_null("/root/Audio")
+	if audio and audio.music_name != "":
+		if kind == "final_stretch" or kind == "sudden_death": # sudden death: if a round skipped the stretch
+			audio.set_music_layer("tension", true)
+		elif kind == "round_end" or kind == "countdown":
+			audio.set_music_layer("tension", false)
 	if kind != "match_end":
 		return
 	var session := get_node_or_null("/root/Session")

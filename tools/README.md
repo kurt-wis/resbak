@@ -15,6 +15,7 @@ this folder (no hardcoded machine paths).
 | `retarget_clip.py` | a Meshy GLB (its own 24-bone rig), Mixamo FBX or Quaternius GLB clip + a hero armature | offset frames for `build_heroes.bake()` | Library used by `build_heroes.py`; run alone (`-- <clip file>`) to list its clips and bone mapping. |
 | `qc_asset.py` | any .glb/.fbx | `renders/qc/<name>_sheet.png` + `_qc.json` | 4-view solid+wire sheet and checks: ground, centre, facing, normals, tris, Mixamo names, clip loop seam and foot slide (`--speed Running=5.4`). Exit 1 on FAIL. |
 | `sanitize_asset.py` | raw Meshy/downloaded prop | `assets/props/<name>.glb` | Bake transforms, fix normals, scale (`--size`), origin bottom or center, decimate (`--max-tris`). |
+| `build_vehicle_props.py` | `source_art/props/vehicles/<name>.glb` (Mathew's Meshy downloads) | `assets/props/vehicles/<name>.glb` + `<name>.tscn` | Konstruksyon vehicles: front to +X, grounded, scaled into the old vehicle footprint (`FIT`), textures to 1024 px; prints `SIZE` for the map's collider boxes. `-- <name>` builds one. |
 | `build_jm_botsog.py` | none (fully procedural) | `assets/characters/jm_botsog.glb`, `source_art/jm_botsog/jm_botsog.blend`, `renders/jm_*.png`, `renders/jm_build_meta.json` | JM model + Idle/Walking/Running. |
 
 After any rebuild, run the integration gate. Details and rig rules:

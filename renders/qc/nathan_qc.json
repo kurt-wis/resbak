@@ -130,6 +130,18 @@
    "hips_root_motion_m": 0.012
   },
   {
+   "clip": "TagCharge",
+   "frames": [
+    0,
+    47
+   ],
+   "seconds": 1.958,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.02,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
    "clip": "Tagged",
    "frames": [
     0,
@@ -264,6 +276,11 @@
    "check": "clip Tag",
    "status": "WARN",
    "detail": "0.667 s, 660 channels, foot plant 0.65 m/s, loop seam 0.68 m, root motion 0.012 m"
+  },
+  {
+   "check": "clip TagCharge",
+   "status": "PASS",
+   "detail": "1.958 s, 660 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
    "check": "clip Tagged",

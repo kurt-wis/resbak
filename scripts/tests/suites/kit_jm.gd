@@ -281,13 +281,13 @@ func _talbog_clamps(t: TestCtx) -> void:
 	t.steps(host, 38)
 	var band_edge := -19.0 + host.tuning.jail_band + host.tuning.body_radius
 	t.check(jm.global_position.x > band_edge - 0.02 and jm.global_position.x < band_edge + 0.35, "lands just before the jail barrier (x=%.2f)" % jm.global_position.x)
-	# own base barrier (pole at -12,0, radius 2.4)
+	# his own pole (-12,0): no ring barrier any more, only the solid pole (r 0.2 + body 0.4)
 	sk.cd_ticks = 0
 	TestCtx.put(jm, -7.0, 0.0)
 	inp.aim_at(jm, Vector3(-20.0, 0, 0.0))
 	inp.press(jm, S1)
 	t.steps(host, 38)
-	t.check(jm.global_position.x > -9.8 and jm.global_position.x < -9.4, "lands outside JM's own base barrier (x=%.2f)" % jm.global_position.x)
+	t.check(jm.global_position.x > -11.5 and jm.global_position.x < -11.3, "lands just before his own pole (x=%.2f)" % jm.global_position.x)
 	# right next to a wall the jump lands in place
 	sk.cd_ticks = 0
 	TestCtx.put(jm, 19.5, 3.0)

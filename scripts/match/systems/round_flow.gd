@@ -3,18 +3,22 @@ extends RefCounted
 
 ## Rounds and match (docs/RESBAK.md § 2 "Round end and match", § 6 "Loading, intro,
 ## countdown" and "Between rounds").
+## Round 1 opens with INTRO (2026-10-17): an 8 s flyover (arena, each team's spawn, the
+## faceoff) while everyone stands frozen; any human can skip it with Interact, and it is left
+## out by the skip_intro setting (tests, --autoplay) and in practice (the tutorial).
 ## COUNTDOWN 3 s frozen (aim and ping only) -> KABOOM -> PLAYING (timer from KABOOM)
 ## -> end by capture, lockdown, or the timer: fewer jailed wins, equal -> SUDDEN_DEATH
 ## (Takipsilim, 30 s, untimed after 2 draws; first successful tag or capture wins; neither
 ## = draw) -> ROUND_OVER (between rounds: 7 s, 5 s after a draw) -> reset -> COUNTDOWN ...
 ## First to points_to_win -> MATCH_OVER.
 
-enum Phase { COUNTDOWN, PLAYING, SUDDEN_DEATH, ROUND_OVER, MATCH_OVER }
-const PHASE_NAMES := ["countdown", "playing", "sudden_death", "round_over", "match_over"]
+enum Phase { COUNTDOWN, PLAYING, SUDDEN_DEATH, ROUND_OVER, MATCH_OVER, INTRO }
+const PHASE_NAMES := ["countdown", "playing", "sudden_death", "round_over", "match_over", "intro"]
+enum IntroStage { ARENA, TEAM_A, TEAM_B, FACEOFF }
 
 var host: MatchHost
 var phase := Phase.COUNTDOWN
-var phase_ticks := 0 ## ticks left in COUNTDOWN / ROUND_OVER
+var phase_ticks := 0 ## ticks left in INTRO / COUNTDOWN / ROUND_OVER
 var timer_ticks := 0 ## round clock (PLAYING) or sudden-death clock (-1 = untimed)
 var round_number := 0
 var score := [0, 0]
@@ -36,7 +40,32 @@ func accepts_actions() -> bool:
 	return true ## step 2 still runs in countdown for aim and ping; rules check round_live()
 
 func heroes_frozen() -> bool:
-	return phase == Phase.COUNTDOWN or phase == Phase.ROUND_OVER or phase == Phase.MATCH_OVER
+	return phase == Phase.COUNTDOWN or phase == Phase.ROUND_OVER or phase == Phase.MATCH_OVER or phase == Phase.INTRO
+
+## Round 1 plays the intro unless skip_intro or practice says otherwise.
+func intro_enabled() -> bool:
+	return not bool(host.settings.get("skip_intro", false)) and not bool(host.settings.get("practice", false))
+
+func intro_total_ticks() -> int:
+	var t := host.tuning
+	return RB.ticks(t.intro_arena + t.intro_team * 2.0 + t.intro_faceoff)
+
+## Seconds into the intro (0 outside it).
+func intro_elapsed() -> float:
+	if phase != Phase.INTRO:
+		return 0.0
+	return RB.seconds(intro_total_ticks() - phase_ticks)
+
+## Which part of the flyover `secs` falls in, and 0..1 progress through that part.
+func intro_stage_at(secs: float) -> Dictionary:
+	var t := host.tuning
+	var lens := [t.intro_arena, t.intro_team, t.intro_team, t.intro_faceoff]
+	var left := secs
+	for i in range(4):
+		if left < lens[i] or i == 3:
+			return {"stage": i, "u": clampf(left / maxf(0.001, lens[i]), 0.0, 1.0)}
+		left -= lens[i]
+	return {"stage": 3, "u": 1.0}
 
 func phase_name() -> String:
 	return PHASE_NAMES[phase]
@@ -53,15 +82,39 @@ func start_match() -> void:
 	round_number = 0
 	winner = -1
 	round_log.clear()
-	_begin_round()
+	_begin_round(intro_enabled())
 
-func _begin_round() -> void:
+func _begin_round(with_intro := false) -> void:
 	round_number += 1
 	_reset_world()
+	timer_ticks = RB.ticks(float(host.settings.get("round_time", host.tuning.round_time)))
+	if with_intro:
+		phase = Phase.INTRO
+		phase_ticks = intro_total_ticks()
+		host.emit_event("intro", {"round": round_number, "seconds": RB.seconds(phase_ticks)})
+		return
+	_begin_countdown()
+
+func _begin_countdown() -> void:
 	phase = Phase.COUNTDOWN
 	phase_ticks = RB.ticks(host.tuning.countdown)
-	timer_ticks = RB.ticks(float(host.settings.get("round_time", host.tuning.round_time)))
 	host.emit_event("countdown", {"round": round_number, "seconds": host.tuning.countdown})
+
+## The one human of the match (null with none or several: a lobby plays the intro out so
+## nobody cuts it short for the others).
+func sole_human() -> Hero:
+	var human: Hero = null
+	for h in host.heroes:
+		if h.is_bot:
+			continue
+		if human != null:
+			return null
+		human = h
+	return human
+
+func _intro_skip_pressed() -> bool:
+	var human := sole_human()
+	return human != null and human.frame != null and human.frame.was_pressed(RB.BTN_INTERACT)
 
 ## Spec § 2 "Reset": free prisoners, clear chains, reset cooldowns, end every effect;
 ## spawns hold up to 3 (slots 1-3 spawn 1, slots 4-5 spawn 2). Bases stay.
@@ -84,6 +137,12 @@ func _reset_world() -> void:
 
 func pre_tick() -> void:
 	match phase:
+		Phase.INTRO:
+			phase_ticks -= 1
+			var skipped := _intro_skip_pressed()
+			if phase_ticks <= 0 or skipped:
+				host.emit_event("intro_end", {"round": round_number, "skipped": skipped})
+				_begin_countdown()
 		Phase.COUNTDOWN:
 			phase_ticks -= 1
 			if phase_ticks <= 0:
@@ -92,6 +151,8 @@ func pre_tick() -> void:
 		Phase.PLAYING:
 			if not bool(host.settings.get("practice", false)):
 				timer_ticks -= 1
+				if timer_ticks == RB.ticks(host.tuning.final_stretch_time):
+					host.emit_event("final_stretch", {"round": round_number, "seconds": host.tuning.final_stretch_time})
 		Phase.SUDDEN_DEATH:
 			if timer_ticks > 0:
 				timer_ticks -= 1

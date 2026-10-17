@@ -30,6 +30,7 @@ var spawns := [[], []] ## per team: Array[Vector3] (spawn 1, spawn 2)
 var bounds := Rect2(-19.5, -11.5, 39.0, 29.0) ## playable XZ area (camera, bots)
 var pole_nodes := [[], []] ## scene meshes that draw each team's pole (moved to the active site)
 var vaultables: Array[StaticBody3D] = []
+var base_prop := "" ## optional scene drawn at each base instead of the basketball stand (Gameplay.base_prop)
 
 static func from_map(map_root: Node3D) -> MapLayout:
 	var m := MapLayout.new()
@@ -92,6 +93,8 @@ func _read() -> void:
 	var gameplay := _find("Gameplay")
 	if gameplay and gameplay.has_meta("play_bounds"):
 		bounds = gameplay.get_meta("play_bounds")
+	if gameplay and gameplay.has_meta("base_prop"):
+		base_prop = String(gameplay.get_meta("base_prop"))
 	for t in range(2):
 		_read_line(t, spec_team[t])
 

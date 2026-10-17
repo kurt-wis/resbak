@@ -8,6 +8,9 @@ extends Camera3D
 ## Mouse wheel zooms (view size 8..15), camera_flip (V / right stick) turns the view 180 deg in
 ## 0.65 s. Presentation only: PlayerInput reads view_yaw() to turn screen-relative movement into
 ## world directions, so InputFrames stay in world space and bots never see the camera.
+## Round-1 intro (2026-10-17): MatchView sets intro_w (0..1), intro_focus and intro_size each
+## frame; the camera blends its normal framing toward that flyover pose (the yaw is untouched
+## so screen-relative movement stays right the moment the intro ends).
 ## Shake respects Settings > Camera shake and Reduce camera motion.
 
 const COURTSIDE_ANGLE := 45.0
@@ -27,6 +30,9 @@ var bounds := Rect2() ## play area (XZ); empty = no clamp
 var enemy_dir := Vector3.RIGHT ## toward the enemy base (set by the match scene)
 var zoom_out := 0.0 ## 0..1, high ground widens the view 15 %
 var ink: ShaderMaterial ## the illustrated-edges finish (focus follows the hero)
+var intro_w := 0.0 ## 0 = follow the hero, 1 = the flyover pose
+var intro_focus := Vector3.ZERO
+var intro_size := 14.0
 var yaw := 0.0
 var _yaw_from := 0.0
 var _yaw_to := 0.0
@@ -140,7 +146,11 @@ func _place(delta: float) -> void:
 	var fwd := Basis(Vector3.UP, yaw) * Vector3(0, 0, -ahead)
 	var goal := _clamped(pos + fwd + _lead) + Vector3(0, 1.4, 0)
 	_focus = goal if delta <= 0.0 else _focus.lerp(goal, 1.0 - exp(-8.0 * delta))
+	var shown_focus := _focus
 	size = _size
+	if intro_w > 0.0:
+		shown_focus = _focus.lerp(intro_focus, intro_w)
+		size = lerpf(_size, intro_size, intro_w)
 	var orbit := Basis.from_euler(Vector3(deg_to_rad(pitch_deg), view_yaw(), 0))
 	var jitter := Vector3.ZERO
 	if _shake_time > 0.0:
@@ -149,16 +159,17 @@ func _place(delta: float) -> void:
 		if _shake_time <= 0.0:
 			_shake = 0.0
 	global_basis = orbit
-	global_position = _focus + orbit * Vector3(0, 0, arm) + jitter
+	global_position = shown_focus + orbit * Vector3(0, 0, arm) + jitter
 	_update_ink(pos)
 
-## Kurt's distance focus: the ink-edge shader keeps the hero's depth sharp and softens the rest.
+## Kurt's distance focus: the ink-edge shader keeps a circle of ground around the hero sharp and
+## softens what lies further away (clear_radius / blur_radius in the shader), so walking toward
+## something brings it into focus. The round-1 flyover shows the whole yard, so it fades out there.
 func _update_ink(pos: Vector3) -> void:
 	if ink == null or not is_inside_tree():
 		return
-	var view := global_transform.affine_inverse() * (pos + Vector3(0, 1.0, 0))
-	ink.set_shader_parameter("focus_depth", maxf(0.1, -view.z))
-	ink.set_shader_parameter("distance_focus_enabled", 1.0)
+	ink.set_shader_parameter("focus_world", pos)
+	ink.set_shader_parameter("distance_focus_enabled", 1.0 - clampf(intro_w, 0.0, 1.0))
 	var vp := get_viewport()
 	if vp:
 		var sz := vp.get_visible_rect().size

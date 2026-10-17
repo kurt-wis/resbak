@@ -91,8 +91,7 @@
    "tracks": 660,
    "foot_plant_speed_mps": 2.26,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0,
-   "skate_ratio": 2.21
+   "hips_root_motion_m": 0.0
   },
   {
    "clip": "Sagip",
@@ -143,6 +142,18 @@
    "hips_root_motion_m": 0.016
   },
   {
+   "clip": "TagCharge",
+   "frames": [
+    0,
+    47
+   ],
+   "seconds": 1.958,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.02,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
    "clip": "Tagged",
    "frames": [
     0,
@@ -176,8 +187,7 @@
    "tracks": 660,
    "foot_plant_speed_mps": 1.02,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0,
-   "skate_ratio": 2.45
+   "hips_root_motion_m": 0.0
   }
  ],
  "sheet": "renders\\qc\\inday_sheet.png",
@@ -253,11 +263,6 @@
    "detail": "0.833 s, 660 channels, foot plant 2.26 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
-   "check": "foot slide Running",
-   "status": "FAIL",
-   "detail": "moves 5.0 m/s, feet push 2.26 m/s: x2.21 (play the clip at x2.21 or put its blend point at 2.26 m/s)"
-  },
-  {
    "check": "clip Sagip",
    "status": "WARN",
    "detail": "1.375 s, 660 channels, foot plant 0.04 m/s, loop seam 0.116 m, root motion 0.042 m"
@@ -278,6 +283,11 @@
    "detail": "0.667 s, 660 channels, foot plant 0.59 m/s, loop seam 0.672 m, root motion 0.016 m"
   },
   {
+   "check": "clip TagCharge",
+   "status": "PASS",
+   "detail": "1.958 s, 660 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
    "check": "clip Tagged",
    "status": "WARN",
    "detail": "0.917 s, 660 channels, foot plant 0.09 m/s, loop seam 0.686 m, root motion 0.115 m"
@@ -291,11 +301,6 @@
    "check": "clip Walking",
    "status": "PASS",
    "detail": "2.667 s, 660 channels, foot plant 1.02 m/s, loop seam 0.0 m, root motion 0.0 m"
-  },
-  {
-   "check": "foot slide Walking",
-   "status": "FAIL",
-   "detail": "moves 2.5 m/s, feet push 1.02 m/s: x2.45 (play the clip at x2.45 or put its blend point at 1.02 m/s)"
   }
  ]
 }

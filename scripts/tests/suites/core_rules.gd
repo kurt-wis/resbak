@@ -15,6 +15,7 @@ var log_events: Array = []
 
 func run(t: TestCtx) -> void:
 	await _countdown(t)
+	await _intro(t)
 	await _movement(t)
 	await _can_tag_table(t)
 	await _tag_hit_and_jail(t)
@@ -113,6 +114,60 @@ func _countdown(t: TestCtx) -> void:
 	t.check(a.global_position.x > -5.0, "hero moves once live")
 	t.ok("countdown 3 s -> KABOOM, frozen until then")
 	await t.free_match(host)
+
+## Round 1 INTRO (2026-10-17): 8 s frozen flyover, then the 3 s countdown; Interact skips it
+## only when exactly one human is in the match; the settings leave it out.
+func _intro(t: TestCtx) -> void:
+	var host := t.make_match(_lineup(["nene", "inday"], ["nathan", "nene"]), {"skip_intro": false})
+	log_events = []
+	host.event.connect(func(kind: String, data: Dictionary): log_events.append(kind))
+	var rf := host.round_flow
+	var a: Hero = host.heroes[0]
+	t.check(rf.phase == RoundFlow.Phase.INTRO and not host.round_live(), "round 1 starts in INTRO (not live)")
+	t.check(rf.intro_total_ticks() == 480, "the intro is 2 + 2 x 2.5 + 1 = 8 s = 480 ticks (got %d)" % rf.intro_total_ticks())
+	t.check(rf.intro_stage_at(0.5).stage == RoundFlow.IntroStage.ARENA and rf.intro_stage_at(3.0).stage == RoundFlow.IntroStage.TEAM_A 		and rf.intro_stage_at(5.5).stage == RoundFlow.IntroStage.TEAM_B and rf.intro_stage_at(7.5).stage == RoundFlow.IntroStage.FACEOFF, "stages run arena, team, team, faceoff")
+	TestCtx.put(a, -5, 0)
+	var inp := t.inputs(host)
+	inp.move(a, Vector2(1, 0))
+	inp.press(a, TAG)
+	inp.press(a, USE) # two humans: Interact must not skip
+	t.steps(host, 200)
+	t.check(rf.phase == RoundFlow.Phase.INTRO and t.near(a.global_position.x, -5.0, 0.05) and not a.is_winding_up(), "heroes stay frozen and can't tag in the intro")
+	t.check(host.round_flow.timer_ticks == 7200, "the round clock does not run in the intro")
+	t.steps(host, 279)
+	t.check(rf.phase == RoundFlow.Phase.INTRO and not log_events.has("intro_end"), "still INTRO after 479 ticks")
+	t.steps(host, 1)
+	t.check(rf.phase == RoundFlow.Phase.COUNTDOWN and log_events.count("intro_end") == 1 and log_events.count("countdown") == 1, "INTRO -> COUNTDOWN with intro_end and countdown events")
+	t.check(rf.phase_ticks == 180, "the 3 s countdown follows (%d ticks)" % rf.phase_ticks)
+	t.steps(host, 180)
+	t.check(host.round_live() and log_events.count("kaboom") == 1, "then KABOOM")
+	await t.free_match(host)
+	# one human among bots: Interact skips
+	var lineup := _lineup(["nene", "inday"], ["nathan", "nene"])
+	for i in range(1, lineup.size()):
+		lineup[i]["is_bot"] = true
+	host = t.make_match(lineup, {"skip_intro": false})
+	log_events = []
+	host.event.connect(func(kind: String, data: Dictionary): log_events.append(kind))
+	a = host.heroes[0]
+	t.steps(host, 30)
+	t.check(host.round_flow.phase == RoundFlow.Phase.INTRO, "no skip without a press")
+	t.inputs(host).press(a, USE)
+	t.steps(host, 2)
+	t.check(host.round_flow.phase == RoundFlow.Phase.COUNTDOWN and log_events.has("intro_end"), "the lone human skips the intro with Interact")
+	await t.free_match(host)
+	# practice (tutorial) never plays it; later rounds never play it
+	host = t.make_match(lineup, {"skip_intro": false, "practice": true})
+	t.check(host.round_flow.phase == RoundFlow.Phase.COUNTDOWN, "practice (tutorial) skips the intro")
+	await t.free_match(host)
+	host = t.make_match(_lineup(["nene", "inday"], ["nathan", "nene"]), {"skip_intro": false})
+	t.steps(host, 480 + 180)
+	host.round_flow.score[0] = 0
+	host.round_flow._end_round(D, "capture")
+	t.steps(host, host.round_flow.phase_ticks + 1)
+	t.check(host.round_flow.round_number == 2 and host.round_flow.phase == RoundFlow.Phase.COUNTDOWN, "round 2 goes straight to the countdown")
+	await t.free_match(host)
+	t.ok("round-1 intro: 8 s frozen, skip rules, practice and later rounds without it")
 
 func _movement(t: TestCtx) -> void:
 	for sheet in [["nene", 4.5], ["jm", 4.15], ["nathan", 4.5], ["inday", 4.5], ["tutoy", 4.85]]:
@@ -383,6 +438,8 @@ func _sabay(t: TestCtx) -> void:
 	await t.free_match(host)
 
 func _barrier(t: TestCtx) -> void:
+	# 2026-10-17: the own-ring barrier is gone on every map (spec deviation, docs/decisions.md).
+	# Defenders walk into their own ring, up to the solid pole, and tag a capturer from inside it.
 	var host := _live(t, ["nene", "inday"], ["nathan", "nene"])
 	var a: Hero = host.heroes[0]
 	var c: Hero = host.heroes[2]
@@ -390,17 +447,24 @@ func _barrier(t: TestCtx) -> void:
 	t.check(t.near(pole.x, -12.0) and t.near(pole.z, 0.0), "Dilaw pole at site 1")
 	TestCtx.put(a, -6, 0)
 	t.inputs(host).move(a, Vector2(-1, 0))
-	t.steps(host, 150)
+	t.steps(host, 200)
 	var da := RB.flat_dist(a.global_position, pole)
-	t.check(da >= 2.39 and da < 2.6, "own-base barrier holds the team >= 2.4 m from its pole (%.2f)" % da)
-	t.check(_count("barrier_bump") > 0, "barrier bump event")
+	t.check(da < host.tuning.base_ring_radius and da > host.tuning.pole_radius + host.tuning.body_radius - 0.1, "a defender walks into its own ring and stops at the solid pole (%.2f m)" % da)
+	t.check(host.base_system.in_own_ring(a), "in_own_ring is true inside the ring")
+	t.check(_count("barrier_bump") == 0, "no barrier bump events")
 	t.inputs(host).move(a, Vector2.ZERO)
-	TestCtx.put(c, -7.0, 2.5)
-	t.inputs(host).move(c, Vector2(-5.0, -2.5).normalized())
-	t.steps(host, 150)
-	var dc := RB.flat_dist(c.global_position, pole)
-	t.check(dc < 1.0, "an enemy passes the other team's barrier (%.2f m from the pole)" % dc)
-	t.ok("own-base barrier blocks own team only")
+	# a defender inside the ring tags a capturer
+	TestCtx.put(a, -11.4, 1.2)
+	TestCtx.put(c, -10.6, 0)
+	t.check(host.base_system.in_own_ring(a), "defender stands inside its ring")
+	t.inputs(host).hold(c, USE)
+	t.steps(host, 30)
+	t.check(c.capturing, "the enemy is capturing")
+	t.inputs(host).aim_at(a, c.global_position)
+	_tag(t, host, a)
+	t.check(c.state == Hero.State.TAGGED and not c.capturing, "a defender inside its own ring tags the capturer")
+	t.check(host.stats[a.slot].saves == 1, "and it counts as a save")
+	t.ok("no own-ring barrier: defenders fight inside the ring")
 	await t.free_match(host)
 
 func _capture(t: TestCtx) -> void:
@@ -510,6 +574,69 @@ func _chain_and_rescue(t: TestCtx) -> void:
 	t.check(reach <= tu.post_hold_offset + 0.35 + tu.chain_link * 2.0 + 0.05, "the tip reaches at most one link per prisoner (%.2f)" % reach)
 	t.check(RB.flat_dist(c.global_position, post) <= tu.post_hold_offset + 0.36, "the post holder never lets go of the post")
 	t.check(RB.flat_dist(c.global_position, d.global_position) <= tu.chain_link + 0.02 and RB.flat_dist(d.global_position, e.global_position) <= tu.chain_link + 0.02, "neighbours stay within one link")
+	# the chain looks like real hand-holding (visual only: hero_visual.gd)
+	var gc: Array = c.visual.chain_grips()
+	var gd: Array = d.visual.chain_grips()
+	var ge: Array = e.visual.chain_grips()
+	t.check(gc.size() == 2 and gd.size() == 2 and ge.size() == 2, "every prisoner has a rear and a front grip")
+	t.check(c.visual.arm_ik != null and d.visual.arm_ik != null and e.visual.arm_ik != null, "the chain arm IK is built on every prisoner (the rig's bone names resolve)")
+	for p in [c, d, e]:
+		(p.visual as HeroVisual).settle_chain_draw()
+	await t.frames(4) # let the animations and the IK modifiers settle
+	var visc := c.visual as HeroVisual
+	var visd := d.visual as HeroVisual
+	var vise := e.visual as HeroVisual
+	# the IK really moves the hands: this is what silently did nothing while the bone names were wrong
+	t.check(visc.hand_target_error(0) < 0.12 and visc.hand_target_error(1) < 0.12, "the post holder's hands sit on their grips (%.3f / %.3f m off)" % [visc.hand_target_error(0), visc.hand_target_error(1)])
+	t.check(visd.hand_target_error(0) < 0.12 and visd.hand_target_error(1) < 0.12, "the middle link's hands sit on their grips (%.3f / %.3f m off)" % [visd.hand_target_error(0), visd.hand_target_error(1)])
+	if gc.size() == 2 and gd.size() == 2 and ge.size() == 2:
+		t.check(gc[0].y > c.global_position.y + 0.7 and gc[0].y < c.global_position.y + 1.05, "hands are held at hip height, below the chest (%.2f m)" % (gc[0].y - c.global_position.y))
+	for p in [c, d, e]:
+		var vis = p.visual
+		var face: Vector3 = vis.chain_facing()
+		var k: int = js.chain(D).find(p)
+		var axis := RB.flat(p.global_position - js.link_before(D, k)).normalized()
+		t.check(absf(face.dot(axis)) < 0.05 and face.length() > 0.99, "chained prisoner %d faces across the chain, not along it" % k)
+		var grips: Array = vis.chain_grips()
+		var map: Array = vis.arm_grip_indices()
+		var right := face.cross(Vector3.UP).normalized()
+		var rear_side := RB.flat(grips[0] - vis.global_position).dot(right)
+		var front_side := RB.flat(grips[1] - vis.global_position).dot(right)
+		t.check(map[0] != map[1], "the two arms take different grips")
+		if k < 2: # the tip's front grip can point anywhere (toward a rescuer)
+			var right_side: float = rear_side if map[0] == 0 else front_side
+			t.check(right_side >= 0.0, "the right arm takes the grip on the right side of the body")
+	# both gripping hands stay below the shoulder and inside the arm's reach: no more airplane arms
+	for p in [c, d, e]:
+		var hvis := p.visual as HeroVisual
+		var shoulder := maxf(hvis.bone_world("RightArm").y, hvis.bone_world("LeftArm").y)
+		t.check(hvis.grip_hand(0).y < shoulder - 0.05 and hvis.grip_hand(1).y < shoulder - 0.05, "link %d holds both hands below its shoulders (%.2f / %.2f < %.2f)" % [js.chain(D).find(p), hvis.grip_hand(0).y, hvis.grip_hand(1).y, shoulder])
+		t.check(hvis.arm_ik.influence > 0.9, "the chain IK is at full strength while chained (%.2f)" % hvis.arm_ik.influence)
+	# at the real chain_link spacing the chain is DRAWN pulled in so the hands still meet
+	# (presentation only: the host positions above stay one link apart)
+	var gap_real_cd := visc.grip_hand(1).distance_to(visd.grip_hand(0))
+	var gap_real_de := visd.grip_hand(1).distance_to(vise.grip_hand(0))
+	t.check(gap_real_cd < 0.15, "a stretched chain still links the post holder's hand to the next link's (%.3f m apart)" % gap_real_cd)
+	t.check(gap_real_de < 0.15, "a stretched chain still links the middle link's hand to the tip's (%.3f m apart)" % gap_real_de)
+	t.check(RB.flat_dist(vise.global_position, e.global_position) > 0.2, "the stretched tip is drawn pulled toward the post (%.2f m)" % RB.flat_dist(vise.global_position, e.global_position))
+	t.check(RB.flat_dist(e.global_position, post) > 3.0, "drawing the chain shorter leaves the tip's real position alone")
+	# a bunched chain links hands for real (links cannot stand closer than 2 x body_radius = 0.8 m)
+	var tight := RB.flat(e.global_position - c.global_position).normalized()
+	if tight.length() < 0.5:
+		tight = Vector3.RIGHT
+	TestCtx.put(c, post.x, post.z)
+	TestCtx.put(d, post.x + tight.x * 0.9, post.z + tight.z * 0.9)
+	TestCtx.put(e, post.x + tight.x * 1.8, post.z + tight.z * 1.8)
+	t.steps(host, 4)
+	for p in [c, d, e]:
+		(p.visual as HeroVisual).settle_chain_draw()
+	await t.frames(8)
+	var gap_cd := visc.grip_hand(1).distance_to(visd.grip_hand(0))
+	var gap_de := visd.grip_hand(1).distance_to(vise.grip_hand(0))
+	t.check(gap_cd < 0.15, "a bunched chain links the post holder's hand to the next link's hand (%.3f m apart)" % gap_cd)
+	t.check(gap_de < 0.15, "a bunched chain links the middle link's hand to the tip's hand (%.3f m apart)" % gap_de)
+	t.check(RB.flat_dist(visc.grip_hand(1), visd.grip_hand(0)) < 0.15, "the two gripping hands converge on one point")
+	t.check(absf(visc.grip_hand(1).y - visd.grip_hand(0).y) < 0.12, "the two gripping hands meet at the same height (%.3f m)" % absf(visc.grip_hand(1).y - visd.grip_hand(0).y))
 	# the tip walks slowly
 	var p0 := e.global_position
 	inp.move(e, Vector2(0, -1))
@@ -651,8 +778,19 @@ func _lockdown(t: TestCtx) -> void:
 	await t.free_match(host)
 
 func _timer_and_sudden_death(t: TestCtx) -> void:
+	# spec § 7: the music turns tense with 30 s left on the round clock (final_stretch, once)
+	var host := _live(t, ["nene", "inday"], ["nathan", "nene"], {"round_time": 32.0})
+	var stretch := RB.ticks(32.0) - RB.ticks(host.tuning.final_stretch_time)
+	t.steps(host, stretch - 1)
+	t.check(_count("final_stretch") == 0, "no final_stretch before %.0f s left" % host.tuning.final_stretch_time)
+	t.steps(host, 1)
+	t.check(_count("final_stretch") == 1, "final_stretch fires on the tick the clock reaches %.0f s left" % host.tuning.final_stretch_time)
+	t.steps(host, 60)
+	t.check(_count("final_stretch") == 1, "and only once")
+	await t.free_match(host)
+
 	# fewer jailed at 0:00 wins
-	var host := _live(t, ["nene", "inday"], ["nathan", "nene"], {"round_time": 4.0})
+	host = _live(t, ["nene", "inday"], ["nathan", "nene"], {"round_time": 4.0})
 	var a: Hero = host.heroes[0]
 	var c: Hero = host.heroes[2]
 	c.on_tagged(a)
@@ -671,6 +809,7 @@ func _timer_and_sudden_death(t: TestCtx) -> void:
 	t.check(host.round_flow.phase == RoundFlow.Phase.SUDDEN_DEATH, "equal jailed at 0:00: sudden death")
 	t.check(host.round_flow.timer_ticks == 1800, "sudden death lasts 30 s = 1800 ticks (got %d)" % host.round_flow.timer_ticks)
 	t.check(_count("sudden_death") == 1, "sudden_death event")
+	t.check(_count("final_stretch") == 0, "a round shorter than the stretch never fires final_stretch (sudden death turns the music tense instead)")
 	TestCtx.put(a, 0, 0)
 	TestCtx.put(c, 1.6, 0)
 	_face_east(t, host, a)
