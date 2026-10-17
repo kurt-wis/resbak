@@ -13,6 +13,7 @@
 | `hud` | HUD parts, timer, tag feed, scoreboard, hide, pause, announcer, round-1 intro overlay and flyover, aim arrow |
 | `konstruksyon` | the real Konstruksyon map: mirrored bases, spawns and base rings clear, jail lines, vaultables, three 2 m routes between the halves, camera occlusion fade, sand-castle base prop and crumble, haze/sun/dust, music/ambience entries and the Audio music API, a 45 s bot soak (nobody stuck 3 s) |
 | `frontend` | every front-end screen builds, draft, names, results maths, settings persist |
+| `home` | Home diorama: 48 s loop schedule, cast/bystanders/jeepney build and hide at the seam, sky and depth-blur shaders wired, skyline backdrop, hero picker flow, version and Master-volume defaults |
 | `match_flow` | `scenes/match.tscn` runs 600 frames with bots |
 
 ```powershell

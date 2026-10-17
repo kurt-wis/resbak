@@ -38,6 +38,12 @@
 | **Takbo Na** | "run now!" | Inday passive, a post-jailbreak surge | — |
 | **Sari-sari store / tricycle / monobloc** | corner shop / motor-sidecar taxi / plastic chair | Environment props | `assets/props/*` |
 
+| **Tindera** | woman shopkeeper | The shopkeeper bystander in the Home diorama store window | `assets/characters/bystanders/tindera.glb` |
+| **Palamig** | cold drink (sold in plastic bags) | Prop the Home heroes sip (`palamig_bag`) | `assets/props/home/palamig_bag.tscn` |
+| **Payong** | umbrella | The lola bystander's hand-held prop | `assets/props/home/payong.tscn` |
+| **Palitan** | change / swap | Red badge on the Home player card: click to change the default character | `home.gd` (`PlayerCard`) |
+| **Piliin / Bumalik** | choose / go back | Hero picker buttons: confirm the default character / close without changing | `hero_picker.gd` |
+
 | **Takipsilim** | sunset | Sudden death after a tied timer (30 s, untimed after 2 draws) | `RoundFlow.Phase.SUDDEN_DEATH` |
 | **Tabla** | draw | A round with no winner (replayed, no point) | `RoundFlow` (`winner = -1`) |
 | **Bantay / Atake / Pain / Resbak / Kapit** | guard / attack / bait / rescue / hold on | Bot roles (spec § 11) | `BotCoord.Role` |

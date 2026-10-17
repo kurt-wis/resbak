@@ -3,6 +3,28 @@
 Short, dated, newest first. Add an entry when you make a choice that a future reader
 would otherwise reverse by accident.
 
+## 2026-10-18: Home diorama (v0.1.2)
+- **Picker, not a centre stage.** The breakdance hero left the Home screen for a default-character picker opened from the player card. **Why:** the diorama is the star of Home now; the picker keeps the breakdance and the choice without covering the scene. Deviation from spec § 6, logged in `docs/status.md`.
+- **Seek-driven timeline.** `HomeDiorama` advances its `Timeline` by hand and derives bystanders and the jeepney from the loop time; `seek_to(t)` replays the schedule at 30 Hz. **Why:** QC stills match what a viewer sees at t seconds, and nothing accumulates drift, so the 48 s loop cannot pop.
+- **Graded set shader, not retextured models.** Meshy's store texture is a baked teal/orange confetti, which read as blue and red plastic. `diorama_set.gdshader` hue-remaps it to dusty mint and terracotta, adds grain and grime, wraps the light and applies a filmic tonemap; the noisy outline pass was dropped. **Why:** fixes colour and "plastic" in one place for store, facades, boxes and ground without spending Meshy credits (465 of 500 used by the end of v0.1.2).
+- **Depth blur and sky are shaders, not Environment settings.** Compatibility has no DoF, so `diorama_dof.gdshader` runs on a 2×2 quad parented to the camera (`POSITION = vec4(VERTEX.xy, 0, 1)`, depth test off, priority 127, reads the screen and depth textures). The sky is `diorama_sky.gdshader`, with `fog_sky_affect = 0` because fog otherwise washed it flat peach. **Why:** the user asked for a blurred background and a sky that reads as a sky; both loop seamlessly because they depend only on loop time.
+- **Ground and façade textures are PIL-generated** (`tools/make_home_ground.py`) with mipmaps enabled in their `.import`, since shader-sampled textures alias without them. Façade fronts are QuadMeshes because BoxMesh UVs are an atlas per face.
+- **Tighter, lower-camera composition** matched to the reference: UI keeps the left ~40 %, the cast sits right of centre, the jeepney and walkers use a side street so they never cross the actors.
+- **Real tree assets.** Mango tree and coconut palm are Meshy text-to-3D (refined), decimated in Blender; the graffiti wall is a Meshy image. **Why:** the first blobs were placeholders and the user asked for proper trees.
+- **Original synthesised audio.** `tools/make_home_audio.py` writes the music loop, UI ticks, chatter and jeep sounds with numpy only. **Why:** no sourcing or licence risk, loops are seamless by construction. Master volume now defaults to 50 (spec § 10).
+- **Luckiest Guy (Apache 2.0) and PIL-drawn cardboard skins** for the sticker UI, bundled in the repo; `HomeSkin` falls back to flat boxes if a file is missing.
+
+## 2026-10-17: Home diorama faces are painted cards, not a face rig
+- The hero meshes have no blendshapes or face bones, so the Home diorama's talking and blinking are three alpha cards per head (`FaceRig`, `tools/build_face_cards.py`) parented to the head bone, flipping atlas frames from a seeded RNG. **Why:** no Meshy re-rig or blendshape bake needed; frames are a pure function of loop time, so the 48 s loop is seamless.
+- **Alpha blend with a feathered skin-tint patch**, not alpha scissor: the closed/half lid and mouth frames paint a skin patch over the model's own eye/mouth, and a scissor edge would show as a hard outline. The shader pulls the cards toward the camera in clip space (`depth_bias`) instead of lifting them off the surface, so no gap shows at the 3/4 angle.
+- **`rigid_head()` in `build_heroes.py`:** everything above the head joint is skinned to the Head bone alone. **Why:** JM had ~10 % Shoulder weight on his face, so a rigid card drifted off it when he sat; fixing the weights also stops his face smearing. Other heroes were already ~100 % Head, so the pass changes nothing for them.
+
+## 2026-10-17: Home diorama bystanders and set pieces
+- Bystanders keep Meshy's 24-bone rig instead of being retargeted to Mixamo names, and `build_bystanders.py` measures their loops itself. **Why:** they play one clip each, so a retarget buys nothing, and `qc_asset.py` misreads Meshy's 0.01-scaled rig.
+- The manong was regenerated: the first model had the carried water gallon fused into his head in the raw Meshy source (not a decimation artefact). The new one carries nothing and the gallon is a procedural hand-held prop. Same for every other carried thing.
+- Sign lettering is real text meshes rather than a texture, so it stays crisp at any distance and needs no image generation.
+- The store comes from text-to-3D: the reference image from the brief is not on disk and its extras are ignored.
+
 ## 2026-10-16: docs/RESBAK.md is the spec; the match runs on a host tick
 - `docs/RESBAK.md` (the finalized concise spec) replaces `docs/design/RESBAK_GDD.md` as the single design source of truth. `docs/design/` is gone.
 - **Match architecture:** one `MatchHost` runs the spec § 12 tick order at 60 ticks/s; players and bots both produce `InputFrame`s and gameplay never reads `Input`. **Why:** LAN play only has to send frames and draw snapshots, and tests can step exact ticks.

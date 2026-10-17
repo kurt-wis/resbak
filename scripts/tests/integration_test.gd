@@ -21,6 +21,7 @@ const SUITES := [
 	"res://scripts/tests/suites/hud.gd",
 	"res://scripts/tests/suites/konstruksyon.gd",
 	"res://scripts/tests/suites/frontend.gd",
+	"res://scripts/tests/suites/home.gd",
 	"res://scripts/tests/suites/match_flow.gd",
 ]
 

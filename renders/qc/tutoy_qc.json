@@ -106,6 +106,66 @@
    "hips_root_motion_m": 0.013
   },
   {
+   "clip": "Menu_Cheer",
+   "frames": [
+    0,
+    32
+   ],
+   "seconds": 1.333,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.11,
+   "loop_seam_m": 0.932,
+   "hips_root_motion_m": 0.065
+  },
+  {
+   "clip": "Menu_HandOnHip",
+   "frames": [
+    0,
+    120
+   ],
+   "seconds": 5.0,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.03,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Menu_HandstandFlip",
+   "frames": [
+    0,
+    79
+   ],
+   "seconds": 3.292,
+   "tracks": 660,
+   "foot_plant_speed_mps": 1.26,
+   "loop_seam_m": 0.105,
+   "hips_root_motion_m": 0.002
+  },
+  {
+   "clip": "Menu_StandIdle",
+   "frames": [
+    0,
+    70
+   ],
+   "seconds": 2.917,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Menu_TalkPassionate",
+   "frames": [
+    0,
+    246
+   ],
+   "seconds": 10.25,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.02,
+   "loop_seam_m": 0.003,
+   "hips_root_motion_m": 0.0
+  },
+  {
    "clip": "Running",
    "frames": [
     0,
@@ -115,7 +175,8 @@
    "tracks": 660,
    "foot_plant_speed_mps": 4.28,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 1.26
   },
   {
    "clip": "Stumble",
@@ -199,7 +260,8 @@
    "tracks": 660,
    "foot_plant_speed_mps": 1.42,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 1.9
   }
  ],
  "sheet": "renders\\qc\\tutoy_sheet.png",
@@ -280,9 +342,39 @@
    "detail": "0.833 s, 660 channels, foot plant 3.54 m/s, loop seam 0.332 m, root motion 0.013 m"
   },
   {
+   "check": "clip Menu_Cheer",
+   "status": "WARN",
+   "detail": "1.333 s, 660 channels, foot plant 0.11 m/s, loop seam 0.932 m, root motion 0.065 m"
+  },
+  {
+   "check": "clip Menu_HandOnHip",
+   "status": "PASS",
+   "detail": "5.0 s, 660 channels, foot plant 0.03 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Menu_HandstandFlip",
+   "status": "WARN",
+   "detail": "3.292 s, 660 channels, foot plant 1.26 m/s, loop seam 0.105 m, root motion 0.002 m"
+  },
+  {
+   "check": "clip Menu_StandIdle",
+   "status": "PASS",
+   "detail": "2.917 s, 660 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Menu_TalkPassionate",
+   "status": "PASS",
+   "detail": "10.25 s, 660 channels, foot plant 0.02 m/s, loop seam 0.003 m, root motion 0.0 m"
+  },
+  {
    "check": "clip Running",
    "status": "PASS",
    "detail": "0.583 s, 660 channels, foot plant 4.28 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Running",
+   "status": "FAIL",
+   "detail": "moves 5.4 m/s, feet push 4.28 m/s: x1.26 (play the clip at x1.26 or put its blend point at 4.28 m/s)"
   },
   {
    "check": "clip Stumble",
@@ -318,6 +410,11 @@
    "check": "clip Walking",
    "status": "PASS",
    "detail": "1.0 s, 660 channels, foot plant 1.42 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Walking",
+   "status": "FAIL",
+   "detail": "moves 2.7 m/s, feet push 1.42 m/s: x1.90 (play the clip at x1.90 or put its blend point at 1.42 m/s)"
   }
  ]
 }

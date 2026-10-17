@@ -1,0 +1,63 @@
+{
+ "file": "assets\\characters\\bystanders\\lola.glb",
+ "real_height_m": 1.485,
+ "game_scale": 0.977,
+ "dims_m": [
+  0.767,
+  0.525,
+  1.485
+ ],
+ "triangles": 14000,
+ "clips": [
+  {
+   "clip": "Walk",
+   "frames": [
+    1,
+    26
+   ],
+   "seconds": 1.042,
+   "tracks": 240,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 2.849,
+   "hips_root_motion_m": 0.0
+  }
+ ],
+ "sheet": "renders\\qc\\lola_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = -0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (-0.039, -0.032) m"
+  },
+  {
+   "check": "normals lola",
+   "status": "PASS",
+   "detail": "65% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology lola",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (16778 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "14000 (budget 15000)"
+  },
+  {
+   "check": "mixamo names",
+   "status": "WARN",
+   "detail": "0/24 bones"
+  },
+  {
+   "check": "clip Walk",
+   "status": "WARN",
+   "detail": "1.042 s, 240 channels, foot plant 0.0 m/s, loop seam 2.849 m, root motion 0.0 m"
+  }
+ ]
+}

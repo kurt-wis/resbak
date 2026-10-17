@@ -48,14 +48,14 @@ scenes/               frontend/*.tscn (boot = main scene), match.tscn, barangay_
                       character_select / court_playtest / movement_test (legacy dev scenes)
 scripts/match/        the match: MatchHost (tick order), Hero, HeroVisual, systems/ (tag, base, jail, round),
                       skills/<hero>/ (one script per skill and passive + their SkillObjects), bots/, MatchView, camera
-scripts/ui/           hud/ (match HUD parts), frontend/ (screens, draft, results, settings)
+scripts/ui/           hud/ (match HUD parts), frontend/ (screens, draft, results, settings; Home = home.gd + home_diorama*.gd live 3D backdrop, hero_picker.gd, home_skin.gd)
 scripts/autoload/     Save, Session, Audio (autoloads) + Controls (default bindings)
 scripts/runtime/      legacy dev code: HeroController, HeroRoster, character select, Batang Hamog prototype
 scripts/tests/        integration_test.gd = THE GATE (runs suites/*.gd); legacy/ = stale snapshot checks (not run)
 scripts/map_pipeline/ ⚠ one-shot builders that OVERWRITE scenes/assets. Never run them to inspect.
-data/                 tuning.tres, heroes/<id>.tres (HeroData)
-shaders/              all spatial shaders (toon, toon fade, outline, painted surfaces, roof cutaway, jail)
-assets/               game-ready: characters/*.glb, props/*.tscn, environment textures
+data/                 tuning.tres, heroes/<id>.tres (HeroData), home_diorama.tres (Home diorama numbers)
+shaders/              all spatial shaders (toon, toon fade, outline, painted surfaces, roof cutaway, jail, Home diorama set / sky / depth blur, face flipbook)
+assets/               game-ready: characters/*.glb (+ bystanders/, face_cards/), props/*.tscn (+ home/), audio/, fonts/, ui/home/, environment textures
 source_art/           raw sources (Godot-ignored): heroes/ (Meshy GLBs), mocap/meshy/ + mocap/quaternius/
 mixamo/               Mixamo breakdance pack (Godot-ignored)
 tools/                Blender builders (see tools/README.md)

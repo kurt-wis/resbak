@@ -22,7 +22,7 @@ const SETTINGS_DEFAULTS := {
 	"controls": {"mouse_sensitivity": 1.0, "stick_dead_zone": 0.15, "vibration": true, "button_icons": "auto"},
 	"video": {"display_mode": "borderless", "resolution": "monitor", "render_scale": 1.0, "vsync": true,
 		"frame_cap": 60, "quality": "auto", "shadows": "high", "effects": "high", "brightness": 50, "interface_size": 1.0},
-	"audio": {"master": 80, "music": 60, "effects": 80, "voices": 80, "announcer": 80},
+	"audio": {"master": 50, "music": 60, "effects": 80, "voices": 80, "announcer": 80},
 	"accessibility": {"colour_mode": "default", "subtitles": true, "subtitle_size": "M", "speaker_names": true,
 		"sound_cues": false, "reduce_flashing": false, "reduce_motion": false, "capture_input": "hold",
 		"theme": "dark"},

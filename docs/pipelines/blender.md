@@ -47,7 +47,7 @@ Sources are the Meshy auto-rigged GLBs in `source_art/heroes/` (Tutoy was called
 - **Clip entry options** (`clip(...)` in the builder): `trim` / `warp` (seconds in the source; Meshy frame / 24); `loop` (travel and spin removed so the seam is exact, open loops closed, and every loop eases its last 3 frames into frame 0 unless `blend` sets another count); `in_place` (one-shots: travel along the move removed, since the game moves the body); `face` / `turn` (turn a clip that stands turned); `plant`.
 - **Grounding**: a clip is shifted so its lowest point touches the floor over the whole clip (jumps keep their air time). `plant=True` grounds every frame on its lowest sole instead. Retargeted hips heights drift against each hero's leg length, so standing clips hovered up to 7 cm (JM's Proud_Strut, Capture, Victory, Buga, Ubo). In Talbog_Slam JM's hand reaches 11 cm below his soles, which floated the whole clip 11–20 cm.
 - **Chained** is authored from the hero's own Idle: the pose is turned to face front, then both arms are held out to the sides about horizontal (a little forward and down), with the forearms continuing the line, as if holding hands in the chain.
-- **BreakDance** (character select only) = each hero's own Mixamo routine (`BREAKDANCE` in the builder, files in the repo-root `mixamo/breakdance-pack/`): Tutoy footwork 2 → 2× flair, Nene 2× uprock var 1, Nathan footwork 1, JM freezes, Inday Brooklyn uprock. Each move's travel, height change and spin are removed, moves cross-fade over 8 frames, floor travel is shrunk to a 0.35 m radius so the dancer stays on the pad, the end eases into frame 0 (seamless loop), and any frame where the mesh dips under the floor is lifted (smoothed). Uprock footsteps slide a little as a result.
+- **BreakDance** (draft preview and the Home default-character picker) = each hero's own Mixamo routine (`BREAKDANCE` in the builder, files in the repo-root `mixamo/breakdance-pack/`): Tutoy footwork 2 → 2× flair, Nene 2× uprock var 1, Nathan swipes (one move that closes on itself; the old 1990 → crossleg freeze pair left a 2.6 cm seam, swipes measures 0.001 m), JM freezes, Inday Brooklyn uprock. Each move's travel, height change and spin are removed, moves cross-fade over 8 frames, floor travel is shrunk to a 0.35 m radius so the dancer stays on the pad, the end eases into frame 0 (seamless loop), and any frame where the mesh dips under the floor is lifted (smoothed). Uprock footsteps slide a little as a result.
 - After rebuilding, run `tools/qc_asset.py` (Walking at half the hero's run speed) and copy the Walking / Running foot-plant speeds into `data/heroes/<id>.tres`.
 - Review stills: `renders/heroes_<id>_{idle,walking,running}.png` from the game's 3/4 top-down angle, `renders/heroes_<id>_moves.png` (six frames of every clip, from the front-right, with floor shadows) and `renders/heroes_breakdance.png` (rows = heroes, six dance frames each).
 
@@ -93,7 +93,7 @@ Meshy presets from `source_art/mocap/meshy/<id>_moves.glb` unless noted; frame n
 | Nathan | Idle | Scheming_Hand_Rub | 3.292 s | yes |
 | | Walking | Sneaky_Walk (sideways creep, body ~50° to his right) | 2.833 s | yes |
 | | Running | run_fast_9 | 0.625 s | yes |
-| | BreakDance | Mixamo footwork 1 | 3.167 s | yes |
+| | BreakDance | Mixamo swipes | 3.000 s | yes |
 | | Buga | `meshy/nathan_buga.glb` (text-to-motion), time-warped so the blow peaks at 0.4 s, planted | 1.208 s | no |
 | | Ubo | Over_Shoulder_Throw, 54–74: hand up by the shoulder, then the throw forward and down, planted | 0.833 s | no |
 | JM | Idle | Idle_11 | 1.833 s | yes |
@@ -111,6 +111,35 @@ Meshy presets from `source_art/mocap/meshy/<id>_moves.glb` unless noted; frame n
 | | Ihip | mage_soell_cast_3, 32.8–60.8: held two-arms-forward push | 1.167 s | yes |
 | | Sagip | Cheer_with_Both_Hands_Up, 3–36 | 1.375 s | no |
 
+### Menu clips (Home diorama, 2026-10-17)
+`Menu_*` clips exist only for the Home screen's sari-sari store scene (`scripts/ui/frontend/home_diorama.gd`); gameplay never plays them. Sources: Meshy `meshy_animate` presets bundled into one `source_art/mocap/meshy/<id>_menu.glb` per hero (3 credits per action; 63 credits for all five), plus Quaternius `Idle_Talking_Loop` for the two standers. Every Menu clip is `face`-turned to -Y and in place, so a gesture laid over a base on the upper body never twists the torso. Sitters (Nene, JM, Nathan) sit on a stool: grounded as a whole or planted (soles on the floor), so `Hips` height above the floor is the same in every clip of one hero. Per-clip frame numbers are source frames at 24 fps; the `hero_assets` suite checks the names and that every Menu clip animates the full skeleton.
+
+| Hero | Clip | Source | Length | Loop |
+| ---- | ---- | ------ | ------ | ---- |
+| Tutoy (stands) | Menu_StandIdle | Quaternius Idle_Talking_Loop, planted (his Idle_5 is a wide fighter's crouch) | 2.917 s | yes |
+| | Menu_TalkPassionate | Talk_Passionately | 10.250 s | no |
+| | Menu_HandOnHip | Hand_on_Hip_Gesture | 5.000 s | no |
+| | Menu_Cheer | Cheer_with_Both_Hands_Up, 12–44 (the first 11 frames crouch) | 1.333 s | no |
+| | Menu_HandstandFlip | Handstand_Flip, in place, lifted where the head or hands dip under the floor (`on_floor`); starts and ends in a lunge | 3.292 s | no |
+| Nene (sits) | Menu_SitIdle | Chair_Sit_Idle_F, 0–150 (head bows from ~160); legs dangle and swing | 6.250 s | yes |
+| | Menu_SitDrink | Sit_and_Drink | 11.167 s | no |
+| | Menu_FingerWag | Sit_Finger_Wag_No (leans in, head bowed mid-clip) | 3.958 s | no |
+| | Menu_Clap | Sitting_Clap | 3.333 s | no |
+| JM (sits) | Menu_SitIdle | Chair_Sit_Idle_M, 211–247 (the only upright stretch of a hunched source), planted | 1.500 s | yes |
+| | Menu_SitDrink | Sit_and_Drink | 11.167 s | no |
+| | Menu_LeanBackLaugh | Sit_Hands_on_Head_Lean_Back | 4.792 s | no |
+| | Menu_Clap | Sitting_Clap | 3.333 s | no |
+| Nathan (sits) | Menu_SitIdle | Chair_Sit_Idle_M, 211–247, planted | 1.500 s | yes |
+| | Menu_Answer | Sitting_Answering_Questions | 9.667 s | no |
+| | Menu_ThumbsUp | Sit_Thumbs_Up_Right (a wave with a deep lean) | 3.833 s | no |
+| | Menu_Clap | Sitting_Clap | 3.333 s | no |
+| Inday (stands) | Menu_StandIdle | Quaternius Idle_Talking_Loop, planted (her own Idle touches her face mid-loop) | 2.917 s | yes |
+| | Menu_TalkHandsOpen | Talk_with_Hands_Open | 3.958 s | no |
+| | Menu_TalkHip | Talk_with_Left_Hand_on_Hip | 5.167 s | no |
+| | Menu_TalkRightOpen | Talk_with_Right_Hand_Open | 3.750 s | no |
+
+Nathan's `Scheming_Hand_Rub` was downloaded but is not baked: it is a standing clip and bends a sitter's spine too far. Pelvis heights above the soles in `Menu_SitIdle` (the stool seat heights the diorama needs): Nene 0.18 m, JM 0.19 m, Nathan 0.24 m. `build_heroes.py` writes a second review sheet per hero, `renders/heroes_<id>_menu.png`, for these clips; `qc_asset.py` reports a loop seam of 0 m for every looping Menu clip and WARNs (expected) on the one-shot gestures.
+
 Planted-foot speeds from `qc_asset.py` (game m/s, 2026-10-16), for `data/heroes/<id>.tres`:
 
 | Hero | Walking clip (walk speed, playback) | Running clip (run speed, playback) |
@@ -122,6 +151,51 @@ Planted-foot speeds from `qc_asset.py` (game m/s, 2026-10-16), for `data/heroes/
 | Inday | 1.02 (2.5, ×2.45) | 2.26 (5.0, ×2.21) |
 
 Known issues: Nathan's Sneaky_Walk and JM's Proud_Strut are slow character walks, so at the gamepad walk speed they play at ×8.9 and ×4.4 (keyboard players also pass through them while speeding up). In Talbog_Slam JM's fist dips up to 12 cm into the floor at impact (frames 10–24); the impact VFX should cover it.
+
+### Face cards (Home diorama talking, 2026-10-17)
+The hero meshes have no face rig, so the Home diorama lays three painted alpha cards over each
+face: a mouth (6 frames: closed = nothing painted, small, wide, o, smile, laugh) and two eyelids
+(open, half, closed). `tools/build_face_cards.py -- <id>` (all five when no id) ray-casts a curved
+grid onto the rest-pose head, samples the skin tint around the feature, paints the atlases with
+numpy signed distances and writes `assets/characters/face_cards/<id>_{mouth,lids}.png`,
+`<id>_cards.glb` (nodes `Eye_L`, `Eye_R`, `Mouth`; vertices carry the rest-space position) and the merged
+`face_cards.json`. Feature positions come from the `FEATURES` table (read off the head close-ups
+with a 20 mm grid). At runtime `FaceRig` re-parents the cards to a `BoneAttachment3D` on
+`mixamorig_Head` and `shaders/face_flipbook.gdshader` picks the frame.
+- Cards only follow the face if the face is skinned to the head alone. `build_heroes.py:rigid_head()`
+  moves every vertex above the head joint onto the Head bone (JM carried ~10 % Shoulder weight, so his
+  face smeared when seated and the mouth card floated up to the nostrils).
+- After changing a head, a face feature or the shader, run `tools/qc_faces.gd` (needs a real renderer,
+  not `--headless`) and look at `renders/home_diorama/faces/<id>_faces.png` (front and 3/4, every mouth
+  and lid frame): no floating card, hard edge or z-fighting. `-- --pose=<clip>` checks another pose.
+
+### Bystanders and Home set pieces (2026-10-17)
+`tools/build_bystanders.py` turns the four Meshy passers-by (`tindera`, `lola`, `manong`, `student`) into
+`assets/characters/bystanders/<name>.glb`: stray Icosphere removed, skin decimated to 14k tris, texture to
+1024 px, one clip (`Fan` for the tindera, `Walk` for the others) exported as an NLA track. They keep
+**Meshy's own 24-bone rig** (`Hips`, `Spine02`, ... under a 0.01-scaled armature) because they never share
+a clip with the heroes, so the "Mixamo names, ≥ 60 tracks" rule is for heroes only.
+- **`tools/qc_asset.py` misreads Meshy rigs** (expects Mixamo bone names and ignores the 0.01 armature
+  scale, so its seam and plant numbers are off by 100×). `build_bystanders.py` measures loop seam,
+  planted-foot speed and grounding itself and prints them; use those. Walk loops end on the frame that best
+  matches frame 1 (about 1–26, ≈ 1 s) with seams under 3.1 cm; planted-foot speeds (the speeds the diorama
+  walks them at, so the feet do not slide) are lola 1.21, manong 1.28, student 1.30 m/s.
+- Meshy can fuse a carried object into a head. Always look at the QC sheet of the raw source. Hand-held
+  things are built as separate props (`water_gallon`, `soda_bottle`, `palamig_bag`, `paper_fan`, `payong`,
+  `backpack`) and attached to a hand bone at runtime.
+
+`tools/build_home_props.py` writes `assets/props/home/<name>.glb` + `.tscn`: four Meshy set pieces
+(`store`, `facade_teal`, `facade_pink`, `fruit_stall`: flattened, decimated, scaled to a target width,
+grounded, texture downsized; front stays +Z in Godot) and 16 procedural props (stools at the three hero seat
+heights, bench, bottle crate, power pole, wire span, two signs, sidewalk and the hand-held props). Sign
+lettering is real extruded text meshes, fitted to the board, not a texture. Look at a contact sheet of the
+result after changing any of them.
+
+Trees (2026-10-18): `mango_tree` (6.0 m, 40k tris) and `coconut_palm` (4.5 m, 30k tris) are Meshy text-to-3D
+(preview + refine) models run through the same script (`-- mango_tree coconut_palm`), 1024 px textures,
+pivot at the trunk base. Foliage is thin double-sided cards, so `qc_asset.py` normal warnings are expected.
+`shaders/diorama_set.gdshader` regrades the store and facade textures at runtime (the baked Meshy colours are
+too saturated), so do not "fix" colour by re-baking the GLBs.
 
 ## Harurot keyframe structure (Hamog)
 0–4 anticipation coil → 8 push-off → 13 airborne stride → 17 landing squash → 20 held

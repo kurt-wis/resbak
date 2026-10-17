@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="HomeDioramaData" format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/frontend/home_diorama_data.gd" id="1_0vdy7"]
+
+[resource]
+script = ExtResource("1_0vdy7")

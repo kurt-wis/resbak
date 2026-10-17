@@ -53,19 +53,23 @@ HEROES = {  # id -> source file
 
 
 def clip(src, name=None, trim=None, warp=None, loop=False, in_place=False, blend=0, face=False,
-         turn=0.0, plant=False):
+         turn=0.0, plant=False, on_floor=False):
     """One clip: `src` is relative to source_art/mocap/; `name` None = the file's only clip.
     trim / warp times are seconds in the source clip (Meshy files: frame / 24).
     face : turn the clip so the chest faces -Y on average (clips that stand turned).
     turn : then turn it this many more degrees about Z (+ = toward the hero's left, +X).
     plant: ground every frame on its lowest sole (bake_planted) instead of the whole clip on
            its lowest point; for standing clips whose retargeted feet hover, or whose hands
-           reach under the floor (Talbog_Slam)."""
+           reach under the floor (Talbog_Slam).
+    on_floor: keep the clip's own height and lift only the frames whose mesh dips under the
+           floor (bake_on_floor); for a flip whose hands or head reach below it."""
     return {"src": src, "name": name, "trim": trim, "warp": warp, "loop": loop,
-            "in_place": in_place, "blend": blend, "face": face, "turn": turn, "plant": plant}
+            "in_place": in_place, "blend": blend, "face": face, "turn": turn, "plant": plant,
+            "on_floor": on_floor}
 
 
 T, NE, NA, J, I = (f"meshy/{h}_moves.glb" for h in ("tutoy", "nene", "nathan", "jm", "inday"))
+TM, NEM, NAM, JM, IM = (f"meshy/{h}_menu.glb" for h in ("tutoy", "nene", "nathan", "jm", "inday"))  # Home diorama
 
 # Each hero's own locomotion and skills. Times were picked from source contact sheets.
 HERO_CLIPS = {
@@ -122,6 +126,51 @@ HERO_CLIPS = {
     },
 }
 
+# Home diorama clips (2026-10-17): the base loops and gestures the AnimationTree layers on a seated
+# or standing hero. Every Menu clip is turned to face -Y on average (`face`) so a gesture laid over
+# a base never twists the torso, and stays in place. Sitters (Nene, JM, Nathan) are grounded as a
+# whole; standers are planted per frame. Times are source frames / 24, picked from probe sheets.
+HERO_CLIPS["tutoy"].update({
+    # His own Idle_5 is a wide fighter's crouch; the Quaternius talking idle stands relaxed.
+    "Menu_StandIdle": clip("quaternius/UAL1_Standard.glb", "Idle_Talking_Loop", loop=True, face=True, plant=True),
+    "Menu_TalkPassionate": clip(TM, "Talk_Passionately", face=True, in_place=True, plant=True),
+    "Menu_HandOnHip": clip(TM, "Hand_on_Hip_Gesture", face=True, in_place=True, plant=True),
+    "Menu_Cheer": clip(TM, "Cheer_with_Both_Hands_Up", trim=(12 / 24, 44 / 24), face=True, in_place=True,
+                       plant=True),                                  # the first ~11 frames crouch
+    "Menu_HandstandFlip": clip(TM, "Handstand_Flip", in_place=True, on_floor=True),  # travels ~1 m in the source
+})
+HERO_CLIPS["nene"].update({
+    # The source bows her head from ~frame 160; the first 150 frames are the stable stretch.
+    "Menu_SitIdle": clip(NEM, "Chair_Sit_Idle_F", trim=(0.0, 150 / 24), loop=True, blend=12, face=True,
+                         in_place=True),  # grounded, not planted: her dangling feet swing 8 cm
+    "Menu_SitDrink": clip(NEM, "Sit_and_Drink", face=True, in_place=True),
+    "Menu_FingerWag": clip(NEM, "Sit_Finger_Wag_No", face=True, in_place=True),
+    "Menu_Clap": clip(NEM, "Sitting_Clap", face=True, in_place=True),
+})
+HERO_CLIPS["jm"].update({
+    # The source hunches forward for most of its 10 s and rises upright for ~1.5 s near the end
+    # (frames 211-247); that near-still stretch, looped, is the idle.
+    "Menu_SitIdle": clip(JM, "Chair_Sit_Idle_M", trim=(211 / 24, 247 / 24), loop=True, blend=8, face=True,
+                         in_place=True, plant=True),
+    "Menu_SitDrink": clip(JM, "Sit_and_Drink", face=True, in_place=True),
+    "Menu_LeanBackLaugh": clip(JM, "Sit_Hands_on_Head_Lean_Back", face=True, in_place=True),
+    "Menu_Clap": clip(JM, "Sitting_Clap", face=True, in_place=True),
+})
+HERO_CLIPS["nathan"].update({
+    "Menu_SitIdle": clip(NAM, "Chair_Sit_Idle_M", trim=(211 / 24, 247 / 24), loop=True, blend=8, face=True,
+                         in_place=True, plant=True),
+    "Menu_Answer": clip(NAM, "Sitting_Answering_Questions", face=True, in_place=True),
+    "Menu_ThumbsUp": clip(NAM, "Sit_Thumbs_Up_Right", face=True, in_place=True),
+    "Menu_Clap": clip(NAM, "Sitting_Clap", face=True, in_place=True),
+})
+HERO_CLIPS["inday"].update({
+    # Her own Idle touches her face mid-loop, which would cover the face card; the talking idle does not.
+    "Menu_StandIdle": clip("quaternius/UAL1_Standard.glb", "Idle_Talking_Loop", loop=True, face=True, plant=True),
+    "Menu_TalkHandsOpen": clip(IM, "Talk_with_Hands_Open", face=True, in_place=True, plant=True),
+    "Menu_TalkHip": clip(IM, "Talk_with_Left_Hand_on_Hip", face=True, in_place=True, plant=True),
+    "Menu_TalkRightOpen": clip(IM, "Talk_with_Right_Hand_Open", face=True, in_place=True, plant=True),
+})
+
 # Core-rule clips, retargeted onto every hero. Chained is authored from each hero's Idle.
 SHARED = {
     # Wind-up, lunge, back. The body turns ~65 deg (right shoulder leading) while the tagging
@@ -153,7 +202,7 @@ if os.path.exists(os.path.join(MOCAP_DIR, *TAG_CHARGE_SRC.split("/"))):
 BREAKDANCE = {
     "tutoy": [("breakdance footwork 2.fbx", 1), ("flair (2).fbx", 2)],   # street kid: footwork into flares
     "nene": [("breakdance uprock var 1.fbx", 2)],                         # bouncy uprock
-    "nathan": [("breakdance 1990.fbx", 1), ("crossleg freeze.fbx", 1)],  # old-school toprock into a cocky freeze
+    "nathan": [("breakdance swipes.fbx", 1)],                             # one self-looping move (the old 1990 + freeze pair left a 2.6 cm seam)
     "jm": [("breakdance freezes.fbx", 1)],                                # big-man power freezes
     "inday": [("brooklyn uprock.fbx", 1)],                                # Brooklyn uprock, dips to the floor
 }
@@ -183,7 +232,37 @@ def import_hero(file_name):
         if o.type == "MESH" and len(o.vertex_groups) == 0:
             log(f"  removing stray mesh {o.name}")
             bpy.data.objects.remove(o, do_unlink=True)
-    return next(o for o in bpy.data.objects if o.type == "ARMATURE")
+    arm = next(o for o in bpy.data.objects if o.type == "ARMATURE")
+    rigid_head(arm)
+    return arm
+
+
+def rigid_head(arm):
+    """Meshy's auto-weights leave a few % of Shoulder/Neck weight on vertices above the head joint
+    (JM: ~10 % on the face), so the face smears whenever the shoulders move and the painted face
+    cards (build_face_cards.py) drift off it. Everything above the head joint follows the head
+    bone (and its children) alone."""
+    head = arm.data.bones["mixamorig:Head"]
+    head_z = (arm.matrix_world @ head.head_local).z
+    keep = {head.name} | {b.name for b in head.children_recursive}
+    moved = 0
+    for o in bpy.data.objects:
+        if o.type != "MESH" or o.find_armature() is not arm or "mixamorig:Head" not in o.vertex_groups:
+            continue
+        names = {g.index: g.name for g in o.vertex_groups}
+        head_vg = o.vertex_groups["mixamorig:Head"]
+        mw = o.matrix_world
+        for v in o.data.vertices:
+            if (mw @ v.co).z <= head_z:
+                continue
+            stray = [(g.group, g.weight) for g in v.groups if names[g.group] not in keep]
+            if not stray:
+                continue
+            for gi, _ in stray:
+                o.vertex_groups[gi].remove([v.index])
+            head_vg.add([v.index], sum(w for _, w in stray), "ADD")
+            moved += 1
+    log(f"  rigid head: {moved} vertices above the head joint moved onto the Head bone")
 
 
 def rest_data(arm):
@@ -522,7 +601,7 @@ def _stamp(img, text, x0, y0, s=2, color=(0.75, 0.05, 0.05)):
                     img[y:y + s, x:x + s, :3] = color
 
 
-def render_moves_sheet(arm, hero_id, names, per_clip=6, per_row=2, tile=(150, 190)):
+def render_moves_sheet(arm, hero_id, names, per_clip=6, per_row=2, tile=(150, 190), suffix="moves"):
     """renders/heroes_<id>_moves.png: `per_clip` evenly spaced frames of every clip (first and
     last included), from the front-right, with a floor and shadows so floating or sunken feet,
     arms through the body and bad trims show up."""
@@ -577,7 +656,7 @@ def render_moves_sheet(arm, hero_id, names, per_clip=6, per_row=2, tile=(150, 19
     out = bpy.data.images.new("moves_sheet", sheet.shape[1], sheet.shape[0])
     rgba = np.concatenate([sheet, np.ones(sheet.shape[:2] + (1,), np.float32)], axis=2)
     out.pixels = rgba[::-1].ravel()
-    path = os.path.join(RENDER_DIR, f"heroes_{hero_id}_moves.png")
+    path = os.path.join(RENDER_DIR, f"heroes_{hero_id}_{suffix}.png")
     out.filepath_raw = path; out.file_format = "PNG"; out.save()
     log(f"  moves sheet: {os.path.relpath(path, PROJ)}")
 
@@ -628,11 +707,15 @@ def build(hero_id):
             bake_on_floor(arm, "BreakDance", breakdance(arm, hero_id))
         elif name in table and table[name]["plant"]:
             bake_planted(arm, name, clips[name])
+        elif name in table and table[name]["on_floor"]:
+            bake_on_floor(arm, name, clips[name])
         else:
             bake_grounded(arm, name, clips[name])
     render_sheet(arm, hero_id)
     strip = render_dance_strip(arm, hero_id)
-    render_moves_sheet(arm, hero_id, names)
+    render_moves_sheet(arm, hero_id, [n for n in names if not n.startswith("Menu_")])
+    render_moves_sheet(arm, hero_id, [n for n in names if n.startswith("Menu_")], per_row=1,
+                       tile=(250, 320), suffix="menu")
     export(arm, hero_id, names)
     return strip
 

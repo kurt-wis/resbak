@@ -7,6 +7,16 @@ extends RefCounted
 
 static var _display: Font
 static var _body: Font
+static var _home: Font
+
+const HOME_FONT := "res://assets/fonts/LuckiestGuy-Regular.ttf" ## Apache 2.0, bundled (assets/audio/CREDITS.md lists it too)
+
+## The street-sticker face on the Home screen and hero picker (Luckiest Guy); the sporty `display`
+## face when the file is missing.
+static func home_display() -> Font:
+	if _home == null:
+		_home = load(HOME_FONT) if ResourceLoader.exists(HOME_FONT) else display()
+	return _home
 
 static func display() -> Font:
 	if _display == null:

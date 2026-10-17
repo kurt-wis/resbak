@@ -1,0 +1,63 @@
+{
+ "file": "source_art\\bystanders\\manong_walk.glb",
+ "real_height_m": 1.502,
+ "game_scale": 1.099,
+ "dims_m": [
+  0.698,
+  0.543,
+  1.502
+ ],
+ "triangles": 208482,
+ "clips": [
+  {
+   "clip": "Armature|walking_man|baselayer",
+   "frames": [
+    1,
+    26
+   ],
+   "seconds": 1.042,
+   "tracks": 220,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 2.996,
+   "hips_root_motion_m": 0.0
+  }
+ ],
+ "sheet": "renders\\qc\\manong_walk_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.001 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (-0.035, 0.025) m"
+  },
+  {
+   "check": "normals char1",
+   "status": "PASS",
+   "detail": "69% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology char1",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (20394 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "WARN",
+   "detail": "208482 (budget 15000)"
+  },
+  {
+   "check": "mixamo names",
+   "status": "WARN",
+   "detail": "0/24 bones"
+  },
+  {
+   "check": "clip Armature|walking_man|baselayer",
+   "status": "WARN",
+   "detail": "1.042 s, 220 channels, foot plant 0.0 m/s, loop seam 2.996 m, root motion 0.0 m"
+  }
+ ]
+}

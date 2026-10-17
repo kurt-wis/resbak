@@ -13,6 +13,22 @@ Autoloads: **Save** (settings.cfg + profile.json), **Session** (room settings, l
 **Audio** (buses Music / Effects / Voices / Announcer, announcer queue, `cue` signal for subtitles).
 `Controls.ensure()` registers the default bindings (spec § 9) at runtime so Settings can rebind them.
 
+## Home (`scripts/ui/frontend/home.gd`)
+Home is a `FrontScreen` that draws no backdrop of its own (`draws_backdrop()` is false). Behind the UI it hosts
+a `SubViewportContainer` → `SubViewport` (own 3D world, MSAA 2×, 3D audio listener) holding a `HomeDiorama`;
+headless runs skip the 3D view. `HomeDiorama` (`home_diorama.gd`) builds the store set, five `DioramaActor`s
+(heroes) and four walkers (bystanders), the jeepney and ambient dust from `HomeDioramaData`
+(`home_diorama_data.gd`, `data/home_diorama.tres`; all numbers live there). Time is the 48 s `Timeline`
+AnimationPlayer, advanced by hand in `step(delta)`: gesture cues call `request_gesture` / `end_gesture` on the
+actors, bystanders and the jeepney are positioned from the loop time, so `seek_to(t)` reproduces any frame.
+The `turn_started(hero, line)` signal drives voice chatter and `jeep_started` the engine sound (live only;
+tools and tests run with `manual = true`, silent). Colours come from `shaders/diorama_set.gdshader`. The sky
+(`diorama_sky.gdshader`, `phase` set from the loop time) and the depth blur (`diorama_dof.gdshader`, a "DepthBlur"
+quad child of the camera, `dof_*` in the data) are shaders because Compatibility has no built-in DoF.
+The player card opens `HeroPicker` (`hero_picker.gd`, a child of Home: `chosen(id)` / `closed`), which saves
+`profile.home_hero`; ENSAYO plays that hero. `HomeSkin` holds the sticker / cardboard styleboxes. Music and the
+ambience start in `_start_audio` and fade out on navigation (Settings keeps them playing).
+
 ## The match (`scenes/match.tscn`, `scripts/match/match_scene.gd`)
 Builds lighting (`MapDressing`), the map, a `World` node for heroes and skill objects, the **MatchHost**,
 `PlayerInput` for the local slot and a `BotBrain` for every other slot, `MatchCamera`, `MatchView` and `Hud`.

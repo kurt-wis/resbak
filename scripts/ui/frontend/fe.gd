@@ -31,7 +31,7 @@ const THEMES := {
 }
 
 const SCENE_DIR := "res://scenes/frontend/"
-const VERSION := "0.1.1 (Demo build)"
+const VERSION := "0.1.2 (Demo build)"
 
 ## Apply the saved menu theme ("dark" / "light"). Rebuilds the shared Theme.
 static func apply_theme(mode := "") -> void:

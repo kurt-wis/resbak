@@ -82,6 +82,54 @@
    "hips_root_motion_m": 0.0
   },
   {
+   "clip": "Menu_Clap",
+   "frames": [
+    0,
+    80
+   ],
+   "seconds": 3.333,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Menu_FingerWag",
+   "frames": [
+    0,
+    95
+   ],
+   "seconds": 3.958,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.02,
+   "loop_seam_m": 0.001,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Menu_SitDrink",
+   "frames": [
+    0,
+    268
+   ],
+   "seconds": 11.167,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 0.001,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Menu_SitIdle",
+   "frames": [
+    0,
+    150
+   ],
+   "seconds": 6.25,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
    "clip": "Running",
    "frames": [
     0,
@@ -91,7 +139,8 @@
    "tracks": 660,
    "foot_plant_speed_mps": 3.06,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 1.63
   },
   {
    "clip": "Stumble",
@@ -187,7 +236,8 @@
    "tracks": 660,
    "foot_plant_speed_mps": 1.21,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 2.07
   }
  ],
  "sheet": "renders\\qc\\nene_sheet.png",
@@ -258,9 +308,34 @@
    "detail": "5.042 s, 660 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
+   "check": "clip Menu_Clap",
+   "status": "PASS",
+   "detail": "3.333 s, 660 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Menu_FingerWag",
+   "status": "PASS",
+   "detail": "3.958 s, 660 channels, foot plant 0.02 m/s, loop seam 0.001 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Menu_SitDrink",
+   "status": "PASS",
+   "detail": "11.167 s, 660 channels, foot plant 0.0 m/s, loop seam 0.001 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Menu_SitIdle",
+   "status": "PASS",
+   "detail": "6.25 s, 660 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
    "check": "clip Running",
    "status": "PASS",
    "detail": "0.917 s, 660 channels, foot plant 3.06 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Running",
+   "status": "FAIL",
+   "detail": "moves 5.0 m/s, feet push 3.06 m/s: x1.63 (play the clip at x1.63 or put its blend point at 3.06 m/s)"
   },
   {
    "check": "clip Stumble",
@@ -301,6 +376,11 @@
    "check": "clip Walking",
    "status": "PASS",
    "detail": "2.875 s, 660 channels, foot plant 1.21 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Walking",
+   "status": "FAIL",
+   "detail": "moves 2.5 m/s, feet push 1.21 m/s: x2.07 (play the clip at x2.07 or put its blend point at 1.21 m/s)"
   }
  ]
 }

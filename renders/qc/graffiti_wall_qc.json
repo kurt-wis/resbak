@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\home\\graffiti_wall.glb",
+ "real_height_m": 1.806,
+ "game_scale": 1.0,
+ "dims_m": [
+  3.6,
+  0.431,
+  1.806
+ ],
+ "triangles": 29999,
+ "sheet": "renders\\qc\\graffiti_wall_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (-0.000, 0.000) m"
+  },
+  {
+   "check": "normals GraffitiWall",
+   "status": "PASS",
+   "detail": "76% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology GraffitiWall",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (21897 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "29999 (budget 40000)"
+  }
+ ]
+}

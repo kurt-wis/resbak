@@ -56,6 +56,18 @@ Licence: CC0 (badge on the page). Loops are Ogg Vorbis and loop through `Audio._
 | `music_barangay_court.ogg` | `129 [Retro Sports] bgm_stage_3.ogg` |
 | `music_barangay_court_tension.ogg` | `218 [Super Action Chiptunes] bgm_stage_9.ogg` |
 
+## Original — Home diorama audio (`assets/audio/home/`)
+
+Synthesised in code by `tools/make_home_audio.py` (numpy only, no samples used), so it is original to this
+repo and released as CC0: `home_music.wav` (32 s ukulele-style loop), `ui_hover.wav`, `ui_click.wav`,
+`chatter_a..d.wav` (voiced babble grains, pitched per hero in game), `jeep_horn.wav`, `jeep_pass.wav`.
+`.wav` files are not on LFS; regenerate with `python tools/make_home_audio.py`.
+
+## Luckiest Guy (font)
+
+`assets/fonts/LuckiestGuy-Regular.ttf` — Luckiest Guy by Astigmatic, Apache License 2.0 (licence text in
+`assets/fonts/`). Used for the Home screen and hero picker lettering.
+
 ## Not included
 
 - `barangay_daylight.wav` — shipped before this change; provenance not recorded here yet.

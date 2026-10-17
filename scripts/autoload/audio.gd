@@ -56,7 +56,7 @@ func _stream(name: String) -> AudioStream:
 	return null
 
 ## One-shot effect. `at` = world position for 3D sounds (Vector3.INF = 2D).
-func play(name: String, text := "", at := Vector3.INF, bus := "Effects") -> void:
+func play(name: String, text := "", at := Vector3.INF, bus := "Effects", pitch := 1.0, volume_db := 0.0) -> void:
 	cue.emit(name, text, at)
 	var s := _stream(name)
 	if s == null:
@@ -64,6 +64,8 @@ func play(name: String, text := "", at := Vector3.INF, bus := "Effects") -> void
 	var p := AudioStreamPlayer.new()
 	p.stream = s
 	p.bus = bus
+	p.pitch_scale = pitch
+	p.volume_db = volume_db
 	add_child(p)
 	p.finished.connect(p.queue_free)
 	p.play()

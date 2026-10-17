@@ -82,6 +82,54 @@
    "hips_root_motion_m": 0.0
   },
   {
+   "clip": "Menu_StandIdle",
+   "frames": [
+    0,
+    70
+   ],
+   "seconds": 2.917,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Menu_TalkHandsOpen",
+   "frames": [
+    0,
+    95
+   ],
+   "seconds": 3.958,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.01,
+   "loop_seam_m": 0.001,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Menu_TalkHip",
+   "frames": [
+    0,
+    124
+   ],
+   "seconds": 5.167,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Menu_TalkRightOpen",
+   "frames": [
+    0,
+    90
+   ],
+   "seconds": 3.75,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.02,
+   "loop_seam_m": 0.005,
+   "hips_root_motion_m": 0.001
+  },
+  {
    "clip": "Running",
    "frames": [
     0,
@@ -91,7 +139,8 @@
    "tracks": 660,
    "foot_plant_speed_mps": 2.26,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 2.21
   },
   {
    "clip": "Sagip",
@@ -187,7 +236,8 @@
    "tracks": 660,
    "foot_plant_speed_mps": 1.02,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0
+   "hips_root_motion_m": 0.0,
+   "skate_ratio": 2.45
   }
  ],
  "sheet": "renders\\qc\\inday_sheet.png",
@@ -258,9 +308,34 @@
    "detail": "5.042 s, 660 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
+   "check": "clip Menu_StandIdle",
+   "status": "PASS",
+   "detail": "2.917 s, 660 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Menu_TalkHandsOpen",
+   "status": "PASS",
+   "detail": "3.958 s, 660 channels, foot plant 0.01 m/s, loop seam 0.001 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Menu_TalkHip",
+   "status": "PASS",
+   "detail": "5.167 s, 660 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Menu_TalkRightOpen",
+   "status": "PASS",
+   "detail": "3.75 s, 660 channels, foot plant 0.02 m/s, loop seam 0.005 m, root motion 0.001 m"
+  },
+  {
    "check": "clip Running",
    "status": "PASS",
    "detail": "0.833 s, 660 channels, foot plant 2.26 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Running",
+   "status": "FAIL",
+   "detail": "moves 5.0 m/s, feet push 2.26 m/s: x2.21 (play the clip at x2.21 or put its blend point at 2.26 m/s)"
   },
   {
    "check": "clip Sagip",
@@ -301,6 +376,11 @@
    "check": "clip Walking",
    "status": "PASS",
    "detail": "2.667 s, 660 channels, foot plant 1.02 m/s, loop seam 0.0 m, root motion 0.0 m"
+  },
+  {
+   "check": "foot slide Walking",
+   "status": "FAIL",
+   "detail": "moves 2.5 m/s, feet push 1.02 m/s: x2.45 (play the clip at x2.45 or put its blend point at 1.02 m/s)"
   }
  ]
 }
