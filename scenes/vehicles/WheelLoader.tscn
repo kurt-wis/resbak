@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://dmipwl0jxuw7e"]
+
+[ext_resource type="ArrayMesh" uid="uid://xbpiqyi8q5h8" path="res://assets/vehicles/WheelLoader_mesh.res" id="1_3c3k0"]
+
+[node name="WheelLoader" type="Node3D" unique_id=263028480]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1940309647]
+transform = Transform3D(-3.8, 0, -3.3220655e-07, 0, 3.8, 0, 3.3220655e-07, 0, -3.8, 0.092, 0.8563, 0.025)
+mesh = ExtResource("1_3c3k0")

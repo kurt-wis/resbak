@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://ceib5gh67ut7u"]
+
+[ext_resource type="ArrayMesh" uid="uid://5vmlg7w0nq7h" path="res://assets/vehicles/Jeepney_mesh.res" id="1_k01fu"]
+
+[node name="Jeepney" type="Node3D" unique_id=464116712]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1011662154]
+transform = Transform3D(6.637, 0, 0, 0, 6.637, 0, 0, 0, 6.637, -0.12458, 1.30439, 0.05)
+mesh = ExtResource("1_k01fu")

@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bj7on6n2i8f64"]
+
+[ext_resource type="ArrayMesh" uid="uid://ym0yuil7bk2h" path="res://assets/vehicles/IroncladDigger_mesh.res" id="1_6m0be"]
+
+[node name="IroncladDigger" type="Node3D" unique_id=119906706]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=178907002]
+transform = Transform3D(-7.1, 0, -6.207017e-07, 0, 7.1, 0, 6.207017e-07, 0, -7.1, 1.758, 1.813598, 0)
+mesh = ExtResource("1_6m0be")

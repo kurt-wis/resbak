@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://us1jr0lk1ggn"]
+
+[ext_resource type="ArrayMesh" uid="uid://dm3vefrsm54y5" path="res://assets/vehicles/IroncladHauler_mesh.res" id="1_t6uus"]
+
+[node name="IroncladHauler" type="Node3D" unique_id=393501756]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1506222529]
+transform = Transform3D(5.98, 0, 0, 0, 5.98, 0, 0, 0, 5.98, 0.01272, 1.28455, 0.0418)
+mesh = ExtResource("1_t6uus")

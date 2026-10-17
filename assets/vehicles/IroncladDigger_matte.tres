@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bf7xe3r1awovg"]
+
+[ext_resource type="Texture2D" uid="uid://d600yb2d7yud" path="res://assets/vehicles/IroncladDigger_albedo.jpg" id="1_jcvlw"]
+
+[resource]
+resource_name = "material_0"
+albedo_texture = ExtResource("1_jcvlw")
+metallic_texture_channel = 2
+roughness_texture_channel = 1
+metadata/_gltf_primary_texture_coord = 0

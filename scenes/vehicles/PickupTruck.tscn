@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://b72v8n2uhges2"]
+
+[ext_resource type="ArrayMesh" uid="uid://dskrmrtk56cc6" path="res://assets/vehicles/PickupTruck_mesh.res" id="1_0htfp"]
+
+[node name="PickupTruck" type="Node3D" unique_id=131296031]
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1185137265]
+transform = Transform3D(4.25, 0, 0, 0, 4.25, 0, 0, 0, 4.25, -0.12792, 1.273134, 0.0345)
+mesh = ExtResource("1_0htfp")

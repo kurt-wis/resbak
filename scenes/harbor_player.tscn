@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://c66wjxh0wbvpi"]
+
+[ext_resource type="Script" uid="uid://1py16q36bo0p" path="res://scripts/harbor_player.gd" id="1_1qgax"]
+[ext_resource type="PackedScene" uid="uid://dgwdf8dvj27xy" path="res://assets/characters/batang_hamog.glb" id="2_dr53k"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_vqxu2"]
+radius = 0.32
+height = 1.8
+
+[node name="BatangHamogPlayer" type="CharacterBody3D" unique_id=873306465]
+floor_constant_speed = true
+floor_snap_length = 0.35
+script = ExtResource("1_1qgax")
+
+[node name="PlayerCollision" type="CollisionShape3D" parent="." unique_id=966176909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_vqxu2")
+
+[node name="CharacterVisual" type="Node3D" parent="." unique_id=1675376722]
+
+[node name="BatangHamog" parent="CharacterVisual" unique_id=11469690 instance=ExtResource("2_dr53k")]
+transform = Transform3D(1.0588235, 0, 0, 0, 1.0588235, 0, 0, 0, 1.0588235, 0, -1.00178825e-08, 0)
+
+[node name="FollowCamera" type="Camera3D" parent="." unique_id=1930496697]
+projection = 1
+size = 11.0
+far = 150.0
+
+[node name="Controls" type="CanvasLayer" parent="." unique_id=850341502]
+
+[node name="@Label@22214" type="Label" parent="Controls" unique_id=1379872134]
+offset_left = 20.0
+offset_top = 18.0
+offset_right = 20.0
+offset_bottom = 18.0
+theme_override_font_sizes/font_size = 20
+text = "WASD / arrows: move     Shift: sprint"
