@@ -15,7 +15,7 @@ const GESTURE_DUR_TOL := 0.15
 ## Hand-motion ceilings over a full loop (HomeMotion samples the hands and first finger bones at
 ## 60 Hz). Measured after the 2026-10-19 pass (renders/qc/home_motion.json) plus headroom; the
 ## pre-fix build peaked at 12 m/s and 12.2 m/s per frame (a lost end cue, then a snap to the next gesture).
-const MAX_HAND_SPEED := 8.0 ## m/s (measured 7.0: Nathan's cheer swings fast on purpose)
+const MAX_HAND_SPEED := 6.0 ## m/s (measured 4.8, JM's LeanBackLaugh fade-in; Nathan's CheerLeft 4.1)
 const MAX_HAND_DV := 3.0 ## m/s (measured 2.5) change in one 1/60 s step
 
 func run(t: TestCtx) -> void:

@@ -208,7 +208,7 @@ static func load_data() -> HomeDioramaData:
 	{"t": 25.0, "hero": "inday", "clip": "Menu_TalkRaised", "dur": 4.625},
 	{"t": 30.0, "hero": "jm", "clip": "Menu_DozeOff", "dur": 5.0},
 	{"t": 31.4, "hero": "tutoy", "clip": "Menu_TalkPassionate", "dur": 6.208},
-	{"t": 34.0, "hero": "nathan", "clip": "Menu_CheerLeft", "dur": 2.667},
+	{"t": 34.0, "hero": "nathan", "clip": "Menu_CheerLeft", "dur": 3.25},
 	{"t": 38.0, "hero": "jm", "clip": "Menu_LeanBackLaugh", "dur": 4.0},
 	{"t": 39.0, "hero": "tutoy", "clip": "Menu_StandChat", "dur": 5.167},
 	{"t": 42.4, "hero": "nathan", "clip": "Menu_ThumbsUp", "dur": 3.417},

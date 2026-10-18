@@ -56,28 +56,28 @@
 		"nathan": {
 			"bones": {
 				"mixamorig_LeftHand": {
-					"peak_dv": 0.2455,
+					"peak_dv": 0.2512,
 					"peak_speed": 0.8854
 				},
 				"mixamorig_LeftHandIndex1": {
-					"peak_dv": 0.3457,
+					"peak_dv": 0.3747,
 					"peak_speed": 1.1861
 				},
 				"mixamorig_RightHand": {
-					"peak_dv": 1.9445,
-					"peak_speed": 6.0356
+					"peak_dv": 1.4725,
+					"peak_speed": 2.7778
 				},
 				"mixamorig_RightHandIndex1": {
 					"peak_dv": 2.514,
-					"peak_speed": 6.9938
+					"peak_speed": 4.1187
 				}
 			},
 			"peak_dv": 2.514,
 			"peak_dv_active": "Menu_ThumbsUp",
 			"peak_dv_t": 43.75,
-			"peak_speed": 6.9938,
-			"peak_speed_active": "Menu_CheerLeft (fade-in)",
-			"peak_speed_t": 34.3667
+			"peak_speed": 4.1187,
+			"peak_speed_active": "Menu_CheerLeft",
+			"peak_speed_t": 35.2667
 		},
 		"nene": {
 			"bones": {
@@ -145,50 +145,18 @@
 		{
 			"active": "Menu_CheerLeft",
 			"bone": "mixamorig_RightHandIndex1",
-			"dv": 2.1875,
+			"dv": 2.1918,
 			"hero": "nathan",
-			"speed": 3.646,
-			"t": 34.683
+			"speed": 1.226,
+			"t": 35.317
 		},
 		{
 			"active": "Menu_CheerLeft",
 			"bone": "mixamorig_RightHandIndex1",
-			"dv": 1.9939,
+			"dv": 2.0254,
 			"hero": "nathan",
-			"speed": 3.325,
-			"t": 34.617
-		},
-		{
-			"active": "Menu_CheerLeft",
-			"bone": "mixamorig_RightHand",
-			"dv": 1.9445,
-			"hero": "nathan",
-			"speed": 0.823,
-			"t": 35.017
-		},
-		{
-			"active": "Menu_CheerLeft",
-			"bone": "mixamorig_RightHandIndex1",
-			"dv": 1.9257,
-			"hero": "nathan",
-			"speed": 1.323,
-			"t": 34.583
-		},
-		{
-			"active": "Menu_CheerLeft",
-			"bone": "mixamorig_RightHandIndex1",
-			"dv": 1.8554,
-			"hero": "nathan",
-			"speed": 5.3,
-			"t": 34.65
-		},
-		{
-			"active": "Menu_CheerLeft",
-			"bone": "mixamorig_RightHandIndex1",
-			"dv": 1.8193,
-			"hero": "nathan",
-			"speed": 2.114,
-			"t": 34.717
+			"speed": 3.394,
+			"t": 35.217
 		},
 		{
 			"active": "Menu_ThumbsUp",
@@ -201,18 +169,50 @@
 		{
 			"active": "Menu_CheerLeft",
 			"bone": "mixamorig_RightHandIndex1",
-			"dv": 1.7432,
+			"dv": 1.7037,
 			"hero": "nathan",
-			"speed": 5.617,
-			"t": 34.667
+			"speed": 1.144,
+			"t": 35.35
 		},
 		{
-			"active": "Menu_CheerLeft (fade-in)",
+			"active": "Menu_ThumbsUp",
 			"bone": "mixamorig_RightHandIndex1",
-			"dv": 1.6646,
+			"dv": 1.5816,
 			"hero": "nathan",
-			"speed": 5.297,
-			"t": 34.417
+			"speed": 2.202,
+			"t": 44.083
+		},
+		{
+			"active": "Menu_CheerLeft",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 1.4855,
+			"hero": "nathan",
+			"speed": 1.531,
+			"t": 35.65
+		},
+		{
+			"active": "Menu_CheerLeft",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 1.4793,
+			"hero": "nathan",
+			"speed": 3.131,
+			"t": 35.683
+		},
+		{
+			"active": "Menu_ThumbsUp",
+			"bone": "mixamorig_RightHand",
+			"dv": 1.4725,
+			"hero": "nathan",
+			"speed": 0.732,
+			"t": 43.75
+		},
+		{
+			"active": "Menu_ThumbsUp",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 1.4469,
+			"hero": "nathan",
+			"speed": 0.766,
+			"t": 44.217
 		}
 	]
 }

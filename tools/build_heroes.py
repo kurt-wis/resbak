@@ -177,7 +177,7 @@ HERO_CLIPS["nathan"].update({
     "Menu_ThumbsUp": clip(NAM, "Sit_Thumbs_Up_Right", trim=(0.0, 3.4), face=True, in_place=True),
     "Menu_Clap": clip(NAM, "Sitting_Clap", face=True, in_place=True),
     "Menu_ArmsCrossed": clip(MX, "Sit_on_Chair_Arms_Crossed", face=True, in_place=True),
-    "Menu_CheerLeft": clip(MX, "Sit_Cheer_with_Left_Hand", face=True, in_place=True, settle=(0, 14)),
+    "Menu_CheerLeft": clip(MX, "Sit_Cheer_with_Left_Hand", warp=[(0.0, 0.0), (1.2, 0.6), (3.267, 2.667)], face=True, in_place=True, settle=(0, 14)),
 })
 HERO_CLIPS["inday"].update({
     # Her own Idle touches her face mid-loop, which would cover the face card; the talking idle does not.
