@@ -11098,6 +11098,21 @@ _data = {
 }
 point_count = 7
 
+[sub_resource type="Environment" id="Environment_court_afternoon"]
+background_mode = 1
+background_color = Color(0.63, 0.78, 0.85, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.64, 0.76, 0.86, 1)
+ambient_light_energy = 0.38
+fog_enabled = true
+fog_light_color = Color(0.86, 0.9, 0.9, 1)
+fog_light_energy = 0.9
+fog_density = 0.0015
+fog_sky_affect = 0.0
+adjustment_enabled = true
+adjustment_contrast = 1.04
+adjustment_saturation = 1.02
+
 [node name="BarangayCourt" type="Node3D" unique_id=971625077]
 transform = Transform3D(0.864618, 0, 0, 0, 1, 0, 0, 0, 0.76503426, 0, -1.5, 0)
 metadata/perimeter_pole_count = 15
@@ -20846,6 +20861,20 @@ metadata/visual_only = true
 [node name="Gameplay" type="Node3D" parent="." unique_id=1700000001]
 transform = Transform3D(1.15658, 0, 0, 0, 1, 0, 0, 0, 1.307131, 0, 0, 0)
 metadata/play_bounds = Rect2(-23.4, -13, 46.8, 34.8)
+metadata/dust = true
+metadata/presentation = {
+"summer_finish": true,
+"summer_wear": 1.0,
+"summer_breeze": 1.0,
+"dust_amount": 52,
+"dust_color": Color(0.94, 0.88, 0.72, 0.22),
+"dust_size": 0.075,
+"dust_speed_min": 0.3,
+"dust_speed_max": 0.7,
+"haze_color": Color(0.84, 0.9, 0.91, 1),
+"ink_color": Color(0.1, 0.09, 0.16, 1),
+"stroke_pixels": 0.8
+}
 
 [node name="BaseSite_Dilaw_1" type="Marker3D" parent="Gameplay" unique_id=1700000010]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.6, 1.5, 1.5)
@@ -20912,3 +20941,19 @@ curve = SubResource("JailLineCurve_Lila")
 [node name="TrainingSpawn" type="Marker3D" parent="Gameplay"]
 position = Vector3(-6, 0.05, 1)
 rotation = Vector3(0, 1.5707963, 0)
+
+[node name="LightingAndEnvironment" type="Node3D" parent="."]
+top_level = true
+
+[node name="WarmAfternoonSun" type="DirectionalLight3D" parent="LightingAndEnvironment"]
+rotation = Vector3(-1.047198, -0.558505, 0)
+light_color = Color(1, 0.97, 0.88, 1)
+light_energy = 0.98
+shadow_enabled = true
+shadow_bias = 0.06
+shadow_normal_bias = 0.3
+shadow_opacity = 0.65
+directional_shadow_max_distance = 150.0
+
+[node name="CourtAtmosphere" type="WorldEnvironment" parent="LightingAndEnvironment"]
+environment = SubResource("Environment_court_afternoon")

@@ -16,6 +16,7 @@ func kind() -> int:
 
 func _cast(_frame: InputFrame) -> void:
 	active = true
+	hero.plant_cast(float(v("buga_inhale")))
 	_blow_tick = host.tick + RB.ticks(v("buga_inhale"))
 	if hero.aim != Vector3.ZERO:
 		hero.facing = hero.aim

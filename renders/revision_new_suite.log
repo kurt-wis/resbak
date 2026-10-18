@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[INTEGRATION TEST] suite hero_assets
+  ✓ [hero_assets] hero GLBs and HeroData match the spec table
+[INTEGRATION TEST] suite hero_revision
+  ✓ [hero_revision] all skills enforce stationary-cast and traversal contracts
+  ✓ [hero_revision] movable preparation, planted commitment, objective-facing capture and rounded guides
+  ✓ [hero_revision] status detail interaction and enlarged action controls
+[INTEGRATION TEST] 2 suites, 219 checks, 0 failed
+[INTEGRATION TEST] All checks passed successfully (100%)!

@@ -2,8 +2,7 @@ class_name UboPacket
 extends SkillObject
 
 ## The Kimkim packet in flight (UBO! UBO!, docs/RESBAK.md § 4 Nathan). Flies a short arc to a
-## fixed landing point and turns into a UboCloud on the landing tick. The mesh is procedural
-## (source_art/heroes/KimKim_Asset.glb is not importable): a small candy pouch with a label.
+## fixed landing point and turns into a UboCloud on the landing tick. Uses the supplied KimKim model, normalized to a 25 cm held prop.
 
 var from_pos := Vector3.ZERO
 var to_pos := Vector3.ZERO
@@ -24,30 +23,8 @@ func begin(p_host: MatchHost, p_owner: Hero, p_from: Vector3, p_to: Vector3, p_f
 	add_child(pouch)
 
 static func _build_pouch() -> Node3D:
-	var root := Node3D.new()
+	var root := preload("res://assets/props/kimkim.glb").instantiate() as Node3D
 	root.name = "Pouch"
-	var body := MeshInstance3D.new()
-	var bm := BoxMesh.new()
-	bm.size = Vector3(0.3, 0.4, 0.1)
-	body.mesh = bm
-	body.material_override = Vfx.flat_material(Color("ff6fa8"), false)
-	body.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	root.add_child(body)
-	var band := MeshInstance3D.new()
-	var bandm := BoxMesh.new()
-	bandm.size = Vector3(0.32, 0.14, 0.11)
-	band.mesh = bandm
-	band.material_override = Vfx.flat_material(Color("fff6fb"), false)
-	band.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	root.add_child(band)
-	var label := Label3D.new()
-	label.text = "KIMKIM"
-	label.font_size = 28
-	label.pixel_size = 0.0035
-	label.modulate = Color("d8337f")
-	label.outline_size = 0
-	label.position = Vector3(0, 0, 0.056)
-	root.add_child(label)
 	return root
 
 ## Where the packet is at progress t (0..1): straight line on the ground, parabolic arc up.
@@ -74,6 +51,7 @@ func _land() -> void:
 	var cloud := UboCloud.new()
 	cloud.begin(host, owner_hero, cloud_cfg)
 	host.spawn_object(cloud, to_pos)
+	cloud.apply_initial_burst()
 	cloud.build_visuals()
 	host.emit_event("ubo_land", {"hero": owner_hero, "pos": to_pos, "cloud": cloud})
 	expire()

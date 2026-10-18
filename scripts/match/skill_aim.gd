@@ -8,11 +8,13 @@ static func profile(skill: Skill) -> Dictionary:
 	var result := {"mode": "self", "icon": "shield", "hint": "Release to activate", "range": 0.0, "width": h.tuning.body_radius * 2.0, "radius": h.tuning.body_radius, "angle": 0.0, "color": h.data.color}
 	match h.data.id + str(skill.slot):
 		"jm0":
-			result.merge({"mode": "point", "icon": "jump", "hint": "Choose landing + wall direction", "range": float(v.talbog_range), "radius": float(v.talbog_push_radius)}, true)
+			result.merge({"mode": "point", "icon": "jump", "hint": "Choose landing stun area", "range": float(v.talbog_range), "radius": float(v.talbog_push_radius)}, true)
 		"jm1":
 			result.merge({"mode": "path", "icon": "charge", "hint": "Charge; steer after release / tap STOP", "range": float(v.tamaraw_speed) * float(v.tamaraw_time) * h.tuning.move_speed_scale * (1.0 - h.strongest_slow())}, true)
+			result.tap_only = true
+			result.hint = "Click to charge; click again to stop"
 		"tutoy0":
-			result.merge({"mode": "path", "icon": "sprint", "hint": "Burst; keep steering with the movement stick", "range": float(v.harurot_speed) * float(v.harurot_time) * h.tuning.move_speed_scale * (1.0 - h.strongest_slow())}, true)
+			result.merge({"mode": "self", "icon": "sprint", "hint": "Burst along movement; steer with the movement stick"}, true)
 		"tutoy1":
 			result.merge({"mode": "path", "icon": "slide", "hint": "Slide this way / vault low props", "range": float(v.lusot_distance)}, true)
 		"nene0":
@@ -24,7 +26,7 @@ static func profile(skill: Skill) -> Dictionary:
 		"nathan1":
 			result.merge({"mode": "point", "icon": "cloud", "hint": "Choose where the hiding cloud lands", "range": float(v.ubo_range), "radius": float(v.ubo_radius)}, true)
 		"inday0":
-			result.merge({"mode": "lane", "icon": "wind", "hint": "Allies run faster in this lane / tap STOP", "range": float(v.ihip_length), "width": float(v.ihip_width)}, true)
+			result.merge({"mode": "lane", "icon": "wind", "hint": "Place a fixed wind lane", "range": float(v.ihip_length), "width": float(v.ihip_width)}, true)
 		"inday1":
 			result.merge({"mode": "line", "icon": "hand", "hint": "Reach a teammate or chain tip to rescue + pull", "range": float(v.hila_range), "radius": float(v.hila_grab), "width": float(v.hila_grab) * 2.0}, true)
 	return result
@@ -74,7 +76,7 @@ static func draw_icon(canvas: CanvasItem, kind: String, at: Vector2, scale: floa
 			canvas.draw_arc(at + Vector2(-s * 0.3, s * 0.3), s, PI, TAU, 20, color, 3, true)
 			canvas.draw_line(at + Vector2(s * 0.7, 0), at + Vector2(s * 0.7, s * 0.6), color, 3, true)
 			for i in range(3):
-				canvas.draw_rect(Rect2(at + Vector2(-s + i * s * 0.7, s * 0.65), Vector2(s * 0.6, s * 0.3)), color, false, 2)
+				canvas.draw_line(at + Vector2(-s + i * s, s * 0.65), at + Vector2((-s + i * s) * 1.3, s * 1.05), color, 2, true)
 		"charge", "sprint", "slide":
 			for i in range(2):
 				var x := -s * 0.5 + i * s * 0.65
@@ -90,6 +92,12 @@ static func draw_icon(canvas: CanvasItem, kind: String, at: Vector2, scale: floa
 		"cloud":
 			for offset in [Vector2(-0.55, 0.2), Vector2(0, -0.2), Vector2(0.55, 0.2)]:
 				canvas.draw_arc(at + offset * s, s * 0.6, 0, TAU, 20, color, 3, true)
+		"impact":
+			var points := PackedVector2Array()
+			for i in range(11):
+				var angle := -PI * 0.5 + float(i) * TAU / 10.0
+				points.append(at + Vector2(cos(angle), sin(angle)) * s * (1.0 if i % 2 == 0 else 0.45))
+			canvas.draw_polyline(points, color, 3, true)
 		"hand":
 			canvas.draw_rect(Rect2(at + Vector2(-s * 0.5, 0), Vector2(s, s * 0.75)), color, false, 3)
 			for i in range(4):

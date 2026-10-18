@@ -25,10 +25,54 @@ func run(t: TestCtx) -> void:
 	await _ubo_landing(t)
 	await _ubo_vision_and_cough(t)
 	await _ubo_cough_rules(t)
+	await _ubo_owner_and_blind(t)
 	await _passive_turn(t)
 	await _passive_patch(t)
 
 # ---- helpers ---------------------------------------------------------------------------
+func _ubo_owner_and_blind(t: TestCtx) -> void:
+	var host := _live(t)
+	var n: Hero = host.heroes[0]
+	var ally: Hero = host.heroes[1]
+	var enemy: Hero = host.heroes[2]
+	var outside: Hero = host.heroes[3]
+	TestCtx.put(n, 0, -8)
+	TestCtx.put(enemy, 0, 1)
+	_aim(t, host, n, Vector3(0, 0, 20))
+	_cast(t, host, n, S2)
+	t.steps(host, 30)
+	var cloud: UboCloud = _objs_of(host, UboCloud)[0]
+	t.check(enemy.blind_ticks == 120 and _count("blinded") == 1, "initial UBO burst blinds enemies for two seconds")
+	TestCtx.put(n, 0, 0)
+	TestCtx.put(ally, 1, 0)
+	TestCtx.put(outside, 0, 7)
+	t.check(host.visibility(n, enemy) == 1.0 and host.visibility(enemy, n) == 0.0, "owner sees enemies inside own cloud, enemies cannot see owner")
+	t.check(host.visibility(n, outside) == 0.0 and host.visibility(ally, n) == 0.0 and host.visibility(ally, enemy) == 0.0, "owner cannot see outside; teammates gain no smoke immunity")
+	t.check(host.visibility(n, n) == 1.0 and host.visibility(outside, n) == 0.0, "self stays visible and outside enemies cannot see inside")
+	t.check(not enemy.is_disabled() and enemy.can_use_skills(), "blindness is vision loss, not a stun")
+	t.steps(host, 119)
+	t.check(enemy.blind_ticks == 1, "blindness lasts through tick 119")
+	t.steps(host, 1)
+	t.check(enemy.blind_ticks == 0 and _count("blinded") == 1, "remaining inside never refreshes initial blindness")
+	var brain := BotBrain.new()
+	host.get_parent().add_child(brain)
+	brain.setup(enemy, host, 2)
+	brain._sense(enemy)
+	t.check(not brain.perceived.has(n), "nearby bot perception cannot bypass smoke concealment")
+	TestCtx.put(enemy, 0, 7)
+	t.steps(host, 1)
+	TestCtx.put(enemy, 0, 1)
+	t.steps(host, 1)
+	t.check(enemy.blind_ticks == 0, "re-entering the same cloud does not blind again")
+	var second := UboCloud.new()
+	second.begin(host, enemy, {"radius": 3.5, "sight": 2.0, "cough_after": 1.0, "cough_reveal": 2.0, "time": 5.0})
+	host.spawn_object(second, cloud.global_position)
+	t.check(host.visibility(n, enemy) == 0.0, "overlapping hostile smoke defeats owner immunity")
+	n.blind(2.0)
+	n.reset_for_round(Vector3.ZERO, Vector3.RIGHT)
+	t.check(n.blind_ticks == 0, "round reset clears powder blindness")
+	await t.free_match(host)
+
 func _live(t: TestCtx) -> MatchHost:
 	var host := t.make_match([
 		{"hero_id": "nathan", "team": D}, {"hero_id": "tutoy", "team": D},
@@ -319,11 +363,11 @@ func _ubo_vision_and_cough(t: TestCtx) -> void:
 	t.check(host.visibility(n, e1) == 0.0, "an outside viewer cannot see an enemy whose centre is inside")
 	t.check(host.visibility(n, e2) == 1.0, "outside sees outside")
 	t.check(host.visibility(e2, ally) == 0.0, "an enemy outside cannot see Nathan's ally inside: both teams are hidden")
-	t.check(host.visibility(ally, n) == 1.0 and host.visibility(n, ally) == 1.0, "allies always see each other")
+	t.check(host.visibility(ally, n) == 0.0 and host.visibility(n, ally) == 0.0, "smoke hides allies as well as opponents")
 	t.check(host.visibility(e1, ally) == 0.0, "an inside viewer sees only within 2 m (ally at 3 m: hidden)")
 	TestCtx.put(ally, 1.5, 1)
 	t.steps(host, 1)
-	t.check(host.visibility(e1, ally) == 1.0, "an inside viewer sees a target 1.5 m away")
+	t.check(host.visibility(e1, ally) == 0.0, "an inside non-owner cannot see even a nearby target")
 	t.check(host.visibility(e1, n) == 0.0, "an inside viewer does not see an outside enemy 9 m away")
 	t.check(cloud.hides(null, Vector3(0, 0, 2.0)) and not cloud.hides(null, Vector3(0, 0, 5.0)), "hides(): inside hidden, outside not")
 	t.check(cloud.hides(null, Vector3(3.4, 0, 1.0)) and not cloud.hides(null, Vector3(3.6, 0, 1.0)), "radius 3.5 m on the centre")
@@ -334,7 +378,7 @@ func _ubo_vision_and_cough(t: TestCtx) -> void:
 	t.check(_count("cough") == 0 and not e1.is_revealed_to(D), "no cough at 1.0 s inside")
 	t.steps(host, 3)
 	t.check(_count("cough") == 1 and last.cough.hero == e1, "coughs after more than 1 s inside, once")
-	t.check(e1.is_revealed_to(D) and not e1.is_revealed_to(L) and host.visibility(n, e1) == 1.0, "shown to Nathan's team through the cloud")
+	t.check(e1.is_revealed_to(D) and not e1.is_revealed_to(L) and host.visibility(n, e1) == 0.0, "cough marks target but does not override the cloud boundary")
 	t.check(e1.revealed_ticks[D] >= 115 and e1.revealed_ticks[D] <= 120, "for 2 s (%d ticks)" % e1.revealed_ticks[D])
 	t.check(e1.state == Hero.State.FREE and not e1.is_disabled() and e1.can_use_skills(), "a coughing enemy can still act")
 	t.steps(host, 100)
@@ -397,6 +441,7 @@ func _ubo_cough_rules(t: TestCtx) -> void:
 func _turn(t: TestCtx, host: MatchHost, first: Vector2, button: int, gap: int, second: Vector2) -> bool:
 	var n: Hero = host.heroes[0]
 	var pas = n.passive # untyped: calls has_patch() of MayTiraPa
+	t.steps(host, n.cast_lock_ticks)
 	pas.on_round_reset()
 	host.clear_objects()
 	for s in n.skills:
@@ -409,7 +454,7 @@ func _turn(t: TestCtx, host: MatchHost, first: Vector2, button: int, gap: int, s
 	if button != 0:
 		inp.press(n, button)
 		t.steps(host, 1)
-	t.steps(host, gap)
+	t.steps(host, maxi(gap, n.cast_lock_ticks))
 	inp.move(n, second)
 	t.steps(host, 1)
 	inp.move(n, Vector2.ZERO)
@@ -422,7 +467,7 @@ func _passive_turn(t: TestCtx) -> void:
 	var inp := t.inputs(host)
 	_aim(t, host, n, Vector3(5, 0, 0))
 	t.check(pas.hud_state().on == false, "hud: no patch ready at the start")
-	t.check(_turn(t, host, Vector2(1, 0), S2, 5, Vector2(-1, 0)), "skill, then a 180 deg turn 5 ticks later drops a patch")
+	t.check(_turn(t, host, Vector2(1, 0), S2, 5, Vector2(-1, 0)), "skill, then a 180 deg turn after the cast plant drops a patch")
 	t.check(t.near(RB.flat_dist(n.global_position, pas.patch.global_position), 0.0, 0.01) and _count("patch_drop") == 1, "the patch is where Nathan turned; patch_drop event")
 	var hs: Dictionary = pas.hud_state()
 	t.check(hs.on and hs.placed, "hud_state shows the patch ready")
@@ -441,13 +486,15 @@ func _passive_turn(t: TestCtx) -> void:
 	inp.move(n, Vector2(1, 0))
 	t.steps(host, 15)
 	inp.press(n, S1)
-	t.steps(host, 4)
+	t.steps(host, 1)
+	t.steps(host, maxi(4, n.cast_lock_ticks))
 	inp.move(n, Vector2(-1, 0))
 	t.steps(host, 1)
 	inp.move(n, Vector2.ZERO)
 	t.check(pas.has_patch() and pas.patch != first and first.expired, "a new patch replaces the old one")
 	t.check(_objs_of(host, TiraPatch).size() == 1, "only one patch exists")
 	# hud while armed
+	t.steps(host, n.cast_lock_ticks)
 	pas.on_round_reset()
 	host.clear_objects()
 	n.skills[1].cd_ticks = 0

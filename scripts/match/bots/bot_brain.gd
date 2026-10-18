@@ -109,7 +109,8 @@ func _sense(h: Hero) -> void:
 	for e in host.enemies_of(h):
 		var seen := false
 		if e.is_free():
-			seen = RB.flat_dist(h.global_position, e.global_position) <= SEE_CLOSE or host.visibility(h, e) >= 0.5
+			var alpha := host.visibility(h, e)
+			seen = alpha >= 0.5 or (alpha > 0.0 and RB.flat_dist(h.global_position, e.global_position) <= SEE_CLOSE)
 		if seen:
 			if not _seen.has(e.slot):
 				_seen[e.slot] = host.tick

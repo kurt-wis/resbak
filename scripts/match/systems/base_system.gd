@@ -86,6 +86,7 @@ func handle_interact(h: Hero, f: InputFrame) -> void:
 	var start := f.was_pressed(RB.BTN_INTERACT) if toggle else f.is_held(RB.BTN_INTERACT)
 	if start and h.can_start_capture() and in_capture_range(h):
 		h.capturing = true
+		h.facing = RB.flat(pole_pos(RB.other_team(h.team)) - h.global_position).normalized()
 		h.capture_ticks = 0
 		h.velocity = Vector3.ZERO
 		h.notify_capture_start()

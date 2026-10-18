@@ -17,12 +17,8 @@ var log_data: Array = []
 
 func run(t: TestCtx) -> void:
 	await _data(t)
-	await _ihip_basics(t)
-	await _ihip_lane(t)
-	await _ihip_aim_turn(t)
-	await _ihip_wall(t)
-	await _ihip_ends(t)
-	await _ihip_no_stack(t)
+	await _placed_wind(t)
+	await _wind_priority(t)
 	await _hila_cast(t)
 	await _hila_animation_phases(t)
 	await _hila_pull_ally(t)
@@ -58,6 +54,13 @@ func _ihip(h: Hero) -> Skill:
 
 func _hila(h: Hero) -> Skill:
 	return h.skills[1]
+
+func _hands(host: MatchHost) -> Array[HilaHand]:
+	var out: Array[HilaHand] = []
+	for object in host.objects:
+		if object is HilaHand:
+			out.append(object)
+	return out
 
 func _has(h: Hero, source: String) -> bool:
 	return h.has_modifier(source)
@@ -105,7 +108,7 @@ func _data(t: TestCtx) -> void:
 	var host := _live(t)
 	var inday := _inday(host)
 	t.check(inday.data.id == "inday" and inday.data.run_speed == 4.5, "Inday runs at 4.5 m/s")
-	t.check(inday.skills[0].cooldown == 15.0 and inday.skills[1].cooldown == 14.0, "IHIP! 15 s, HILA! 14 s cooldowns")
+	t.check(inday.skills[0].cooldown == 24.0 and inday.skills[1].cooldown == 14.0, "IHIP! 24 s, HILA! 14 s cooldowns")
 	t.check(inday.skills[0].kind() == RB.SkillKind.MOVEMENT, "IHIP! is a Movement skill")
 	t.check(inday.skills[1].kind() == RB.SkillKind.NEITHER, "HILA! is neither Offensive nor Movement")
 	t.check(_hila(inday).rescue_touch_point() == Vector3.INF, "HILA! gives no rescue touch while idle")
@@ -113,201 +116,92 @@ func _data(t: TestCtx) -> void:
 	t.ok("Inday data: speed, cooldowns, kinds")
 	await t.free_match(host)
 
-func _ihip_basics(t: TestCtx) -> void:
-	var host := _live(t)
-	var inday := _inday(host)
-	var inp := t.inputs(host)
-	TestCtx.put(inday, -4, 0)
-	inp.aim_at(inday, Vector3(5, 0, 0))
-	_cast(t, host, inday, 0)
-	var s := _ihip(inday)
-	t.check(s.active and s.controls_movement(), "IHIP! starts and drives movement")
-	t.check(s.cd_ticks > 880 and s.cd_ticks <= 900, "IHIP! cooldown (15 s = 900 ticks) starts on cast (%d)" % s.cd_ticks)
-	t.check(s.lane_active() and t.near(s.lane_length(), 10.0, 0.05), "the lane is 10 m long in the open (%.2f)" % s.lane_length())
-	var lane := host.world.get_node_or_null("IhipLane")
-	t.check(lane != null and lane.visible, "wind lane VFX exists while blowing")
-	# stands still
-	var at := inday.global_position
-	inp.move(inday, Vector2(1, 0))
-	t.steps(host, 30)
-	t.check(RB.flat_dist(inday.global_position, at) < 0.02, "can't move while blowing (moved %.2f)" % RB.flat_dist(inday.global_position, at))
-	t.check(_ihip(inday).active, "still blowing after 0.5 s of move input")
-	# can't tag
-	inp.press(inday, TAG)
-	t.steps(host, 2)
-	t.check(not inday.is_winding_up() and not inday.can_press_tag(), "can't tag while blowing")
-	# can't cast the other skill
-	_hila(inday).cd_ticks = 0
-	inp.press(inday, S2)
-	t.steps(host, 2)
-	t.check(_hands(host).is_empty() and _hila(inday).cd_ticks == 0, "can't cast HILA! while blowing")
-	t.check(not inday.can_use_skills(), "no skills while blowing")
-	# stays taggable
-	t.check(inday.is_taggable(), "Inday is still taggable while blowing")
-	inp.move(inday, Vector2.ZERO)
-	t.ok("IHIP! cast: lane, cooldown, stands still, no tag, no other skill, taggable")
-	await t.free_match(host)
-
-func _ihip_lane(t: TestCtx) -> void:
-	var host := _live(t)
-	var inday := _inday(host)
-	var ally_in: Hero = host.heroes[3] # tutoy
-	var ally_side: Hero = host.heroes[4]
-	var ally_far: Hero = host.heroes[5]
-	var enemy: Hero = host.heroes[0]
-	var inp := t.inputs(host)
-	TestCtx.put(inday, -4, 0)
-	TestCtx.put(ally_in, 2, 1.3) # along 6, side 1.3 -> inside
-	TestCtx.put(ally_side, 2, -1.9) # side 1.9 > 1.5 -> outside
-	TestCtx.put(ally_far, 6.4, 0) # along 10.4 -> past the end
-	TestCtx.put(enemy, 0, 0.4) # inside, but an enemy
-	inp.aim_at(inday, Vector3(5, 0, 0))
-	_cast(t, host, inday, 0)
-	t.check(_has(ally_in, "ihip"), "a free ally inside the lane gets the IHIP! bonus")
-	t.check(t.near(ally_in.biggest_bonus(), 0.25), "bonus is +25 %% (%.2f)" % ally_in.biggest_bonus())
-	t.check(t.near(ally_in.current_speed(), 4.85 * 1.25 * Tuning.get_default().move_speed_scale, 0.001), "Tutoy runs 4.85 x 1.25 inside the lane (%.3f)" % ally_in.current_speed())
-	t.check(not _has(ally_side, "ihip"), "an ally 1.9 m off the centre line is outside the 3 m wide lane")
-	t.check(not _has(ally_far, "ihip"), "an ally past 10 m is outside the lane")
-	t.check(not _has(enemy, "ihip"), "enemies inside the lane get nothing")
-	t.check(not _has(inday, "ihip"), "Inday does not buff herself")
-	t.check(_ihip(inday).in_lane(Vector3(5.9, 0, 1.4)) and not _ihip(inday).in_lane(Vector3(6.1, 0, 0)), "lane edges: 10 m long, 1.5 m each side")
-	# the ally leaves the lane: bonus gone that tick
-	TestCtx.put(ally_in, 2, 2.5)
-	t.steps(host, 1)
-	t.check(not _has(ally_in, "ihip") and t.near(ally_in.biggest_bonus(), 0.0), "leaving the lane drops the bonus at once")
-	TestCtx.put(ally_in, 2, 0.5)
-	t.steps(host, 1)
-	t.check(_has(ally_in, "ihip"), "re-entering the lane gives the bonus again")
-	# a real run: speed over 60 ticks matches 1.25x
-	TestCtx.put(ally_side, -2, -1.2)
-	inp.move(ally_side, Vector2(1, 0))
-	var x0 := ally_side.global_position.x
-	t.steps(host, 60)
-	var run_inside := ally_side.global_position.x - x0
-	t.check(run_inside > 4.85 * Tuning.get_default().move_speed_scale, "an ally running in the lane covers more than base speed in 1 s (%.2f m)" % run_inside)
-	inp.move(ally_side, Vector2.ZERO)
-	t.ok("IHIP! lane: free allies +25 %, enemies and outsiders nothing, leaving drops it")
-	await t.free_match(host)
-
-func _ihip_aim_turn(t: TestCtx) -> void:
-	var host := _live(t)
-	var inday := _inday(host)
-	var ally: Hero = host.heroes[3]
-	var inp := t.inputs(host)
-	TestCtx.put(inday, -4, 0)
-	TestCtx.put(ally, 2, 0)
-	inp.aim_at(inday, Vector3(5, 0, 0))
-	_cast(t, host, inday, 0)
-	t.check(_has(ally, "ihip"), "ally east of Inday is in the east lane")
-	# turn north (-Z): the lane turns with the aim
-	TestCtx.put(ally, -4, -5)
-	inp.aim_at(inday, Vector3(-4, 0, -5))
-	t.steps(host, 1)
-	t.check(t.near(_ihip(inday).lane_dir().z, -1.0, 0.01), "lane direction follows the aim")
-	t.check(_has(ally, "ihip"), "an ally in the turned lane gets the bonus")
-	TestCtx.put(ally, 2, 0)
-	t.steps(host, 1)
-	t.check(not _has(ally, "ihip"), "the old east lane is gone after turning")
-	# and she can still aim without moving
-	t.check(RB.flat_dist(inday.global_position, Vector3(-4, 0.05, 0)) < 0.05, "Inday stayed where she was while turning")
-	t.ok("IHIP! lane turns with aim")
-	await t.free_match(host)
-
-func _ihip_wall(t: TestCtx) -> void:
-	var host := _live(t)
-	var inday := _inday(host)
-	var before: Hero = host.heroes[3]
-	var behind: Hero = host.heroes[4]
-	var inp := t.inputs(host)
-	TestCtx.put(inday, -4, 0)
-	TestCtx.put(before, -2, 0.5)
-	TestCtx.put(behind, 2, 0.5)
-	var wall := _wall(host, Vector3(0, 1, 0), Vector3(0.4, 2, 8))
-	inp.aim_at(inday, Vector3(5, 0, 0))
-	_cast(t, host, inday, 0)
-	var cut: float = _ihip(inday).lane_length()
-	t.check(t.near(cut, 3.8, 0.1), "a wall 4 m ahead cuts the lane to its near face (%.2f)" % cut)
-	t.check(_has(before, "ihip"), "an ally before the wall is in the lane")
-	t.check(not _has(behind, "ihip"), "an ally behind the wall is not")
-	wall.queue_free()
-	t.ok("IHIP! lane is cut by walls")
-	await t.free_match(host)
-
-func _ihip_ends(t: TestCtx) -> void:
+func _placed_wind(t: TestCtx) -> void:
 	var host := _live(t)
 	var inday := _inday(host)
 	var ally: Hero = host.heroes[3]
 	var enemy: Hero = host.heroes[0]
 	var inp := t.inputs(host)
 	TestCtx.put(inday, -4, 0)
-	TestCtx.put(ally, 1, 0)
-	inp.aim_at(inday, Vector3(5, 0, 0))
-	# runs out after 4 s = 240 ticks
+	TestCtx.put(ally, 2, 2.0)
+	TestCtx.put(enemy, 0, 0.7)
+	inp.aim_at(inday, Vector3(8, 0, 0))
 	_cast(t, host, inday, 0)
-	t.steps(host, 239)
-	t.check(_ihip(inday).active and _has(ally, "ihip"), "still blowing after 240 ticks")
+	var skill := _ihip(inday)
+	var lane: SkillObject = skill.last_lane
+	var origin := lane.global_position
+	t.check(skill.lane_active() and not skill.active and not skill.controls_movement(), "IHIP places an independent lane")
+	t.check(t.near(skill.lane_length(), 12.0) and t.near(lane.width_m, 4.5), "approved 12 m by 4.5 m lane")
+	t.check(skill.cd_ticks == RB.ticks(24.0) - 1, "24 s cooldown starts at placement")
+	t.check(t.near(ally.biggest_bonus(), 0.4), "teammate receives +40% speed")
+	t.check(t.near(enemy.strongest_slow(), 0.25) and t.near(inday.strongest_slow(), 0.25), "enemies and owner receive 25% slow")
+	t.check(not inday.can_move() and inday.is_taggable(), "brief casting plant retains tag eligibility")
+	inp.move(inday, Vector2(0, -1))
+	inp.aim_at(inday, Vector3(-4, 0, 10))
+	t.steps(host, 45)
+	t.check(inday.global_position.distance_to(origin) > 0.2 and inday.can_press_tag(), "Inday moves and tags after the cast plant")
+	t.check(lane.global_position.is_equal_approx(origin) and skill.lane_dir().dot(Vector3.RIGHT) > 0.99, "placed wind never follows owner or later aim")
+	TestCtx.put(ally, 2, 2.4)
 	t.steps(host, 1)
-	t.check(not _ihip(inday).active, "IHIP! ends after 4 s (241st tick)")
-	t.check(host.world.get_node_or_null("IhipLane") == null, "lane gone when it expires")
-	t.check(not _has(ally, "ihip"), "bonus gone when it expires")
-	# pressing S1 again ends it, lane and bonus gone the same tick
-	_cast(t, host, inday, 0)
-	t.check(_ihip(inday).active and _has(ally, "ihip"), "recast setup")
-	var cd := _ihip(inday).cd_ticks
-	inp.press(inday, S1)
+	t.check(t.near(ally.biggest_bonus(), 0.0), "bonus removed immediately on lane exit")
+	TestCtx.put(enemy, 0, 2.4)
 	t.steps(host, 1)
-	t.check(not _ihip(inday).active, "S1 again ends IHIP!")
-	t.check(host.world.get_node_or_null("IhipLane") == null and not _has(ally, "ihip"), "lane and bonus are gone the same tick")
-	t.check(_ihip(inday).cd_ticks >= cd - 2, "ending early does not refund the cooldown")
-	# pushed
-	_cast(t, host, inday, 0)
-	inday.apply_push(Vector3(1, 0, 0), 2.0, true)
-	t.check(not _ihip(inday).active, "a push ends IHIP!")
-	t.check(host.world.get_node_or_null("IhipLane") == null and not _has(ally, "ihip"), "pushed: lane and bonus gone at once")
-	t.steps(host, 30)
-	# stunned
-	TestCtx.put(inday, -4, 0)
-	_cast(t, host, inday, 0)
-	inday.stun(1.0, true)
-	t.check(not _ihip(inday).active, "a stun ends IHIP!")
-	t.check(not _has(ally, "ihip"), "stunned: bonus gone at once")
-	t.steps(host, 70)
-	# round-end style cancel and reset
-	TestCtx.put(inday, -4, 0)
-	_cast(t, host, inday, 0)
-	_ihip(inday).end("round_end")
-	t.check(not _ihip(inday).active and not _has(ally, "ihip"), "round end cancels it cleanly")
-	# tagged
-	TestCtx.put(inday, -4, 0)
-	_cast(t, host, inday, 0)
-	t.check(_ihip(inday).active, "recast before tag")
+	t.check(t.near(enemy.strongest_slow(), 0.0) and not host.tag_system.wind_disadvantaged(enemy), "enemy exit removes slow and priority disadvantage")
 	inday.on_tagged(enemy)
-	t.check(not _ihip(inday).active, "being tagged ends IHIP!")
-	t.check(host.world.get_node_or_null("IhipLane") == null and not _has(ally, "ihip"), "tagged: lane and bonus gone the same tick")
-	t.ok("IHIP! ends on timeout (240 ticks), S1, push, stun, round end, tag")
+	t.steps(host, 1)
+	t.check(skill.lane_active(), "placed wind persists after owner is tagged")
+	t.steps(host, lane.ticks_left)
+	t.check(not skill.lane_active(), "placed wind expires at its five-second lifetime")
 	await t.free_match(host)
+	# Obstacle clamp uses the fixed cast line.
+	host = _live(t)
+	inday = _inday(host)
+	TestCtx.put(inday, -4, 0)
+	_wall(host, Vector3(1, 1, 0), Vector3(0.2, 2, 8))
+	t.inputs(host).aim_at(inday, Vector3(8, 0, 0))
+	_cast(t, host, inday, 0)
+	t.check(_ihip(inday).lane_length() < 5.1 and not _ihip(inday).in_lane(Vector3(2, 0, 0)), "solid wall clips the placed lane")
+	await t.free_match(host)
+	t.ok("placed wind: tuning, movement, lifetime, membership and wall clamp")
 
-func _ihip_no_stack(t: TestCtx) -> void:
+func _land_pair(host: MatchHost, a: Hero, b: Hero, simultaneous := true) -> Array:
+	for h in [a, b]:
+		h.tag_started_tick = host.tick - RB.ticks(host.tuning.tag_windup)
+		h.windup_end_tick = host.tick
+		h.strike_reach = h.tag_reach()
+	a.lunge_dir = RB.flat(b.global_position - a.global_position).normalized()
+	b.lunge_dir = -a.lunge_dir
+	a.strike_target_slot = b.slot
+	b.strike_target_slot = a.slot
+	if not simultaneous:
+		b.windup_end_tick += 1
+	return host.tag_system.resolve()
+
+func _wind_priority(t: TestCtx) -> void:
 	var host := _live(t)
 	var inday := _inday(host)
 	var ally: Hero = host.heroes[3]
-	var inp := t.inputs(host)
+	var enemy: Hero = host.heroes[0]
 	TestCtx.put(inday, -4, 0)
-	TestCtx.put(ally, 1, 0)
-	ally.add_speed_bonus(0.2, 2.0, "takbo")
-	inp.aim_at(inday, Vector3(5, 0, 0))
+	t.inputs(host).aim_at(inday, Vector3(8, 0, 0))
 	_cast(t, host, inday, 0)
-	t.check(t.near(ally.biggest_bonus(), 0.25), "IHIP! +25 %% and TAKBO NA! +20 %% do not stack: biggest applies (%.2f)" % ally.biggest_bonus())
-	t.check(t.near(ally.current_speed(), 4.85 * 1.25 * Tuning.get_default().move_speed_scale, 0.001), "speed is base x 1.25, not x 1.45")
-	t.ok("IHIP! and TAKBO NA! take the biggest bonus")
+	TestCtx.put(ally, 1, 0)
+	TestCtx.put(enemy, 2, 0)
+	var results := _land_pair(host, ally, enemy)
+	t.check(results.size() == 2 and results[0].type == "outprioritized" and results[1].type == "hit", "unaffected ally wins reciprocal same-tick tag against enemy in lane")
+	TestCtx.put(inday, 1, 0)
+	TestCtx.put(ally, -9, -10)
+	results = _land_pair(host, inday, enemy)
+	t.check(results.size() == 2 and results[0].type == "sabay" and results[1].type == "sabay", "two disadvantaged fighters retain Sabay")
+	results = _land_pair(host, enemy, inday, false)
+	t.check(results.size() == 1 and results[0].type == "hit", "earlier clean hit wins even for a disadvantaged fighter")
+	TestCtx.put(inday, -4, -5)
+	TestCtx.put(ally, 1, 3)
+	TestCtx.put(enemy, 2, 3)
+	results = _land_pair(host, ally, enemy)
+	t.check(results.size() == 2 and results[0].type == "sabay" and results[1].type == "sabay", "two fighters outside wind retain Sabay")
 	await t.free_match(host)
-
-func _hands(host: MatchHost) -> Array:
-	var out: Array = []
-	for o in host.objects:
-		if o is HilaHand and not o.expired:
-			out.append(o)
-	return out
+	t.ok("wind priority only breaks an otherwise simultaneous reciprocal tie")
 
 func _hila_cast(t: TestCtx) -> void:
 	var host := _live(t)
@@ -319,20 +213,16 @@ func _hila_cast(t: TestCtx) -> void:
 	var s := _hila(inday)
 	t.check(s.cd_ticks > 820 and s.cd_ticks <= 840, "HILA! cooldown (14 s = 840 ticks) starts on cast (%d)" % s.cd_ticks)
 	t.check(_hands(host).size() == 1 and _count("hila") == 1, "HILA! sends out one hand")
-	t.check(inday.can_press_tag(), "HILA! does not stop her tagging")
+	t.check(not inday.can_press_tag(), "HILA briefly plants her during casting")
 	var hand: HilaHand = _hands(host)[0]
 	t.steps(host, 10)
 	var x1 := hand.global_position.x
 	t.check(not hand.holding and x1 > -6.0 + 2.5, "the hand flies out along her aim (x %.2f)" % x1)
 	t.steps(host, 25)
-	t.check(hand.holding and _count("hila_open") == 1, "the hand opens at the end of its reach")
-	t.check(t.near(RB.flat_dist(hand.global_position, inday.global_position), 9.0 + host.tuning.body_radius, 0.4), "reach is 9 m (%.2f)" % RB.flat_dist(hand.global_position, inday.global_position))
-	t.check(t.near(s.rescue_touch_point().x, hand.global_position.x), "the open hand is HILA!'s rescue touch point")
-	t.steps(host, 100)
-	t.check(not hand.expired, "the hand stays open for its 2 s")
-	t.steps(host, 30)
-	t.check(hand.expired and _hands(host).is_empty() and s.rescue_touch_point() == Vector3.INF, "the hand closes after 2 s")
-	t.ok("HILA! hand: 9 m reach, holds 2 s, 14 s cooldown")
+	t.check(_hands(host).is_empty() and _count("hila_open") == 1, "a missed reach returns immediately at maximum range")
+	t.check(s.rescue_touch_point() == Vector3.INF, "return has no gameplay touch point")
+	t.check(_count("hila_close") == 1, "miss closes once without a two-second wait")
+	t.ok("HILA immediate miss return with normal cooldown")
 	await t.free_match(host)
 
 func _hila_pull_ally(t: TestCtx) -> void:
@@ -407,8 +297,8 @@ func _hila_wall(t: TestCtx) -> void:
 	_cast(t, host, inday, 1)
 	t.steps(host, 30)
 	var hands := _hands(host)
-	t.check(hands.size() == 1 and (hands[0] as HilaHand).holding, "a wall stops the hand, which opens there")
-	t.check(hands.size() == 1 and (hands[0] as HilaHand).global_position.x > tip.x + 3.0, "the hand stays on Inday's side of the wall")
+	t.check(hands.is_empty(), "wall contact immediately returns the missed hand")
+	t.check(_count("hila_close") == 1, "wall contact closes exactly once")
 	t.steps(host, 60)
 	t.check(d.state == Hero.State.CHAINED and _count("rescue") == 0, "no rescue through a wall")
 	# the hand closes when Inday is tagged
@@ -468,13 +358,11 @@ func _hila_animation_phases(t: TestCtx) -> void:
 	inday.velocity = Vector3.RIGHT * 2.0
 	visual._update_animation()
 	t.check(float(visual.tree.get("parameters/Loco/blend_position")) > 0.0, "Inday's legs keep moving while her hand extends")
-	t.steps(host, 28)
-	t.check(hand.holding, "the hand enters its existing open hold phase")
-	var hold := visual.hila_clip_position()
-	t.steps(host, 5)
-	t.check(t.near(hold, visual.hila_clip_position()), "only the upper-body reach holds while waiting for a teammate")
+	t.check(visual.elastic_arm != null, "HILA deforms Inday's actual weighted arm")
+	await t.physics_frames(3)
+	t.check(float(visual.elastic_arm.get_meta("target_error", INF)) < 0.05, "rendered skinned hand meets the authoritative reach target")
 	hand._close("test")
 	t.check(hand.expired and _hila(inday).rescue_touch_point() == Vector3.INF, "retraction immediately disables all gameplay touch points")
-	t.check(host.world.get_node_or_null("HilaReturn") != null and visual.hila_pose_active(), "a visual-only returning hand and body recovery replace the instant disappearance")
+	t.check(visual.hila_pose_active() and host.world.get_node_or_null("HilaReturn") == null, "the same skinned hand retracts without a detached duplicate")
 	await t.free_match(host)
-	t.ok("HILA! animation phases: moving extend, open hold, visual-only retract")
+	t.ok("HILA moving extend and same-arm recovery")

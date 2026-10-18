@@ -1,0 +1,21 @@
+01:20:24 | INFO: Data are loaded, start creating Blender stuff
+01:20:24 | INFO: Blender create Mesh node Mesh_0
+01:20:25 | INFO: glTF import finished in 1.01s
+[qc] PASS origin: Z centre = 0.009 m (want 0 for a held prop)
+[qc] WARN centred: XY centre (-0.015, 0.375) m
+[qc] WARN normals JM_CottonTowel: 53% of faces point outward (inside-out meshes score under 40%)
+[qc] PASS topology JM_CottonTowel: 0 non-manifold edges (2040 open edges, normal at UV seams)
+[qc] PASS triangles: 1058 (budget 1500)
+[qc] WARN mixamo names: 0/6 bones
+[qc] WARN clip Towel_Whip: 0.792 s, 60 channels, foot plant 0.0 m/s, loop seam 0.072 m, root motion 0.0 m
+00:35.594  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:38.890  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:42.187  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:43.937  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:46.875  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:50.906  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:54.578  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:56.469  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+[qc] sheet renders\qc\jm_towel_sheet.png  (bottom: front, side; top: top, 3/4)
+[qc] jm_towel: 0 FAIL, 4 WARN
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)

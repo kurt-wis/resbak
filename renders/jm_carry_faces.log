@@ -1,0 +1,96 @@
+02:37:53 | INFO: Data are loaded, start creating Blender stuff
+02:37:53 | INFO: Blender create Mesh node Mesh_0
+02:37:54 | INFO: glTF import finished in 0.62s
+E:\RESBAK\resbak\tools\build_face_cards.py:107: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  if mat is None or not mat.use_nodes:
+INFO Draco is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+02:37:55 | INFO: Starting glTF 2.0 export
+02:37:55 | INFO: Extracting primitive: Eye_L
+02:37:55 | INFO: Primitives created: 1
+02:37:55 | INFO: Extracting primitive: Eye_R
+02:37:55 | INFO: Primitives created: 1
+02:37:55 | INFO: Extracting primitive: Mouth
+02:37:55 | INFO: Primitives created: 1
+Traceback (most recent call last):
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\__init__.py", line 1409, in execute
+    res = gltf2_blender_export.save(context, export_settings)
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 42, in save
+    __write_file(json, buffer, export_settings)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 571, in __write_file
+    gltf2_io_export.save_gltf(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json,
+        ^^^^^
+        export_settings,
+        ^^^^^^^^^^^^^^^^
+        json_util.BlenderJSONEncoder,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        buffer)
+        ^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\io\exp\export.py", line 85, in save_gltf
+    file = open(export_settings['gltf_filepath'], "wb")
+OSError: [Errno 22] Invalid argument: 'E:\\RESBAK\\resbak\\assets\\characters\\face_cards\\jm_cards.glb'
+00:02.671  bpy.rna          | ERROR Python script error in EXPORT_SCENE_OT_gltf.execute
+Traceback (most recent call last):
+  File "E:\RESBAK\resbak\tools\build_face_cards.py", line 448, in <module>
+    main()
+    ~~~~^^
+  File "E:\RESBAK\resbak\tools\build_face_cards.py", line 443, in main
+    data[h] = build(h)
+              ~~~~~^^^
+  File "E:\RESBAK\resbak\tools\build_face_cards.py", line 427, in build
+    export_cards(hero, cards)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "E:\RESBAK\resbak\tools\build_face_cards.py", line 380, in export_cards
+    bpy.ops.export_scene.gltf(filepath=path, export_format="GLB", export_yup=True,
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                              export_materials="NONE", export_apply=False)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Error: Python: Traceback (most recent call last):
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\__init__.py", line 1409, in execute
+    res = gltf2_blender_export.save(context, export_settings)
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 42, in save
+    __write_file(json, buffer, export_settings)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 571, in __write_file
+    gltf2_io_export.save_gltf(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json,
+        ^^^^^
+        export_settings,
+        ^^^^^^^^^^^^^^^^
+        json_util.BlenderJSONEncoder,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        buffer)
+        ^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\io\exp\export.py", line 85, in save_gltf
+    file = open(export_settings['gltf_filepath'], "wb")
+OSError: [Errno 22] Invalid argument: 'E:\\RESBAK\\resbak\\assets\\characters\\face_cards\\jm_cards.glb'
+Location: E:\RESBAK\resbak\tools\build_face_cards.py:380
+
+Error: Python: Traceback (most recent call last):
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\__init__.py", line 1409, in execute
+    res = gltf2_blender_export.save(context, export_settings)
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 42, in save
+    __write_file(json, buffer, export_settings)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 571, in __write_file
+    gltf2_io_export.save_gltf(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json,
+        ^^^^^
+        export_settings,
+        ^^^^^^^^^^^^^^^^
+        json_util.BlenderJSONEncoder,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        buffer)
+        ^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\io\exp\export.py", line 85, in save_gltf
+    file = open(export_settings['gltf_filepath'], "wb")
+
+Error: script failed, file: 'tools/build_face_cards.py', exiting.
+OSError: [Errno 22] Invalid argument: 'E:\\RESBAK\\resbak\\assets\\characters\\face_card... truncatedBlender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

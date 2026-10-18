@@ -1,0 +1,141 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[INTEGRATION TEST] suite project
+  ✓ [project] project settings, autoloads, input map, tuning
+[INTEGRATION TEST] suite legacy
+  ✓ [legacy] Batang Hamog clips
+  ✓ [legacy] JM Botsog rig
+  ✓ [legacy] legacy InputMap actions
+  ✓ [legacy] VaultDetector + VFX present
+  ✓ [legacy] Harurot recovery via Walk (never Run)
+  ✓ [legacy] Lusot slide hurtbox + tag lockout
+  ✓ [legacy] Dire-Diretso stacks/resets/flag override
+  ✓ [legacy] Lusot vault direction follows facing (4 yaws)
+  ✓ [legacy] character select -> playtest spawns the picked hero
+  ✓ [legacy] scenes load
+[INTEGRATION TEST] suite hero_assets
+  ✓ [hero_assets] hero GLBs and HeroData match the spec table
+[INTEGRATION TEST] suite core_rules
+  ✓ [core_rules] countdown 3 s -> KABOOM, frozen until then
+  ✓ [core_rules] round-1 intro: 8 s frozen, skip rules, practice and later rounds without it
+  ✓ [core_rules] movement reaches run speed, stops, gamepad walk
+  ✓ [core_rules] can_tag rule table
+  ✓ [core_rules] tag hit -> 0.8 s freeze -> tagger's jail post, post barrier
+  ✓ [core_rules] narrow straight sweep, reach edge to edge, nearest wins
+  ✓ [core_rules] failed tag -> 0.5 s stumble
+  ✓ [core_rules] tap-only tagging: immediate press, fixed reach, normal speed, no held-repeat
+  ✓ [core_rules] first landing wins, later swing cancelled, locked aim can be dodged
+  ✓ [core_rules] EP blocks tags and ends on Tag press / capture start
+  ✓ [core_rules] Sabay: simultaneous hits fall, recover and retry
+  ✓ [core_rules] no own-ring barrier: defenders fight inside the ring
+  ✓ [core_rules] holding the capture for capture_hold wins the round
+  ✓ [core_rules] capture cancels on release, push and tag; progress resets
+  ✓ [core_rules] automatic chain: post holder slides the post, tip steering, drag, bounds, rescue, EP and lockout
+  ✓ [core_rules] jail line: the post holder slides the post along the line
+  ✓ [core_rules] lone prisoner rescue
+  ✓ [core_rules] same-tick rescue beats lockdown
+  ✓ [core_rules] lockdown ends the round
+  ✓ [core_rules] round timer, sunset, sudden death, draws
+  ✓ [core_rules] round reset: spawns, free, clean state
+  ✓ [core_rules] first to 3 ends the match
+[INTEGRATION TEST] suite kit_tutoy
+  ✓ [kit_tutoy] tutoy data matches spec § 4
+  ✓ [kit_tutoy] HARUROT! 8.2 m/s, 78 ticks, no turn limit, 10.66 m, 8 s cooldown
+  ✓ [kit_tutoy] HARUROT! wind trail: 18 parts, 2 s each
+  ✓ [kit_tutoy] HARUROT! can tag and be tagged
+  ✓ [kit_tutoy] HARUROT! fixed speed, slows, stun, reset
+  ✓ [kit_tutoy] LUSOT! slide 4 m / 0.4 s, along movement (aim if still), 6 s cooldown
+  ✓ [kit_tutoy] LUSOT!: no tagging during and 0.3 s after
+  ✓ [kit_tutoy] LUSOT! stops at players and walls
+  ✓ [kit_tutoy] LUSOT! vaults L_VAULTABLE props, blocked by others
+  ✓ [kit_tutoy] perfect slide: inside the 6-tick window incl. the landing tick, stun 0.6 s, passes through, else a normal slide
+  ✓ [kit_tutoy] perfect slide edge cases: out of reach, ally, two taggers
+  ✓ [kit_tutoy] DIRE-DIRETSO: 0 -> +15 % over 3 s, holds, resets on stop and on sharp turns
+  ✓ [kit_tutoy] DIRE-DIRETSO resets: enemy slow / push / stun, Tag press, capture start, stop; not terrain
+[INTEGRATION TEST] suite kit_nene
+  ✓ [kit_nene] Nene data and wiring
+  ✓ [kit_nene] SALING-PUSA silent footsteps
+[INTEGRATION TEST] suite kit_nathan
+  ✓ [kit_nathan] Nathan data and the cone test
+  ✓ [kit_nathan] BUGA! timing, slow, reveal, trail
+  ✓ [kit_nathan] BUGA! cone 5 m x 60 deg
+  ✓ [kit_nathan] BUGA! walls block per target
+  ✓ [kit_nathan] BUGA! has no capture cancel and no tag
+  ✓ [kit_nathan] BUGA! interrupts
+  ✓ [kit_nathan] UBO! UBO! range, flight time, wall landing, 5 s cloud
+  ✓ [kit_nathan] UBO! UBO! vision rules and cough
+  ✓ [kit_nathan] UBO! UBO! cough timer and cloud persistence
+  ✓ [kit_nathan] MAY TIRA PA! turn rules
+  ✓ [kit_nathan] MAY TIRA PA! patch trigger
+[INTEGRATION TEST] suite kit_jm
+  ✓ [kit_jm] JM data and spec numbers
+  ✓ [kit_jm] TALBOG jump, restrictions, landing push and enemy-only stun
+  ✓ [kit_jm] TALBOG! range cap and landing clamps
+  ✓ [kit_jm] TALBOG! tagged mid-air
+  ✓ [kit_jm] TAMARAW!!! fixed speed, duration, can't tag, cooldown
+  ✓ [kit_jm] TAMARAW!!! shoves enemies sideways once, ignores allies
+  ✓ [kit_jm] TAMARAW!!! turn rate
+  ✓ [kit_jm] TAMARAW!!! solid hit slows nearby enemies and stuns JM
+  ✓ [kit_jm] TAMARAW!!! recast and tag end the charge
+  ✓ [kit_jm] MAKAPAL! first tag breaks the guard, no jail, no stumble, 1.5 s no-tag
+  ✓ [kit_jm] MAKAPAL! rage (untaggable + spin shove), regen, next tag jails, jail keeps the timer
+  ✓ [kit_jm] MAKAPAL! doesn't protect a capturing JM, state kept in jail
+  ✓ [kit_jm] MAKAPAL! icon and round reset
+[INTEGRATION TEST] suite kit_inday
+  ✓ [kit_inday] Inday data: speed, cooldowns, kinds
+  ✓ [kit_inday] placed wind: tuning, movement, lifetime, membership and wall clamp
+  ✓ [kit_inday] wind priority only breaks an otherwise simultaneous reciprocal tie
+  ✓ [kit_inday] HILA immediate miss return with normal cooldown
+  ✓ [kit_inday] HILA moving extend and same-arm recovery
+  ✓ [kit_inday] HILA! pulls the first teammate it touches
+  ✓ [kit_inday] HILA! rescues a chain tip it touches, then pulls it in
+  ✓ [kit_inday] HILA! is stopped by walls and closes when Inday is tagged
+  ✓ [kit_inday] TAKBO NA! after a touch rescue
+  ✓ [kit_inday] another hero's rescue gives no TAKBO NA! and 4 s EP
+[INTEGRATION TEST] suite bots
+  ✓ [bots] bot attempts: seeded decision delay and post-Sabay reposition, no attack buffs
+  ✓ [bots] roles: Bantay / Resbak / Kapit / Atake-Pain alternation
+  ✓ [bots] perception: reaction delay and the visibility rule
+  ✓ [bots] an Atake bot hunts a stationary blocker and tags it in 61 ticks
+  ✓ [bots] Bantay tags an attacker within 8 m of its pole
+  ✓ [bots] retreat rule: backs off, unless its tag lands first or a skill is ready
+  ✓ [bots] Kapit: jailed bots chain up and the tip steers
+  ✓ [bots] Resbak runs to the chain tip and rescues in 317 ticks
+  ✓ [bots] Pain rule per difficulty
+  ✓ [bots] bots press skills with an aim point
+  ✓ [bots] 5v5 bots: 22 s simulated, events { "kaboom": 1, "skill_cast": 13, "sigaw": 3, "sigaw_hit": 3, "tamaraw_start": 1, "tag_windup": 23, "tamaraw_shove": 1, "tag_failed": 4, "buga_inhale": 3, "buga_blow": 3, "buga_hit": 2, "patch_drop": 2, "jm_shove": 7, "jm_rage": 2, "guard_break": 2, "tag": 8, "talbog_jump": 2, "jailed": 8, "chain_join": 8, "talbog_land": 2, "stunned": 1, "rescue": 3, "hila": 1, "hila_pull": 1, "hila_close": 1, "capture_start": 2, "capture": 1, "capture_cancel": 2, "round_end": 1 }
+[INTEGRATION TEST] suite hud
+  ✓ [hud] HUD: timer, tag feed, scoreboard, hide, pause
+  ✓ [hud] announcer: UNANG HULI!, DOBLENG/TRIPLENG, MAINIT!/HALIMAW!/DI MAPIGILAN!, PINAHINTO!, RESBAK!, NAAGAW ANG BASE!, LAHAT HULI!
+  ✓ [hud] HUD: round-1 intro overlay and camera flyover
+  ✓ [hud] private tag strip: actual reach/body sweep, eligibility, locked direction and swing feedback
+  ✓ [hud] layered actions: all rigs, filtered upper body, moving chain, backpedal and tick-aligned contact
+  ✓ [hud] touch controls: multitouch movement, tap TAG, retained aim, pause cleanup, capture
+  ✓ [hud] fair touch aim: retreat, switch, visibility/range/wall bounds, private ranges, thin outline
+  ✓ [hud] all skill previews: unique kit controls, distance selection, private intent, public JM tell and exact landing/wall parity
+[INTEGRATION TEST] suite hero_revision
+  ✓ [hero_revision] all skills enforce stationary-cast and traversal contracts
+  ✓ [hero_revision] movable preparation, planted commitment, objective-facing capture and rounded guides
+  ✓ [hero_revision] status detail interaction and enlarged action controls
+  ✓ [hero_revision] JM shoulder cloth, stepped poses and click-only missed-charge recovery
+[INTEGRATION TEST] suite konstruksyon
+  ✓ [konstruksyon] Konstruksyon layout: mirrored bases, spawns, jail lines, colliders, vaultables
+  ✓ [konstruksyon] Konstruksyon routes: bases joined, two lanes at every cut, three routes between the halves
+  ✓ [konstruksyon] occlusion fade: props between camera and hero go see-through and restore
+  ✓ [konstruksyon] sand castle: map metadata, flag, crumble, reset, court untouched
+  ✓ [konstruksyon] Konstruksyon weather, ambience/music entries, Audio music API
+  ✓ [konstruksyon] court presentation: shared shader, authored sun/fog, lighter motes, shadow/accessibility support
+  ✓ [konstruksyon] Konstruksyon bot soak: 1921 live ticks, nobody stuck
+[INTEGRATION TEST] suite frontend
+  ✓ [frontend] all 10 front-end screens build
+  ✓ [frontend] snake draft order, no duplicates within a team, lineup shape
+  ✓ [frontend] results: MVPs and badges
+  ✓ [frontend] settings persist through Save
+[INTEGRATION TEST] suite home
+  ✓ [home] Home loop schedule: 48 s, gestures/walks/jeepney all end before the wrap
+  ✓ [home] Home diorama builds, loops and hides its passers-by at the seam
+  ✓ [home] hero picker: open, browse, Piliin saves, Bumalik keeps
+[INTEGRATION TEST] suite match_flow
+  ✓ [match_flow] match scene ran 600 physics frames with bots, 27 events
+[INTEGRATION TEST] 16 suites, 2086 checks, 0 failed
+[INTEGRATION TEST] All checks passed successfully (100%)!

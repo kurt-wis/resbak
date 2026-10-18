@@ -31,6 +31,8 @@ var _look_weight := 1.0
 var _clip := ""
 var _clip_len := 1.0
 var _cycles := 0
+var _pose_remainder := 0.0
+var _pose_interval := 0.0
 
 ## Flat toon materials on every opaque surface under `root` (the project's character look), with
 ## the ink outline when `outline` is set. Transparent materials (bags, glass) are left alone.
@@ -288,6 +290,14 @@ func head_world() -> Vector3:
 	return skeleton.global_transform * skeleton.get_bone_global_pose(head_bone).origin
 
 func step(delta: float, t: float) -> void:
+	if _pose_interval <= 0.0:
+		_pose_interval = 1.0 / maxf(1.0, Tuning.get_default().character_pose_fps)
+	_pose_remainder += delta
+	var samples := floori((_pose_remainder + 0.0000001) / _pose_interval)
+	if samples == 0:
+		return
+	delta = samples * _pose_interval
+	_pose_remainder = maxf(0.0, _pose_remainder - delta)
 	if tree:
 		tree.advance(delta)
 	if look:

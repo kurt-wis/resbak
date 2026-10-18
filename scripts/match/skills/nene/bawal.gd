@@ -11,6 +11,7 @@ extends Skill
 
 var _left := 0
 var sign_label: Label3D
+var sign_board: MeshInstance3D
 
 func kind() -> int:
 	return RB.SkillKind.NEITHER
@@ -40,6 +41,8 @@ func absorb_tag(tagger: Hero) -> bool:
 	tagger.hallucinate(v("bawal_hallucinate_time"))
 	host.emit_event("bawal_curse", {"hero": hero, "tagger": tagger, "seconds": float(v("bawal_hallucinate_time"))})
 	end("absorbed")
+	Vfx.sound_shell(host.world, hero.global_position + Vector3.UP, hero.facing, Color("ff467d"), 1.3)
+	Vfx.burst(host.world, tagger.global_position + Vector3.UP, Color("dc99ff"), 22, 2.2, 0.45, 0.1, 0.0)
 	return true
 
 func end(_reason: String) -> void:
@@ -55,22 +58,9 @@ func on_owner_event(event: String, _data: Variant) -> void:
 	if _left > 0 and event in ["tag_pressed", "capture_start"]:
 		end(event)
 
-func _show_sign(on: bool) -> void:
-	if on and sign_label == null:
-		sign_label = Label3D.new()
-		sign_label.name = "BawalSign"
-		sign_label.text = "BAWAL!"
-		sign_label.font_size = 96
-		sign_label.pixel_size = 0.005
-		sign_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-		sign_label.modulate = Color("ff3b5c")
-		sign_label.outline_modulate = Color("1a0610")
-		sign_label.outline_size = 20
-		sign_label.no_depth_test = true
-		sign_label.position = Vector3(0, hero.data.model_height + 0.75, 0)
-		hero.add_child(sign_label)
-	if sign_label:
-		sign_label.visible = on
+func _show_sign(_on: bool) -> void:
+	# HeroVisual reads warded() and applies a red glow to the skinned body.
+	pass
 
 func hud_note() -> String:
 	return "%.1f s" % RB.seconds(_left) if _left > 0 else ""

@@ -1,0 +1,31 @@
+23:31:33 | INFO: Data are loaded, start creating Blender stuff
+23:31:33 | INFO: Blender create Mesh node Mesh_0
+23:31:35 | INFO: glTF import finished in 1.32s
+[qc] FAIL ground: lowest point Z = 0.015 m (want 0)
+[qc] WARN centred: XY centre (-0.202, -0.272) m
+[qc] PASS normals Mesh_0: 63% of faces point outward (inside-out meshes score under 40%)
+[qc] PASS topology Mesh_0: 0 non-manifold edges (5723 open edges, normal at UV seams)
+[qc] PASS triangles: 10237 (budget 15000)
+[qc] WARN mixamo names: 65/66 bones
+[qc] PASS facing: toes -Y of ankles (want -Y = Godot +Z front)
+[qc] PASS clip BreakDance: 3.0 s, 660 channels, foot plant 0.33 m/s, loop seam 0.001 m, root motion 0.001 m
+[qc] WARN clip Buga: 1.208 s, 660 channels, foot plant 0.09 m/s, loop seam 0.204 m, root motion 0.113 m
+[qc] PASS clip Capture: 2.667 s, 660 channels, foot plant 0.28 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Chained: 3.292 s, 660 channels, foot plant 0.01 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Idle: 3.292 s, 660 channels, foot plant 0.01 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Jailed: 5.042 s, 660 channels, foot plant 0.04 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Menu_Answer: 9.667 s, 660 channels, foot plant 0.01 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Menu_Clap: 3.333 s, 660 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Menu_SitIdle: 1.5 s, 660 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Menu_ThumbsUp: 3.833 s, 660 channels, foot plant 0.03 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Running: 0.625 s, 660 channels, foot plant 3.22 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] WARN clip Stumble: 0.75 s, 660 channels, foot plant 0.9 m/s, loop seam 0.411 m, root motion 0.056 m
+[qc] PASS clip Stunned: 1.083 s, 660 channels, foot plant 0.09 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] WARN clip Tag: 0.667 s, 660 channels, foot plant 0.53 m/s, loop seam 0.732 m, root motion 0.013 m
+[qc] PASS clip TagCharge: 1.958 s, 660 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] WARN clip Tagged: 0.917 s, 660 channels, foot plant 0.07 m/s, loop seam 0.759 m, root motion 0.096 m
+[qc] WARN clip Ubo: 0.833 s, 660 channels, foot plant 0.47 m/s, loop seam 0.906 m, root motion 0.22 m
+[qc] PASS clip Victory: 1.375 s, 660 channels, foot plant 0.19 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Walking: 1.0 s, 660 channels, foot plant 1.25 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] nathan: 1 FAIL, 7 WARN
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)

@@ -1,0 +1,63 @@
+{
+ "file": "assets\\props\\jm_towel.glb",
+ "real_height_m": 0.047,
+ "game_scale": 1.0,
+ "dims_m": [
+  0.208,
+  0.75,
+  0.047
+ ],
+ "triangles": 1058,
+ "clips": [
+  {
+   "clip": "Towel_Whip",
+   "frames": [
+    0,
+    19
+   ],
+   "seconds": 0.792,
+   "tracks": 60,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 0.072,
+   "hips_root_motion_m": 0.0
+  }
+ ],
+ "sheet": "renders\\qc\\jm_towel_sheet.png",
+ "checks": [
+  {
+   "check": "origin",
+   "status": "PASS",
+   "detail": "Z centre = 0.009 m (want 0 for a held prop)"
+  },
+  {
+   "check": "centred",
+   "status": "WARN",
+   "detail": "XY centre (-0.015, 0.375) m"
+  },
+  {
+   "check": "normals JM_CottonTowel",
+   "status": "WARN",
+   "detail": "53% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology JM_CottonTowel",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (2040 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "1058 (budget 1500)"
+  },
+  {
+   "check": "mixamo names",
+   "status": "WARN",
+   "detail": "0/6 bones"
+  },
+  {
+   "check": "clip Towel_Whip",
+   "status": "WARN",
+   "detail": "0.792 s, 60 channels, foot plant 0.0 m/s, loop seam 0.072 m, root motion 0.0 m"
+  }
+ ]
+}

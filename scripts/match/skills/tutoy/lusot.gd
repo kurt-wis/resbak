@@ -30,6 +30,9 @@ func _ready() -> void:
 func kind() -> int:
 	return RB.SkillKind.MOVEMENT
 
+func is_traversal() -> bool:
+	return true
+
 func _can_cast_extra() -> bool:
 	return hero.is_on_floor()
 
@@ -168,8 +171,6 @@ func _on_host_event(kind_name: String, d: Dictionary) -> void:
 	if kind_name != "perfect_slide" or d.evader != hero:
 		return
 	var pos := hero.global_position
-	Vfx.popup_text(host.world, pos, "LUSOT!", GOLD, 120)
-	Vfx.popup_text(host.world, d.tagger.global_position, "PERFECT!", GOLD, 120)
 	Vfx.ring_pulse(host.world, pos, 3.0, GOLD, 0.5)
 	Vfx.burst(host.world, pos + Vector3(0, 0.9, 0), GOLD, 44, 5.5, 0.6, 0.18, -2.0)
 	var flash := OmniLight3D.new()

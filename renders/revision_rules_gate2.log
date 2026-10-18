@@ -1,0 +1,59 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[INTEGRATION TEST] suite kit_nene
+  ✓ [kit_nene] Nene data and wiring
+  ✓ [kit_nene] SALING-PUSA silent footsteps
+[INTEGRATION TEST] suite kit_nathan
+  ✓ [kit_nathan] Nathan data and the cone test
+  ✓ [kit_nathan] BUGA! timing, slow, reveal, trail
+  ✓ [kit_nathan] BUGA! cone 5 m x 60 deg
+  ✓ [kit_nathan] BUGA! walls block per target
+  ✓ [kit_nathan] BUGA! has no capture cancel and no tag
+  ✓ [kit_nathan] BUGA! interrupts
+  ✓ [kit_nathan] UBO! UBO! range, flight time, wall landing, 5 s cloud
+  ✓ [kit_nathan] UBO! UBO! vision rules and cough
+  ✓ [kit_nathan] UBO! UBO! cough timer and cloud persistence
+  ✗ [kit_nathan] a new patch replaces the old one
+  ✗ [kit_nathan] hud: armed right after a skill
+  ✓ [kit_nathan] MAY TIRA PA! turn rules
+  ✓ [kit_nathan] MAY TIRA PA! patch trigger
+[INTEGRATION TEST] suite kit_jm
+  ✓ [kit_jm] JM data and spec numbers
+  ✓ [kit_jm] TALBOG jump, restrictions, landing push and enemy-only stun
+  ✓ [kit_jm] TALBOG! range cap and landing clamps
+  ✓ [kit_jm] TALBOG! tagged mid-air
+  ✓ [kit_jm] TAMARAW!!! fixed speed, duration, can't tag, cooldown
+  ✓ [kit_jm] TAMARAW!!! shoves enemies sideways once, ignores allies
+  ✓ [kit_jm] TAMARAW!!! turn rate
+  ✓ [kit_jm] TAMARAW!!! solid hit slows nearby enemies and stuns JM
+  ✓ [kit_jm] TAMARAW!!! recast and tag end the charge
+  ✓ [kit_jm] MAKAPAL! first tag breaks the guard, no jail, no stumble, 1.5 s no-tag
+  ✓ [kit_jm] MAKAPAL! rage (untaggable + spin shove), regen, next tag jails, jail keeps the timer
+  ✓ [kit_jm] MAKAPAL! doesn't protect a capturing JM, state kept in jail
+  ✓ [kit_jm] MAKAPAL! icon and round reset
+[INTEGRATION TEST] suite kit_inday
+  ✓ [kit_inday] Inday data: speed, cooldowns, kinds
+  ✓ [kit_inday] placed wind: tuning, movement, lifetime, membership and wall clamp
+  ✓ [kit_inday] wind priority only breaks an otherwise simultaneous reciprocal tie
+  ✓ [kit_inday] HILA immediate miss return with normal cooldown
+  ✓ [kit_inday] HILA moving extend and same-arm recovery
+  ✓ [kit_inday] HILA! pulls the first teammate it touches
+  ✓ [kit_inday] HILA! rescues a chain tip it touches, then pulls it in
+  ✓ [kit_inday] HILA! is stopped by walls and closes when Inday is tagged
+  ✓ [kit_inday] TAKBO NA! after a touch rescue
+  ✓ [kit_inday] another hero's rescue gives no TAKBO NA! and 4 s EP
+[INTEGRATION TEST] suite hud
+  ✓ [hud] HUD: timer, tag feed, scoreboard, hide, pause
+  ✓ [hud] announcer: UNANG HULI!, DOBLENG/TRIPLENG, MAINIT!/HALIMAW!/DI MAPIGILAN!, PINAHINTO!, RESBAK!, NAAGAW ANG BASE!, LAHAT HULI!
+  ✓ [hud] HUD: round-1 intro overlay and camera flyover
+  ✓ [hud] private tag strip: actual reach/body sweep, eligibility, locked direction and swing feedback
+  ✗ [hud] jm has a skeleton-specific upper-body filter and leg steering
+  ✓ [hud] layered actions: all rigs, filtered upper body, moving chain, backpedal and tick-aligned contact
+  ✓ [hud] touch controls: multitouch movement, tap TAG, retained aim, pause cleanup, capture
+  ✓ [hud] fair touch aim: retreat, switch, visibility/range/wall bounds, private ranges, thin outline
+  ✓ [hud] all skill previews: unique kit controls, distance selection, private intent, public JM tell and exact landing/wall parity
+[INTEGRATION TEST] 5 suites, 928 checks, 3 failed
+  FAILED [kit_nathan] a new patch replaces the old one
+  FAILED [kit_nathan] hud: armed right after a skill
+  FAILED [hud] jm has a skeleton-specific upper-body filter and leg steering
+[INTEGRATION TEST] FAILED

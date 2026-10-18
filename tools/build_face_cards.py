@@ -188,7 +188,7 @@ def sample_skin(skin, cx, cz, ra, rb, lower_only=False):
     return np.median(np.array(pts), axis=0)
 
 
-def project_grid(skin, cx, cz, w, h, tilt_deg, nu, nv):
+def project_grid(skin, cx, cz, w, h, tilt_deg, nu, nv, lift=SURFACE_LIFT):
     """A (nu+1) x (nv+1) grid of w x h metres centred on (cx, cz), rotated tilt_deg in the face
     plane, laid onto the surface. Returns positions, normals, uvs and quad faces."""
     t = math.radians(tilt_deg)
@@ -208,7 +208,7 @@ def project_grid(skin, cx, cz, w, h, tilt_deg, nu, nv):
             if hit is None:
                 raise RuntimeError(f"ray missed the head at {x:.3f},{z:.3f}")
             p, n, _ = hit
-            pos.append(p + n * SURFACE_LIFT)
+            pos.append(p + n * lift)
             nrm.append(n)
             uvs.append((u, v))
     faces = []
@@ -393,7 +393,10 @@ def build(hero):
     W = mw * MOUTH_CARD_W
     H = W * MOUTH_ASPECT
     tint_m = sample_skin(skin, cx, cz, W * 0.47 * 1.15, H * 0.5 * 1.1)
-    cards["Mouth"] = project_grid(skin, cx, cz, W, H, 0.0, *GRID_MOUTH)
+    # Transparent feather margins overlap on the replacement JM's round cheeks.
+    # Separate the mouth layer so their geometry cannot fight at oblique angles.
+    mouth_lift = SURFACE_LIFT + (.003 if hero == 'jm' else 0)
+    cards["Mouth"] = project_grid(skin, cx, cz, W, H, 0.0, *GRID_MOUTH, lift=mouth_lift)
     info["cards"]["Mouth"] = {"centre": [cx, cz], "size": [W, H], "tint": [float(x) for x in tint_m]}
     mouth_atlas = atlas([mouth_frame(i, tint_m) for i in range(6)], 3)
     # --- eyes (viewer's left first = the hero's right eye)

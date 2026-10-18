@@ -1,5 +1,12 @@
 # Decision log
 
+## 2026-10-18 — Five-hero animation and skill presentation redesign
+User approved one continuous implementation with review/playtest at the end. TALBOG replaces the wall with the existing landing push plus a 2 s enemy stun. TAMARAW keeps its sideways shove and crash penalty, adding a 30% contact slow for 0.5 s, once per target per charge. The supplied Meshy Tamaraw becomes a 4,800-triangle animated golden projection around JM, rather than a separate animal. JM's towel tag preserves the normal hit rules and host timing.
+
+Nathan's own cloud grants vision of its interior only while he is inside; other inside viewers lose sight of heroes, and outside viewers cannot see inside. Walls and hostile overlapping clouds still block his advantage. The initial UBO burst blinds enemies for 2 s, without refreshing on entry/re-entry; BUGA keeps its existing slow/tracking mechanics. These are explicit departures from the frozen spec, as are proportional analog movement and HILA's immediate return on a miss. The design spec is unchanged.
+
+Inday uses her actual skinned arm with authored Blender anticipation/recovery and a runtime target-driven stretch. Keep one endpoint tick for the host's rescue resolution, preventing a maximum-range rescue from being lost when misses return. Nene uses comic shout/ward motifs, Tutoy wind/friction strokes, and all heroes share status feedback that obeys visibility.
+
 Short, dated, newest first. Add an entry when you make a choice that a future reader
 would otherwise reverse by accident.
 
@@ -129,3 +136,18 @@ User requested dedicated character controls with visible landing/wall placement.
 
 ## 2026-10-18 — Cancel with a separate release target
 User reported rushed long aim drags could accidentally cancel. Remove radial cancellation for TAG and skills: clamp aim distance, keep direction, and cancel only when released inside the explicit × target. Moving across the target does not latch cancellation; leaving restores aim. Check the release location itself to tolerate coalesced pointer events. Preserve system-cancel/focus/pause cleanup. Dark control backplates and colored rims improve contrast against both maps without increasing the control footprint.
+
+## 2026-10-18 — Share atmosphere systems, retain court identity
+User requested construction-site shaders, lighting and ambience on the basketball court with suitable adaptation. Use the same illustrated screen shader, authored directional sun/environment model and CPU dust system. Put court tuning in its authored Environment/light and Gameplay/presentation metadata; do not replace painted basketball surfaces with sand/water shaders or play harbor machinery in the barangay. Cooler fill, softer amber light and lighter airborne particles keep the court's markings readable. Retain the existing dynamic focus and reduce-motion behavior.
+
+## 2026-10-18 — Summer wear through map-local materials
+After the grilling session, user approved clean bright summer light, coordinated individual object colors, subtle breeze, and authentic worn barangay surfaces without a style change. Keep existing textures and illustrated shaders, adding restrained procedural wear at plausible surface scales rather than replacing them with photographs or applying a yellow LUT. Localize material/MultiMesh references before setting court-only uniforms; preserve shared props on Konstruksyon. Filter fine noise at distance, preserve white gameplay markings, and disable decorative motion with Reduce motion.
+## 2026-10-19 — cast recovery, prepared Hampas and fixed wind
+
+The user confirmed fixed wind tuning (12 × 4.5 m, 5 s, +40% teammate speed, 25% owner/enemy slow, 24 s cooldown) and disadvantage only for reciprocal same-tick tag ties. Existing Unahan timing and equal-disadvantage Sabay remain. This is an explicit deviation from the immutable design spec and is tracked in status.md.
+
+Use host timers for cast/recovery plants, InputFrame state for held preparation, and upper-skeleton filters for moving preparation/coughing. Visual animation requests alone cannot enforce movement rules. Smoke appearance fades without delaying authoritative concealment. Keep supplied JM/towel/KimKim geometry and textures; normalize naming, skin weights and exports inside Blender. Stage exports away from the active Godot importer before replacing runtime assets.
+
+## 2026-10-19 — JM shoulder towel and stepped character cadence
+
+The user approved 24 character poses per second while retaining responsive 60 Hz gameplay and smooth camera/UI. Use accumulated manual AnimationTree advancement, including Home heroes, instead of capping game FPS. Cloth retains smooth secondary response. JM's newly supplied shoulder rig replaces the simplified generic-joint adaptation while retaining his identity and existing full clip contract. The new towel source contributes its material to clean cloth topology. No-contact Tamaraw expiry/manual cancellation uses the existing half-second recovery for a dizzy animation; it adds no stun, protection, or punishment to successful contacts. Tamaraw is click-on-press with click-to-stop. These approved changes are documented as spec deviations in status; the spec itself is unchanged.

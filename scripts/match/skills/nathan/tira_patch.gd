@@ -55,7 +55,6 @@ func _trigger(e: Hero) -> void:
 	e.reveal_to(team, reveal_secs)
 	Vfx.burst(host.world, global_position + Vector3(0, 0.3, 0), PowderFx.PINK, 40, 3.5, 0.7, 0.6, 0.5, 70.0)
 	Vfx.burst(host.world, global_position + Vector3(0, 0.3, 0), PowderFx.WHITE, 20, 2.5, 0.6, 0.4, 0.3, 90.0)
-	Vfx.popup_text(host.world, e.global_position, "PUFF!", PowderFx.PINK, 100, 0.8)
 	host.emit_event("loud_footstep", {"hero": e, "owner": owner_hero, "pos": global_position, "silent": e.footsteps_silent()})
 	host.emit_event("patch_trigger", {"hero": e, "owner": owner_hero, "pos": global_position})
 	expire()

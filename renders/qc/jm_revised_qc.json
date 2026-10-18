@@ -1,0 +1,45 @@
+{
+ "file": "source_art\\heroes\\jm_revised.glb",
+ "real_height_m": 1.7,
+ "game_scale": 1.0,
+ "dims_m": [
+  1.438,
+  0.552,
+  1.7
+ ],
+ "triangles": 10379,
+ "clips": [],
+ "sheet": "renders\\qc\\jm_revised_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (-0.000, -0.000) m"
+  },
+  {
+   "check": "normals Mesh_0",
+   "status": "PASS",
+   "detail": "69% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology Mesh_0",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (4447 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "10379 (budget 12000)"
+  },
+  {
+   "check": "mixamo names",
+   "status": "WARN",
+   "detail": "0/23 bones"
+  }
+ ]
+}

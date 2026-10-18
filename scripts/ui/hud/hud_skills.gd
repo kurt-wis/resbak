@@ -16,7 +16,10 @@ const GAP := 16.0
 var mode := "skills"
 var greyed := false
 var passive_state := {"fill": 0.0, "on": false, "note": ""}
-var chips: Array = [] ## [text, color]
+var chips: Array = [] ## [detail text, color]
+var _detail := ""
+var _hit_regions: Array[Dictionary] = []
+var _pointer_down := false
 
 func _top() -> float:
 	return sz().y - 28.0 - BOX_H
@@ -51,9 +54,6 @@ func _chips(me: Hero) -> Array:
 	var out: Array = []
 	if not me.is_free() or not hud.host.round_live():
 		return out
-	var input := hud.input_source as PlayerInput
-	if input and input.tag_aiming and not input.touch_active:
-		out.append(["BITAW: TAG | %s: KANSELA" % ("B" if input.last_device_gamepad else "RMB"), HudStyle.GOLD])
 	if me.has_ep():
 		out.append(["PROTEKTADO %ds" % ceili(RB.seconds(me.ep_ticks)), Color("7fd0ff")])
 	if me.is_immune():
@@ -66,6 +66,8 @@ func _chips(me: Hero) -> Array:
 		out.append(["NADAPA", HudStyle.ORANGE])
 	if me.tag_block_ticks > 0:
 		out.append(["DI MAKATAYA %ds" % ceili(RB.seconds(me.tag_block_ticks)), HudStyle.GREY])
+	if me.cast_lock_ticks > 0:
+		out.append(["RECOVERING %.1f s: planted briefly; opponents can still tag you." % RB.seconds(me.cast_lock_ticks), HudStyle.DIM])
 	var slow := me.strongest_slow()
 	if slow > 0.01:
 		out.append(["BAGAL -%d%%" % roundi(slow * 100.0), HudStyle.ORANGE])
@@ -75,6 +77,16 @@ func _chips(me: Hero) -> Array:
 	if me.capturing:
 		var prog := float(me.capture_ticks) / RB.ticks(hud.host.tuning.capture_hold)
 		out.append(["INAAGAW %d%%" % roundi(prog * 100.0), HudStyle.GOLD])
+	if me.blind_ticks > 0:
+		out.append(["BLINDED %.1f s: powdered sugar blocks your vision." % RB.seconds(me.blind_ticks), Color.WHITE])
+	if me.hallucinate_ticks > 0:
+		out.append(["DIZZY: movement directions are reversed.", HudStyle.RED])
+	if hud.host.tag_system.wind_disadvantaged(me):
+		out.append(["WIND: slowed 25%; an unaffected opponent wins a simultaneous reciprocal tag.", Color("a5e6ff")])
+	for object in hud.host.objects:
+		if object is UboCloud and object.contains(me.global_position):
+			out.append(["IN POWDER: you can see enemies inside your own smoke." if object.owner_hero == me else "IN POWDER: this smoke blocks hero vision.", Color.WHITE])
+			break
 	return out
 
 func _draw() -> void:
@@ -96,21 +108,77 @@ func _draw() -> void:
 	_draw_chips()
 
 func _draw_chips() -> void:
-	if chips.is_empty() or mode == "chain":
+	_hit_regions.clear()
+	if mode == "chain":
 		return
-	var y := _top() - (72.0 if mode == "locked" else 46.0)
-	var widths: Array = []
-	var total := 0.0
-	for c in chips:
-		var w: float = HudStyle.text_width(c[0], 22) + 28.0
-		widths.append(w)
-		total += w + 10.0
+	var total := chips.size() * 62.0
 	var x := sz().x * 0.5 - total * 0.5
 	for i in range(chips.size()):
-		var r := Rect2(x, y, widths[i], 36)
-		HudStyle.panel(self, r, Color(chips[i][1], 0.9), Color(0.05, 0.06, 0.09, 0.85), 18, 2)
-		HudStyle.text_in(self, chips[i][0], r, 22, chips[i][1], 6)
-		x += widths[i] + 10.0
+		var r := Rect2(x, _top() - 70.0, 52, 52)
+		HudStyle.panel(self, r, chips[i][1], Color(0.05, 0.06, 0.09, 0.9), 18, 2)
+		SkillAim.draw_icon(self, _status_icon(chips[i][0]), r.get_center(), 15.0, chips[i][1])
+		_hit_regions.append({"rect": r, "detail": chips[i][0]})
+		x += 62.0
+	_hit_regions.append({"rect": Rect2(sz().x * 0.5 - 36, _top() + 26, 72, 72), "detail": hud.local.data.passive_name + " - " + hud.local.data.passive_text})
+	if _detail != "":
+		var r := Rect2(sz().x * 0.5 - 300.0, _top() - 232.0, 600, 145)
+		HudStyle.panel(self, r, Color(1, 1, 1, 0.35), Color(0.04, 0.05, 0.08, 0.96), 22, 2)
+		var label := _detail_label()
+		label.position = r.position + Vector2(18, 12)
+		label.size = r.size - Vector2(36, 24)
+		label.text = _detail
+		label.visible = true
+	elif has_node("EffectDetail"):
+		get_node("EffectDetail").visible = false
+
+func _detail_label() -> Label:
+	var label := get_node_or_null("EffectDetail") as Label
+	if label == null:
+		label = HudStyle.label(self, 22)
+		label.name = "EffectDetail"
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	return label
+
+func _status_icon(detail: String) -> String:
+	if detail.begins_with("BILIS"):
+		return "sprint"
+	if detail.begins_with("BAGAL") or detail.begins_with("WIND"):
+		return "wind"
+	if detail.begins_with("HILO") or detail.begins_with("DIZZY") or detail.begins_with("NADAPA"):
+		return "impact"
+	if detail.begins_with("BLINDED"):
+		return "cloud"
+	return "shield"
+
+func contains_status(at: Vector2) -> bool:
+	for region in _hit_regions:
+		if region.rect.has_point(at):
+			return true
+	return false
+
+func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree() or hud == null or hud.input_source == null:
+		return
+	if not (event is InputEventMouseButton or event is InputEventScreenTouch):
+		return
+	if event is InputEventMouseButton and event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	var at: Vector2 = get_global_transform_with_canvas().affine_inverse() * event.position
+	if event.pressed:
+		for region in _hit_regions:
+			if region.rect.has_point(at):
+				_detail = "" if _detail == region.detail else region.detail
+				_pointer_down = true
+				hud.input_source.ui_pointer_captured = true
+				get_viewport().set_input_as_handled()
+				queue_redraw()
+				return
+		_detail = ""
+	elif _pointer_down:
+		_pointer_down = false
+		hud.input_source.ui_pointer_captured = false
+		get_viewport().set_input_as_handled()
+	queue_redraw()
 
 func _key_badge(p: Vector2, key: String, accent: Color) -> void:
 	var w := maxf(42.0, HudStyle.text_width(key, 26) + 18.0)
@@ -136,9 +204,10 @@ func _draw_skill(s: Skill, r: Rect2, key: String, locked: bool) -> void:
 		fill = Color(0.1, 0.09, 0.05, 0.9)
 	HudStyle.panel(self, r, accent, fill, 16, 3 if ready else 2)
 	_key_badge(r.position + Vector2(10, 10), key, accent)
-	HudStyle.text(self, kind_text(s), Vector2(r.position.x, r.position.y + 34), 18, Color(accent, 0.9), HORIZONTAL_ALIGNMENT_RIGHT, r.size.x - 12, 0)
+	HudStyle.text(self, "", Vector2(r.position.x, r.position.y + 34), 18, Color(accent, 0.9), HORIZONTAL_ALIGNMENT_RIGHT, r.size.x - 12, 0)
 	var name_col := Color.WHITE if not (greyed or locked) else Color(0.62, 0.62, 0.68)
-	HudStyle.text(self, s.skill_name(), Vector2(r.position.x, r.end.y - 16.0), 28, name_col, HORIZONTAL_ALIGNMENT_CENTER, r.size.x)
+	HudStyle.text(self, "", Vector2(r.position.x, r.end.y - 16.0), 28, name_col, HORIZONTAL_ALIGNMENT_CENTER, r.size.x)
+	SkillAim.draw_icon(self, str(SkillAim.profile(s).icon), r.get_center(), 28.0, accent)
 	var inner := Rect2(r.position + Vector2(3, 3), r.size - Vector2(6, 6))
 	if locked:
 		draw_rect(inner, Color(0.1, 0.1, 0.12, 0.5))
@@ -150,27 +219,22 @@ func _draw_skill(s: Skill, r: Rect2, key: String, locked: bool) -> void:
 		HudStyle.text(self, str(secs), Vector2(r.position.x, r.position.y + 78.0), 50, Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER, r.size.x, 10)
 	elif s.active:
 		var note := s.hud_note()
-		HudStyle.text(self, note if note != "" else "AKTIBO", Vector2(r.position.x, r.position.y + 74.0), 30, HudStyle.GOLD, HORIZONTAL_ALIGNMENT_CENTER, r.size.x)
+		HudStyle.text(self, "", Vector2(r.position.x, r.position.y + 74.0), 30, HudStyle.GOLD, HORIZONTAL_ALIGNMENT_CENTER, r.size.x)
 	elif ready:
 		var pulse := 0.6 + 0.4 * sin(Time.get_ticks_msec() / 260.0)
-		HudStyle.text(self, "HANDA", Vector2(r.position.x, r.position.y + 72.0), 24, Color(HudStyle.GOLD, pulse), HORIZONTAL_ALIGNMENT_CENTER, r.size.x, 0)
+		HudStyle.text(self, "", Vector2(r.position.x, r.position.y + 72.0), 24, Color(HudStyle.GOLD, pulse), HORIZONTAL_ALIGNMENT_CENTER, r.size.x, 0)
 	if greyed:
 		draw_rect(inner, Color(0.1, 0.1, 0.12, 0.45))
 
 func _draw_passive(me: Hero) -> void:
 	var r := passive_rect()
+	r.position = Vector2(sz().x * 0.5 - 36, _top() + 26)
+	r.size = Vector2(72, 72)
 	var on: bool = passive_state.get("on", false)
-	var fill: float = clampf(float(passive_state.get("fill", 0.0)), 0.0, 1.0)
-	var note: String = str(passive_state.get("note", ""))
-	HudStyle.panel(self, r, HudStyle.GOLD if on else Color(1, 1, 1, 0.3), Color(0.06, 0.07, 0.1, 0.86), 16, 2)
-	HudStyle.text(self, "PASIBO", r.position + Vector2(14, 32), 20, HudStyle.DIM, HORIZONTAL_ALIGNMENT_LEFT, -1, 0)
-	if note != "":
-		HudStyle.text(self, note, Vector2(r.position.x, r.position.y + 32.0), 22, HudStyle.GOLD if note != "GALIT!" else HudStyle.RED, HORIZONTAL_ALIGNMENT_RIGHT, r.size.x - 14, 0)
-	var bar := Rect2(r.position + Vector2(14, 48), Vector2(r.size.x - 28.0, 16))
-	HudStyle.panel(self, bar, Color(1, 1, 1, 0.35), HudStyle.INK, 8, 1)
-	if fill > 0.0:
-		HudStyle.panel(self, Rect2(bar.position, Vector2(maxf(bar.size.x * fill, 16.0), bar.size.y)), Color(0, 0, 0, 0), me.data.color.lightened(0.2) if not on else HudStyle.GOLD, 8, 0)
-	HudStyle.text(self, me.passive.passive_name() if me.passive else "", Vector2(r.position.x, r.end.y - 16.0), 26, Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER, r.size.x)
+	HudStyle.panel(self, r, HudStyle.GOLD if on else Color(1, 1, 1, 0.3), Color(0.06, 0.07, 0.1, 0.86), 24, 2)
+	var symbols := {"jm": "shield", "nene": "hand", "nathan": "cloud", "tutoy": "sprint", "inday": "wind"}
+	SkillAim.draw_icon(self, symbols[me.data.id], r.get_center(), 22.0, HudStyle.GOLD if on else me.data.color.lightened(0.4))
+	HudStyle.arc(self, r.get_center(), 29.0, float(passive_state.get("fill", 0.0)), 3.0, HudStyle.GOLD)
 
 func _draw_chain(me: Hero) -> void:
 	var js := hud.host.jail_system

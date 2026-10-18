@@ -83,15 +83,6 @@ func refresh() -> void:
 				Vfx.ground_ring(self, point, float(info.radius), color, width)
 		"self":
 			pass # a self buff gets an overhead cue, not a fake ground area
-	var label := Label3D.new()
-	label.text = skill.skill_name() + ("  %.1f m" % float(info.distance) if info.mode != "self" else "  SELF")
-	label.font_size = 32
-	label.pixel_size = 0.004
-	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	label.outline_size = 7
-	label.modulate = color
-	add_child(label)
-	label.global_position = point + Vector3.UP * (local.data.model_height + 0.6 if info.mode == "self" else 0.25)
 
 func _shape(mesh: MeshInstance3D, origin: Vector3, dir: Vector3) -> void:
 	add_child(mesh)

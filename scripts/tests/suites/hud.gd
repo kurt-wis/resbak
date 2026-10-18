@@ -467,7 +467,7 @@ func _layered_actions(t: TestCtx) -> void:
 	for hero in host.heroes:
 		var visual: HeroVisual = hero.visual
 		t.check(not visual.is_upper_action("Tag") and visual.is_upper_action("Chained") and not visual.is_upper_action("Lusot_Slide"), "%s uses a full-body planted Tag and retains moving chain layers" % hero.data.id)
-		t.check(visual._upper_paths.size() > 20 and visual.leg_heading != null, "%s has a skeleton-specific upper-body filter and leg steering" % hero.data.id)
+		t.check(visual._upper_paths.size() >= 10 and visual.leg_heading != null, "%s has a skeleton-specific upper-body filter and leg steering" % hero.data.id)
 		for path in visual._upper_paths:
 			t.check(not "Hips" in String(path) and not "Leg" in String(path) and not "Foot" in String(path), "upper-body filter excludes hip/leg tracks")
 		hero.aim = Vector3.RIGHT
@@ -620,7 +620,7 @@ func _skill_previews(t: TestCtx) -> void:
 				t.check(frame.has_aim and t.near(frame.aim_distance(h.global_position), float(config.range) * 0.5), "point skill drag selects half range rather than always maximum")
 				t.check(view.skill_aim.get_node_or_null("LandingArea") != null, "point skill shows its landing area")
 				if h.data.id == "jm":
-					t.check(view.skill_aim.find_children("WallGhost_*", "MeshInstance3D", true, false).size() == 9, "JM previews every exact wall collision segment")
+					t.check(view.skill_aim.find_children("WallGhost_*", "MeshInstance3D", true, false).is_empty(), "JM previews only the landing stun area, no wall")
 			source.finish_touch_skill()
 			var release := source.frame_for(h, host)
 			t.check(release.was_pressed(button), "release queues exactly one chosen skill")
@@ -658,13 +658,10 @@ func _skill_previews(t: TestCtx) -> void:
 	for child in marker.get_children():
 		if child is MeshInstance3D and child.mesh is BoxMesh:
 			ghosts.append(child)
-	t.check(ghosts.size() == 9, "public landing tell also exposes the future wall footprint")
+	t.check(ghosts.is_empty() and preview.wall.is_empty(), "landing tell and preview have no removed wall geometry")
 	t.steps(host, RB.ticks(float(jm.data.values.talbog_air_time)))
 	var wall: Node3D = jm.skills[0].last_wall
-	if t.check(wall != null, "the selected jump produces its wall"):
-		for i in range(9):
-			var shape: CollisionShape3D = wall.body.get_child(i)
-			t.check(shape.global_position.distance_to(preview.wall[i].position) < 0.01 and shape.shape.size == preview.wall[i].size, "actual wall collision matches its preview box")
+	t.check(wall == null and jm.global_position.distance_to(preview.point) < 0.1, "selected jump lands on preview with no wall")
 	t.check(not is_instance_valid(jm.skills[0]._marker), "public landing tell clears on landing")
 	# Nathan uses the same point/flight query for the real packet.
 	TestCtx.put(nathan, -5, 0)

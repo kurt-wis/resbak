@@ -210,7 +210,7 @@ func frame_for(hero: Hero, host: MatchHost) -> InputFrame:
 		if p != Vector3.INF:
 			f.aim_point = p
 			f.has_aim = true
-	if Input.is_action_just_pressed("tag") and hero.can_press_tag():
+	if Input.is_action_just_pressed("tag") and hero.can_press_tag() and not ui_pointer_captured:
 		begin_tag_aim()
 	if tag_aiming and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 		finish_tag_aim(true)
@@ -243,6 +243,7 @@ func _complete_tag_release(f: InputFrame, hero: Hero) -> void:
 		_tag_release_pending = false
 		_manual_tag_aim = Vector2.ZERO
 		_manual_selection = false
+	f.tag_preparing = tag_aiming and not tag_aim_cancelled
 	if _tag_release_pending:
 		f.pressed |= RB.BTN_TAG
 		_tag_release_pending = false

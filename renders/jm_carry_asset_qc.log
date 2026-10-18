@@ -1,0 +1,44 @@
+02:40:41 | INFO: Data are loaded, start creating Blender stuff
+02:40:41 | INFO: Blender create Mesh node Mesh_0
+02:40:42 | INFO: glTF import finished in 0.92s
+[qc] FAIL ground: lowest point Z = 0.011 m (want 0)
+[qc] WARN centred: XY centre (0.001, 0.286) m
+[qc] PASS normals Mesh_0: 70% of faces point outward (inside-out meshes score under 40%)
+[qc] PASS topology Mesh_0: 0 non-manifold edges (4560 open edges, normal at UV seams)
+[qc] PASS triangles: 12178 (budget 15000)
+[qc] PASS mixamo names: 28/28 bones
+[qc] PASS facing: toes -Y of ankles (want -Y = Godot +Z front)
+[qc] PASS clip BreakDance: 6.708 s, 280 channels, foot plant 0.24 m/s, loop seam 0.001 m, root motion 0.001 m
+[qc] PASS clip Capture: 2.667 s, 280 channels, foot plant 0.27 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Chained: 1.833 s, 280 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Cough: 0.708 s, 280 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] WARN clip GuardBreak: 1.0 s, 280 channels, foot plant 0.15 m/s, loop seam 0.63 m, root motion 0.071 m
+[qc] PASS clip Idle: 1.833 s, 280 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Jailed: 5.042 s, 280 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Menu_Clap: 3.333 s, 280 channels, foot plant 0.01 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Menu_LeanBackLaugh: 4.792 s, 280 channels, foot plant 0.04 m/s, loop seam 0.005 m, root motion 0.0 m
+[qc] PASS clip Menu_SitDrink: 11.167 s, 280 channels, foot plant 0.0 m/s, loop seam 0.003 m, root motion 0.0 m
+[qc] PASS clip Menu_SitIdle: 1.5 s, 280 channels, foot plant 0.02 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Running: 0.667 s, 280 channels, foot plant 4.3 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] WARN clip Stumble: 0.75 s, 280 channels, foot plant 0.6 m/s, loop seam 0.513 m, root motion 0.055 m
+[qc] PASS clip Stunned: 1.083 s, 280 channels, foot plant 0.09 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] WARN clip Tag: 0.542 s, 280 channels, foot plant 0.0 m/s, loop seam 1.083 m, root motion 0.0 m
+[qc] PASS clip TagCharge: 1.0 s, 280 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] WARN clip Tagged: 0.917 s, 280 channels, foot plant 0.08 m/s, loop seam 1.211 m, root motion 0.095 m
+[qc] WARN clip Talbog_Jump: 0.917 s, 280 channels, foot plant 0.1 m/s, loop seam 1.028 m, root motion 0.207 m
+[qc] WARN clip Talbog_Slam: 1.375 s, 280 channels, foot plant 0.09 m/s, loop seam 1.341 m, root motion 0.142 m
+[qc] PASS clip Tamaraw: 0.542 s, 280 channels, foot plant 3.98 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Tamaraw_Miss: 0.5 s, 280 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Victory: 1.375 s, 280 channels, foot plant 0.4 m/s, loop seam 0.0 m, root motion 0.0 m
+[qc] PASS clip Walking: 1.0 s, 280 channels, foot plant 1.12 m/s, loop seam 0.0 m, root motion 0.0 m
+00:11.125  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:11.703  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:12.187  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:12.859  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:13.218  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:14.125  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:14.437  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+00:14.937  render           | Saved: 'E:\RESBAK\resbak\renders\qc\_tile.png'
+[qc] sheet renders\qc\jm_sheet.png  (bottom: front, side; top: top, 3/4)
+[qc] jm: 1 FAIL, 7 WARN
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)

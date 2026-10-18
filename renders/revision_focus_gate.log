@@ -1,0 +1,75 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[INTEGRATION TEST] suite hero_assets
+  ✗ [hero_assets] inday S1 cooldown 15 (got 24.0)
+  ✓ [hero_assets] hero GLBs and HeroData match the spec table
+[INTEGRATION TEST] suite kit_inday
+  ✗ [kit_inday] IHIP! 15 s, HILA! 14 s cooldowns
+  ✓ [kit_inday] Inday data: speed, cooldowns, kinds
+  ✗ [kit_inday] IHIP! starts and drives movement
+  ✗ [kit_inday] IHIP! cooldown (15 s = 900 ticks) starts on cast (1439)
+  ✗ [kit_inday] the lane is 10 m long in the open (12.00)
+  ✗ [kit_inday] can't move while blowing (moved 0.56)
+  ✗ [kit_inday] still blowing after 0.5 s of move input
+  ✗ [kit_inday] can't tag while blowing
+  ✓ [kit_inday] IHIP! cast: lane, cooldown, stands still, no tag, no other skill, taggable
+  ✗ [kit_inday] a free ally inside the lane gets the IHIP! bonus
+  ✗ [kit_inday] bonus is +25 % (0.40)
+  ✗ [kit_inday] Tutoy runs 4.85 x 1.25 inside the lane (5.432)
+  ✗ [kit_inday] lane edges: 10 m long, 1.5 m each side
+  ✗ [kit_inday] re-entering the lane gives the bonus again
+  ✓ [kit_inday] IHIP! lane: free allies +25 %, enemies and outsiders nothing, leaving drops it
+  ✗ [kit_inday] ally east of Inday is in the east lane
+  ✗ [kit_inday] lane direction follows the aim
+  ✗ [kit_inday] an ally in the turned lane gets the bonus
+  ✓ [kit_inday] IHIP! lane turns with aim
+  ✗ [kit_inday] an ally before the wall is in the lane
+  ✓ [kit_inday] IHIP! lane is cut by walls
+  ✗ [kit_inday] still blowing after 240 ticks
+  ✗ [kit_inday] lane gone when it expires
+  ✗ [kit_inday] recast setup
+  ✗ [kit_inday] lane and bonus are gone the same tick
+  ✗ [kit_inday] pushed: lane and bonus gone at once
+  ✗ [kit_inday] recast before tag
+  ✗ [kit_inday] tagged: lane and bonus gone the same tick
+  ✓ [kit_inday] IHIP! ends on timeout (240 ticks), S1, push, stun, round end, tag
+  ✗ [kit_inday] IHIP! +25 % and TAKBO NA! +20 % do not stack: biggest applies (0.40)
+  ✗ [kit_inday] speed is base x 1.25, not x 1.45
+  ✓ [kit_inday] IHIP! and TAKBO NA! take the biggest bonus
+  ✗ [kit_inday] HILA! does not stop her tagging
+  ✓ [kit_inday] HILA immediate miss return with normal cooldown
+  ✓ [kit_inday] HILA moving extend and same-arm recovery
+  ✓ [kit_inday] HILA! pulls the first teammate it touches
+  ✓ [kit_inday] HILA! rescues a chain tip it touches, then pulls it in
+  ✓ [kit_inday] HILA! is stopped by walls and closes when Inday is tagged
+  ✓ [kit_inday] TAKBO NA! after a touch rescue
+  ✓ [kit_inday] another hero's rescue gives no TAKBO NA! and 4 s EP
+[INTEGRATION TEST] 2 suites, 247 checks, 27 failed
+  FAILED [hero_assets] inday S1 cooldown 15 (got 24.0)
+  FAILED [kit_inday] IHIP! 15 s, HILA! 14 s cooldowns
+  FAILED [kit_inday] IHIP! starts and drives movement
+  FAILED [kit_inday] IHIP! cooldown (15 s = 900 ticks) starts on cast (1439)
+  FAILED [kit_inday] the lane is 10 m long in the open (12.00)
+  FAILED [kit_inday] can't move while blowing (moved 0.56)
+  FAILED [kit_inday] still blowing after 0.5 s of move input
+  FAILED [kit_inday] can't tag while blowing
+  FAILED [kit_inday] a free ally inside the lane gets the IHIP! bonus
+  FAILED [kit_inday] bonus is +25 % (0.40)
+  FAILED [kit_inday] Tutoy runs 4.85 x 1.25 inside the lane (5.432)
+  FAILED [kit_inday] lane edges: 10 m long, 1.5 m each side
+  FAILED [kit_inday] re-entering the lane gives the bonus again
+  FAILED [kit_inday] ally east of Inday is in the east lane
+  FAILED [kit_inday] lane direction follows the aim
+  FAILED [kit_inday] an ally in the turned lane gets the bonus
+  FAILED [kit_inday] an ally before the wall is in the lane
+  FAILED [kit_inday] still blowing after 240 ticks
+  FAILED [kit_inday] lane gone when it expires
+  FAILED [kit_inday] recast setup
+  FAILED [kit_inday] lane and bonus are gone the same tick
+  FAILED [kit_inday] pushed: lane and bonus gone at once
+  FAILED [kit_inday] recast before tag
+  FAILED [kit_inday] tagged: lane and bonus gone the same tick
+  FAILED [kit_inday] IHIP! +25 % and TAKBO NA! +20 % do not stack: biggest applies (0.40)
+  FAILED [kit_inday] speed is base x 1.25, not x 1.45
+  FAILED [kit_inday] HILA! does not stop her tagging
+[INTEGRATION TEST] FAILED

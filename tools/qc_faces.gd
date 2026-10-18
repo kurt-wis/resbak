@@ -15,19 +15,22 @@ const BASE_CLIP := {"tutoy": "Menu_StandIdle", "inday": "Menu_StandIdle"}
 
 var _data: HomeDioramaData
 var _pose := ""
+var _output_dir := OUT
 
 func _initialize() -> void:
 	_data = HomeDioramaData.load_data()
 	_run.call_deferred()
 
 func _run() -> void:
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	var only := ""
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--hero="):
 			only = a.substr(7)
 		elif a.begins_with("--pose="): ## any clip name, to check the cards in another pose
 			_pose = a.substr(7)
+		elif a.begins_with("--out="):
+			_output_dir = a.trim_prefix("--out=").trim_suffix("/") + "/"
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_output_dir))
 	var failed := 0
 	for id in HeroData.ORDER:
 		if only != "" and id != only:
@@ -105,7 +108,7 @@ func _hero(id: String) -> bool:
 			var img := vp.get_texture().get_image()
 			img.convert(Image.FORMAT_RGBA8)
 			sheet.blit_rect(img, Rect2i(0, 0, CELL, CELL), Vector2i(col * CELL, row * CELL))
-	var path := ProjectSettings.globalize_path(OUT + "%s_faces.png" % id)
+	var path := ProjectSettings.globalize_path(_output_dir + "%s_faces.png" % id)
 	var err := sheet.save_png(path)
 	print("QC_FACES %s -> %s (err %d)" % [id, path, err])
 	vp.queue_free()

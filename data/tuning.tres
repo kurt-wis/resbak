@@ -3,6 +3,8 @@
 [ext_resource type="Script" path="res://scripts/match/tuning.gd" id="1"]
 
 [resource]
+character_pose_fps = 24.0
+locomotion_idle_blend_speed = 0.12
 skill_aim_pad_radius = 130.0
 touch_cancel_radius = 54.0
 skill_preview_fill_alpha = 0.12
@@ -101,3 +103,6 @@ bot_fooled_chance = PackedFloat32Array(0.9, 0.6, 0.3)
 bot_chase_give_up = 2.5
 bot_tanod_radius = 7.0
 bot_capture_safety = 3.0
+skill_cast_plant = 0.3
+smoke_visibility_fade = 0.25
+smoke_cough_animation = 0.7

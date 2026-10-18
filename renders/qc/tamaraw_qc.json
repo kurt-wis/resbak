@@ -1,0 +1,39 @@
+{
+ "file": "source_art\\props\\tamaraw.glb",
+ "real_height_m": 0.504,
+ "game_scale": 1.0,
+ "dims_m": [
+  0.25,
+  0.954,
+  0.504
+ ],
+ "triangles": 5266,
+ "sheet": "renders\\qc\\tamaraw_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "FAIL",
+   "detail": "lowest point Z = -0.253 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.000, -0.002) m"
+  },
+  {
+   "check": "normals Mesh_0",
+   "status": "PASS",
+   "detail": "74% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology Mesh_0",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (3032 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "5266 (budget 6000)"
+  }
+ ]
+}

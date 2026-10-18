@@ -39,3 +39,8 @@ The original run order was not recorded. All of them landed in the initial commi
 
 The old `scripts/tests/legacy/verify_*.gd` checks were snapshots taken between these
 passes and no longer match the map (see `scripts/tests/README.md`).
+
+## Court atmosphere (2026-10-18)
+Both match maps now carry an authored LightingAndEnvironment branch. Court uses the same sun/environment model as Konstruksyon with its own sky-fill and haze palette; MapDressing does not inject a second environment. Court Gameplay/presentation metadata supplies ink/haze and lighter dust settings to the shared runtime presentation helpers. Edit these authored scene values directly; no builder rerun is needed. Lighting and dust use world-space transforms to avoid the court root's scale/offset distorting them.
+
+The court summer pass uses Gameplay/presentation keys summer_finish, summer_wear and summer_breeze. MapDressing applies material overrides after dressing; shared source material files remain reusable by other maps. Surface shaders include court_summer.gdshaderinc and default their summer amount to zero. Change court metadata or its authored sun/environment to tune the pass. Existing source textures remain in use; fine procedural wear adds aggregate, pigment fading, handling marks and timber fibers at runtime without rebuilding the map.

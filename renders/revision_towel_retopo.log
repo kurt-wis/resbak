@@ -1,0 +1,15 @@
+01:46:49 | INFO: Data are loaded, start creating Blender stuff
+01:46:49 | INFO: Blender create Mesh node 0
+01:46:49 | INFO: glTF import finished in 0.02s
+INFO Draco is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+01:46:49 | INFO: Starting glTF 2.0 export
+01:46:49 | INFO: Extracting primitive: TowelRetopology
+01:46:49 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+01:46:49 | INFO: Primitives created: 1
+01:46:49 | INFO: Finished glTF 2.0 export in 0.31365299224853516 s
+
+Supplied towel exported 384 triangles
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

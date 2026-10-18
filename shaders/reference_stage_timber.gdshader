@@ -1,5 +1,6 @@
 shader_type spatial;
 render_mode diffuse_lambert,specular_disabled;
+#include "res://shaders/court_summer.gdshaderinc"
 uniform sampler2D paint_texture : source_color,repeat_enable,filter_linear_mipmap;
 varying vec3 p;
 varying vec3 n;
@@ -12,5 +13,8 @@ void fragment(){
  float grain=sin(uv.x*18.+sin(uv.y*8.))*.014;
  vec3 timber=mix(vec3(.43,.31,.19),brush,.42)+grain;
  ALBEDO=mix(timber,timber*.61,seam*.66);
+ float fibers=summer_fine(vec2(uv.x*2.,uv.y*95.));
+ ALBEDO*=1.+(fibers-.5)*.07*summer_wear;
+ ALBEDO=summer_pigment(ALBEDO,p,n);
  ROUGHNESS=1.;SPECULAR=0.;
 }

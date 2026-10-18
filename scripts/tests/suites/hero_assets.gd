@@ -8,7 +8,7 @@ const SPEC := {
 	"nene": {"speed": 4.5, "reach": 1.2, "cd1": 10.0, "cd2": 14.0}, # v0.2 SIGAW! / BAWAL!
 	"nathan": {"speed": 4.5, "reach": 1.2, "cd1": 10.0, "cd2": 18.0},
 	"jm": {"speed": 4.15, "reach": 1.2, "cd1": 12.0, "cd2": 16.0},
-	"inday": {"speed": 4.5, "reach": 1.2, "cd1": 15.0, "cd2": 14.0}, # v0.2 HILA!
+	"inday": {"speed": 4.5, "reach": 1.2, "cd1": 24.0, "cd2": 14.0}, # v0.2 HILA!
 }
 
 func run(t: TestCtx) -> void:
@@ -21,7 +21,7 @@ func run(t: TestCtx) -> void:
 		var node := packed.instantiate()
 		var ap := node.find_child("*AnimationPlayer*", true, false) as AnimationPlayer
 		if t.check(ap != null, "%s AnimationPlayer must exist" % hid):
-			for clip in ["Idle", "Walking", "Running", "BreakDance"]:
+			for clip in ["Idle", "Walking", "Running", "BreakDance", "Tag", "Cough"]:
 				if t.check(ap.has_animation(clip), "%s clip %s must exist" % [hid, clip]):
 					t.check(ap.get_animation(clip).get_track_count() >= 60, "%s clip %s must animate the full skeleton (>= 60 tracks)" % [hid, clip])
 			# retained TagCharge source clip (not used by tap-only tagging): seamless on every hero
@@ -31,6 +31,8 @@ func run(t: TestCtx) -> void:
 				t.check("TagCharge" in HeroVisual.LOOP_CLIPS, "retained TagCharge library clip keeps its loop contract")
 			for bad in ["Slide", "Dash"]:
 				t.check(not ap.has_animation(bad), "%s must not have an exact '%s' clip" % [hid, bad])
+			for clip in (["Tag"] if hid == "jm" else (["Sagip"] if hid == "inday" else [])):
+				t.check(ap.has_animation(clip) and ap.get_animation(clip).get_track_count() >= 60, "%s authored %s retains full-skeleton animation" % [hid, clip])
 		var meshes := node.find_children("*", "MeshInstance3D", true, false)
 		t.check(meshes.size() == 1, "%s must have exactly one mesh, got %d" % [hid, meshes.size()])
 		node.free()
@@ -59,3 +61,12 @@ func run(t: TestCtx) -> void:
 			t.check(ps is Passive, "%s passive_script must extend Passive" % hid)
 			ps.free()
 	t.ok("hero GLBs and HeroData match the spec table")
+	for pair in [["res://assets/props/tamaraw_spirit.glb", "Spirit_Charge", 5000], ["res://assets/props/jm_towel.glb", "Towel_Whip", 1500]]:
+		var prop := (load(pair[0]) as PackedScene).instantiate()
+		var tris := 0
+		for mesh in prop.find_children("*", "MeshInstance3D", true, false):
+			tris += mesh.mesh.get_faces().size() / 3
+		var player := prop.find_child("*AnimationPlayer*", true, false) as AnimationPlayer
+		t.check(tris > 0 and tris <= int(pair[2]), "%s stays within its triangle budget" % pair[0])
+		t.check(player != null and player.has_animation(pair[1]), "%s exports its authored NLA action" % pair[0])
+		prop.free()

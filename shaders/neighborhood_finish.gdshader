@@ -1,5 +1,6 @@
 shader_type spatial;
 render_mode diffuse_lambert,specular_disabled;
+#include "res://shaders/court_summer.gdshaderinc"
 uniform vec4 base_color : source_color;
 uniform float planted_ground = 0.0;
 uniform sampler2D grain_texture : source_color,repeat_enable,filter_linear_mipmap;
@@ -14,5 +15,9 @@ void fragment(){
  float variation=clamp((grain-.27)*.5,-.055,.055)+(noise(uv*2.0)-.5)*.04;
  vec3 earth=mix(vec3(.40,.46,.31),vec3(.63,.59,.43),smoothstep(.2,.8,noise(p.xz*.23)));
  ALBEDO=mix(base_color.rgb,earth,planted_ground)*(1.+variation);
+ // Dry soil keeps olive greens and sandy earth, without a yellow blanket.
+ vec3 dry_earth=mix(vec3(.36,.43,.29),vec3(.56,.51,.40),smoothstep(.2,.8,noise(p.xz*.23)));
+ ALBEDO=mix(ALBEDO,dry_earth*(1.+variation),planted_ground*summer_wear);
+ ALBEDO=summer_pigment(ALBEDO,p,n);
  ROUGHNESS=1.;SPECULAR=0.;
 }

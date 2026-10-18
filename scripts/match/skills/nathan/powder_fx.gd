@@ -5,9 +5,9 @@ extends RefCounted
 ## cloud, MAY TIRA PA! patch): pink and white puffs, cheap CPUParticles3D, unshaded.
 ## Presentation only; nothing here is read back by the rules.
 
-const PINK := Color(1.0, 0.52, 0.76, 0.9)
-const PINK_SOFT := Color(1.0, 0.78, 0.9, 0.8)
-const WHITE := Color(1.0, 0.96, 1.0, 0.85)
+const PINK := Color(1.0, 1.0, 0.98, 0.9) # legacy names retained; all powder is sugar white
+const PINK_SOFT := Color(0.94, 0.97, 1.0, 0.8)
+const WHITE := Color(1.0, 1.0, 1.0, 0.85)
 
 static func _puff_mesh() -> QuadMesh:
 	var quad := QuadMesh.new()

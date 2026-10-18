@@ -1,5 +1,6 @@
 shader_type spatial;
 render_mode diffuse_lambert,specular_disabled,cull_disabled;
+#include "res://shaders/court_summer.gdshaderinc"
 uniform vec4 base_color : source_color;
 uniform float roof=0.;
 uniform float court_finish=0.;
@@ -41,5 +42,19 @@ void fragment(){
  ALBEDO*=1.-chipped*.10;
  vec2 roof_uv=roof_axis<.5?vec2(p.z*.38,p.x*.23):vec2(p.x*.38,p.z*.23);
  ALBEDO=mix(ALBEDO,texture(roof_texture,roof_uv).rgb*.94,roof);
+ // Fine aggregate and irregular scuffs cluster in the painted playing lanes.
+ float traffic=1.-smoothstep(2.0,7.0,abs(court_pos.y-1.4));
+ float worn=smoothstep(.58,.75,summer_noise(vec2(p.x*1.4,p.z*5.0)));
+ float aggregate=summer_fine(projection*32.0);
+ float speck=smoothstep(.77,.92,aggregate)*.07;
+ vec3 concrete=vec3(.49,.48,.43);
+ ALBEDO=mix(ALBEDO,concrete,worn*traffic*court_finish*.12*summer_wear);
+ ALBEDO*=1.-speck*summer_wear;
+ // Plaster repairs have soft irregular edges; dirt gathers at the foot of walls.
+ float patch=smoothstep(.67,.78,summer_noise(projection*1.1));
+ ALBEDO=mix(ALBEDO,ALBEDO*.94,patch*stucco*summer_wear);
+ float foot=(1.-smoothstep(-1.2,-.5,p.y))*stucco;
+ ALBEDO*=1.-foot*.075*summer_wear;
+ ALBEDO=summer_pigment(ALBEDO,p,n);
  ROUGHNESS=1.;SPECULAR=0.;
 }

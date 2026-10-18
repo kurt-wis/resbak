@@ -1,0 +1,120 @@
+01:54:59 | INFO: Data are loaded, start creating Blender stuff
+01:54:59 | INFO: Blender create Mesh node Mesh_0
+01:54:59 | INFO: glTF import finished in 0.43s
+01:55:00 | INFO: Data are loaded, start creating Blender stuff
+01:55:00 | INFO: Blender create Mesh node Mesh_0
+01:55:07 | INFO: glTF import finished in 6.66s
+[retarget] BreakDance <- jm_animation_library.glb:BreakDance: 22 bones matched, 162 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Capture <- jm_animation_library.glb:Capture: 22 bones matched, 65 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Chained <- jm_animation_library.glb:Chained: 22 bones matched, 45 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] GuardBreak <- jm_animation_library.glb:GuardBreak: 22 bones matched, 25 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Idle <- jm_animation_library.glb:Idle: 22 bones matched, 45 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Jailed <- jm_animation_library.glb:Jailed: 22 bones matched, 122 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Menu_Clap <- jm_animation_library.glb:Menu_Clap: 22 bones matched, 81 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Menu_LeanBackLaugh <- jm_animation_library.glb:Menu_LeanBackLaugh: 22 bones matched, 116 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Menu_SitDrink <- jm_animation_library.glb:Menu_SitDrink: 22 bones matched, 269 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Menu_SitIdle <- jm_animation_library.glb:Menu_SitIdle: 22 bones matched, 37 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Running <- jm_animation_library.glb:Running: 22 bones matched, 17 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Stumble <- jm_animation_library.glb:Stumble: 22 bones matched, 19 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Stunned <- jm_animation_library.glb:Stunned: 22 bones matched, 27 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Tag <- jm_animation_library.glb:Tag: 22 bones matched, 17 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] TagCharge <- jm_animation_library.glb:TagCharge: 22 bones matched, 48 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Tagged <- jm_animation_library.glb:Tagged: 22 bones matched, 23 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Talbog_Jump <- jm_animation_library.glb:Talbog_Jump: 22 bones matched, 23 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Talbog_Slam <- jm_animation_library.glb:Talbog_Slam: 22 bones matched, 34 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Tamaraw <- jm_animation_library.glb:Tamaraw: 22 bones matched, 14 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Victory <- jm_animation_library.glb:Victory: 22 bones matched, 34 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Walking <- jm_animation_library.glb:Walking: 22 bones matched, 25 frames at 24 fps (source 24 fps), hips x1.116
+[build_heroes]   baked BreakDance: 162 frames
+[build_heroes]   baked Capture: 65 frames
+[build_heroes]   baked Capture: 65 frames
+[build_heroes]   grounded Capture: -6.9 cm
+[build_heroes]   baked Chained: 45 frames
+[build_heroes]   baked Chained: 45 frames
+[build_heroes]   grounded Chained: -4.0 cm
+[build_heroes]   baked GuardBreak: 25 frames
+[build_heroes]   baked GuardBreak: 25 frames
+[build_heroes]   grounded GuardBreak: -1.1 cm
+[build_heroes]   baked Idle: 45 frames
+[build_heroes]   baked Idle: 45 frames
+[build_heroes]   grounded Idle: -4.0 cm
+[build_heroes]   baked Jailed: 122 frames
+[build_heroes]   baked Jailed: 122 frames
+[build_heroes]   grounded Jailed: -2.2 cm
+[build_heroes]   baked Menu_Clap: 81 frames
+[build_heroes]   baked Menu_Clap: 81 frames
+[build_heroes]   grounded Menu_Clap: +0.6 cm
+[build_heroes]   baked Menu_LeanBackLaugh: 116 frames
+[build_heroes]   baked Menu_LeanBackLaugh: 116 frames
+[build_heroes]   grounded Menu_LeanBackLaugh: +1.1 cm
+[build_heroes]   baked Menu_SitDrink: 269 frames
+[build_heroes]   baked Menu_SitDrink: 269 frames
+[build_heroes]   grounded Menu_SitDrink: +4.0 cm
+[build_heroes]   baked Menu_SitIdle: 37 frames
+[build_heroes]   baked Menu_SitIdle: 37 frames
+[build_heroes]   grounded Menu_SitIdle: +3.7 cm
+[build_heroes]   baked Running: 17 frames
+[build_heroes]   baked Running: 17 frames
+[build_heroes]   grounded Running: -3.3 cm
+[build_heroes]   baked Stumble: 19 frames
+[build_heroes]   baked Stumble: 19 frames
+[build_heroes]   grounded Stumble: -3.8 cm
+[build_heroes]   baked Stunned: 27 frames
+[build_heroes]   baked Stunned: 27 frames
+[build_heroes]   grounded Stunned: -2.9 cm
+[build_heroes]   baked Tag: 17 frames
+[build_heroes]   baked Tag: 17 frames
+[build_heroes]   grounded Tag: -3.0 cm
+[build_heroes]   baked TagCharge: 48 frames
+[build_heroes]   baked TagCharge: 48 frames
+[build_heroes]   grounded TagCharge: +2.4 cm
+[build_heroes]   baked Tagged: 23 frames
+[build_heroes]   baked Tagged: 23 frames
+[build_heroes]   grounded Tagged: -4.4 cm
+[build_heroes]   baked Talbog_Jump: 23 frames
+[build_heroes]   baked Talbog_Jump: 23 frames
+[build_heroes]   grounded Talbog_Jump: +2.2 cm
+[build_heroes]   baked Talbog_Slam: 34 frames
+[build_heroes]   baked Talbog_Slam: 34 frames
+[build_heroes]   grounded Talbog_Slam: -0.8 cm
+[build_heroes]   baked Tamaraw: 14 frames
+[build_heroes]   baked Tamaraw: 14 frames
+[build_heroes]   grounded Tamaraw: -6.5 cm
+[build_heroes]   baked Victory: 34 frames
+[build_heroes]   baked Victory: 34 frames
+[build_heroes]   grounded Victory: -0.8 cm
+[build_heroes]   baked Walking: 25 frames
+[build_heroes]   baked Walking: 25 frames
+[build_heroes]   grounded Walking: -1.0 cm
+[build_heroes]   rigid head: 201 vertices above the head joint moved onto the Head bone
+INFO Draco is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+01:55:52 | INFO: Starting glTF 2.0 export
+01:55:52 | INFO: Extracting primitive: Mesh_0
+01:55:55 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+01:55:55 | INFO: Primitives created: 1
+01:56:40 | INFO: Finished glTF 2.0 export in 48.08969187736511 s
+01:57.625  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+01:58.172  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+01:58.828  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+01:59.578  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:00.437  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:00.578  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:00.750  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:00.859  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:00.969  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:01.031  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:01.344  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:01.453  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:01.562  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:01.625  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:01.703  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:01.797  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:02.094  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:02.578  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+
+[build_heroes]   moves sheet: renders\heroes_jm_revision.png
+REVISION jm 22
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

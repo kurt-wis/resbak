@@ -25,6 +25,7 @@ func _cast(frame: InputFrame) -> void:
 		"dash": float(v("sigaw_dash_distance")),
 	})
 	host.spawn_object(word, hero.global_position + dir * host.tuning.body_radius)
+	Vfx.sound_shell(host.world, hero.global_position + Vector3.UP, dir, Color("ff83ba"), 0.7)
 	var clip_time := minf(hero.visual.clip_length("Sumbong"), 0.6) if hero.visual else 0.0
 	if clip_time > 0.0:
 		hero.visual.play_action("Sumbong", clip_time)

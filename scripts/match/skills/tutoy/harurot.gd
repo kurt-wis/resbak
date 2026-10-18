@@ -13,6 +13,9 @@ var _dust: CPUParticles3D
 func kind() -> int:
 	return RB.SkillKind.MOVEMENT
 
+func is_traversal() -> bool:
+	return true
+
 func fixed_speed() -> float:
 	return float(v("harurot_speed")) if active else -1.0
 
@@ -27,7 +30,17 @@ func _cast(_frame: InputFrame) -> void:
 	hero.visual.play_action("Harurot", float(v("harurot_time")))
 	var feet := hero.global_position
 	Vfx.burst(host.world, feet + Vector3(0, 0.15, 0), Color(0.9, 0.97, 1.0, 0.9), 22, 3.5, 0.45, 0.22, -1.0, 70.0, -_dir + Vector3.UP * 0.3)
-	Vfx.ring_pulse(host.world, feet, 2.2, Color(0.85, 0.96, 1.0, 0.8), 0.35)
+	# Narrow speed streaks read as forward acceleration rather than a radial attack.
+	var side := _dir.cross(Vector3.UP)
+	for i in range(5):
+		var points := PackedVector3Array()
+		for j in range(7):
+			var progress := float(j) / 6.0
+			points.append(-_dir * (0.2 + progress * 1.7) + side * (i - 2) * 0.18 + Vector3.UP * (0.12 + sin(progress * PI) * 0.18))
+		var streak := Vfx.ribbon(points, 0.035, Color(0.28, 0.85, 1.0, 0.85))
+		host.world.add_child(streak)
+		streak.global_position = feet
+		Vfx.fade_and_free(streak, 0.25)
 	if _dust == null and hero.visual.extras:
 		_dust = Vfx.emitter(hero.visual.extras, Color(0.9, 0.97, 1.0, 0.8), 36, 0.45, 0.22, 1.4, Vector3(0, 0.15, 0))
 	if _dust:
@@ -38,7 +51,7 @@ func tick_action(_frame: InputFrame) -> void:
 		end("stunned")
 
 func move(dt: float) -> void:
-	if hero.wish_dir != Vector3.ZERO and not (host.tick == cast_tick and hero.frame.skill_aimed):
+	if hero.wish_dir != Vector3.ZERO:
 		_dir = hero.wish_dir
 	var spd := hero.current_speed()
 	hero.velocity = Vector3(_dir.x * spd, hero.velocity.y, _dir.z * spd)
@@ -58,8 +71,8 @@ func tick(_dt: float) -> void:
 func _drop_trail() -> void:
 	var part := HarurotTrail.new()
 	part.setup(host, hero, float(v("harurot_trail_part_time")))
-	host.spawn_object(part, Vector3(hero.global_position.x, 0.0, hero.global_position.z) - _dir * 0.2)
-	part.build(_dir, float(v("harurot_trail_length", 0.8)), hero.data.color)
+	host.spawn_object(part, hero.global_position - _dir * 0.2)
+	part.build(_dir, float(v("harurot_trail_length", 0.8)), Color(0.28, 0.85, 1.0, 0.8))
 
 func end(reason: String) -> void:
 	if active:
@@ -77,11 +90,8 @@ func hud_note() -> String:
 	return "%.1f s" % RB.seconds(_ticks_left) if active else ""
 
 func _pick_dir() -> Vector3:
-	if hero.frame.skill_aimed:
-		return hero.frame.aim_direction(hero.global_position)
 	if hero.wish_dir != Vector3.ZERO:
 		return hero.wish_dir
 	if hero.ground_speed() > 1.0:
 		return RB.flat(hero.velocity).normalized()
-	var a := RB.flat(hero.aim)
-	return a.normalized() if a.length() > 0.01 else RB.flat(hero.facing).normalized()
+	return RB.flat(hero.facing).normalized()

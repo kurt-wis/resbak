@@ -1,0 +1,36 @@
+01:48:19 | INFO: Data are loaded, start creating Blender stuff
+01:48:19 | INFO: Blender create Mesh node Mesh_0
+01:48:20 | INFO: glTF import finished in 1.30s
+HAIR vertices corrected 1419 head 1.3289943933486938 neck 1.2386078834533691
+TORSO arm-weight spill corrected 539
+INFO Draco is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+01:48:22 | INFO: Starting glTF 2.0 export
+01:48:22 | INFO: Extracting primitive: Mesh_0
+01:48:22 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+01:48:22 | INFO: Primitives created: 1
+01:48:37 | INFO: Finished glTF 2.0 export in 14.843980312347412 s
+00:21.969  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:22.078  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:22.141  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:22.219  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:22.282  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:22.407  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:22.516  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:22.594  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:22.703  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:22.828  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:23.141  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:23.282  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:23.360  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:23.641  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:23.750  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:23.797  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:23.844  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+00:24.391  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+
+[build_heroes]   moves sheet: renders\heroes_inday_revision.png
+REVISION inday 20
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

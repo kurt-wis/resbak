@@ -1,0 +1,109 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce GTX 1660 SUPER
+
+HERO FX tutoy_s1
+HERO FX tutoy_s2
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] ground_ring (res://scripts/match/vfx.gd:190)
+       [1] begin (res://scripts/match/skills/nene/sigaw_word.gd:31)
+       [2] _cast (res://scripts/match/skills/nene/sigaw.gd:20)
+       [3] try_cast (res://scripts/match/skill.gd:61)
+       [4] _actions (res://scripts/match/match_host.gd:145)
+       [5] step (res://scripts/match/match_host.gd:96)
+       [6] _run (res://tools/qc_hero_effects.gd:43)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] ground_ring (res://scripts/match/vfx.gd:190)
+       [1] begin (res://scripts/match/skills/nene/sigaw_word.gd:31)
+       [2] _cast (res://scripts/match/skills/nene/sigaw.gd:20)
+       [3] try_cast (res://scripts/match/skill.gd:61)
+       [4] _actions (res://scripts/match/match_host.gd:145)
+       [5] step (res://scripts/match/match_host.gd:96)
+       [6] _run (res://tools/qc_hero_effects.gd:43)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] ground_ring (res://scripts/match/vfx.gd:190)
+       [1] begin (res://scripts/match/skills/nene/sigaw_word.gd:31)
+       [2] _cast (res://scripts/match/skills/nene/sigaw.gd:20)
+       [3] try_cast (res://scripts/match/skill.gd:61)
+       [4] _actions (res://scripts/match/match_host.gd:145)
+       [5] step (res://scripts/match/match_host.gd:96)
+       [6] _run (res://tools/qc_hero_effects.gd:43)
+HERO FX nene_s1
+HERO FX nene_s2
+HERO FX nathan_s1
+HERO FX nathan_s2
+HERO FX nathan_owner_inside
+HERO FX nathan_enemy_blind
+HERO FX jm_s1
+HERO FX jm_s2
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _free_aura (res://scripts/match/skills/jm/tamaraw.gd:174)
+       [1] _exit_tree (res://scripts/match/skills/jm/tamaraw.gd:187)
+ERROR: Parent node is busy setting up children, `add_child()` failed. Consider using `add_child.call_deferred(child)` instead.
+   at: add_child (scene/main/node.cpp:1721)
+   GDScript backtrace (most recent call first):
+       [0] _free_aura (res://scripts/match/skills/jm/tamaraw.gd:174)
+       [1] _exit_tree (res://scripts/match/skills/jm/tamaraw.gd:187)
+HERO FX inday_s1
+HERO FX inday_s2
+HILA rendered hand distance 2.76813697814941
+ERROR: 1 RID allocations of type 'N5GLES38SkeletonE' were leaked at exit.
+ERROR: 1 RID allocations of type 'N5GLES39MultiMeshE' were leaked at exit.
+ERROR: 2 RID allocations of type 'N5GLES34MeshE' were leaked at exit.
+ERROR: 3 RID allocations of type 'N5GLES38MaterialE' were leaked at exit.
+ERROR: 3 RID allocations of type 'N5GLES36ShaderE' were leaked at exit.
+ERROR: 1 RID allocations of type 'N5GLES37TextureE' were leaked at exit.
+ERROR: 2 RID allocations of type 'N17RendererSceneCull8InstanceE' were leaked at exit.
+ERROR: Pages in use exist at exit in PagedAllocator: N20RasterizerSceneGLES323GeometryInstanceSurfaceE
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)
+ERROR: Pages in use exist at exit in PagedAllocator: N20RasterizerSceneGLES321GeometryInstanceGLES3E
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+ERROR: 3 shaders of type SceneShaderGLES3 were never freed
+   at: ~ShaderGLES3 (drivers/gles3/shader_gles3.cpp:838)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+ERROR: Texture with GL ID of 85: leaked 21844 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)
+ERROR: Texture with GL ID of 117: leaked 4096 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)
+ERROR: Buffer with GL ID of 4280: leaked 81100 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 6635: leaked 32440 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 6640: leaked 64880 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 6642: leaked 28800 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 6643: leaked 14400 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 6644: leaked 7200 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 6645: leaked 3792 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 6097: leaked 1536 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 6098: leaked 80 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 6099: leaked 32 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 6100: leaked 12 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+WARNING: 23 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 6 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

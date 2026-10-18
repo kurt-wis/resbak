@@ -1,31 +1,39 @@
 class_name UboCloud
 extends SkillObject
 
-## The UBO! UBO! powder cloud (docs/RESBAK.md § 4 Nathan): radius 3.5 m for 5 s, for both
-## teams including Nathan. A viewer outside cannot see anyone whose centre is inside; a viewer
-## inside sees only within 2 m (anyone, in or out of the cloud). An enemy of Nathan inside for
-## more than 1 continuous second coughs once per cloud: revealed to Nathan's team for 2 s
-## (reveal beats the cloud) and the 'cough' event fires. Coughers can still act.
-## Allies always see each other: MatchHost.visibility() checks that before asking us.
+## UBO powder: the caster inside sees targets inside, subject to solid line of sight.
+## Every other inside viewer loses hero vision; outsiders cannot see into the cloud.
+## Initial landing burst blinds enemies once. Cough reveal never defeats smoke concealment.
+## Approved 2026-10-18 deviations are recorded in docs/status.md.
 
 var radius := 3.5
 var sight := 2.0
 var cough_ticks := 60
 var cough_reveal := 2.0
+var blind_time := 0.0
 var _inside := {} ## hero slot -> continuous ticks inside
 var _coughed := {} ## hero slot -> true
 var emitter: CPUParticles3D
 var disc: Node3D
+var _owner_view := false
 
 func begin(p_host: MatchHost, p_owner: Hero, cfg: Dictionary) -> void:
 	radius = cfg.radius
 	sight = cfg.sight
 	cough_ticks = RB.ticks(cfg.cough_after)
 	cough_reveal = cfg.cough_reveal
+	blind_time = float(cfg.get("blind_time", 0.0))
 	setup(p_host, p_owner, cfg.time)
 	name = "UboCloud"
 
 ## Call after host.spawn_object().
+func apply_initial_burst() -> void:
+	# One burst only. Walking back into this cloud never refreshes the blind.
+	for enemy in host.enemies_of(owner_hero):
+		if contains(enemy.global_position):
+			enemy.blind(blind_time)
+			enemy.cough_ticks = RB.ticks(host.tuning.smoke_cough_animation)
+
 func build_visuals() -> void:
 	disc = Vfx.ground_ring(self, global_position, radius, Color(PowderFx.PINK.r, PowderFx.PINK.g, PowderFx.PINK.b, 0.5), 0.2, 0.16)
 	emitter = PowderFx.volume_emitter(self, radius * 0.85, PowderFx.PINK_SOFT, 150, 2.4, 1.7, 0.3)
@@ -34,9 +42,17 @@ func build_visuals() -> void:
 func contains(pos: Vector3) -> bool:
 	return RB.flat_dist(global_position, pos) <= radius
 
+func set_viewer(viewer: Hero) -> void:
+	var owner_view := viewer == owner_hero and contains(viewer.global_position) if viewer else false
+	if _owner_view == owner_view or not is_instance_valid(emitter):
+		return
+	_owner_view = owner_view
+	# Thin the actual puffs too, so owner immunity is visually usable.
+	emitter.color_ramp = PowderFx._envelope(PowderFx.WHITE, 0.055 if owner_view else 0.3)
+
 func hides(viewer: Hero, target_pos: Vector3) -> bool:
 	if viewer != null and contains(viewer.global_position):
-		return RB.flat_dist(viewer.global_position, target_pos) > sight
+		return not (viewer == owner_hero and contains(target_pos) and host.los_clear(viewer.global_position, target_pos))
 	return contains(target_pos)
 
 func tick(dt: float) -> void:
@@ -47,7 +63,7 @@ func tick(dt: float) -> void:
 			if _inside[slot] > cough_ticks and not _coughed.has(slot):
 				_coughed[slot] = true
 				e.reveal_to(team, cough_reveal)
-				Vfx.popup_text(host.world, e.global_position, "*UBO!*", PowderFx.PINK, 90, 0.9)
+				e.cough_ticks = RB.ticks(host.tuning.smoke_cough_animation)
 				host.emit_event("cough", {"hero": e, "owner": owner_hero, "cloud": self, "pos": e.global_position})
 		else:
 			_inside.erase(slot)

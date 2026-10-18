@@ -1,0 +1,128 @@
+01:25:34 | INFO: Data are loaded, start creating Blender stuff
+01:25:34 | INFO: Blender create Mesh node Mesh_0
+01:25:40 | INFO: glTF import finished in 6.42s
+HAIR vertices corrected 1324 head 1.328994870185852 neck 1.2386082410812378
+INFO Draco is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+01:25:49 | INFO: Starting glTF 2.0 export
+01:25:49 | INFO: Extracting primitive: Mesh_0
+01:25:51 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+01:25:51 | INFO: Primitives created: 1
+01:27:01 | INFO: Finished glTF 2.0 export in 72.66138815879822 s
+01:59.594  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:00.922  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:01.391  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:02.578  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:03.297  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:04.000  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:04.875  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:05.391  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:06.656  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:07.672  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:08.891  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:10.078  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:10.438  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:10.984  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:12.297  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:13.203  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:14.297  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+02:15.516  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_inday.png'
+
+[build_heroes]   moves sheet: renders\heroes_inday_revision.png
+REVISION inday 20
+01:27:40 | INFO: Data are loaded, start creating Blender stuff
+01:27:40 | INFO: Blender create Mesh node Mesh_0
+01:27:55 | INFO: glTF import finished in 15.30s
+01:28:01 | INFO: Starting glTF 2.0 export
+01:28:01 | INFO: Extracting primitive: Mesh_0
+01:28:03 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+01:28:03 | INFO: Primitives created: 1
+01:28:53 | INFO: Finished glTF 2.0 export in 51.24356555938721 s
+03:37.109  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:37.547  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:37.766  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:37.906  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:38.125  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:38.469  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:39.328  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:40.031  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:40.313  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:40.563  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:41.219  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:41.453  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:41.734  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:42.078  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:42.453  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:42.844  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:43.719  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:45.063  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:45.484  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:45.563  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:45.703  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:45.781  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:45.875  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+03:45.953  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+
+[build_heroes]   moves sheet: renders\heroes_nathan_revision.png
+REVISION nathan 20
+01:29:03 | INFO: Data are loaded, start creating Blender stuff
+01:29:03 | INFO: Blender create Mesh node Mesh_0
+01:29:10 | INFO: glTF import finished in 6.93s
+01:29:12 | INFO: Starting glTF 2.0 export
+01:29:12 | INFO: Extracting primitive: Mesh_0
+01:29:12 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+01:29:12 | INFO: Primitives created: 1
+01:29:28 | INFO: Finished glTF 2.0 export in 16.876604557037354 s
+04:12.844  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:12.969  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:13.031  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:13.078  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:13.125  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:13.219  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:13.313  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:13.844  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:13.938  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:14.016  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:14.094  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:14.156  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:14.484  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:14.719  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:14.781  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:14.859  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:14.922  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+04:15.000  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nene.png'
+
+[build_heroes]   moves sheet: renders\heroes_nene_revision.png
+REVISION nene 20
+01:29:32 | INFO: Data are loaded, start creating Blender stuff
+01:29:32 | INFO: Blender create Mesh node Mesh_0
+01:29:34 | INFO: glTF import finished in 2.11s
+01:29:36 | INFO: Starting glTF 2.0 export
+01:29:36 | INFO: Extracting primitive: Mesh_0
+01:29:38 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+01:29:38 | INFO: Primitives created: 1
+01:30:01 | INFO: Finished glTF 2.0 export in 25.055283308029175 s
+04:45.188  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.266  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.328  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.375  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.422  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.469  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.516  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.578  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.641  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.703  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.766  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.828  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.875  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:45.969  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:46.047  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:46.109  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:46.172  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+04:46.234  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_tutoy.png'
+
+[build_heroes]   moves sheet: renders\heroes_tutoy_revision.png
+REVISION tutoy 22
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

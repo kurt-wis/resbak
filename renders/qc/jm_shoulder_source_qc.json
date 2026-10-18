@@ -1,0 +1,68 @@
+{
+ "file": "source_art\\heroes\\jm_shoulder_source.glb",
+ "real_height_m": 1.709,
+ "game_scale": 1.053,
+ "dims_m": [
+  0.886,
+  1.036,
+  1.709
+ ],
+ "triangles": 12178,
+ "clips": [
+  {
+   "clip": "Running",
+   "frames": [
+    0,
+    16
+   ],
+   "seconds": 0.667,
+   "tracks": 196,
+   "foot_plant_speed_mps": 3.97,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  }
+ ],
+ "sheet": "renders\\qc\\jm_shoulder_source_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "FAIL",
+   "detail": "lowest point Z = -0.036 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (-0.002, -0.038) m"
+  },
+  {
+   "check": "normals Mesh_0",
+   "status": "PASS",
+   "detail": "70% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology Mesh_0",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (4560 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "12178 (budget 15000)"
+  },
+  {
+   "check": "mixamo names",
+   "status": "WARN",
+   "detail": "25/28 bones"
+  },
+  {
+   "check": "facing",
+   "status": "PASS",
+   "detail": "toes -Y of ankles (want -Y = Godot +Z front)"
+  },
+  {
+   "check": "clip Running",
+   "status": "PASS",
+   "detail": "0.667 s, 196 channels, foot plant 3.97 m/s, loop seam 0.0 m, root motion 0.0 m"
+  }
+ ]
+}

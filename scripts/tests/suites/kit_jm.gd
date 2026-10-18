@@ -18,12 +18,12 @@ func run(t: TestCtx) -> void:
 	await _data(t)
 	await _talbog_core(t)
 	await _talbog_lifetime(t)
-	await _talbog_wall_geometry(t)
-	await _talbog_overlap(t)
+	await _talbog_grounding(t)
 	await _talbog_clamps(t)
 	await _talbog_tagged_midair(t)
 	await _tamaraw_charge(t)
 	await _tamaraw_shove(t)
+	await _tamaraw_daze(t)
 	await _tamaraw_turn(t)
 	await _tamaraw_crash(t)
 	await _tamaraw_recast_and_tag(t)
@@ -81,10 +81,10 @@ func _until_inactive(host: MatchHost, sk: Skill, limit := 200) -> int:
 func _data(t: TestCtx) -> void:
 	var hd := HeroData.load_hero("jm")
 	t.check(hd.skill1_script != null and hd.skill2_script != null and hd.passive_script != null, "JM data wires both skills and the passive")
-	for key in ["talbog_range", "talbog_air_time", "talbog_push_radius", "talbog_push_distance", "talbog_wall_width", "talbog_wall_offset", "talbog_wall_height", "talbog_wall_time", "tamaraw_speed", "tamaraw_time", "tamaraw_turn_rate_deg", "tamaraw_push_side", "tamaraw_wall_slow", "tamaraw_wall_slow_time", "tamaraw_wall_radius", "tamaraw_self_stun", "makapal_no_tag_time", "makapal_regen_time"]:
+	for key in ["talbog_range", "talbog_air_time", "talbog_push_radius", "talbog_push_distance", "talbog_stun", "tamaraw_speed", "tamaraw_time", "tamaraw_turn_rate_deg", "tamaraw_push_side", "tamaraw_wall_slow", "tamaraw_wall_slow_time", "tamaraw_wall_radius", "tamaraw_self_stun", "makapal_no_tag_time", "makapal_regen_time"]:
 		t.check(hd.values.has(key), "jm.tres has %s" % key)
 	t.check(t.near(hd.values.talbog_range, 6.0) and t.near(hd.values.talbog_air_time, 0.6) and t.near(hd.values.talbog_push_radius, 2.5) and t.near(hd.values.talbog_push_distance, 3.0), "TALBOG! numbers match the spec")
-	t.check(t.near(hd.values.talbog_wall_width, 5.0) and t.near(hd.values.talbog_wall_offset, 1.5) and t.near(hd.values.talbog_wall_height, 1.5) and t.near(hd.values.talbog_wall_time, 4.0), "TALBOG! wall numbers match the spec")
+	t.check(t.near(hd.values.talbog_stun, 2.0), "TALBOG landing stun is the approved two seconds")
 	t.check(t.near(hd.values.tamaraw_speed, 8.2) and t.near(hd.values.tamaraw_time, 1.5) and t.near(hd.values.tamaraw_turn_rate_deg, 90.0) and t.near(hd.values.tamaraw_push_side, 2.0), "TAMARAW!!! numbers (8.2 m/s: v0.1.1 pacing, spec 9)")
 	t.check(t.near(hd.values.tamaraw_wall_slow, 0.4) and t.near(hd.values.tamaraw_wall_slow_time, 1.0) and t.near(hd.values.tamaraw_wall_radius, 2.5) and t.near(hd.values.tamaraw_self_stun, 0.8), "TAMARAW!!! wall-hit numbers match the spec")
 	t.check(t.near(hd.values.makapal_no_tag_time, 1.5) and t.near(hd.values.makapal_regen_time, 18.0) and t.near(hd.values.makapal_rage_time, 2.0) and t.near(hd.values.makapal_spin_radius, 2.5), "MAKAPAL! numbers (v0.1.1 rage: 2 s untaggable, spin shove; regen 18 s)")
@@ -143,110 +143,52 @@ func _talbog_core(t: TestCtx) -> void:
 	t.check(t.near(far_enemy.global_position.z, -4.5, 0.05), "enemy outside 2.5 m is not pushed")
 	t.check(t.near(ally.global_position.x, -1.5, 0.05) and t.near(ally.global_position.z, 1.5, 0.05), "allies aren't pushed")
 	# the wall
-	var wall = _wall(host)
-	t.check(wall != null, "an earth wall exists")
-	if wall != null:
-		var tips: Array = wall.tip_points()
-		t.check(t.near(tips[0].distance_to(tips[1]), 5.0, 0.05), "wall is 5 m wide tip to tip, got %.2f" % tips[0].distance_to(tips[1]))
-		t.check(t.near(wall.apex().x, 1.5, 0.05) and t.near(wall.apex().z, 0.0, 0.05), "wall centre is 1.5 m in front of the landing point along the aim, apex %s" % wall.apex())
-		t.check(tips[0].x < wall.apex().x - 1.0 and tips[1].x < wall.apex().x - 1.0, "the wall curves back round JM (tips behind the apex)")
-		t.check(wall.body.collision_layer == RB.L_SKILL_WALL, "wall is on the TALBOG! wall layer")
-		var tall := 0.0
-		for c in wall.body.get_children():
-			tall = maxf(tall, ((c as CollisionShape3D).shape as BoxShape3D).size.y)
-		t.check(t.near(tall, 1.5, 0.001), "wall is 1.5 m tall")
-		# solid for everyone: an enemy running into the front can't pass
-		TestCtx.put(far_enemy, 4.0, 0.0)
-		inp.move(far_enemy, Vector2(-1, 0))
-		t.steps(host, 60)
-		t.check(far_enemy.global_position.x > 1.9, "the wall blocks an enemy (x=%.2f)" % far_enemy.global_position.x)
-		inp.move(far_enemy, Vector2.ZERO)
-		TestCtx.put(far_enemy, 4.0, -3.0)
-		TestCtx.put(ally, 4.0, 0.0)
-		inp.move(ally, Vector2(-1, 0))
-		t.steps(host, 60)
-		t.check(ally.global_position.x > 1.9, "the wall blocks JM's allies too (x=%.2f)" % ally.global_position.x)
-		inp.move(ally, Vector2.ZERO)
-		t.check(not host.los_clear(Vector3(4, 0, 0), Vector3(0, 0, 0)), "the wall blocks line of sight")
-		# open ends are passable: run past a tip
-		TestCtx.put(far_enemy, 4.0, -3.4)
-		inp.move(far_enemy, Vector2(-1, 0))
-		t.steps(host, 90)
-		t.check(far_enemy.global_position.x < -1.0, "open ends are passable (x=%.2f)" % far_enemy.global_position.x)
-		inp.move(far_enemy, Vector2.ZERO)
-		t.check(not wall.expired, "wall still up after ~3.4 s")
+	t.check(_wall(host) == null and sk.last_wall == null, "TALBOG creates no wall or persistent collider")
+	t.check(near_enemy.stun_ticks > 0 and not ally.is_stunned() and not far_enemy.is_stunned(), "landing stuns nearby enemies only")
 	await t.free_match(host)
-	t.ok("TALBOG! jump, restrictions, impact push, wall, open ends")
+	t.ok("TALBOG jump, restrictions, landing push and enemy-only stun")
 
 func _talbog_lifetime(t: TestCtx) -> void:
 	var host := _live(t, [], ["nathan"])
 	var jm: Hero = host.heroes[0]
-	var inp := t.inputs(host)
-	TestCtx.put(jm, -4.0, 0.0)
-	inp.aim_at(jm, Vector3(0, 0, 0))
-	inp.press(jm, S1)
-	t.steps(host, 37) # cast tick + 36 -> lands on the 37th step
-	var wall = _wall(host)
-	t.check(wall != null, "wall rises on the landing tick")
-	if wall != null:
-		t.steps(host, 239)
-		t.check(not wall.expired and wall.body.collision_layer == RB.L_SKILL_WALL, "wall still solid 239 ticks after landing")
-		t.steps(host, 1)
-		t.check(wall.expired and not host.objects.has(wall), "wall gone exactly 240 ticks (4 s) after landing")
-		t.check(wall.body.collision_layer == 0, "wall is no longer solid after expiry")
-	var sk := _skill1(jm)
-	t.check(not sk.is_ready(), "still on cooldown at 4 s")
-	inp.press(jm, S1)
+	var enemy: Hero = host.heroes[1]
+	TestCtx.put(jm, -4, 0)
+	TestCtx.put(enemy, 0, -1)
+	t.inputs(host).aim_at(jm, Vector3.ZERO)
+	t.inputs(host).press(jm, S1)
+	t.steps(host, 37)
+	t.check(enemy.stun_ticks == RB.ticks(2.0), "Talbog applies exactly 2 seconds of stun at landing")
+	t.check(not enemy.can_move() and not enemy.can_press_tag() and not enemy.can_use_skills(), "landing stun blocks voluntary actions")
+	t.steps(host, 119)
+	t.check(enemy.stun_ticks == 1, "Talbog stun retains its last tick")
 	t.steps(host, 1)
-	t.check(not sk.active, "can't recast during cooldown")
-	t.steps(host, 720 - 278)
-	t.check(sk.is_ready(), "ready again 12 s after the cast")
+	t.check(not enemy.is_stunned() and enemy.can_move(), "Talbog stun ends after 120 ticks")
+	t.check(_wall(host) == null, "no wall appears after impact")
 	await t.free_match(host)
-	t.ok("TALBOG! wall lasts 240 ticks, cooldown 12 s")
 
-func _talbog_wall_geometry(t: TestCtx) -> void:
+func _talbog_grounding(t: TestCtx) -> void:
 	var host := _live(t, [], ["nathan"])
 	var jm: Hero = host.heroes[0]
-	var inp := t.inputs(host)
-	TestCtx.put(jm, -3.0, -3.0)
-	inp.aim_at(jm, Vector3(0, 0, 0)) # south-east, 4.24 m
-	inp.press(jm, S1)
-	t.steps(host, 38)
-	var wall = _wall(host)
-	t.check(wall != null, "wall rises on a diagonal aim")
-	if wall != null:
-		var rel: Vector3 = wall.apex() - jm.global_position
-		t.check(t.near(rel.length(), 1.5, 0.05), "apex 1.5 m from the landing point (got %.2f)" % rel.length())
-		t.check(t.near(rad_to_deg(atan2(rel.z, rel.x)), 45.0, 1.0), "apex lies along the aim (%.1f deg)" % rad_to_deg(atan2(rel.z, rel.x)))
-		var tips: Array = wall.tip_points()
-		t.check(t.near(tips[0].distance_to(tips[1]), 5.0, 0.05), "5 m wide on a diagonal too")
+	var platform := StaticBody3D.new()
+	platform.collision_layer = RB.L_WORLD
+	var shape := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(3, 1.2, 3)
+	shape.shape = box
+	platform.add_child(shape)
+	host.world.add_child(platform)
+	platform.global_position = Vector3(-5, 0.6, -4)
+	platform.force_update_transform()
+	jm.teleport(Vector3(-5, 1.25, -4))
+	t.inputs(host).aim_at(jm, Vector3(0, 0, -4))
+	t.inputs(host).press(jm, S1)
+	t.steps(host, 1)
+	var target: Vector3 = jm.skills[0].last_target
+	t.check(target.y < 0.1 and target.x > -1, "raised takeoff targets the lower floor, not starting elevation")
+	t.check(_marker(host).get_meta("landing") == target, "public marker uses grounded landing query")
+	t.steps(host, 36)
+	t.check(jm.global_position.distance_to(target) < 0.1 and _wall(host) == null, "actual impact matches grounded target without wall")
 	await t.free_match(host)
-	t.ok("TALBOG! wall follows the aim")
-
-func _talbog_overlap(t: TestCtx) -> void:
-	var host := _live(t, [], ["nathan", "nene"])
-	var jm: Hero = host.heroes[0]
-	var inner: Hero = host.heroes[1]
-	var outer: Hero = host.heroes[2]
-	var inp := t.inputs(host)
-	TestCtx.put(jm, -4.0, 0.0)
-	TestCtx.put(inner, 1.0, 0.0) # inside the wall's footprint, JM's side
-	TestCtx.put(outer, 1.7, 0.0) # inside the footprint, outer side
-	inp.aim_at(jm, Vector3(0, 0, 0))
-	inp.press(jm, S1)
-	t.steps(host, 37)
-	var wall = _wall(host)
-	t.check(wall != null, "wall exists")
-	if wall != null:
-		t.check(not wall.overlaps(inner.global_position, 0.4), "the hero on JM's side was moved off the wall (x=%.2f)" % inner.global_position.x)
-		t.check(not wall.overlaps(outer.global_position, 0.4), "the hero on the far side was moved off the wall (x=%.2f)" % outer.global_position.x)
-		t.check(inner.global_position.x < 1.2, "overlapped hero nearer JM's face ends on JM's side")
-		t.check(outer.global_position.x > 1.8, "overlapped hero nearer the outer face ends outside")
-	t.steps(host, 20)
-	t.check(inner.global_position.x < 1.2, "pushed toward the wall it stays on its own side (x=%.2f)" % inner.global_position.x)
-	t.check(outer.global_position.x > 4.0, "the outer hero is pushed 3 m away (x=%.2f)" % outer.global_position.x)
-	await t.free_match(host)
-	t.ok("TALBOG! overlapped heroes move to the nearer side")
 
 func _talbog_clamps(t: TestCtx) -> void:
 	var host := _live(t, [], ["nathan"])
@@ -260,6 +202,7 @@ func _talbog_clamps(t: TestCtx) -> void:
 	t.steps(host, 38)
 	t.check(t.near(jm.global_position.x, 0.0, 0.1) and t.near(jm.global_position.z, -6.0, 0.05), "aim past range lands at max range 6 m, got %s" % jm.global_position)
 	# shorter aim lands short
+	t.steps(host, jm.cast_lock_ticks)
 	sk.cd_ticks = 0
 	TestCtx.put(jm, -6.0, -6.0)
 	inp.aim_at(jm, Vector3(-3.0, 0, -6.0))
@@ -267,6 +210,7 @@ func _talbog_clamps(t: TestCtx) -> void:
 	t.steps(host, 38)
 	t.check(t.near(jm.global_position.x, -3.0, 0.1), "aim inside range lands on the aim point, got %.2f" % jm.global_position.x)
 	# blocking wall: lands just before the arena wall (face at x = 20)
+	t.steps(host, jm.cast_lock_ticks)
 	sk.cd_ticks = 0
 	TestCtx.put(jm, 15.0, 3.0)
 	inp.aim_at(jm, Vector3(25.0, 0, 3.0))
@@ -274,6 +218,7 @@ func _talbog_clamps(t: TestCtx) -> void:
 	t.steps(host, 38)
 	t.check(jm.global_position.x > 19.2 and jm.global_position.x < 19.7, "lands just before the solid wall (x=%.2f)" % jm.global_position.x)
 	# jail barrier: the band around the Dilaw jail line (x = -19, z 5.2..9.2)
+	t.steps(host, jm.cast_lock_ticks)
 	sk.cd_ticks = 0
 	TestCtx.put(jm, -13.0, 7.2)
 	inp.aim_at(jm, Vector3(-20.0, 0, 7.2))
@@ -282,6 +227,7 @@ func _talbog_clamps(t: TestCtx) -> void:
 	var band_edge := -19.0 + host.tuning.jail_band + host.tuning.body_radius
 	t.check(jm.global_position.x > band_edge - 0.02 and jm.global_position.x < band_edge + 0.35, "lands just before the jail barrier (x=%.2f)" % jm.global_position.x)
 	# his own pole (-12,0): no ring barrier any more, only the solid pole (r 0.2 + body 0.4)
+	t.steps(host, jm.cast_lock_ticks)
 	sk.cd_ticks = 0
 	TestCtx.put(jm, -7.0, 0.0)
 	inp.aim_at(jm, Vector3(-20.0, 0, 0.0))
@@ -289,6 +235,7 @@ func _talbog_clamps(t: TestCtx) -> void:
 	t.steps(host, 38)
 	t.check(jm.global_position.x > -11.5 and jm.global_position.x < -11.3, "lands just before his own pole (x=%.2f)" % jm.global_position.x)
 	# right next to a wall the jump lands in place
+	t.steps(host, jm.cast_lock_ticks)
 	sk.cd_ticks = 0
 	TestCtx.put(jm, 19.5, 3.0)
 	inp.aim_at(jm, Vector3(25.0, 0, 3.0))
@@ -350,6 +297,7 @@ func _tamaraw_charge(t: TestCtx) -> void:
 	t.check(jm.collision_layer == RB.L_HERO, "solid body back after the charge")
 	t.check(not jm.is_stunned(), "no stun when the charge times out")
 	# slows still apply to the fixed speed
+	t.steps(host, jm.cast_lock_ticks)
 	sk.cd_ticks = 0
 	TestCtx.put(jm, -5.0, 3.0)
 	jm.add_slow(0.4, 3.0, "test_slow", true)
@@ -444,21 +392,22 @@ func _tamaraw_crash(t: TestCtx) -> void:
 	t.check(not _skill2(jm).active and jm.is_stunned(), "charging into the enemy pole ends the charge and stuns")
 	t.check(jm.global_position.x < 11.5, "stopped before the pole (x=%.2f)" % jm.global_position.x)
 	await t.free_match(host)
-	# a TALBOG! wall is solid too: land a wall, then charge into its inner face
+	# TALBOG no longer leaves a solid obstacle: a later charge crosses its landing area.
 	host = _live(t, [], ["nathan"])
 	jm = host.heroes[0]
 	inp = t.inputs(host)
-	TestCtx.put(jm, -8.0, -4.0)
-	inp.aim_at(jm, Vector3(-4.0, 0, -4.0))
+	TestCtx.put(jm, -8, -4)
+	inp.aim_at(jm, Vector3(-4, 0, -4))
 	inp.press(jm, S1)
-	t.steps(host, 38) # lands at (-4, -4); wall centre of curvature (-5.5, -4), inner face at x = -2.8
-	t.check(_wall(host) != null, "wall is up")
-	TestCtx.put(jm, -5.5, -4.0)
-	inp.aim_at(jm, Vector3(30.0, 0, -4.0))
+	t.steps(host, 38)
+	t.check(_wall(host) == null, "Talbog leaves no charge-blocking wall")
+	t.check(jm.cast_lock_ticks > 0 and jm.is_taggable(), "Talbog landing recovery plants JM while he stays taggable")
+	t.steps(host, jm.cast_lock_ticks)
+	TestCtx.put(jm, -5.5, -4)
+	inp.aim_at(jm, Vector3(30, 0, -4))
 	inp.press(jm, S2)
 	t.steps(host, 30)
-	t.check(not _skill2(jm).active and jm.is_stunned(), "charging into a TALBOG! wall ends the charge and stuns")
-	t.check(jm.global_position.x < -2.8, "stopped inside the wall (x=%.2f)" % jm.global_position.x)
+	t.check(_skill2(jm).active and not jm.is_stunned() and jm.global_position.x > -3, "Tamaraw crosses the former wall footprint")
 	await t.free_match(host)
 	t.ok("TAMARAW!!! solid hit slows nearby enemies and stuns JM")
 
@@ -481,6 +430,7 @@ func _tamaraw_recast_and_tag(t: TestCtx) -> void:
 	t.check(jm.global_position.x < x_before + 1.2, "JM slows to a stop after the recast (x=%.2f)" % jm.global_position.x)
 	# tagged during the charge: ends
 	jm.passive.guard = false
+	t.steps(host, jm.cast_lock_ticks)
 	sk.cd_ticks = 0
 	TestCtx.put(jm, -5.0, 3.0)
 	inp.press(jm, S2)
@@ -653,3 +603,20 @@ func _makapal_reset_and_icon(t: TestCtx) -> void:
 	t.check(pas.hud_state().on and pas.hud_state().fill == 1.0, "HUD state after reset")
 	await t.free_match(host)
 	t.ok("MAKAPAL! icon and round reset")
+
+func _tamaraw_daze(t: TestCtx) -> void:
+	var host := _live(t, ["inday"], ["nathan"])
+	var jm: Hero = host.heroes[0]
+	var target: Hero = host.heroes[2]
+	TestCtx.put(jm, -4, -4)
+	TestCtx.put(target, -3.3, -4)
+	t.inputs(host).aim_at(jm, Vector3(10, 0, -4))
+	t.inputs(host).press(jm, S2)
+	t.steps(host, 1)
+	t.check(target.has_modifier("tamaraw_daze") and t.near(target.strongest_slow(), 0.3), "charge contact dazes with 30 percent slow")
+	t.check(not target.is_stunned() and target.can_use_skills(), "daze does not lock actions")
+	t.steps(host, 29)
+	t.check(target.has_modifier("tamaraw_daze"), "daze lasts through tick 29")
+	t.steps(host, 1)
+	t.check(not target.has_modifier("tamaraw_daze") and _count("tamaraw_shove") == 1, "daze expires at half a second and never refreshes within one charge")
+	await t.free_match(host)

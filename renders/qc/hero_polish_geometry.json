@@ -1,0 +1,503 @@
+{
+  "assets/characters/tutoy.glb": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "Mesh_0: duplicate verts=5021 loose verts=0",
+      "hidden back-to-back faces: Mesh_0 (18 pairs) - delete to save tris",
+      "asset lowest point z=0.0211 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.0211,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [
+      {
+        "where": "Mesh_0",
+        "tri_pairs": 18
+      }
+    ],
+    "enclosed": [],
+    "objects": {
+      "Mesh_0": {
+        "verts": 11462,
+        "faces": 10554,
+        "tris": 10554,
+        "ngons": 0,
+        "boundary_edges": 10086,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 5021,
+        "islands": 1177,
+        "inside_out_islands": 0,
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0.0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 0.27,
+        "uv_coverage_pct": 54.3
+      }
+    }
+  },
+  "assets/characters/nene.glb": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "Mesh_0: duplicate verts=2791 loose verts=0",
+      "hidden back-to-back faces: Mesh_0 (6 pairs) - delete to save tris",
+      "asset lowest point z=0.005 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.005,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [
+      {
+        "where": "Mesh_0",
+        "tri_pairs": 6
+      }
+    ],
+    "enclosed": [],
+    "objects": {
+      "Mesh_0": {
+        "verts": 8346,
+        "faces": 10283,
+        "tris": 10283,
+        "ngons": 0,
+        "boundary_edges": 5631,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 2791,
+        "islands": 389,
+        "inside_out_islands": 0,
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0.0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 0.0,
+        "uv_coverage_pct": 66.3
+      }
+    }
+  },
+  "assets/characters/nathan.glb": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "Mesh_0: duplicate verts=2801 loose verts=0",
+      "hidden back-to-back faces: Mesh_0 (25 pairs) - delete to save tris",
+      "asset lowest point z=0.0152 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.0152,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [
+      {
+        "where": "Mesh_0",
+        "tri_pairs": 25
+      }
+    ],
+    "enclosed": [],
+    "objects": {
+      "Mesh_0": {
+        "verts": 8420,
+        "faces": 10237,
+        "tris": 10237,
+        "ngons": 0,
+        "boundary_edges": 5723,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 2801,
+        "islands": 440,
+        "inside_out_islands": 0,
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0.0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 0.0,
+        "uv_coverage_pct": 60.5
+      }
+    }
+  },
+  "assets/characters/jm.glb": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "Mesh_0: duplicate verts=2197 loose verts=0",
+      "hidden back-to-back faces: Mesh_0 (1 pairs) - delete to save tris",
+      "asset lowest point z=0.0109 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.0109,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [
+      {
+        "where": "Mesh_0",
+        "tri_pairs": 1
+      }
+    ],
+    "enclosed": [],
+    "objects": {
+      "Mesh_0": {
+        "verts": 8568,
+        "faces": 12178,
+        "tris": 12178,
+        "ngons": 0,
+        "boundary_edges": 4560,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 2197,
+        "islands": 199,
+        "inside_out_islands": 0,
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0.0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 0.0,
+        "uv_coverage_pct": 65.1
+      }
+    }
+  },
+  "assets/characters/inday.glb": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "Mesh_0: duplicate verts=2338 loose verts=0",
+      "hidden back-to-back faces: Mesh_0 (4 pairs) - delete to save tris",
+      "asset lowest point z=0.0066 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.0066,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [
+      {
+        "where": "Mesh_0",
+        "tri_pairs": 4
+      }
+    ],
+    "enclosed": [],
+    "objects": {
+      "Mesh_0": {
+        "verts": 7877,
+        "faces": 10151,
+        "tris": 10151,
+        "ngons": 0,
+        "boundary_edges": 4981,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 2338,
+        "islands": 311,
+        "inside_out_islands": 0,
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0.0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 0.0,
+        "uv_coverage_pct": 66.5
+      }
+    }
+  },
+  "assets/props/tamaraw_spirit.glb": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "Tamaraw: duplicate verts=1449 loose verts=0",
+      "hidden back-to-back faces: Tamaraw (1 pairs) - delete to save tris",
+      "asset lowest point z=0.0085 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 0.0085,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [
+      {
+        "where": "Tamaraw",
+        "tri_pairs": 1
+      }
+    ],
+    "enclosed": [],
+    "objects": {
+      "Tamaraw": {
+        "verts": 4055,
+        "faces": 4800,
+        "tris": 4800,
+        "ngons": 0,
+        "boundary_edges": 2904,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 1449,
+        "islands": 203,
+        "inside_out_islands": 0,
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0.0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 0.0,
+        "uv_coverage_pct": 66.2
+      }
+    }
+  },
+  "assets/props/jm_towel.glb": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "asset lowest point z=-0.26 (not resting on ground plane z=0)"
+    ],
+    "ground_z": -0.26,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "JM_TerryCloth": {
+        "verts": 533,
+        "faces": 960,
+        "tris": 960,
+        "ngons": 0,
+        "boundary_edges": 104,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 0,
+        "islands": 1,
+        "inside_out_islands": 0,
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "materials": 1,
+        "unweighted_verts": 0,
+        "verts_over_4_influences": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0.0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 0.0,
+        "uv_coverage_pct": 100.0
+      }
+    }
+  },
+  "assets/props/kimkim.glb": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "Mesh_0: duplicate verts=321 loose verts=0",
+      "hidden back-to-back faces: Mesh_0 (1 pairs) - delete to save tris",
+      "asset lowest point z=-0.0919 (not resting on ground plane z=0)"
+    ],
+    "ground_z": -0.0919,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [
+      {
+        "where": "Mesh_0",
+        "tri_pairs": 1
+      }
+    ],
+    "enclosed": [],
+    "objects": {
+      "Mesh_0": {
+        "verts": 654,
+        "faces": 320,
+        "tris": 320,
+        "ngons": 0,
+        "boundary_edges": 642,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 321,
+        "islands": 173,
+        "inside_out_islands": 0,
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "materials": 1,
+        "uv_maps": 1,
+        "uv_oob_pct": 0.0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 0.0,
+        "uv_coverage_pct": 58.4
+      }
+    }
+  },
+  "assets/characters/face_cards/jm_cards.glb": {
+    "ok": true,
+    "pass": true,
+    "errors": [],
+    "warnings": [
+      "Eye_L: missing/empty material slot",
+      "Eye_L: duplicate verts=189 loose verts=0",
+      "Eye_R: missing/empty material slot",
+      "Eye_R: duplicate verts=194 loose verts=0",
+      "Mouth: missing/empty material slot",
+      "Mouth: duplicate verts=185 loose verts=0",
+      "asset lowest point z=1.3208 (not resting on ground plane z=0)"
+    ],
+    "ground_z": 1.3208,
+    "zfighting": [],
+    "floating": [],
+    "back_to_back": [],
+    "enclosed": [],
+    "objects": {
+      "Eye_L": {
+        "verts": 439,
+        "faces": 384,
+        "tris": 384,
+        "ngons": 0,
+        "boundary_edges": 604,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 189,
+        "islands": 2,
+        "inside_out_islands": 0,
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "materials": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0.0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 0.0,
+        "uv_coverage_pct": 100.0
+      },
+      "Eye_R": {
+        "verts": 446,
+        "faces": 384,
+        "tris": 384,
+        "ngons": 0,
+        "boundary_edges": 608,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 194,
+        "islands": 3,
+        "inside_out_islands": 0,
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "materials": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0.0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 0.0,
+        "uv_coverage_pct": 100.0
+      },
+      "Mouth": {
+        "verts": 460,
+        "faces": 440,
+        "tris": 440,
+        "ngons": 0,
+        "boundary_edges": 608,
+        "nonmanifold_edges": 0,
+        "wire_edges": 0,
+        "loose_verts": 0,
+        "degenerate_faces": 0,
+        "zero_length_edges": 0,
+        "inconsistent_normals_edges": 0,
+        "duplicate_verts": 185,
+        "islands": 1,
+        "inside_out_islands": 0,
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "materials": 0,
+        "uv_maps": 1,
+        "uv_oob_pct": 0.0,
+        "uv_zero_area_faces": 0,
+        "uv_overlap_pct": 0.11,
+        "uv_coverage_pct": 100.0
+      }
+    }
+  }
+}

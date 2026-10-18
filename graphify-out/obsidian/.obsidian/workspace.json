@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "cc056b56d0897a35",
+        "id": "094fa0f0f12b9977",
         "type": "tabs",
         "children": [
           {
-            "id": "9eaf152390965458",
+            "id": "9a7bc14f6f15b187",
             "type": "leaf",
             "state": {
               "type": "graph",
@@ -181,8 +181,10 @@
       "bases:Create new base": false
     }
   },
-  "active": "9eaf152390965458",
+  "active": "9a7bc14f6f15b187",
   "lastOpenFiles": [
+    "build_home_props.py.md",
+    "export()_1.md",
     "_COMMUNITY_Community 3.md",
     "_COMMUNITY_Community 30.md",
     "_COMMUNITY_Community 29.md",
@@ -206,8 +208,6 @@
     "RESBAK_1.md",
     "RESBAK docs index.md",
     "blender.md",
-    "Glossary.md",
-    "Decision log.md",
-    "RESBAK Design Specification (Legacy).md"
+    "Glossary.md"
   ]
 }

@@ -61,9 +61,16 @@ func _process(delta: float) -> void:
 	_update_aim()
 	skill_aim.refresh()
 	danger = false
+	for object in host.objects:
+		if object is UboCloud:
+			object.set_viewer(local)
 	for h in host.heroes:
 		var alpha := host.visibility(local, h) if local else 1.0
-		h.visual.set_view_alpha(alpha)
+		var fade_step := delta / maxf(host.tuning.smoke_visibility_fade, 0.01)
+		h.visual.set_view_alpha(move_toward(h.visual._alpha, alpha, fade_step))
+		h.visual.nametag.visible = alpha >= 0.5 and h.visual._alpha >= 0.5
+		h.visual.extras.get_node("StatusFeedback").set("viewer", local)
+		h.visual.extras.get_node("StatusFeedback").visible = alpha > 0.01
 		if local == null or h.team == local.team:
 			h.visual.set_outline(INK)
 			h.visual.set_markers(false, h.has_ep() or h.is_immune())

@@ -191,14 +191,14 @@ func _bawal_curse(t: TestCtx) -> void:
 	_press(t, host, nene, S2)
 	var sk = nene.skills[1]
 	t.check(_count("bawal") == 1 and nene.is_warded(), "BAWAL! puts up the sign")
-	t.check(sk.sign_label != null and sk.sign_label.visible, "the BAWAL! sign hangs over her head")
+	t.check(sk.sign_label == null and nene.is_warded(), "BAWAL uses body glow without a floating sign")
 	TestCtx.put(nathan, -14, -10)
 	_tap_tag(t, host, nathan, nene)
 	t.check(nene.is_free() and _count("tag") == 0, "a tag on a warded Nene does not count")
 	t.check(_count("bawal_curse") == 1 and _last("bawal_curse").get("tagger") == nathan, "the tagger is cursed")
 	t.check(nathan.is_hallucinating() and nathan.hallucinate_ticks > RB.ticks(3.0) - 3, "the tagger hallucinates for 3 s")
 	t.check(not nathan.is_stumbling(), "no failed-tag stumble on top")
-	t.check(not nene.is_warded() and not sk.sign_label.visible, "one curse per cast: the sign drops")
+	t.check(not nene.is_warded() and sk.sign_label == null, "one curse per cast: the sign drops")
 	t.check(int(host.stats[nathan.slot].tags) == 0, "no tag stat for the cursed swing")
 	# the curse turns the stick around
 	TestCtx.put(nathan, 5, 5)
@@ -228,6 +228,8 @@ func _bawal_drops(t: TestCtx) -> void:
 	nene.skills[1].cd_ticks = 0
 	_press(t, host, nene, S2)
 	t.check(nene.is_warded(), "cast again")
+	t.check(not nene.can_press_tag(), "ward cast briefly plants Nene")
+	t.steps(host, nene.cast_lock_ticks)
 	_press(t, host, nene, TAG)
 	t.check(not nene.is_warded(), "pressing Tag drops the sign (no hitting from behind it)")
 	await t.free_match(host)

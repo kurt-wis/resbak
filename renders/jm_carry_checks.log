@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[INTEGRATION TEST] suite hero_revision
+  ✓ [hero_revision] all skills enforce stationary-cast and traversal contracts
+  ✓ [hero_revision] movable preparation, planted commitment, objective-facing capture and rounded guides
+  ✓ [hero_revision] status detail interaction and enlarged action controls
+  ✓ [hero_revision] JM shoulder cloth, stepped poses and click-only missed-charge recovery
+[INTEGRATION TEST] 1 suites, 55 checks, 0 failed
+[INTEGRATION TEST] All checks passed successfully (100%)!

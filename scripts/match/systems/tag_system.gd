@@ -134,9 +134,24 @@ func resolve() -> Array:
 		for j in range(i + 1, results.size()):
 			var b: Dictionary = results[j]
 			if b.type == "hit" and a.target == b.tagger and b.target == a.tagger:
-				a.type = "sabay"
-				b.type = "sabay"
+				var a_low := wind_disadvantaged(a.tagger)
+				var b_low := wind_disadvantaged(b.tagger)
+				if a_low != b_low:
+					if a_low:
+						a.type = "outprioritized"
+					else:
+						b.type = "outprioritized"
+				else:
+					a.type = "sabay"
+					b.type = "sabay"
 	return results
+
+## Membership is sampled at landing, with no grace period after leaving a lane.
+func wind_disadvantaged(h: Hero) -> bool:
+	for object in host.objects:
+		if object.has_method("disadvantages") and object.disadvantages(h):
+			return true
+	return false
 
 func _resolve_one(h: Hero) -> Dictionary:
 	var lunge := h.lunge_dir

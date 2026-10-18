@@ -41,6 +41,9 @@ var windup_end_tick := -1 ## host tick this hero's tag lands, or -1
 var sabay_ticks := 0 ## host-timed fall/recovery; Free and taggable, never jailed by Sabay
 var strike_reach := 0.0 ## normal reach locked for the swing in flight; 0 = tag_reach()
 var hallucinate_ticks := 0 ## BAWAL! curse: the move stick is turned around
+var blind_ticks := 0 ## UBO initial burst; vision loss, never an action/movement lock
+var cast_lock_ticks := 0 ## planted casting/recovery; remains taggable, pushes still move the body
+var cough_ticks := 0 ## upper-body presentation, never disables voluntary movement
 var lunge_dir := Vector3.ZERO
 var strike_target_slot := -1
 var tagged_by: Hero = null ## sends us to the tagger's jail
@@ -139,6 +142,11 @@ func is_warded() -> bool:
 func is_hallucinating() -> bool:
 	return hallucinate_ticks > 0
 
+func blind(secs: float) -> void:
+	if is_free() and secs > 0.0:
+		blind_ticks = maxi(blind_ticks, RB.ticks(secs))
+		host.emit_event("blinded", {"hero": self, "seconds": secs})
+
 func is_disabled() -> bool: ## stumble or stun: no move, tag, skill, capture start
 	return stun_ticks > 0 or stumble_ticks > 0
 
@@ -156,14 +164,14 @@ func is_attacking() -> bool:
 	return state == State.FREE and tag_started_tick >= 0 and round_live() and host.tick < tag_started_tick + RB.ticks(tuning.tag_windup + tuning.tag_followthrough)
 
 func can_move() -> bool:
-	if frozen or state == State.TAGGED or capturing or is_disabled() or is_attacking():
+	if frozen or state == State.TAGGED or capturing or is_disabled() or is_attacking() or cast_lock_ticks > 0:
 		return false
 	if state == State.CHAINED:
 		return host != null and host.jail_system.can_steer(self)
 	return true
 
 func can_press_tag() -> bool:
-	if not round_live() or state != State.FREE or is_disabled() or capturing or is_winding_up() or is_attacking():
+	if not round_live() or state != State.FREE or is_disabled() or capturing or is_winding_up() or is_attacking() or cast_lock_ticks > 0:
 		return false
 	if tag_block_ticks > 0:
 		return false
@@ -173,7 +181,7 @@ func can_press_tag() -> bool:
 	return true
 
 func can_use_skills() -> bool:
-	if not round_live() or state != State.FREE or is_disabled() or capturing or frozen or is_attacking():
+	if not round_live() or state != State.FREE or is_disabled() or capturing or frozen or is_attacking() or cast_lock_ticks > 0:
 		return false
 	for s in skills:
 		if s.active and s.blocks_other_skills():
@@ -181,7 +189,11 @@ func can_use_skills() -> bool:
 	return true
 
 func can_start_capture() -> bool:
-	return round_live() and state == State.FREE and not is_disabled() and not is_winding_up() and not is_attacking() and lockout_ticks <= 0 and active_skill() == null
+	return round_live() and state == State.FREE and not is_disabled() and not is_winding_up() and not is_attacking() and cast_lock_ticks <= 0 and lockout_ticks <= 0 and active_skill() == null
+
+func plant_cast(seconds: float) -> void:
+	cast_lock_ticks = maxi(cast_lock_ticks, RB.ticks(seconds))
+	velocity = Vector3(0, velocity.y, 0)
 
 ## Taggable by an enemy right now (state and EP; teams and height are TagSystem's job).
 func is_taggable() -> bool:
@@ -375,6 +387,9 @@ func on_tagged(tagger: Hero) -> void:
 	tag_started_tick = -1
 	sabay_ticks = 0
 	hallucinate_ticks = 0
+	blind_ticks = 0
+	cast_lock_ticks = 0
+	cough_ticks = 0
 	_push_ticks = 0
 	stun_ticks = 0
 	stumble_ticks = 0
@@ -431,6 +446,9 @@ func reset_for_round(at: Vector3, face: Vector3) -> void:
 	sabay_ticks = 0
 	strike_reach = 0.0
 	hallucinate_ticks = 0
+	blind_ticks = 0
+	cast_lock_ticks = 0
+	cough_ticks = 0
 	capturing = false
 	capture_ticks = 0
 	tagged_by = null
@@ -476,6 +494,9 @@ func tick_timers() -> void:
 	tag_block_ticks = maxi(0, tag_block_ticks - 1)
 	immune_ticks = maxi(0, immune_ticks - 1)
 	hallucinate_ticks = maxi(0, hallucinate_ticks - 1)
+	blind_ticks = maxi(0, blind_ticks - 1)
+	cast_lock_ticks = maxi(0, cast_lock_ticks - 1)
+	cough_ticks = maxi(0, cough_ticks - 1)
 	for t in range(2):
 		revealed_ticks[t] = maxi(0, revealed_ticks[t] - 1)
 	for i in range(_mods.size() - 1, -1, -1):
@@ -514,8 +535,8 @@ func tick_move(dt: float) -> void:
 	var tilt := frame.move.length()
 	var want := 0.0
 	if tilt >= tuning.stick_dead_zone:
-		var walking := frame.from_gamepad and tilt < tuning.stick_run_tilt
-		want = current_speed(walking)
+		var strength := clampf((tilt - tuning.stick_dead_zone) / (1.0 - tuning.stick_dead_zone), 0.0, 1.0) if frame.from_gamepad else 1.0
+		want = current_speed() * strength
 	var target := wish_dir * want
 	var horiz := Vector3(velocity.x, 0, velocity.z)
 	var rate := tuning.acceleration if target.length() >= horiz.length() else tuning.deceleration
@@ -550,6 +571,12 @@ func ground_speed() -> float:
 	return Vector2(velocity.x, velocity.z).length()
 
 func _update_facing() -> void:
+	if capturing:
+		facing = RB.flat(host.base_system.pole_pos(RB.other_team(team)) - global_position).normalized()
+		return
+	if frame.tag_preparing and can_press_tag():
+		facing = host.tag_system.aim_direction(self)
+		return
 	if is_winding_up() and lunge_dir != Vector3.ZERO:
 		facing = lunge_dir
 		return

@@ -1,0 +1,19 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[INTEGRATION TEST] suite kit_inday
+  ✓ [kit_inday] Inday data: speed, cooldowns, kinds
+  ✓ [kit_inday] placed wind: tuning, movement, lifetime, membership and wall clamp
+  ✓ [kit_inday] wind priority only breaks an otherwise simultaneous reciprocal tie
+  ✓ [kit_inday] HILA immediate miss return with normal cooldown
+  ✓ [kit_inday] HILA moving extend and same-arm recovery
+  ✓ [kit_inday] HILA! pulls the first teammate it touches
+  ✓ [kit_inday] HILA! rescues a chain tip it touches, then pulls it in
+  ✓ [kit_inday] HILA! is stopped by walls and closes when Inday is tagged
+  ✓ [kit_inday] TAKBO NA! after a touch rescue
+  ✓ [kit_inday] another hero's rescue gives no TAKBO NA! and 4 s EP
+[INTEGRATION TEST] suite hero_revision
+  ✓ [hero_revision] all skills enforce stationary-cast and traversal contracts
+  ✓ [hero_revision] movable preparation, planted commitment, objective-facing capture and rounded guides
+  ✓ [hero_revision] status detail interaction and enlarged action controls
+[INTEGRATION TEST] 2 suites, 102 checks, 0 failed
+[INTEGRATION TEST] All checks passed successfully (100%)!

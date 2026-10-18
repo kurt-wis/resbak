@@ -92,7 +92,7 @@ HERO_CLIPS = {
     },
     "nathan": {
         "Idle": clip(NA, "Scheming_Hand_Rub", loop=True),
-        "Walking": clip(NA, "Sneaky_Walk", loop=True),
+        "Walking": clip(T, "Quick_Walk", trim=(0.0, 1.0), loop=True, plant=True),
         "Running": clip(NA, "run_fast_9", loop=True),
         # S1 BUGA!: lean back to inhale, then blow forward; the source holds the inhale ~0.8 s,
         # squeezed so the blow peaks 0.4 s in (the spec's inhale time), settle at full speed.
@@ -106,7 +106,7 @@ HERO_CLIPS = {
     },
     "jm": {
         "Idle": clip(J, "Idle_11", loop=True),
-        "Walking": clip(J, "Proud_Strut", loop=True, plant=True),           # hovered ~7 cm
+        "Walking": clip(T, "Quick_Walk", trim=(0.0, 1.0), loop=True, plant=True),
         "Running": clip(J, "run_fast_4", loop=True),
         # Crouch to just before landing; the source jumps with feet ~50 deg to the right.
         "Talbog_Jump": clip(J, "Regular_Jump", trim=(4 / 24, 26 / 24), turn=40),
@@ -711,6 +711,11 @@ def build(hero_id):
             bake_on_floor(arm, name, clips[name])
         else:
             bake_grounded(arm, name, clips[name])
+    from build_hero_polish import author_reach, author_towel_tag
+    if hero_id == "inday":
+        author_reach(arm)
+    if hero_id == "jm":
+        author_towel_tag(arm)
     render_sheet(arm, hero_id)
     strip = render_dance_strip(arm, hero_id)
     render_moves_sheet(arm, hero_id, [n for n in names if not n.startswith("Menu_")])
@@ -725,6 +730,15 @@ def main():
     os.makedirs(RENDER_DIR, exist_ok=True)
     only = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else list(HEROES)
     dance_strips = {hero_id: build(hero_id) for hero_id in only}
+    # Approved revision is the final stage; source libraries stay reproducible.
+    from build_revision_animations import build as revise
+    import shutil, runpy
+    for hero_id in only:
+        revise(hero_id)
+        shutil.copyfile(os.path.join(RENDER_DIR, 'revision_assets', hero_id+'.glb'),
+                        os.path.join(OUT_DIR, hero_id+'.glb'))
+    if 'jm' in only:
+        runpy.run_path(os.path.join(PROJ, 'tools', 'build_supplied_towel.py'), run_name='__main__')
     _contact_sheet(dance_strips, os.path.join(RENDER_DIR, "heroes_breakdance.png"))
     log("done")
 
@@ -756,4 +770,5 @@ def _contact_sheet(strips, out):
     log(f"  dance sheet: {os.path.relpath(out, PROJ)}")
 
 
-main()
+if __name__ == "__main__":
+    main()

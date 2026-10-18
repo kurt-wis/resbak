@@ -17,7 +17,7 @@ glb = "res://assets/characters/nathan.glb"
 model_height = 1.8
 run_speed = 4.5
 tag_reach = 1.2
-walk_clip_speed = 0.28
+walk_clip_speed = 1.25
 run_clip_speed = 2.99
 skill1_name = "BUGA!"
 skill2_name = "UBO! UBO!"
@@ -27,8 +27,8 @@ skill2_cooldown = 18.0
 skill1_script = ExtResource("2")
 skill2_script = ExtResource("3")
 passive_script = ExtResource("4")
-skill1_text = "Inhale 0.4 s, then blow a 5 m Kimkim powder cone. Hit enemies are slowed 30 % for 1.5 s and leave a powder trail your team can track."
-skill2_text = "Lob a Kimkim packet up to 9 m. Its 3.5 m cloud hides everyone inside for 5 s; enemies who stay inside cough and give themselves away."
+skill1_text = "Inhale 0.4 s, then blow a 5 m Mikmik powder cone. Hit enemies are slowed 30 % for 1.5 s and leave a powder trail your team can track."
+skill2_text = "Lob Mikmik powder up to 9 m. The initial burst blinds enemies for 2 s. Inside your 5 s cloud, only you can see other heroes inside; everyone else loses sight through it."
 passive_text = "After a skill, your next sharp turn drops a powder patch. The first enemy to step in it puffs and is revealed to your team."
 values = {
 "buga_inhale": 0.4,
@@ -41,6 +41,7 @@ values = {
 "ubo_flight_time": 0.5,
 "ubo_radius": 3.5,
 "ubo_cloud_time": 5.0,
+"ubo_blind_time": 2.0,
 "ubo_inside_sight": 2.0,
 "ubo_cough_after": 1.0,
 "ubo_cough_reveal": 2.0,

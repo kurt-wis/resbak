@@ -1,0 +1,10 @@
+23:39:23 | INFO: Data are loaded, start creating Blender stuff
+23:39:23 | INFO: Blender create Mesh node Mesh_0
+23:39:25 | INFO: glTF import finished in 1.31s
+PAIRS {(1187, 10123)}
+TRI 1187 [[-0.24578438699245453, -0.12255321443080902, 1.3511669635772705], [-0.24301409721374512, -0.12176293879747391, 1.3949469327926636], [-0.2298663705587387, -0.07634508609771729, 1.401846170425415]]
+TRI 10123 [[-0.24578438699245453, -0.12255321443080902, 1.3511669635772705], [-0.2401685118675232, -0.12910456955432892, 1.4462534189224243], [-0.22479332983493805, -0.08360818028450012, 1.4625338315963745]]
+{"ok": true, "pass": false, "errors": ["z-fighting: Mesh_0 (1 overlapping coplanar tri pairs)"], "warnings": ["Mesh_0: duplicate verts=2801 loose verts=0", "hidden back-to-back faces: Mesh_0 (24 pairs) - delete to save tris", "asset lowest point z=0.0152 (not resting on ground plane z=0)"], "ground_z": 0.0152, "zfighting": [{"where": "Mesh_0", "tri_pairs": 1}], "floating": [], "back_to_back": [{"where": "Mesh_0", "tri_pairs": 24}], "enclosed": [], "objects": {"Mesh_0": {"verts": 8420, "faces": 10237, "tris": 10237, "ngons": 0, "boundary_edges": 5723, "nonmanifold_edges": 0, "wire_edges": 0, "loose_verts": 0, "degenerate_faces": 0, "zero_length_edges": 0, "inconsistent_normals_edges": 0, "duplicate_verts": 2801, "islands": 440, "inside_out_islands": 0, "scale": [1.0, 1.0, 1.0], "materials": 1, "unweighted_verts": 0, "verts_over_4_influences": 0, "uv_maps": 1, "uv_oob_pct": 0.0, "uv_zero_area_faces": 0, "uv_overlap_pct": 0.0, "uv_coverage_pct": 60.5}}}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

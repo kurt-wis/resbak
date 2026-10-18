@@ -18,6 +18,7 @@ var held := 0 ## RB.BTN_* bits held this tick
 var pressed := 0 ## RB.BTN_* bits pressed since the previous tick (edges)
 var from_gamepad := false ## enables tag assist and the 15-50 % walk band
 var tag_aim_dir := Vector2.ZERO ## optional exact tag-only aim; movement and skill aim stay independent
+var tag_preparing := false ## held preparation, permits normal locomotion
 var skill_aimed := false ## explicit dragged skill aim takes precedence over movement on cast
 var tag_target_slot := -1 ## selected opponent at commitment; -1 = unselected directional swing
 
@@ -39,6 +40,7 @@ func duplicate_frame() -> InputFrame:
 	f.tag_aim_dir = tag_aim_dir
 	f.tag_target_slot = tag_target_slot
 	f.skill_aimed = skill_aimed
+	f.tag_preparing = tag_preparing
 	return f
 
 ## World-space aim direction for `from` (flat, normalized), or Vector3.ZERO if none.

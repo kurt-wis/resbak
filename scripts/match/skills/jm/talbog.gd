@@ -1,26 +1,22 @@
 extends Skill
 
-## JM S1 TALBOG! (docs/RESBAK.md § 4 JM). Jump to the aim point (at most 6 m), airborne 0.6 s
-## with a landing marker everyone can see; while airborne JM can't steer, tag or be pushed but
-## can be tagged (the arc peaks at talbog_jump_height <= the 1 m height gap, so tags still
-## reach). The landing is cut short just before a blocking wall, solid prop, pole, the jail
-## barrier. On landing: enemies with their centre within 2.5 m are
-## pushed 3 m away from the landing point, and a crescent earth wall (talbog_wall.gd) rises 1.5 m
-## in front of the landing point along the aim for 4 s. Tagged mid-air: the jump ends where JM is,
-## he falls, and no impact or wall happens.
-
-const Wall := preload("res://scripts/match/skills/jm/talbog_wall.gd")
+## TALBOG: terrain-aware jump, public landing marker, enemy radial push and 2 s stun.
+## The approved 2026-10-18 redesign removes the earth wall (see docs/status.md).
+## Landing query is shared with the preview; interruption creates no impact.
 
 var _start := Vector3.ZERO
 var _target := Vector3.ZERO
 var _dir := Vector3(0, 0, 1)
 var _air_ticks := 36
 var _marker: Node3D
-var last_wall: Node3D ## the most recent wall (tests, HUD)
+var last_wall: Node3D ## retained query handle; always null after the no-wall redesign
 var last_target := Vector3.ZERO ## where the last jump was clamped to land
 
 func kind() -> int:
 	return RB.SkillKind.OFFENSIVE
+
+func is_traversal() -> bool:
+	return true
 
 func blocks_tagging() -> bool:
 	return true
@@ -103,10 +99,15 @@ func aim_preview(frame: InputFrame) -> Dictionary:
 		reach = clampf(want, 0.0, reach)
 	reach = _clamp_reach(dir, reach, hero.global_position)
 	info.direction = dir
-	info.point = hero.global_position + dir * reach
+	info.point = landing_ground(hero.global_position + dir * reach)
 	info.distance = reach
-	info.wall = Wall.segment_layout(info.point, dir, float(v("talbog_wall_width")), float(v("talbog_wall_offset")), float(v("talbog_wall_height")))
+	info.wall = [] # TALBOG is now an impact stun, with no obstacle or wall ghost.
 	return info
+
+func landing_ground(point: Vector3) -> Vector3:
+	var query := PhysicsRayQueryParameters3D.create(point + Vector3.UP * float(v("talbog_ground_probe_up")), point + Vector3.DOWN * float(v("talbog_ground_probe_down")), RB.L_WORLD | RB.L_VAULTABLE)
+	var hit := host.world.get_world_3d().direct_space_state.intersect_ray(query)
+	return hit.position if not hit.is_empty() else hero.global_position
 
 # ---- flight -----------------------------------------------------------------------------
 static func sample_arc(from: Vector3, to: Vector3, progress: float, peak: float) -> Vector3:
@@ -125,7 +126,7 @@ func move(dt: float) -> void:
 		_land()
 
 func _land() -> void:
-	var land := Vector3(_target.x, _start.y, _target.z)
+	var land := _target
 	hero.global_position = land
 	hero.velocity = Vector3.ZERO
 	_restore_body()
@@ -133,16 +134,6 @@ func _land() -> void:
 	active = false
 	var radius := float(v("talbog_push_radius"))
 	var dist := float(v("talbog_push_distance"))
-	var wall = Wall.new()
-	wall.setup(host, hero, float(v("talbog_wall_time")))
-	wall.ticks_left += 1 # the landing tick already ticks the new wall once: solid for exactly 4 s = 240 ticks
-	wall.build(land, _dir, float(v("talbog_wall_width")), float(v("talbog_wall_offset")), float(v("talbog_wall_height")))
-	host.spawn_object(wall)
-	wall.force_update_transform()
-	for c in wall.body.get_children():
-		(c as Node3D).force_update_transform()
-	wall.play_rise()
-	wall.resolve_overlaps(host.heroes, host.tuning.body_radius)
 	var pushed: Array[Hero] = []
 	for e in host.enemies_of(hero):
 		if not e.is_free() or absf(e.global_position.y - land.y) > host.tuning.height_gap:
@@ -153,17 +144,31 @@ func _land() -> void:
 		if away.length() < 0.05:
 			away = _dir
 		e.apply_push(away, dist, true)
+		e.stun(float(v("talbog_stun")), true)
 		pushed.append(e)
-	last_wall = wall
-	hero.visual.play_action("Talbog_Slam")
+	last_wall = null
+	hero.visual.play_action("Talbog_Slam", float(v("talbog_recovery")))
+	hero.plant_cast(float(v("talbog_recovery")))
 	_impact_fx(land, radius)
-	host.emit_event("talbog_land", {"hero": hero, "pos": land, "pushed": pushed, "wall": wall})
+	host.emit_event("talbog_land", {"hero": hero, "pos": land, "pushed": pushed, "wall": null})
 
 func _impact_fx(land: Vector3, radius: float) -> void:
 	var dust := Color(0.78, 0.64, 0.45, 0.85)
 	Vfx.ring_pulse(host.world, land, radius, dust, 0.45)
 	Vfx.ring_pulse(host.world, land, radius * 0.6, Color(1, 0.9, 0.7, 0.7), 0.3)
 	Vfx.burst(host.world, land + Vector3(0, 0.15, 0), dust, 34, 4.5, 0.7, 0.35, -3.0, 80.0)
+	for i in range(10):
+		var angle := TAU * float(i) / 10.0
+		var direction := Vector3(cos(angle), 0, sin(angle))
+		var side := direction.cross(Vector3.UP)
+		var points := PackedVector3Array()
+		for j in range(6):
+			var amount := float(j) / 5.0
+			points.append(direction * amount * radius * 0.85 + side * sin(j * 2.7 + i) * amount * 0.1)
+		var crack := Vfx.ribbon(points, 0.035, Color(0.42, 0.24, 0.09, 0.8))
+		host.world.add_child(crack)
+		crack.global_position = land + Vector3.UP * 0.025
+		Vfx.fade_and_free(crack, 0.55)
 
 # ---- end / reset ------------------------------------------------------------------------
 func end(_reason: String) -> void:
@@ -187,16 +192,6 @@ func _show_marker() -> void:
 	_marker = Vfx.ground_ring(host.world, _target, float(v("talbog_push_radius")), Color(col.r, col.g, col.b, 0.85), 0.14, 0.14)
 	_marker.name = "TalbogMarker"
 	_marker.set_meta("landing", _target)
-	for segment in Wall.segment_layout(_target, _dir, float(v("talbog_wall_width")), float(v("talbog_wall_offset")), float(v("talbog_wall_height"))):
-		var ghost := MeshInstance3D.new()
-		var mesh := BoxMesh.new()
-		mesh.size = segment.size
-		ghost.mesh = mesh
-		ghost.material_override = Vfx.flat_material(Color(col.r, col.g, col.b, host.tuning.skill_preview_wall_alpha))
-		ghost.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		_marker.add_child(ghost)
-		ghost.global_position = segment.position
-		ghost.rotation.y = segment.yaw
 
 
 func _clear_marker() -> void:

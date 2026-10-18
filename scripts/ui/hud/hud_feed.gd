@@ -13,6 +13,11 @@ const FONT := 24
 
 var lines: Array[Dictionary] = [] ## {text, color, tick}
 
+func line_rect(index: int) -> Rect2:
+	var map_rect := hud.minimap.rect
+	var width := maxf(map_rect.size.x, 350.0)
+	return Rect2(sz().x - MARGIN - width, map_rect.end.y + 14.0 + index * (LINE_H + 6.0), width, LINE_H)
+
 func texts() -> PackedStringArray:
 	var out := PackedStringArray()
 	for l in lines:
@@ -64,8 +69,7 @@ func _draw() -> void:
 		var l: Dictionary = lines[i]
 		var left := life - (now - int(l.tick))
 		var a := clampf(float(left) / 30.0, 0.0, 1.0)
-		var w := HudStyle.text_width(l.text, FONT) + 40.0
-		var r := Rect2(MARGIN, TOP + i * (LINE_H + 6.0), w, LINE_H)
+		var r := line_rect(i)
 		HudStyle.panel(self, r, Color(0, 0, 0, 0), Color(0.05, 0.06, 0.09, 0.72 * a), 10, 0)
 		draw_rect(Rect2(r.position + Vector2(0, 4), Vector2(6, LINE_H - 8)), Color(l.color, a))
-		HudStyle.text(self, l.text, Vector2(r.position.x + 20, r.get_center().y + FONT * 0.36), FONT, Color(l.color.lightened(0.15), a), HORIZONTAL_ALIGNMENT_LEFT, -1, 6 if a > 0.5 else 0)
+		HudStyle.text(self, l.text, Vector2(r.position.x + 20, r.get_center().y + FONT * 0.36), FONT, Color(l.color.lightened(0.15), a), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 28.0, 6 if a > 0.5 else 0)

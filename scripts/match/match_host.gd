@@ -226,16 +226,18 @@ func ray_hit(a: Vector3, b: Vector3, mask: int = RB.MASK_LOS) -> Dictionary:
 	return space.intersect_ray(q)
 
 ## How visible `target` is to `viewer` (a Hero, used for its team and position):
-## 1 = visible, 0.25 = see-through (IYAK!), 0 = hidden (UBO! UBO! cloud). Allies always see
-## each other; reveals (BUGA!, cough, patch) beat hiding.
+## 1 = visible, 0.25 = see-through (IYAK!), 0 = hidden (UBO! UBO! cloud). Smoke and timed blindness hide allies too;
+## reveal only takes effect after the viewer passes the smoke visibility restrictions.
 func visibility(viewer: Hero, target: Hero) -> float:
-	if viewer == null or target.team == viewer.team:
+	if viewer == null or viewer == target:
 		return 1.0
-	if target.is_revealed_to(viewer.team):
-		return 1.0
+	if viewer.blind_ticks > 0:
+		return 0.0
 	for o in objects:
 		if o.hides(viewer, target.global_position):
 			return 0.0
+	if target.team == viewer.team or target.is_revealed_to(viewer.team):
+		return 1.0
 	return target.enemy_alpha
 
 ## Taggable by `tagger` right now (spec can_tag; the TagSystem owns the rule).

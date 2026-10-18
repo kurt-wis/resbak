@@ -1,0 +1,47 @@
+23:37:45 | INFO: Data are loaded, start creating Blender stuff
+23:37:45 | INFO: Blender create Mesh node Mesh_0
+23:37:46 | INFO: glTF import finished in 1.17s
+23:37:47 | INFO: Data are loaded, start creating Blender stuff
+23:37:47 | INFO: Blender create Mesh node char1
+23:37:47 | INFO: glTF import finished in 0.32s
+[retarget] Walking <- tutoy_moves.glb:Quick_Walk: 22 bones matched (Meshy rig), 25 frames at 24 fps (source 24 fps), hips x1.077
+[build_heroes]   baked Walking: 25 frames
+[build_heroes]   baked Walking: 25 frames
+[build_heroes]   planted Walking: soles moved -3.8 to -0.4 cm
+INFO Draco is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+23:37:47 | INFO: Starting glTF 2.0 export
+23:37:47 | INFO: Extracting primitive: Mesh_0
+23:37:48 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+23:37:48 | INFO: Primitives created: 1
+23:37:56 | INFO: Finished glTF 2.0 export in 8.384333610534668 s
+00:13.360  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:13.422  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:13.469  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:13.547  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:13.610  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:13.657  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:13.719  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:13.782  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:13.828  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:13.875  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:13.922  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:13.969  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.016  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.078  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.125  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.172  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.250  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.297  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.344  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.407  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.453  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.532  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.610  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+00:14.657  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_nathan.png'
+
+[build_heroes]   moves sheet: renders\heroes_nathan_polish.png
+POLISHED nathan 19 clips
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

@@ -19,7 +19,9 @@ func _layout() -> void:
 	var w: float = SIZES.get(hud.minimap_size, 260.0)
 	var h := w * b.size.y / b.size.x
 	var margin := 24.0
-	var y := 132.0 if hud.minimap_position != "bottom_right" else sz().y - margin - h # top: under the face row
+	var y := 132.0 if hud.minimap_position != "bottom_right" else sz().y - margin - h - 236.0 # reserve the feed below
+	if hud.touch and hud.touch.visible:
+		y = 132.0 # keep the combined map/feed stack clear of large action controls
 	rect = Rect2(sz().x - margin - w, y, w, h)
 
 func world_to_map(p: Vector3) -> Vector2:
@@ -101,7 +103,8 @@ func _draw() -> void:
 	var me := hud.local
 	var allies: Array[Hero] = host.team_heroes(me.team) if me else host.team_heroes(RB.DILAW)
 	for a in allies:
-		_hero_dot(a, a == me, 1.0)
+		if host.visibility(me, a) > 0.0:
+			_hero_dot(a, a == me, 1.0)
 	for e in visible_enemies():
 		_hero_dot(e, false, host.visibility(me, e))
 	for d in visible_decoys():

@@ -21,6 +21,7 @@ func _cast(frame: InputFrame) -> void:
 		"sight": float(v("ubo_inside_sight")),
 		"cough_after": float(v("ubo_cough_after")),
 		"cough_reveal": float(v("ubo_cough_reveal")),
+		"blind_time": float(v("ubo_blind_time")),
 	}
 	if hero.aim != Vector3.ZERO:
 		hero.facing = hero.aim
@@ -52,6 +53,7 @@ func aim_preview(frame: InputFrame) -> Dictionary:
 	info.point = land
 	info.distance = land_d
 	info.flight = flight
-	info.trajectory_from = origin + Vector3(0, 1.3, 0)
+	var right := Vector3(-dir.z, 0, dir.x)
+	info.trajectory_from = origin + right * 0.2 + dir * 0.4 + Vector3(0, 1.3, 0)
 	info.trajectory_to = Vector3(land.x, origin.y + 0.2, land.z)
 	return info

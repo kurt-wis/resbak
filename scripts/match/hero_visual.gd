@@ -10,7 +10,7 @@ extends Node3D
 
 const LOOP_CLIPS := ["Idle", "Walking", "Running", "BreakDance", "Stunned", "Jailed", "Chained",
 		"Capture", "TagCharge", "Harurot", "Tamaraw", "Ihip", "Iyak"]
-const UPPER_ACTIONS := [ "Chained", "Jailed", "Sagip", "Ihip", "Sumbong", "Buga", "Ubo", "Iyak", "GuardBreak"]
+const UPPER_ACTIONS := [ "TagCharge", "Cough", "Chained", "Jailed", "Sagip", "Ihip", "Sumbong", "Buga", "Ubo", "Iyak", "GuardBreak"]
 const XFADE := 0.08
 const TURN_RATE := 16.0 ## rad/s the model turns toward `facing`
 
@@ -50,6 +50,27 @@ var _hila_serial := 0
 var _hila_facing := Vector3.FORWARD
 var _tag_impact_point := Vector3.INF
 var _victory := false
+var elastic_arm: SkeletonModifier3D
+var _pose_remainder := 0.0
+var pose_sample_count := 0
+var _tamaraw_miss_until := -1
+
+func tamaraw_miss_active() -> bool:
+	return hero != null and hero.is_free() and hero.cast_lock_ticks > 0 and hero.host.tick < _tamaraw_miss_until
+
+func play_tamaraw_miss() -> void:
+	_tamaraw_miss_until = hero.host.tick + hero.cast_lock_ticks
+	play_action("Tamaraw_Miss", RB.seconds(hero.cast_lock_ticks))
+
+## Advance all character poses on a fixed presentation clock, without slowing the host.
+func advance_pose_clock(delta: float) -> float:
+	var interval := 1.0 / maxf(1.0, hero.tuning.character_pose_fps)
+	_pose_remainder += maxf(0.0, delta)
+	var count := floori((_pose_remainder + 0.0000001) / interval)
+	var elapsed := count * interval
+	_pose_remainder = maxf(0.0, _pose_remainder - elapsed)
+	pose_sample_count += count
+	return elapsed
 
 # Human chain: two-bone IK on both arms so prisoners really hold the post and each other.
 # Godot renames imported Mixamo bones (mixamorig:LeftHand becomes mixamorig_LeftHand), so the arm
@@ -95,6 +116,18 @@ func setup(p_hero: Hero) -> void:
 	_build_markers()
 	_build_arm_ik()
 	_build_leg_heading()
+	var feedback := preload("res://scripts/match/hero_feedback.gd").new()
+	extras.add_child(feedback)
+	feedback.setup(hero)
+	var accents := preload("res://scripts/match/hero_accents.gd").new()
+	extras.add_child(accents)
+	accents.setup(hero)
+	if hero.data.id == "inday" and _skel:
+		elastic_arm = preload("res://scripts/match/elastic_arm.gd").new()
+		elastic_arm.set("visual", self)
+		for pair in [["upper", "RightArm"], ["fore", "RightForeArm"], ["hand", "RightHand"]]:
+			elastic_arm.set(pair[0], _skel.find_bone(_bone_by_tail(pair[1])))
+		_skel.add_child(elastic_arm)
 	if hero.host:
 		hero.host.event.connect(_on_host_event)
 
@@ -143,6 +176,7 @@ func set_view_alpha(alpha: float) -> void:
 	if is_equal_approx(alpha, _alpha):
 		return
 	_alpha = alpha
+	extras.visible = alpha > 0.01
 	if model:
 		model.visible = alpha > 0.01
 	var use_fade := alpha < 0.99
@@ -233,10 +267,11 @@ func _build_tree() -> void:
 		return
 	var space := AnimationNodeBlendSpace1D.new()
 	space.min_space = 0.0
-	space.max_space = maxf(hero.data.run_speed, 0.1)
+	var run_speed := hero.data.run_speed * hero.tuning.move_speed_scale
+	space.max_space = maxf(run_speed, 0.1)
 	space.sync = true
-	var walk_speed := hero.data.run_speed * hero.tuning.walk_fraction
-	for point in [["Idle", 0.0], ["Walking", walk_speed], ["Running", hero.data.run_speed]]:
+	var walk_speed := run_speed * hero.tuning.walk_fraction
+	for point in [["Idle", 0.0], ["Walking", hero.tuning.locomotion_idle_blend_speed], ["Walking", walk_speed], ["Running", run_speed]]:
 		var n := AnimationNodeAnimation.new()
 		n.animation = point[0]
 		space.add_blend_point(n, point[1], -1, point[0])
@@ -280,6 +315,7 @@ func _build_tree() -> void:
 	bt.connect_node("output", 0, "ActionLayer")
 	tree = AnimationTree.new()
 	tree.name = "AnimTree"
+	tree.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
 	tree.tree_root = bt
 	animator.add_sibling(tree)
 	tree.anim_player = tree.get_path_to(animator)
@@ -446,6 +482,8 @@ func bone_world(tail: String) -> Vector3:
 
 ## World position of one hand bone (0 = right, 1 = left) after animation and IK.
 func hand_position(arm: int) -> Vector3:
+	if arm == 0 and elastic_arm and hila_pose_active() and elastic_arm.has_meta("hand_world"):
+		return elastic_arm.get_meta("hand_world")
 	return bone_world("LeftHand" if arm == 1 else "RightHand")
 
 ## World position of the hand bone that holds one grip (0 = rear grip, 1 = front grip).
@@ -634,7 +672,7 @@ func _update_arm_ik(delta: float) -> void:
 		arm_ik.active = false
 		return
 	if grips.is_empty() and hila_pose_active():
-		_update_action_arm_ik()
+		arm_ik.active = false # ElasticArm deforms the actual limb after the authored pose.
 		return
 	var want := 1.0 if not grips.is_empty() else 0.0
 	_ik_weight = move_toward(_ik_weight, want, delta * 4.0)
@@ -680,7 +718,7 @@ func hila_visual_target() -> Vector3:
 	if is_instance_valid(_hila_hand) and not _hila_hand.expired:
 		return _hila_hand.palm_position()
 	var amount := 1.0 - clampf((_hila_return_until - _now()) / hero.tuning.hila_retract_time, 0.0, 1.0)
-	return _hila_return_from.lerp(bone_world("RightHand"), amount)
+	return _hila_return_from.lerp(_animation_bone_position(_arm_bones[0][2]), smoothstep(0.0, 1.0, amount))
 
 ## Which grip each arm takes: [grip index of the right arm, of the left arm] (0 = rear grip,
 ## 1 = front grip). The arm on the rear side of the body (as the model faces across the chain)
@@ -727,7 +765,9 @@ func _process(delta: float) -> void:
 		return
 	var cf := chain_facing()
 	var look := hero.facing
-	if cf != Vector3.ZERO:
+	if hero.capturing:
+		look = RB.flat(hero.host.base_system.pole_pos(RB.other_team(hero.team)) - hero.global_position).normalized()
+	elif cf != Vector3.ZERO:
 		look = cf
 	elif tag_pose_active():
 		look = hero.lunge_dir
@@ -739,11 +779,18 @@ func _process(delta: float) -> void:
 	if model and _now() < _spin_until:
 		model.rotation.y = wrapf(model.rotation.y + _spin_rate * delta, -PI, PI)
 	elif model:
-		model.rotation.y = lerp_angle(model.rotation.y, want, minf(TURN_RATE * delta, 1.0))
+		model.rotation.y = want if hero.capturing else lerp_angle(model.rotation.y, want, minf(TURN_RATE * delta, 1.0))
+	var ward := 1.0 if hero.is_warded() else 0.0
+	for entry in _opaque + _faded:
+		(entry[2] as ShaderMaterial).set_shader_parameter("ward_strength", ward)
 	_update_sabay_fall()
 	_update_tag_step(delta)
 	settle_chain_draw(minf(PULL_RATE * delta, 1.0))
-	_update_animation(delta)
+	var pose_delta := advance_pose_clock(delta)
+	if pose_delta > 0.0:
+		_update_animation(pose_delta)
+		if tree and tree.active:
+			tree.advance(pose_delta)
 	_update_arm_ik(delta)
 
 ## Host-timed fall and get-up on Sabay. Preserve the model's authored origin and scale.
@@ -771,6 +818,10 @@ func _desired() -> Array:
 		return ["Stunned", -1.0, -3]
 	if h.is_stumbling():
 		return ["Stumble", h.tuning.failed_tag_stumble, -4]
+	if tamaraw_miss_active():
+		return ["Tamaraw_Miss", float(h.data.values.tamaraw_recovery), _tamaraw_miss_until]
+	if _req_clip == "Tamaraw_Miss":
+		_req_clip = "" # never outlive the authoritative recovery ticks
 	if h.capturing:
 		return ["Capture", -1.0, -5]
 	if h.state == Hero.State.CHAINED:
@@ -779,6 +830,10 @@ func _desired() -> Array:
 		return ["Jailed", -1.0, -9]
 	if tag_pose_active():
 		return ["Tag", h.tuning.tag_windup + h.tuning.tag_followthrough, h.tag_started_tick]
+	if h.frame.tag_preparing and h.can_press_tag():
+		return ["TagCharge", -1.0, -11]
+	if h.cough_ticks > 0 and has_clip("Cough"):
+		return ["Cough", h.tuning.smoke_cough_animation, -12]
 	if hila_pose_active():
 		return ["Sagip", -1.0, _hila_serial]
 	if _req_clip != "" and (_req_until <= 0.0 or _now() < _req_until):
@@ -915,12 +970,12 @@ func _update_tag_step(delta := 0.0) -> void:
 
 ## Clip rate that makes the planted foot match the body (walk/run clip speeds from qc_asset).
 func _loco_scale(spd: float) -> float:
-	var walk := hero.data.run_speed * hero.tuning.walk_fraction
-	var run := hero.data.run_speed
-	var walk_k := walk / hero.data.walk_clip_speed if hero.data.walk_clip_speed > 0.0 else 1.0
-	var run_k := run / hero.data.run_clip_speed if hero.data.run_clip_speed > 0.0 else 1.0
+	if spd <= 0.001:
+		return 1.0 # Idle keeps breathing at rest.
+	var run := hero.data.run_speed * hero.tuning.move_speed_scale
+	var walk := run * hero.tuning.walk_fraction
+	var source_speed := maxf(hero.data.walk_clip_speed, 0.01)
 	if spd <= walk:
-		return lerpf(1.0, walk_k, spd / walk)
-	if spd <= run:
-		return lerpf(walk_k, run_k, (spd - walk) / maxf(run - walk, 0.01))
-	return run_k * spd / run
+		return maxf(spd, hero.tuning.locomotion_idle_blend_speed) / source_speed
+	var mix := clampf((spd - walk) / maxf(run - walk, 0.01), 0.0, 1.0)
+	return spd / lerpf(source_speed, maxf(hero.data.run_clip_speed, 0.01), mix)

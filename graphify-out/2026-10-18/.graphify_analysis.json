@@ -1,6 +1,63 @@
 {
   "communities": {
     "0": [
+      "argparse",
+      "bpy",
+      "json",
+      "mathutils",
+      "os",
+      "sys",
+      "tools_build_batang_hamog",
+      "tools_build_batang_hamog_build",
+      "tools_build_batang_hamog_build_set_bone",
+      "tools_build_batang_hamog_build_smooth_action",
+      "tools_build_bystanders",
+      "tools_build_bystanders_build",
+      "tools_build_bystanders_log",
+      "tools_build_bystanders_main",
+      "tools_build_bystanders_measure",
+      "tools_build_bystanders_pose_at",
+      "tools_build_bystanders_rationale_1",
+      "tools_build_bystanders_rationale_52",
+      "tools_build_bystanders_tris",
+      "tools_build_face_cards_main",
+      "tools_build_hamog_moveset",
+      "tools_build_hamog_moveset_build",
+      "tools_build_hamog_moveset_build_apply_pose",
+      "tools_build_hamog_moveset_build_euler_to_quat",
+      "tools_build_hamog_moveset_build_shifted",
+      "tools_build_hamog_moveset_build_smooth_action",
+      "tools_build_hamog_moveset_rationale_1",
+      "tools_build_vehicle_props",
+      "tools_build_vehicle_props_bounds",
+      "tools_build_vehicle_props_build",
+      "tools_build_vehicle_props_log",
+      "tools_build_vehicle_props_main",
+      "tools_build_vehicle_props_rationale_1",
+      "tools_qc_asset",
+      "tools_qc_asset_args",
+      "tools_qc_asset_check",
+      "tools_qc_asset_clip_report",
+      "tools_qc_asset_load",
+      "tools_qc_asset_main",
+      "tools_qc_asset_mesh_checks",
+      "tools_qc_asset_rationale_1",
+      "tools_qc_asset_rationale_122",
+      "tools_qc_asset_rationale_169",
+      "tools_qc_asset_rationale_184",
+      "tools_qc_asset_render_sheet",
+      "tools_qc_asset_set_wire",
+      "tools_qc_asset_track_paths",
+      "tools_qc_asset_world_bounds",
+      "tools_sanitize_asset",
+      "tools_sanitize_asset_args",
+      "tools_sanitize_asset_log",
+      "tools_sanitize_asset_main",
+      "tools_sanitize_asset_main_bounds",
+      "tools_sanitize_asset_rationale_1"
+    ],
+    "1": [
+      "tag_charge_animation",
       "tools_build_heroes",
       "tools_build_heroes_bake",
       "tools_build_heroes_bake_grounded",
@@ -50,7 +107,7 @@
       "tools_build_heroes_sole_mask",
       "tools_build_heroes_stamp"
     ],
-    "1": [
+    "2": [
       "mathutils_bvhtree",
       "mathutils_interpolate",
       "numpy",
@@ -95,7 +152,7 @@
       "tools_make_home_audio_write_wav",
       "wave"
     ],
-    "2": [
+    "3": [
       "tools_build_home_props",
       "tools_build_home_props_bounds",
       "tools_build_home_props_build_backpack",
@@ -138,49 +195,6 @@
       "tools_build_home_props_text_mesh",
       "tools_build_home_props_tris",
       "tools_build_home_props_write_tscn"
-    ],
-    "3": [
-      "argparse",
-      "bmesh",
-      "bpy",
-      "json",
-      "mathutils",
-      "os",
-      "sys",
-      "tools_build_batang_hamog",
-      "tools_build_batang_hamog_build",
-      "tools_build_batang_hamog_build_set_bone",
-      "tools_build_batang_hamog_build_smooth_action",
-      "tools_build_face_cards_main",
-      "tools_build_hamog_moveset",
-      "tools_build_hamog_moveset_rationale_1",
-      "tools_build_vehicle_props",
-      "tools_build_vehicle_props_bounds",
-      "tools_build_vehicle_props_build",
-      "tools_build_vehicle_props_log",
-      "tools_build_vehicle_props_main",
-      "tools_build_vehicle_props_rationale_1",
-      "tools_qc_asset",
-      "tools_qc_asset_args",
-      "tools_qc_asset_check",
-      "tools_qc_asset_clip_report",
-      "tools_qc_asset_load",
-      "tools_qc_asset_main",
-      "tools_qc_asset_mesh_checks",
-      "tools_qc_asset_rationale_1",
-      "tools_qc_asset_rationale_122",
-      "tools_qc_asset_rationale_169",
-      "tools_qc_asset_rationale_184",
-      "tools_qc_asset_render_sheet",
-      "tools_qc_asset_set_wire",
-      "tools_qc_asset_track_paths",
-      "tools_qc_asset_world_bounds",
-      "tools_sanitize_asset",
-      "tools_sanitize_asset_args",
-      "tools_sanitize_asset_log",
-      "tools_sanitize_asset_main",
-      "tools_sanitize_asset_main_bounds",
-      "tools_sanitize_asset_rationale_1"
     ],
     "4": [
       "math",
@@ -262,6 +276,7 @@
       "tools_build_jm_botsog_solid_subdiv"
     ],
     "6": [
+      "bmesh",
       "tools_build_sand_castle",
       "tools_build_sand_castle_box",
       "tools_build_sand_castle_build",
@@ -278,6 +293,22 @@
       "tools_build_sand_castle_wipe"
     ],
     "7": [
+      "agawan_base",
+      "claude_md",
+      "docs_architecture_md",
+      "docs_archive_characters_01_jm_botsog",
+      "docs_archive_characters_02_nene",
+      "docs_archive_readme",
+      "docs_archive_resbak",
+      "docs_decisions",
+      "docs_glossary",
+      "docs_pipelines_blender_md",
+      "docs_readme",
+      "docs_resbak_md",
+      "docs_status_md",
+      "match_host"
+    ],
+    "8": [
       "random",
       "tools_make_home_ground",
       "tools_make_home_ground_facade",
@@ -292,18 +323,19 @@
       "tools_make_home_ground_shade",
       "tools_make_home_ground_wrap_draw"
     ],
-    "8": [
-      "tools_build_bystanders",
-      "tools_build_bystanders_build",
-      "tools_build_bystanders_log",
-      "tools_build_bystanders_main",
-      "tools_build_bystanders_measure",
-      "tools_build_bystanders_pose_at",
-      "tools_build_bystanders_rationale_1",
-      "tools_build_bystanders_rationale_52",
-      "tools_build_bystanders_tris"
-    ],
     "9": [
+      "docs_archive_characters_03_batang_hamog_batang_hamog",
+      "docs_archive_characters_03_batang_hamog_dire_diretso",
+      "docs_archive_characters_03_batang_hamog_harurot",
+      "docs_archive_characters_03_batang_hamog_lusot",
+      "docs_archive_characters_04_nathan_buga",
+      "docs_archive_characters_04_nathan_may_tira_pa",
+      "docs_archive_characters_04_nathan_nathan",
+      "docs_archive_characters_04_nathan_ubo_ubo",
+      "docs_pipelines_assets_characters_batang_hamog_glb",
+      "scripts_runtime_batang_hamog_gd"
+    ],
+    "10": [
       "pil",
       "tools_make_home_ui",
       "tools_make_home_ui_cardboard",
@@ -312,7 +344,7 @@
       "tools_make_home_ui_tape",
       "tools_make_home_ui_value_noise"
     ],
-    "10": [
+    "11": [
       "tools_build_face_cards_rationale_122",
       "tools_build_face_cards_rationale_72",
       "tools_build_face_cards_skin",
@@ -321,78 +353,114 @@
       "tools_build_face_cards_skin_init",
       "tools_build_face_cards_skin_tri_poly"
     ],
-    "11": [
+    "12": [
       "assets_characters_bystanders_tindera",
       "assets_props_vehicles_jeepney",
       "docs_plans_2026_10_17_home_diorama",
       "scripts_tests_suites_home",
       "scripts_ui_frontend_hero_picker"
     ],
-    "12": [
-      "tools_build_hamog_moveset_build",
-      "tools_build_hamog_moveset_build_apply_pose",
-      "tools_build_hamog_moveset_build_euler_to_quat",
-      "tools_build_hamog_moveset_build_shifted",
-      "tools_build_hamog_moveset_build_smooth_action"
-    ],
     "13": [
-      "docs_plans_2026_10_17_konstruksyon_remaining_report",
-      "scripts_autoload_audio",
-      "scripts_match_vfx"
+      "docs_archive_characters_05_inday_ihip",
+      "docs_archive_characters_05_inday_inday",
+      "docs_archive_characters_05_inday_sagip",
+      "docs_archive_characters_05_inday_takbo_na",
+      "docs_archive_gameplay_agawan_base_rules_agawan_base"
     ],
     "14": [
+      "docs_plans_2026_10_17_konstruksyon_remaining",
+      "jail_chain_system",
+      "meshy_api",
+      "scripts_match_hero_visual",
+      "scripts_tests_integration_test"
+    ],
+    "15": [
+      "docs_plans_2026_10_17_konstruksyon_remaining_report",
+      "scripts_autoload_audio",
+      "scripts_match_match_view",
+      "scripts_match_vfx"
+    ],
+    "16": [
+      "addons_meshy_godot_plugin_readme",
+      "godot_engine",
+      "meshy_ai"
+    ],
+    "17": [
       "agents_md",
       "docs_resbak"
     ],
-    "15": [
+    "18": [
       "assets_audio_credits"
     ],
-    "16": [
+    "19": [
       "assets_characters_bystanders_lola"
     ],
-    "17": [
+    "20": [
       "assets_characters_bystanders_manong"
     ],
-    "18": [
+    "21": [
       "assets_characters_bystanders_student"
     ],
-    "19": [
+    "22": [
+      "assets_decals_prompts"
+    ],
+    "23": [
+      "assets_fonts_luckiestguy_license"
+    ],
+    "24": [
       "docs_architecture"
     ],
-    "20": [
+    "25": [
+      "docs_archive_gameplay_agawan_base_rules_freshness_engine"
+    ],
+    "26": [
       "docs_status"
     ],
-    "21": [
-      "scripts_match_hero_visual"
+    "27": [
+      "icon_svg"
     ],
-    "22": [
+    "28": [
+      "renders_readme"
+    ],
+    "29": [
+      "scripts_map_pipeline_readme"
+    ],
+    "30": [
       "source_art_mocap_meshy_shared_tag_charge"
     ]
   },
   "cohesion": {
-    "0": 0.07890070921985816,
-    "1": 0.11627906976744186,
-    "2": 0.13588850174216027,
-    "3": 0.0951219512195122,
+    "0": 0.06778476589797344,
+    "1": 0.07653061224489796,
+    "2": 0.11627906976744186,
+    "3": 0.13588850174216027,
     "4": 0.08205128205128205,
     "5": 0.17983193277310924,
-    "6": 0.26373626373626374,
-    "7": 0.34615384615384615,
-    "8": 0.3611111111111111,
-    "9": 0.47619047619047616,
-    "10": 0.38095238095238093,
-    "11": 0.4,
-    "12": 0.5,
-    "13": 0.6666666666666666,
-    "14": 1.0,
-    "15": 1.0,
-    "16": 1.0,
+    "6": 0.24761904761904763,
+    "7": 0.15384615384615385,
+    "8": 0.34615384615384615,
+    "9": 0.2,
+    "10": 0.47619047619047616,
+    "11": 0.38095238095238093,
+    "12": 0.4,
+    "13": 0.4,
+    "14": 0.5,
+    "15": 0.5,
+    "16": 0.6666666666666666,
     "17": 1.0,
     "18": 1.0,
     "19": 1.0,
     "20": 1.0,
     "21": 1.0,
-    "22": 1.0
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0
   },
   "gods": [
     {
@@ -421,8 +489,8 @@
       "degree": 15
     },
     {
-      "id": "tools_build_home_props_mat",
-      "label": "mat()",
+      "id": "tools_build_home_props_fresh",
+      "label": "fresh()",
       "degree": 14
     },
     {
@@ -431,8 +499,8 @@
       "degree": 14
     },
     {
-      "id": "tools_build_home_props_fresh",
-      "label": "fresh()",
+      "id": "tools_build_home_props_mat",
+      "label": "mat()",
       "degree": 14
     },
     {
@@ -448,26 +516,26 @@
   ],
   "surprises": [
     {
-      "source": "remove_drift()",
-      "target": "_heading()",
+      "source": "integration_test.gd",
+      "target": "hero_visual.gd",
       "source_files": [
-        "tools/build_heroes.py",
-        "tools/retarget_clip.py"
+        "scripts/tests/README.md",
+        "docs/plans/2026-10-17-konstruksyon-remaining.md"
       ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "bridges separate communities"
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
     },
     {
-      "source": "chained()",
-      "target": "face_front()",
+      "source": "Plan: Konstruksyon overhaul, remaining work (2026-10-17)",
+      "target": "integration_test.gd",
       "source_files": [
-        "tools/build_heroes.py",
-        "tools/retarget_clip.py"
+        "docs/plans/2026-10-17-konstruksyon-remaining.md",
+        "scripts/tests/README.md"
       ],
       "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "bridges separate communities"
+      "relation": "references",
+      "why": "connects across different repos/directories"
     },
     {
       "source": "breakdance()",
@@ -492,19 +560,19 @@
       "why": "bridges separate communities"
     },
     {
-      "source": "retarget_table()",
-      "target": "discard()",
+      "source": "chained()",
+      "target": "face_front()",
       "source_files": [
         "tools/build_heroes.py",
         "tools/retarget_clip.py"
       ],
       "confidence": "EXTRACTED",
       "relation": "calls",
-      "why": "cross-file semantic connection"
+      "why": "bridges separate communities"
     }
   ],
   "tokens": {
-    "input": 83322,
-    "output": 4300
+    "input": 39925,
+    "output": 7065
   }
 }

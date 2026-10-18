@@ -44,7 +44,6 @@ func absorb_tag(tagger: Hero) -> bool:
 		hero.visual.play_action("GuardBreak")
 		hero.visual.spin(RB.seconds(spin_ticks), 3.0)
 		Vfx.burst(host.world, hero.global_position + Vector3(0, 1.0, 0), Color("9fd8ff"), 18, 3.0, 0.5, 0.12)
-		Vfx.popup_text(host.world, hero.global_position, "GALIT!", Color("ff5a3c"), 120, 1.0)
 		Vfx.ring_pulse(host.world, hero.global_position, float(v("makapal_spin_radius", 2.5)), Color("ff8a3d"), 0.4)
 	_refresh_icon()
 	return true

@@ -16,7 +16,7 @@ Then run the integration gate (`AGENTS.md` → Commands).
 ## Rig and export rules (enforced by `scripts/tests/integration_test.gd`)
 - **Mixamo bone names** (`mixamorig:Hips`, `mixamorig:Spine`, …) so clips retarget across characters. JM adds `mixamorig:Towel1_R` / `Towel2_R`.
 - Clips are exported as **NLA tracks** (`export_animation_mode='NLA_TRACKS'`) into one `.glb`; Godot exposes them through the GLB's `AnimationPlayer`.
-- Every clip must animate the full skeleton: **≥ 60 tracks** (Hamog currently 65, JM 162; the five heroes 63 in Godot, which drops tracks whose value never changes: 660 channels in Blender, JM 670).
+- Every clip must animate the full skeleton: **≥ 60 tracks** (Hamog currently 65, JM 162; the four original rigs retain their full libraries; revised JM preserves 84 tracks by disabling immutable-track removal).
 - Clip names are matched case-insensitively by `BatangHamogController._detect_clips()`: `idle`, `walking`, `running`, `runfast` (fallback for running), `harurot`, `lusot_slide`, `lusot_vault`.
 - The five heroes' clip names (tables below) are the game's contract: `scripts/match/hero_visual.gd` looks them up by exact name and loops the ones in its `LOOP_CLIPS`.
 - **`Slide` and `Dash` must never reappear** (exact-name asserts; `Lusot_Slide` is allowed). They were removed 2026-10-14.
@@ -36,7 +36,7 @@ Scripts report success even when a mesh floats or a cycle skates, so check befor
 | --------- | --- | -------------- |
 | Batang Hamog | `assets/characters/batang_hamog.glb` | Idle 3.00 s, Walking 1.04 s, Running 0.67 s, Harurot 1.00 s (24 f @ 24 fps), Lusot_Slide 0.96 s, Lusot_Vault 0.58 s; RunFast exported but not gate-checked |
 | JM (Botsog), procedural, unused | `assets/characters/jm_botsog.glb` | Idle 2.00 s, Walking 1.07 s, Running 0.60 s (30 fps); 55 bones |
-| Tutoy, Nene, Nathan, JM, Inday | `assets/characters/{tutoy,nene,nathan,jm,inday}.glb` | Per-hero tables below; 24 fps; 63 tracks per clip in Godot (660 channels, JM 670); 66 bones (JM 67) |
+| Tutoy, Nene, Nathan, JM, Inday | `assets/characters/{tutoy,nene,nathan,jm,inday}.glb` | Per-hero tables below plus the authored revision table; 24 fps; revised JM has 28 joints / 84 tracks, other heroes retain their original full rigs |
 
 ## Meshy heroes (`build_heroes.py`)
 Sources are the Meshy auto-rigged GLBs in `source_art/heroes/` (Tutoy was called Dodong until 2026-10-16): Mixamo names, A-pose, facing −Y, plus a stray 2 m `Icosphere` the builder deletes. Every clip is retargeted through `tools/retarget_clip.py` and listed in one clip table per hero (`HERO_CLIPS`) plus the shared core-rule clips (`SHARED`) in the builder.
@@ -54,8 +54,8 @@ Sources are the Meshy auto-rigged GLBs in `source_art/heroes/` (Tutoy was called
 ### Shared core-rule clips (every hero)
 | Clip | Source (`source_art/mocap/`) | Length | Loop |
 | ---- | ---------------------------- | ------ | ---- |
-| Tag | `meshy/shared_tag.glb` (text-to-motion), frames 11–27, in place. Wind-up, lunge, back: the body turns ~65° but the tagging hand reaches straight ahead | 0.667 s | no |
-| TagCharge | `meshy/shared_tag_charge.glb` (text-to-motion, SMPL-H rig), whole clip, in place. Wide braced stance, slapping arm drawn back (see "TagCharge" below) | 1.958 s | yes |
+| Tag | Authored revision gesture from each hero’s Idle (see revision table) | 0.542 s | no |
+| TagCharge | Authored prepared-arm loop (see revision table) | 1.000 s | yes |
 | Tagged | `meshy/tutoy_moves.glb` Slap_Reaction, 18–40 | 0.917 s | no |
 | Stumble | `meshy/tutoy_moves.glb` Stumble_Walk, 18–36, in place (failed tag) | 0.750 s | no |
 | Stunned | `meshy/tutoy_moves.glb` Head_Hold_in_Pain, 51.2–76.8 | 1.083 s | yes |
@@ -64,12 +64,30 @@ Sources are the Meshy auto-rigged GLBs in `source_art/heroes/` (Tutoy was called
 | Capture | `quaternius/UAL1_Standard.glb` Push_Loop (CC0), planted | 2.667 s | yes |
 | Victory | `meshy/nene_moves.glb` Victory_Cheer, 0–33, planted | 1.375 s | yes (seamless, but not in `LOOP_CLIPS` yet) |
 
-### Runtime action layering (2026-10-18)
-Source clips and exported GLBs remain unchanged and full-skeleton. `HeroVisual` filters spine/arms/head tracks at runtime for Chained/Jailed and moving casts, leaving Idle/Walking/Running underneath. `locomotion_heading.gd` turns the pelvis toward travel while retaining the upper-body action orientation; backward movement reverses the foot cycle. Existing chain arm IK still runs after this modifier.
-Tag contact is sought to `tag_contact_fraction` of the source clip at the host's landing tick, with a separate follow-through. Tag now uses the full-body authored hit while the host briefly plants movement; the former model reach step and Tag IK are removed. HILA still uses **Sagip**, now sought through extend/open-hold/retract phases rather than played as a stationary one-shot. Its palm/elastic arm/return are procedural visuals, not new animation clips. Stuns, falls, slides, jumps and capture remain full-body. No NLA/export rebuild is needed for this change.
+### Runtime action layering (2026-10-19)
+`HeroVisual` filters spine/arms/head tracks for Chained/Jailed, prepared TagCharge, Cough and moving cast recoveries. Idle/Walking/Running continue beneath those actions. `locomotion_heading.gd` steers the legs toward travel and reverses the foot cycle for backpedaling. A committed Tag uses the full authored body and host-timed planting; its contact pose is sought at `tag_contact_fraction` on the landing tick. Capture forces objective facing.
+
+Sagip is a 1 s authored reach/recovery from Idle. The elastic modifier stretches Inday's own right arm along a common orthogonal axis, preserving hand size. Its post-modifier hand cache supplies QA and targets. Dark back-hair down to the braid tip is weighted to Head, independently of the arm. Rescue, collision and pull rules use the host's HilaHand marker, not rendered skin vertices.
+
+### Approved authored revision clips and assets
+
+`build_heroes.py` now finishes with `build_revision_animations.py`. For an existing library, run the latter with `-- <ids>`; it writes `renders/revision_assets/<id>.glb` for review before copying to `assets/characters/`. Each action keys the full skeleton and exports as an NLA track.
+
+| Clip / asset | Current source and contract |
+| --- | --- |
+| Tag, all five | Authored prepared arm → shoulder-led strike → relaxed recovery, 13 frames / 24 fps (0.542 s); host seeks contact at its existing windup time |
+| TagCharge, all five | Authored prepared arm and subtle breath, 24 frames / 24 fps (1 s), seamless; upper-body only at runtime, permits normal locomotion |
+| Cough, all five | Authored hand-to-mouth and chest pulses, 17 frames / 24 fps (0.708 s); upper-body presentation, no movement disable |
+| Ubo, Nathan | Authored one-handed release and follow-through, 13 frames / 24 fps; actual KimKim packet originates beside the throwing hand |
+| JM model | Supplied `source_art/heroes/jm_revised.glb`, 10,379 triangles; generic SmartRig joints mapped to 23 Mixamo-named joints; existing `jm_animation_library.glb` retargeted. Disable immutable-track removal in its Godot `.import` to preserve all 69 full-rig channels. Gait measurements: Walking 1.08 m/s, Running 3.43 m/s |
+| JM towel | Supplied `source_art/props/jm_terry_source.glb` material, 960-triangle open sheet, 17 deform joints; `build_supplied_towel.py` exports Towel_Carry and Towel_Whip (1 s each). Runtime carries it over the right shoulder, with damped back drape and hand pickup for Tag |
+| Tamaraw spirit | `build_tamaraw_spirit.py`, 4,800 triangles, Spirit_Charge (0.8 s), spectral shader; its silhouette is a tamaraw rather than primitive shapes |
+| KimKim | Supplied pouch normalized by sanitize_asset, then `clean_kimkim.py` removes two zero-area triangles; 320 triangles, 25 cm, centered held-prop origin |
+
+Geometry QA is qc_hero_polish.py: all five heroes, three props and the revised JM facial cards. The towel is an intentional open, double-sided 960-triangle cloth sheet using the supplied terry material. Grip-centered cloth origins and runtime-assigned facial-card materials remain documented warnings. Final skill captures are in renders/hero_final and renders/hero_final2; final JM expressions are in renders/hero_faces_final.
 
 ### TagCharge
-Retained library clip: since 2026-10-18 tagging is tap-only, so `HeroVisual` no longer requests TagCharge or displays a charge bar. No rig or clip was rebuilt. `build_heroes.py` bakes it into every hero from `source_art/mocap/meshy/shared_tag_charge.glb` (loop, in place, blend 6), then `tools/qc_asset.py -- assets/characters/<id>.glb --clip TagCharge` per hero. Source: one Meshy Prime `meshy_text_to_motion` task (10 credits, 2026-10-17), prompt "a kid leaning back in a stable wide stance, right arm drawn far back at shoulder height with an open palm, left arm forward for balance, tense and ready to slap, subtle breathing loop", 2 s.
+The current TagCharge is the authored prepared-arm loop in the revision table above. The earlier Meshy Prime source below remains source history; it no longer supplies the shipped held-preparation pose. Holding only selects/prepares a normal-reach tag and adds no reach or power.
 
 **SMPL-H source rig.** Meshy text-to-motion (Prime) now returns FBX on an SMPL-H 52-bone rig (`Pelvis`, `L_Hip`, `Spine1..3`, `L_Collar`, ...) instead of Meshy's 24-bone rig; convert it to GLB in Blender (keep the mesh: `_import` measures the floor from it). `retarget_clip.py` maps it with `SMPL_TO_MIXAMO` (`is_smpl_rig()`). Every SMPL-H bone rests with +Y pointing up whatever its real direction, so for these rigs the swing step measures each bone's rest direction head → head of the bone matching the target's own child (leaves continue their parent). Without that the legs folded up into the body and grounding dropped the clip about 1.3 m, while every QC metric still passed: **look at the sheet**. The whole-clip grounding still logs about −0.8 to −1.1 m for this clip (SMPL-H keeps the pelvis at its standing height above an origin-level rest); that offset is constant and the grounded result is correct.
 
@@ -95,13 +113,13 @@ Meshy presets from `source_art/mocap/meshy/<id>_moves.glb` unless noted; frame n
 | | Iyak | Angry_To_Tantrum_Sit, 66–114: sitting tantrum, crying and kicking | 2.000 s | yes |
 | | Sumbong | Call_Gesture, 45–72: arm sweeps up, then calls with a hand at the mouth | 1.125 s | no |
 | Nathan | Idle | Scheming_Hand_Rub | 3.292 s | yes |
-| | Walking | Sneaky_Walk (sideways creep, body ~50° to his right) | 2.833 s | yes |
+| | Walking | Retargeted Tutoy Quick_Walk, planted | 1.000 s | yes |
 | | Running | run_fast_9 | 0.625 s | yes |
 | | BreakDance | Mixamo swipes | 3.000 s | yes |
 | | Buga | `meshy/nathan_buga.glb` (text-to-motion), time-warped so the blow peaks at 0.4 s, planted | 1.208 s | no |
-| | Ubo | Over_Shoulder_Throw, 54–74: hand up by the shoulder, then the throw forward and down, planted | 0.833 s | no |
+| | Ubo | Authored one-handed release and follow-through | 0.542 s | no |
 | JM | Idle | Idle_11 | 1.833 s | yes |
-| | Walking | Proud_Strut, planted | 4.500 s | yes |
+| | Walking | Retargeted Tutoy Quick_Walk, planted | 1.000 s | yes |
 | | Running | run_fast_4 | 0.667 s | yes |
 | | BreakDance | Mixamo freezes | 6.708 s | yes |
 | | Talbog_Jump | Regular_Jump, 4–26 (crouch, airborne, just before landing), turned 40° to face front | 0.917 s | no |
@@ -113,7 +131,7 @@ Meshy presets from `source_art/mocap/meshy/<id>_moves.glb` unless noted; frame n
 | | Running | run_fast_6 | 0.833 s | yes |
 | | BreakDance | Mixamo Brooklyn uprock | 4.875 s | yes |
 | | Ihip | mage_soell_cast_3, 32.8–60.8: held two-arms-forward push | 1.167 s | yes |
-| | Sagip | Cheer_with_Both_Hands_Up, 3–36 | 1.375 s | no |
+| | Sagip | Authored reach/recovery from Idle | 1.000 s | no |
 
 ### Menu clips (Home diorama, 2026-10-17)
 `Menu_*` clips exist only for the Home screen's sari-sari store scene (`scripts/ui/frontend/home_diorama.gd`); gameplay never plays them. Sources: Meshy `meshy_animate` presets bundled into one `source_art/mocap/meshy/<id>_menu.glb` per hero (3 credits per action; 63 credits for all five), plus Quaternius `Idle_Talking_Loop` for the two standers. Every Menu clip is `face`-turned to -Y and in place, so a gesture laid over a base on the upper body never twists the torso. Sitters (Nene, JM, Nathan) sit on a stool: grounded as a whole or planted (soles on the floor), so `Hips` height above the floor is the same in every clip of one hero. Per-clip frame numbers are source frames at 24 fps; the `hero_assets` suite checks the names and that every Menu clip animates the full skeleton.
@@ -154,7 +172,7 @@ Planted-foot speeds from `qc_asset.py` (game m/s, 2026-10-16), for `data/heroes/
 | JM | 0.52 (2.3, ×4.4) | 3.72 (4.6, ×1.24) |
 | Inday | 1.02 (2.5, ×2.45) | 2.26 (5.0, ×2.21) |
 
-Known issues: Nathan's Sneaky_Walk and JM's Proud_Strut are slow character walks, so at the gamepad walk speed they play at ×8.9 and ×4.4 (keyboard players also pass through them while speeding up). In Talbog_Slam JM's fist dips up to 12 cm into the floor at impact (frames 10–24); the impact VFX should cover it.
+Gait repair: Nathan and JM now use Quick_Walk; playback reads their measured source foot speeds from HeroData. JM revised rig: 1.08 m/s walk and 3.43 m/s run. Talbog jump and landing clips are time-scaled to the host movement/recovery durations.
 
 ### Face cards (Home diorama talking, 2026-10-17)
 The hero meshes have no face rig, so the Home diorama lays three painted alpha cards over each
@@ -217,3 +235,11 @@ At runtime the recovery window plays **Walking, never Running** (gate-asserted).
 2. Export to `assets/characters/<name>.glb` with Mixamo names + NLA clips.
 3. Add a GLB section to `scripts/tests/integration_test.gd` (clips, ≥60 tracks, no Slide/Dash).
 4. Update `docs/status.md`, the character dossier's *Implementation status*, and the table above.
+
+## JM shoulder follow-up (2026-10-19)
+
+- Sources: `source_art/heroes/jm_shoulder_source.glb` (supplied Buffalo Boy Running, 12,178 tris) and `source_art/props/jm_terry_source.glb` (supplied white terry towel, 1,216 tris). Earlier sources remain preserved.
+- `build_revision_animations.py -- jm` stages the rebuilt 28-joint Mixamo rig and 23 full-skeleton NLA clips in `renders/revision_assets/jm.glb`. Copy it to the runtime asset only after a successful exit. Rebuild retains the complete earlier library, retargets the supplied Running clip, authors the carry hand pose over Idle/Walking/Running, and adds **Tamaraw_Miss (0.50 s)**.
+- `build_supplied_towel.py` creates **960 triangles / 17 joints**, one rough nonmetallic material, with **Towel_Carry (1 s)** and **Towel_Whip (1 s)** NLA clips. Runtime supplies hand/shoulder anchors, folded drape and damped movement. Its open double-sided topology is deliberate.
+- `qc_asset.py` measures bounds in bind pose; an automatically activated first dance clip must not change height, ground or foot-speed normalization. Current JM gait: Walking 1.04 m/s, Running 3.99 m/s.
+- Render close in-game front/back, run, miss and impact checks with `tools/qc_jm_carry.gd`; geometry/weights with `tools/qc_hero_polish.py`. Ordinary rendering remains smooth while match/Home hero AnimationTrees sample at the configured 24 poses/s.

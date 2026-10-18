@@ -18,6 +18,9 @@ var _dust: CPUParticles3D
 func kind() -> int:
 	return RB.SkillKind.OFFENSIVE
 
+func is_traversal() -> bool:
+	return true
+
 func blocks_tagging() -> bool:
 	return true
 
@@ -96,6 +99,7 @@ func _shove_touched() -> void:
 			s = 1.0 if (e.slot % 2) == 0 else -1.0
 		_hit.append(e)
 		e.apply_push(perp * s, side, true)
+		e.add_slow(float(v("tamaraw_contact_slow")), float(v("tamaraw_contact_slow_time")), "tamaraw_daze", true)
 		Vfx.burst(host.world, e.global_position + Vector3(0, 0.9, 0), Color(1, 0.8, 0.4, 0.9), 10, 3.0, 0.3, 0.12)
 		host.emit_event("tamaraw_shove", {"hero": hero, "target": e})
 
@@ -124,9 +128,14 @@ func _crash() -> void:
 func end(_reason: String) -> void:
 	if active:
 		active = false
+		if _reason in ["recast", "expired"]:
+			hero.plant_cast(float(v("tamaraw_recovery")))
 		hero._update_collision()
 		if hero.visual:
 			hero.visual.stop_action("Tamaraw")
+			if _reason in ["recast", "expired"] and _hit.is_empty():
+				hero.visual.play_tamaraw_miss()
+				host.emit_event("tamaraw_miss", {"hero": hero})
 	_left = 0
 	_free_aura()
 
@@ -139,51 +148,51 @@ func _ghost_body() -> void:
 # ---- tamaraw aura (a see-through carabao with V horns, trailing dust) ------------------------
 func _build_aura() -> void:
 	_free_aura()
-	var ex := hero.visual.extras
 	_aura = Node3D.new()
 	_aura.name = "TamarawAura"
-	ex.add_child(_aura)
-	var gold := Vfx.flat_material(Color(1.0, 0.78, 0.25, 0.32))
-	var horn := Vfx.flat_material(Color(1.0, 0.95, 0.75, 0.55))
-	var body := MeshInstance3D.new()
-	var bs := SphereMesh.new()
-	bs.radius = 0.8
-	bs.height = 1.6
-	body.mesh = bs
-	body.scale = Vector3(0.95, 0.7, 1.55)
-	body.position = Vector3(0, 0.85, -0.2)
-	body.material_override = gold
-	_aura.add_child(body)
-	var head := MeshInstance3D.new()
-	var hs := SphereMesh.new()
-	hs.radius = 0.38
-	hs.height = 0.76
-	head.mesh = hs
-	head.scale = Vector3(0.9, 0.95, 1.25)
-	head.position = Vector3(0, 0.95, 1.1)
-	head.material_override = gold
-	_aura.add_child(head)
-	for sgn in [-1.0, 1.0]:
-		var h := MeshInstance3D.new()
-		var cm := CylinderMesh.new()
-		cm.top_radius = 0.02
-		cm.bottom_radius = 0.07
-		cm.height = 0.95
-		h.mesh = cm
-		h.material_override = horn
-		# V-shaped horns: sweep up and back-out from the forehead
-		h.position = Vector3(0.22 * sgn, 1.42, 1.0)
-		h.rotation = Vector3(deg_to_rad(-25.0), 0.0, deg_to_rad(-35.0 * sgn))
-		_aura.add_child(h)
+	hero.visual.extras.add_child(_aura)
+	var spirit := preload("res://assets/props/tamaraw_spirit.glb").instantiate() as Node3D
+	spirit.scale = Vector3(1.45, 1.15, 1.0)
+	spirit.position = Vector3(0, 0.08, 0.1)
+	_aura.add_child(spirit)
+	var material := ShaderMaterial.new()
+	material.shader = preload("res://shaders/tamaraw_spirit.gdshader")
+	material.set_shader_parameter("opacity", 0.0)
+	_aura.set_meta("spirit_material", material)
+	for mesh in spirit.find_children("*", "MeshInstance3D", true, false):
+		mesh.material_override = material
+		mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var players := spirit.find_children("*", "AnimationPlayer", true, false)
+	if not players.is_empty():
+		var player := players[0] as AnimationPlayer
+		for clip in player.get_animation_list():
+			if "Spirit_Charge" in clip:
+				player.get_animation(clip).loop_mode = Animation.LOOP_LINEAR
+				player.play(clip)
+				break
+	_aura.create_tween().tween_method(func(k: float): material.set_shader_parameter("opacity", k), 0.0, 1.0, 0.12)
 	_aura.rotation.y = atan2(_dir.x, _dir.z)
-	_dust = Vfx.emitter(_aura, Color(0.85, 0.7, 0.5, 0.7), 28, 0.6, 0.3, 1.2, Vector3(0, 0.15, -1.0), true)
+	_dust = Vfx.emitter(_aura, Color(1.0, 0.72, 0.2, 0.6), 24, 0.4, 0.1, 0.8, Vector3(0, 0.6, -0.9), true)
 	_dust.emitting = true
 
 func _free_aura() -> void:
 	if _aura != null and is_instance_valid(_aura):
-		_aura.queue_free()
+		var ghost := _aura
+		if is_inside_tree() and not is_queued_for_deletion() and hero.is_free() and host.round_live():
+			ghost.top_level = true # keep visibility inherited from the owner, but stop following
+			if _dust:
+				_dust.emitting = false
+			var material: ShaderMaterial = ghost.get_meta("spirit_material")
+			var tween := ghost.create_tween()
+			tween.tween_method(func(k: float): material.set_shader_parameter("opacity", k), 1.0, 0.0, float(v("tamaraw_spirit_fade")))
+			tween.tween_callback(ghost.queue_free)
+		else:
+			ghost.queue_free()
 	_aura = null
 	_dust = null
 
 func _exit_tree() -> void:
-	_free_aura()
+	if is_instance_valid(_aura):
+		_aura.queue_free()
+	_aura = null
+	_dust = null

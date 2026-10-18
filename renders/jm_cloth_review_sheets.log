@@ -1,0 +1,16 @@
+02:49:51 | INFO: Data are loaded, start creating Blender stuff
+02:49:51 | INFO: Blender create Mesh node TerryCloth
+02:49:51 | INFO: glTF import finished in 0.05s
+00:02.531  render           | Saved: 'C:\renders\qc\jm_towel_carry_wire_front.png'
+00:02.578  render           | Saved: 'C:\renders\qc\jm_towel_carry_wire_right.png'
+00:02.625  render           | Saved: 'C:\renders\qc\jm_towel_carry_wire_top.png'
+00:02.671  render           | Saved: 'C:\renders\qc\jm_towel_carry_wire_three_quarter.png'
+00:02.796  render           | Saved: 'C:\renders\qc\jm_towel_carry_material_front.png'
+00:02.828  render           | Saved: 'C:\renders\qc\jm_towel_carry_material_right.png'
+00:02.859  render           | Saved: 'C:\renders\qc\jm_towel_carry_material_top.png'
+00:02.875  render           | Saved: 'C:\renders\qc\jm_towel_carry_material_three_quarter.png'
+{'ok': True, 'sheet': 'renders/qc/jm_towel_carry_wire.png', 'views': ['renders/qc/jm_towel_carry_wire_front.png', 'renders/qc/jm_towel_carry_wire_right.png', 'renders/qc/jm_towel_carry_wire_top.png', 'renders/qc/jm_towel_carry_wire_three_quarter.png'], 'layout': '2x2', 'order': ['front', 'right', 'top', 'three_quarter']}
+{'ok': True, 'sheet': 'renders/qc/jm_towel_carry_material.png', 'views': ['renders/qc/jm_towel_carry_material_front.png', 'renders/qc/jm_towel_carry_material_right.png', 'renders/qc/jm_towel_carry_material_top.png', 'renders/qc/jm_towel_carry_material_three_quarter.png'], 'layout': '2x2', 'order': ['front', 'right', 'top', 'three_quarter']}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

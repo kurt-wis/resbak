@@ -73,7 +73,7 @@ func _ready() -> void:
 			_music_started = true
 	var gameplay := map_root.get_node_or_null("Gameplay")
 	if gameplay and bool(gameplay.get_meta("dust", false)):
-		MapDressing.add_dust(map_root, _play_bounds(gameplay))
+		MapDressing.add_dust(map_root, _play_bounds(gameplay), gameplay.get_meta("presentation", {}))
 	world = Node3D.new()
 	world.name = "World"
 	add_child(world)
@@ -93,7 +93,7 @@ func _ready() -> void:
 		var enemy := host.base_system.pole_pos(RB.other_team(local_hero.team))
 		camera.enemy_dir = RB.flat(enemy - own).normalized()
 	add_child(camera)
-	camera.ink = MapDressing.add_ink_edges(camera, host.layout.bounds)
+	camera.ink = MapDressing.add_ink_edges(camera, host.layout.bounds, map_root)
 	camera.snap()
 	player_input = PlayerInput.new()
 	player_input.name = "PlayerInput"
@@ -216,7 +216,6 @@ func _is_offline() -> bool:
 	return session == null or session.mode != "custom_room"
 
 func _build_training_tools() -> void:
-	hud.feed_visible = false
 	var column := VBoxContainer.new()
 	column.position = Vector2(24, 160)
 	column.custom_minimum_size = Vector2(410, 0)

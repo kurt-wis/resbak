@@ -59,10 +59,16 @@ func try_cast(frame: InputFrame) -> bool:
 	cast_tick = host.tick
 	hero.notify_skill_cast(self)
 	_cast(frame)
+	if not is_traversal():
+		hero.plant_cast(host.tuning.skill_cast_plant)
 	host.emit_event("skill_cast", {"hero": hero, "slot": slot, "skill": skill_name()})
 	return true
 
 # ---- override these -------------------------------------------------------------------
+
+## Only skills that actually transport the caster are exempt from planting.
+func is_traversal() -> bool:
+	return false
 
 ## Extra cast conditions (e.g. LUSOT! needs ground). Base rules are already checked.
 func _can_cast_extra() -> bool:

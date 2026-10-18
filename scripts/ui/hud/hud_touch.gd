@@ -3,8 +3,8 @@ extends HudPart
 ## Touch controls only produce PlayerInput edges/vectors; gameplay stays on the host tick.
 ## Visible by default on every device; also accepts mouse gestures for desktop testing.
 const STICK_RADIUS := 100.0
-const TAG_RADIUS := 92.0
-const ACTION_RADIUS := 58.0
+const TAG_RADIUS := 115.0
+const ACTION_RADIUS := 72.5
 var force_touch_controls := false ## deterministic touch-layout checks on desktop
 var _stick_finger := -1
 var _buttons := {}
@@ -40,6 +40,12 @@ func button_ready(button: int) -> bool:
 		return hud.host.skills_enabled() and (skill.can_cast() or (skill.can_recast() and hud.local.is_free() and not hud.local.is_disabled() and not hud.local.is_attacking()))
 	return hud.local.capturing or hud.local.can_start_capture()
 
+func tap_only_skill(button: int) -> bool:
+	if button not in [RB.BTN_SKILL1, RB.BTN_SKILL2]:
+		return false
+	var slot := 0 if button == RB.BTN_SKILL1 else 1
+	return SkillAim.profile(hud.local.skills[slot]).get("tap_only", false)
+
 func contains_pad(at: Vector2) -> bool:
 	if at.distance_to(stick_centre()) <= STICK_RADIUS * 1.5:
 		return true
@@ -53,14 +59,14 @@ func stick_centre() -> Vector2:
 
 func action_centres() -> Dictionary:
 	var s := sz()
-	return {RB.BTN_TAG: Vector2(s.x - 170, s.y - 185),
-		RB.BTN_SKILL1: Vector2(s.x - 385, s.y - 180),
-		RB.BTN_SKILL2: Vector2(s.x - 305, s.y - 330),
-		RB.BTN_INTERACT: Vector2(s.x - 140, s.y - 385)}
+	return {RB.BTN_TAG: Vector2(s.x - 170, s.y - 170),
+		RB.BTN_SKILL1: Vector2(s.x - 410, s.y - 160),
+		RB.BTN_SKILL2: Vector2(s.x - 335, s.y - 335),
+		RB.BTN_INTERACT: Vector2(s.x - 140, s.y - 420)}
 
 ## Separate release target, safely away from the skill sticks and maximum-range aim.
 func cancel_centre() -> Vector2:
-	return Vector2(sz().x - 130, sz().y - 555)
+	return Vector2(sz().x - 500, sz().y - 390)
 
 func update_cancel(at: Vector2, button: int) -> void:
 	var cancelling := at.distance_to(cancel_centre()) <= hud.host.tuning.touch_cancel_radius
@@ -135,8 +141,12 @@ func _input(event: InputEvent) -> void:
 				_stick = Vector2.ZERO
 				source().set_touch_move(_stick)
 			if _buttons.has(event.index):
-				update_cancel(at, int(_buttons[event.index]))
-				if int(_buttons[event.index]) == RB.BTN_TAG:
+				var button := int(_buttons[event.index])
+				if not tap_only_skill(button):
+					update_cancel(at, button)
+				if tap_only_skill(button):
+					source().release_touch(button)
+				elif int(_buttons[event.index]) == RB.BTN_TAG:
 					source().finish_tag_aim(event.canceled)
 				elif int(_buttons[event.index]) in [RB.BTN_SKILL1, RB.BTN_SKILL2]:
 					source().finish_touch_skill(event.canceled)
@@ -160,8 +170,12 @@ func _input(event: InputEvent) -> void:
 						source().touch_active = true
 						source().begin_tag_aim()
 					elif button in [RB.BTN_SKILL1, RB.BTN_SKILL2]:
-						_skill_drags[button] = Vector2.ZERO
-						source().begin_touch_skill(button)
+						if tap_only_skill(button):
+							source().press_touch(button)
+							source().release_touch(button)
+						else:
+							_skill_drags[button] = Vector2.ZERO
+							source().begin_touch_skill(button)
 					else:
 						source().press_touch(button)
 					break
@@ -175,6 +189,8 @@ func _input(event: InputEvent) -> void:
 		update_cancel(at, RB.BTN_TAG)
 	elif _buttons.get(event.index, 0) in [RB.BTN_SKILL1, RB.BTN_SKILL2]:
 		var button: int = _buttons[event.index]
+		if tap_only_skill(button):
+			return
 		_skill_drags[button] = at - action_centres()[button]
 		source().drag_touch_skill(_skill_drags[button], hud.host.tuning)
 		update_cancel(at, button)
@@ -225,16 +241,13 @@ func _draw() -> void:
 				icon_color.a = 0.2
 				draw_arc(at, radius - 6, -PI * 0.5, -PI * 0.5 + TAU * (1.0 - skill.cd_fraction()), 48, Color.WHITE, 5, true)
 			if skill.active:
-				text = "STOP" if skill.can_recast() else "ACTIVE"
+				text = "■" if skill.can_recast() else ""
 				icon_color.a = 0.25
 			if skill.warded():
-				text = "GUARD"
+				text = ""
 				icon_color.a = 0.25
 			SkillAim.draw_icon(self, str(config.icon), at, 23.0, icon_color)
-			var name_text := skill.skill_name()
-			var font := HudStyle.font()
-			var width := font.get_string_size(name_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
-			draw_string(font, at + Vector2(-width * 0.5, -radius - 14), name_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color.WHITE)
+
 			if source() and source().touch_skill_button == button and config.mode != "self" and not skill.active:
 				text = "CANCEL" if source().touch_skill_cancelled else ""
 				var offset: Vector2 = _skill_drags.get(button, Vector2.ZERO)
@@ -246,20 +259,6 @@ func _draw() -> void:
 		var font := HudStyle.font()
 		var width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 30).x
 		draw_string(font, at + Vector2(-width * 0.5, 10), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 30, Color.WHITE)
-
-	if source() and source().touch_skill_button != 0:
-		var skill: Skill = hud.local.skills[0 if source().touch_skill_button == RB.BTN_SKILL1 else 1]
-		var config := SkillAim.profile(skill)
-		var hint: String = config.hint
-		if source().touch_skill_cancelled:
-			hint = "Release on × to cancel / move away to keep aiming"
-		elif skill.active:
-			hint = "Release to stop " + skill.skill_name()
-		elif config.mode == "point":
-			hint += " | Drag to aim · release to cast"
-		var panel := Rect2(sz().x * 0.5 - 450, sz().y - 245, 900, 60)
-		HudStyle.panel(self, panel, hud.local.data.color, Color(0.05, 0.06, 0.09, 0.85), 12, 2)
-		HudStyle.text_in(self, hint, panel, 22, Color.WHITE, 8)
 
 	if source() and (source().tag_aiming or source().touch_skill_button != 0):
 		var cancel := cancel_centre()

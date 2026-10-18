@@ -15,6 +15,33 @@ static func flat_material(color: Color, unshaded := true) -> StandardMaterial3D:
 	m.cull_mode = BaseMaterial3D.CULL_DISABLED
 	return m
 
+## Tapered curved ink/wind stroke. Points are local; callers choose its world transform.
+static func ribbon(points: PackedVector3Array, width: float, color: Color) -> MeshInstance3D:
+	var surface := SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for i in range(points.size() - 1):
+		var direction := (points[i + 1] - points[i]).normalized()
+		var side := direction.cross(Vector3.UP).normalized()
+		if side.length_squared() < 0.01:
+			side = Vector3.RIGHT
+		var wa := width * sin(PI * (float(i) + 0.1) / points.size())
+		var wb := width * sin(PI * (float(i) + 1.0) / points.size())
+		for point in [points[i] - side * wa, points[i] + side * wa, points[i + 1] - side * wb, points[i + 1] - side * wb, points[i] + side * wa, points[i + 1] + side * wb]:
+			surface.add_vertex(point)
+	var node := MeshInstance3D.new()
+	node.mesh = surface.commit()
+	node.material_override = flat_material(color)
+	node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return node
+
+## Expanding vertical comic/sound shell; never used as a gameplay volume.
+static func sound_shell(parent: Node3D, point: Vector3, dir: Vector3, color: Color, radius := 1.0) -> void:
+	var ring := ground_ring(parent, point, 1.0, color, 0.055)
+	ring.rotation = Vector3(PI * 0.5, atan2(dir.x, dir.z), 0)
+	ring.scale = Vector3.ONE * 0.25
+	ring.create_tween().tween_property(ring, "scale", Vector3.ONE * radius, 0.28).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	fade_and_free(ring, 0.3)
+
 static var _soft: Texture2D
 static var _paper: Texture2D
 
@@ -160,7 +187,10 @@ static func emitter(parent: Node3D, color: Color, amount := 32, life := 0.8, siz
 static func ground_ring(parent: Node, pos: Vector3, radius: float, color: Color, width := 0.12, filled_alpha := 0.0) -> Node3D:
 	var root := Node3D.new()
 	parent.add_child(root)
-	root.global_position = pos + Vector3(0, 0.06, 0)
+	if root.is_inside_tree():
+		root.global_position = pos + Vector3(0, 0.06, 0)
+	else:
+		root.position = pos + Vector3(0, 0.06, 0)
 	var ring := MeshInstance3D.new()
 	var torus := TorusMesh.new()
 	torus.inner_radius = maxf(radius - width * 0.5, 0.01)
@@ -298,14 +328,7 @@ static func aim_arrow_meshes(length: float, width: float, head_len: float, head_
 
 ## Flat rectangle from the origin along +Z (`length` x `width`). Used for IHIP! lanes.
 static func lane_mesh(length: float, width: float, color: Color) -> MeshInstance3D:
-	var mi := MeshInstance3D.new()
-	var pm := PlaneMesh.new()
-	pm.size = Vector2(width, length)
-	pm.center_offset = Vector3(0, 0, length * 0.5)
-	mi.mesh = pm
-	mi.material_override = flat_material(color)
-	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	return mi
+	return tag_strip(length, width * 0.5, color)
 
 ## Floating word (HULI!, PERFECT!, LUSOT!): rises and fades. Frees itself.
 static func popup_text(parent: Node, pos: Vector3, text: String, color: Color, size := 110, time := 0.9) -> void:
@@ -350,8 +373,11 @@ static func _puff_curve() -> Curve:
 static func tag_strip(length: float, half_width: float, color: Color) -> MeshInstance3D:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for v in [Vector3(-half_width, 0, 0), Vector3(half_width, 0, 0), Vector3(-half_width, 0, length), Vector3(half_width, 0, 0), Vector3(half_width, 0, length), Vector3(-half_width, 0, length)]:
-		st.add_vertex(v)
+	var perimeter := rounded_strip_points(length, half_width)
+	for i in range(perimeter.size()):
+		st.add_vertex(Vector3(0, 0, length * 0.5))
+		st.add_vertex(perimeter[(i + 1) % perimeter.size()])
+		st.add_vertex(perimeter[i])
 	var result := MeshInstance3D.new()
 	result.mesh = st.commit()
 	result.material_override = flat_material(color)
@@ -360,16 +386,29 @@ static func tag_strip(length: float, half_width: float, color: Color) -> MeshIns
 
 ## Border around a straight attack strip, with no opaque fill underneath.
 static func tag_strip_border(length: float, half_width: float, width: float, color: Color) -> MeshInstance3D:
-	var outer := [Vector3(-half_width, 0, 0), Vector3(half_width, 0, 0), Vector3(half_width, 0, length), Vector3(-half_width, 0, length)]
-	var inner := [Vector3(-half_width + width, 0, width), Vector3(half_width - width, 0, width), Vector3(half_width - width, 0, length - width), Vector3(-half_width + width, 0, length - width)]
+	var outer := rounded_strip_points(length, half_width)
+	var inner := rounded_strip_points(maxf(0.001, length - width * 2.0), maxf(0.001, half_width - width))
+	for i in range(inner.size()):
+		inner[i].z += width
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for i in range(4):
-		var j := (i + 1) % 4
+	for i in range(outer.size()):
+		var j := (i + 1) % outer.size()
 		for vertex in [outer[i], outer[j], inner[i], outer[j], inner[j], inner[i]]:
 			st.add_vertex(vertex)
 	var result := MeshInstance3D.new()
 	result.mesh = st.commit()
 	result.material_override = flat_material(color)
 	result.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return result
+
+static func rounded_strip_points(length: float, half_width: float) -> PackedVector3Array:
+	var result := PackedVector3Array()
+	var radius := minf(half_width * 0.6, length * 0.2)
+	var corners := [Vector2(half_width - radius, length - radius), Vector2(-half_width + radius, length - radius), Vector2(-half_width + radius, radius), Vector2(half_width - radius, radius)]
+	for corner in range(4):
+		for segment in range(9):
+			var angle := float(corner) * PI * 0.5 + float(segment) / 8.0 * PI * 0.5
+			var point: Vector2 = corners[corner] + Vector2(cos(angle), sin(angle)) * radius
+			result.append(Vector3(point.x, 0, point.y))
 	return result

@@ -1,0 +1,198 @@
+01:20:26 | INFO: Data are loaded, start creating Blender stuff
+01:20:26 | INFO: Blender create Mesh node Mesh_0
+01:20:27 | INFO: glTF import finished in 0.42s
+01:20:30 | INFO: Data are loaded, start creating Blender stuff
+01:20:30 | INFO: Blender create Mesh node Mesh_0
+01:20:42 | INFO: glTF import finished in 12.24s
+[retarget] BreakDance <- jm_animation_library.glb:BreakDance: 22 bones matched, 162 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Capture <- jm_animation_library.glb:Capture: 22 bones matched, 65 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Chained <- jm_animation_library.glb:Chained: 22 bones matched, 45 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] GuardBreak <- jm_animation_library.glb:GuardBreak: 22 bones matched, 25 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Idle <- jm_animation_library.glb:Idle: 22 bones matched, 45 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Jailed <- jm_animation_library.glb:Jailed: 22 bones matched, 122 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Menu_Clap <- jm_animation_library.glb:Menu_Clap: 22 bones matched, 81 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Menu_LeanBackLaugh <- jm_animation_library.glb:Menu_LeanBackLaugh: 22 bones matched, 116 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Menu_SitDrink <- jm_animation_library.glb:Menu_SitDrink: 22 bones matched, 269 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Menu_SitIdle <- jm_animation_library.glb:Menu_SitIdle: 22 bones matched, 37 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Running <- jm_animation_library.glb:Running: 22 bones matched, 17 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Stumble <- jm_animation_library.glb:Stumble: 22 bones matched, 19 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Stunned <- jm_animation_library.glb:Stunned: 22 bones matched, 27 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Tag <- jm_animation_library.glb:Tag: 22 bones matched, 17 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] TagCharge <- jm_animation_library.glb:TagCharge: 22 bones matched, 48 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Tagged <- jm_animation_library.glb:Tagged: 22 bones matched, 23 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Talbog_Jump <- jm_animation_library.glb:Talbog_Jump: 22 bones matched, 23 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Talbog_Slam <- jm_animation_library.glb:Talbog_Slam: 22 bones matched, 34 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Tamaraw <- jm_animation_library.glb:Tamaraw: 22 bones matched, 14 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Victory <- jm_animation_library.glb:Victory: 22 bones matched, 34 frames at 24 fps (source 24 fps), hips x1.116
+[retarget] Walking <- jm_animation_library.glb:Walking: 22 bones matched, 25 frames at 24 fps (source 24 fps), hips x1.116
+[build_heroes]   baked BreakDance: 162 frames
+[build_heroes]   baked Capture: 65 frames
+[build_heroes]   baked Capture: 65 frames
+[build_heroes]   grounded Capture: -6.9 cm
+[build_heroes]   baked Chained: 45 frames
+[build_heroes]   baked Chained: 45 frames
+[build_heroes]   grounded Chained: -4.0 cm
+[build_heroes]   baked GuardBreak: 25 frames
+[build_heroes]   baked GuardBreak: 25 frames
+[build_heroes]   grounded GuardBreak: -1.1 cm
+[build_heroes]   baked Idle: 45 frames
+[build_heroes]   baked Idle: 45 frames
+[build_heroes]   grounded Idle: -4.0 cm
+[build_heroes]   baked Jailed: 122 frames
+[build_heroes]   baked Jailed: 122 frames
+[build_heroes]   grounded Jailed: -2.2 cm
+[build_heroes]   baked Menu_Clap: 81 frames
+[build_heroes]   baked Menu_Clap: 81 frames
+[build_heroes]   grounded Menu_Clap: +0.6 cm
+[build_heroes]   baked Menu_LeanBackLaugh: 116 frames
+[build_heroes]   baked Menu_LeanBackLaugh: 116 frames
+[build_heroes]   grounded Menu_LeanBackLaugh: +1.1 cm
+[build_heroes]   baked Menu_SitDrink: 269 frames
+[build_heroes]   baked Menu_SitDrink: 269 frames
+[build_heroes]   grounded Menu_SitDrink: +4.0 cm
+[build_heroes]   baked Menu_SitIdle: 37 frames
+[build_heroes]   baked Menu_SitIdle: 37 frames
+[build_heroes]   grounded Menu_SitIdle: +3.7 cm
+[build_heroes]   baked Running: 17 frames
+[build_heroes]   baked Running: 17 frames
+[build_heroes]   grounded Running: -3.3 cm
+[build_heroes]   baked Stumble: 19 frames
+[build_heroes]   baked Stumble: 19 frames
+[build_heroes]   grounded Stumble: -3.8 cm
+[build_heroes]   baked Stunned: 27 frames
+[build_heroes]   baked Stunned: 27 frames
+[build_heroes]   grounded Stunned: -2.9 cm
+[build_heroes]   baked Tag: 17 frames
+[build_heroes]   baked Tag: 17 frames
+[build_heroes]   grounded Tag: -3.0 cm
+[build_heroes]   baked TagCharge: 48 frames
+[build_heroes]   baked TagCharge: 48 frames
+[build_heroes]   grounded TagCharge: +2.4 cm
+[build_heroes]   baked Tagged: 23 frames
+[build_heroes]   baked Tagged: 23 frames
+[build_heroes]   grounded Tagged: -4.4 cm
+[build_heroes]   baked Talbog_Jump: 23 frames
+[build_heroes]   baked Talbog_Jump: 23 frames
+[build_heroes]   grounded Talbog_Jump: +2.2 cm
+[build_heroes]   baked Talbog_Slam: 34 frames
+[build_heroes]   baked Talbog_Slam: 34 frames
+[build_heroes]   grounded Talbog_Slam: -0.8 cm
+[build_heroes]   baked Tamaraw: 14 frames
+[build_heroes]   baked Tamaraw: 14 frames
+[build_heroes]   grounded Tamaraw: -6.5 cm
+[build_heroes]   baked Victory: 34 frames
+[build_heroes]   baked Victory: 34 frames
+[build_heroes]   grounded Victory: -0.8 cm
+[build_heroes]   baked Walking: 25 frames
+[build_heroes]   baked Walking: 25 frames
+[build_heroes]   grounded Walking: -1.0 cm
+[build_heroes]   rigid head: 201 vertices above the head joint moved onto the Head bone
+INFO Draco is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+01:21:47 | INFO: Starting glTF 2.0 export
+01:21:47 | INFO: Extracting primitive: Mesh_0
+01:21:48 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+01:21:48 | INFO: Primitives created: 1
+01:22:00 | INFO: Finished glTF 2.0 export in 13.307658195495605 s
+02:13.234  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:14.156  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:14.328  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:14.812  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:15.640  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:16.156  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:16.218  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:16.296  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:16.875  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:17.531  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:18.453  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:18.578  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:18.640  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:19.250  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:19.906  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:21.750  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:23.109  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+02:23.859  render           | Saved: 'E:\RESBAK\resbak\renders\_moves_jm.png'
+
+[build_heroes]   moves sheet: renders\heroes_jm_revision.png
+REVISION jm 22
+01:22:54 | INFO: Data are loaded, start creating Blender stuff
+01:22:54 | INFO: Blender create Mesh node Mesh_0
+01:23:04 | INFO: glTF import finished in 10.20s
+HAIR vertices corrected 1324 head 1.328994870185852 neck 1.2386082410812378
+01:23:10 | INFO: Starting glTF 2.0 export
+01:23:10 | INFO: Extracting primitive: Mesh_0
+01:23:11 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+01:23:11 | INFO: Primitives created: 1
+Traceback (most recent call last):
+03:20.187  bpy.rna          | ERROR Python script error in EXPORT_SCENE_OT_gltf.execute
+Error: Python: Traceback (most recent call last):
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\__init__.py", line 1409, in execute
+    res = gltf2_blender_export.save(context, export_settings)
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 42, in save
+    __write_file(json, buffer, export_settings)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 571, in __write_file
+    gltf2_io_export.save_gltf(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json,
+        ^^^^^
+        export_settings,
+        ^^^^^^^^^^^^^^^^
+        json_util.BlenderJSONEncoder,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        buffer)
+        ^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\io\exp\export.py", line 85, in save_gltf
+    file = open(export_settings['gltf_filepath'], "wb")
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\__init__.py", line 1409, in execute
+    res = gltf2_blender_export.save(context, export_settings)
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 42, in save
+    __write_file(json, buffer, export_settings)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 571, in __write_file
+    gltf2_io_export.save_gltf(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json,
+        ^^^^^
+        export_settings,
+        ^^^^^^^^^^^^^^^^
+        json_util.BlenderJSONEncoder,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        buffer)
+        ^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\io\exp\export.py", line 85, in save_gltf
+    file = open(export_settings['gltf_filepath'], "wb")
+OSError: [Errno 22] Invalid argument: 'E:\\RESBAK\\resbak\\assets\\characters\\inday.glb'
+Traceback (most recent call last):
+  File "E:\RESBAK\resbak\tools\build_revision_animations.py", line 139, in <module>
+    ids=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else list(base.HEROES)
+                    ^^^^^^^^^^^
+  File "E:\RESBAK\resbak\tools\build_revision_animations.py", line 132, in build
+    arm.animation_data.action=None
+RuntimeError: Error: Python: Traceback (most recent call last):
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\__init__.py", line 1409, in execute
+    res = gltf2_blender_export.save(context, export_settings)
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 42, in save
+    __write_file(json, buffer, export_settings)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\blender\exp\export.py", line 571, in __write_file
+    gltf2_io_export.save_gltf(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        json,
+        ^^^^^
+        export_settings,
+        ^^^^^^^^^^^^^^^^
+        json_util.BlenderJSONEncoder,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        buffer)
+        ^^^^^^^
+  File "E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\io\exp\export.py", line 85, in save_gltf
+    file = open(export_settings['gltf_filepath'], "wb")
+OSError: [Errno 22] Invalid argument: 'E:\\RESBAK\\resbak\\assets\\characters\\inday.glb'
+Location: E:\RESBAK\resbak\tools\build_revision_animations.py:132
+
+
+Error: script failed, file: 'tools/build_revision_animations.py', exiting.
+OSError: [Errno 22] Invalid argument: 'E:\\RESBAK\\resbak\\assets\\characters\\inday.glb... truncatedBlender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

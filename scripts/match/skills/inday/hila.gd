@@ -1,8 +1,7 @@
 extends Skill
 
 ## Inday S2 HILA! (v0.2, replaces SAGIP!; docs/status.md). Inday stretches her hand along her
-## aim (HilaHand): it flies out up to hila_range metres (walls stop it) and stays open for
-## hila_hold seconds. The first Free teammate who touches it is yanked to her. A chain tip
+## aim (HilaHand): it flies out up to hila_range metres (walls stop it) and returns immediately on a miss. The first Free teammate who touches it is yanked to her. A chain tip
 ## it touches is rescued as if Inday touched it (a rescue by skill, so TAKBO NA! applies),
 ## and the freed tip is pulled in next. Type: Neither.
 

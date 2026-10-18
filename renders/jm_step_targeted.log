@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[INTEGRATION TEST] suite hero_assets
+  ✓ [hero_assets] hero GLBs and HeroData match the spec table
+[INTEGRATION TEST] suite kit_jm
+  ✓ [kit_jm] JM data and spec numbers
+  ✓ [kit_jm] TALBOG jump, restrictions, landing push and enemy-only stun
+  ✓ [kit_jm] TALBOG! range cap and landing clamps
+  ✓ [kit_jm] TALBOG! tagged mid-air
+  ✓ [kit_jm] TAMARAW!!! fixed speed, duration, can't tag, cooldown
+  ✓ [kit_jm] TAMARAW!!! shoves enemies sideways once, ignores allies
+  ✓ [kit_jm] TAMARAW!!! turn rate
+  ✓ [kit_jm] TAMARAW!!! solid hit slows nearby enemies and stuns JM
+  ✓ [kit_jm] TAMARAW!!! recast and tag end the charge
+  ✓ [kit_jm] MAKAPAL! first tag breaks the guard, no jail, no stumble, 1.5 s no-tag
+  ✓ [kit_jm] MAKAPAL! rage (untaggable + spin shove), regen, next tag jails, jail keeps the timer
+  ✓ [kit_jm] MAKAPAL! doesn't protect a capturing JM, state kept in jail
+  ✓ [kit_jm] MAKAPAL! icon and round reset
+[INTEGRATION TEST] suite hero_revision
+  ✓ [hero_revision] all skills enforce stationary-cast and traversal contracts
+  ✓ [hero_revision] movable preparation, planted commitment, objective-facing capture and rounded guides
+  ✓ [hero_revision] status detail interaction and enlarged action controls
+[INTEGRATION TEST] 3 suites, 375 checks, 0 failed
+[INTEGRATION TEST] All checks passed successfully (100%)!

@@ -68,6 +68,7 @@ func setup(p_host: MatchHost, p_local: Hero, p_view: MatchView) -> void:
 	overlay = _full_control("Overlay")
 	add_child(overlay)
 	danger = _add(HudDanger.new(), root) as HudDanger
+	_add(preload("res://scripts/ui/hud/hud_powder.gd").new(), root)
 	hallucinate = _add(HudHallucinate.new(), root) as HudHallucinate
 	rings = _add(HudCaptureRings.new(), root) as HudCaptureRings
 	arrows = _add(HudArrows.new(), root) as HudArrows

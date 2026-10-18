@@ -247,7 +247,15 @@ def main():
     rigged = arm is not None
     body = [m for m in meshes if not rigged or len(m.vertex_groups) > 0] or meshes
 
+    # Importers may activate the first clip (often BreakDance) at frame zero.
+    # Measure the bind mesh, as Godot does, rather than mistaking a crouch for its height.
+    if arm:
+        arm.data.pose_position = "REST"
+        bpy.context.view_layer.update()
     lo, hi = world_bounds(body)
+    if arm:
+        arm.data.pose_position = "POSE"
+        bpy.context.view_layer.update()
     h = hi.z - lo.z
     scale = a.height / h if a.height > 0 and h > 0 else 1.0
     report = {"file": os.path.relpath(path, PROJ), "real_height_m": round(h, 3),

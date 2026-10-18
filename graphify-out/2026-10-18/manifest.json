@@ -304,5 +304,143 @@
     "seen": 1792306957.5422926,
     "ast_hash": "80bc112e50a6430332da02fa322bb40f",
     "semantic_hash": "80bc112e50a6430332da02fa322bb40f"
+  },
+  "CLAUDE.md": {
+    "mtime": 1792304085.1021326,
+    "seen": 1792307113.3362846,
+    "ast_hash": "172609a99a943ff895df760009d307af",
+    "semantic_hash": "172609a99a943ff895df760009d307af"
+  },
+  "addons/meshy-godot-plugin/README.md": {
+    "mtime": 1791885144.8964407,
+    "seen": 1792307113.3362882,
+    "ast_hash": "3b0ec83066ec3d089771747709ac1c76",
+    "semantic_hash": "3b0ec83066ec3d089771747709ac1c76"
+  },
+  "assets/decals/PROMPTS.md": {
+    "mtime": 1792304090.4898999,
+    "seen": 1792307113.3362908,
+    "ast_hash": "462fecc13aec57f6eadb547ff1a92225",
+    "semantic_hash": "462fecc13aec57f6eadb547ff1a92225"
+  },
+  "assets/fonts/LuckiestGuy-LICENSE.txt": {
+    "mtime": 1792304093.3085444,
+    "seen": 1792307113.3362932,
+    "ast_hash": "3b83ef96387f14655fc854ddc3c6bd57",
+    "semantic_hash": "3b83ef96387f14655fc854ddc3c6bd57"
+  },
+  "docs/README.md": {
+    "mtime": 1792304098.583286,
+    "seen": 1792307113.3362956,
+    "ast_hash": "1633015f53aae32402a039aeefe3ca8a",
+    "semantic_hash": "1633015f53aae32402a039aeefe3ca8a"
+  },
+  "docs/archive/README.md": {
+    "mtime": 1792304098.584294,
+    "seen": 1792307113.3362978,
+    "ast_hash": "fabc37f5bb59b50f4e1f89869499c316",
+    "semantic_hash": "fabc37f5bb59b50f4e1f89869499c316"
+  },
+  "docs/archive/RESBAK.md": {
+    "mtime": 1792304098.5852954,
+    "seen": 1792307113.3363001,
+    "ast_hash": "6f9bc06b1edb392e1ce53da4cca4d8bc",
+    "semantic_hash": "6f9bc06b1edb392e1ce53da4cca4d8bc"
+  },
+  "docs/archive/characters/01_jm_botsog.md": {
+    "mtime": 1792304098.6062155,
+    "seen": 1792307113.3363023,
+    "ast_hash": "9c0ce3cb8836334ec796670a41a1c851",
+    "semantic_hash": "9c0ce3cb8836334ec796670a41a1c851"
+  },
+  "docs/archive/characters/02_nene.md": {
+    "mtime": 1792304098.6067238,
+    "seen": 1792307113.3363047,
+    "ast_hash": "b9a37a8dd4caa398be65223b2c5ef280",
+    "semantic_hash": "b9a37a8dd4caa398be65223b2c5ef280"
+  },
+  "docs/archive/characters/03_batang_hamog.md": {
+    "mtime": 1792304098.6067238,
+    "seen": 1792307113.3363066,
+    "ast_hash": "8c0a7dc5be1c6c27816f4d1f02681e05",
+    "semantic_hash": "8c0a7dc5be1c6c27816f4d1f02681e05"
+  },
+  "docs/archive/characters/04_nathan.md": {
+    "mtime": 1792304098.6067238,
+    "seen": 1792307113.3363085,
+    "ast_hash": "4153e6e51864b11e00e7fc81159fd369",
+    "semantic_hash": "4153e6e51864b11e00e7fc81159fd369"
+  },
+  "docs/archive/characters/05_inday.md": {
+    "mtime": 1792304098.6067238,
+    "seen": 1792307113.3363106,
+    "ast_hash": "91b6a0f73e02ae6dd8f1c53474d95bd8",
+    "semantic_hash": "91b6a0f73e02ae6dd8f1c53474d95bd8"
+  },
+  "docs/archive/gameplay/agawan_base_rules.md": {
+    "mtime": 1792304098.6077352,
+    "seen": 1792307113.3363123,
+    "ast_hash": "6a133598c8747453eedbc381d54c6ff7",
+    "semantic_hash": "6a133598c8747453eedbc381d54c6ff7"
+  },
+  "docs/decisions.md": {
+    "mtime": 1792304098.6077352,
+    "seen": 1792307113.3363142,
+    "ast_hash": "4424e3c0ffc929f00bb03518db51a83e",
+    "semantic_hash": "4424e3c0ffc929f00bb03518db51a83e"
+  },
+  "docs/glossary.md": {
+    "mtime": 1792304098.6087346,
+    "seen": 1792307113.336316,
+    "ast_hash": "2c4f2e1576959ccd319cdcd70d726431",
+    "semantic_hash": "2c4f2e1576959ccd319cdcd70d726431"
+  },
+  "docs/pipelines/assets.md": {
+    "mtime": 1792304098.6087346,
+    "seen": 1792307113.3363178,
+    "ast_hash": "20d7617029f82c70181fe8d7320b223a",
+    "semantic_hash": "20d7617029f82c70181fe8d7320b223a"
+  },
+  "docs/pipelines/blender.md": {
+    "mtime": 1792304098.6097345,
+    "seen": 1792307113.3363194,
+    "ast_hash": "d2c6beaf94a2b9d971d453598855847f",
+    "semantic_hash": "d2c6beaf94a2b9d971d453598855847f"
+  },
+  "docs/plans/2026-10-17-konstruksyon-remaining.md": {
+    "mtime": 1792304098.6115057,
+    "seen": 1792307113.3363216,
+    "ast_hash": "6d4132565e785d42481d578a77bce017",
+    "semantic_hash": "6d4132565e785d42481d578a77bce017"
+  },
+  "renders/README.md": {
+    "mtime": 1792304103.0097787,
+    "seen": 1792307113.3363233,
+    "ast_hash": "08c4e5d07a77ad3e07c69f86e67e997a",
+    "semantic_hash": "08c4e5d07a77ad3e07c69f86e67e997a"
+  },
+  "scripts/map_pipeline/README.md": {
+    "mtime": 1792304103.9363534,
+    "seen": 1792307113.3363252,
+    "ast_hash": "aba67a55bfc96fd3bc85b8a7208ae137",
+    "semantic_hash": "aba67a55bfc96fd3bc85b8a7208ae137"
+  },
+  "scripts/tests/README.md": {
+    "mtime": 1792304104.72871,
+    "seen": 1792307113.3363268,
+    "ast_hash": "97716c7a3ac14b0a6e268c259bdc49da",
+    "semantic_hash": "97716c7a3ac14b0a6e268c259bdc49da"
+  },
+  "tools/README.md": {
+    "mtime": 1792304115.1774058,
+    "seen": 1792307113.3363287,
+    "ast_hash": "98972b987b37690aa9bc5a36117174ff",
+    "semantic_hash": "98972b987b37690aa9bc5a36117174ff"
+  },
+  "icon.svg": {
+    "mtime": 1791879861.388563,
+    "seen": 1792307113.3363304,
+    "ast_hash": "a16f2eed1b4496c4abf03d329708ba09",
+    "semantic_hash": "a16f2eed1b4496c4abf03d329708ba09"
   }
 }

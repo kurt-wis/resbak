@@ -1,0 +1,152 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[INTEGRATION TEST] suite kit_tutoy
+  ✓ [kit_tutoy] tutoy data matches spec § 4
+  ✓ [kit_tutoy] HARUROT! 8.2 m/s, 78 ticks, no turn limit, 10.66 m, 8 s cooldown
+  ✓ [kit_tutoy] HARUROT! wind trail: 18 parts, 2 s each
+  ✓ [kit_tutoy] HARUROT! can tag and be tagged
+  ✓ [kit_tutoy] HARUROT! fixed speed, slows, stun, reset
+  ✓ [kit_tutoy] LUSOT! slide 4 m / 0.4 s, along movement (aim if still), 6 s cooldown
+  ✓ [kit_tutoy] LUSOT!: no tagging during and 0.3 s after
+  ✓ [kit_tutoy] LUSOT! stops at players and walls
+  ✓ [kit_tutoy] LUSOT! vaults L_VAULTABLE props, blocked by others
+  ✓ [kit_tutoy] perfect slide: inside the 6-tick window incl. the landing tick, stun 0.6 s, passes through, else a normal slide
+  ✓ [kit_tutoy] perfect slide edge cases: out of reach, ally, two taggers
+  ✓ [kit_tutoy] DIRE-DIRETSO: 0 -> +15 % over 3 s, holds, resets on stop and on sharp turns
+  ✓ [kit_tutoy] DIRE-DIRETSO resets: enemy slow / push / stun, Tag press, capture start, stop; not terrain
+[INTEGRATION TEST] suite kit_nene
+  ✓ [kit_nene] Nene data and wiring
+  ✗ [kit_nene] pressing Tag drops the sign (no hitting from behind it)
+  ✓ [kit_nene] SALING-PUSA silent footsteps
+[INTEGRATION TEST] suite kit_nathan
+  ✓ [kit_nathan] Nathan data and the cone test
+  ✓ [kit_nathan] BUGA! timing, slow, reveal, trail
+  ✓ [kit_nathan] BUGA! cone 5 m x 60 deg
+  ✓ [kit_nathan] BUGA! walls block per target
+  ✓ [kit_nathan] BUGA! has no capture cancel and no tag
+  ✓ [kit_nathan] BUGA! interrupts
+  ✓ [kit_nathan] UBO! UBO! range, flight time, wall landing, 5 s cloud
+  ✓ [kit_nathan] UBO! UBO! vision rules and cough
+  ✓ [kit_nathan] UBO! UBO! cough timer and cloud persistence
+  ✗ [kit_nathan] skill, then a 180 deg turn 5 ticks later drops a patch
+SCRIPT ERROR: Invalid access to property or key 'global_position' on a base object of type 'Nil'.
+   at: _passive_turn (res://scripts/tests/suites/kit_nathan.gd:470)
+   GDScript backtrace (most recent call first):
+       [0] _passive_turn (res://scripts/tests/suites/kit_nathan.gd:470)
+       [1] run (res://scripts/tests/suites/kit_nathan.gd:29)
+       [2] _ubo_owner_and_blind (res://scripts/tests/suites/kit_nathan.gd:74)
+       [3] free_match (res://scripts/tests/test_ctx.gd:131)
+  ✗ [kit_nathan] patch dropped
+SCRIPT ERROR: Invalid access to property or key 'global_position' on a base object of type 'Nil'.
+   at: _passive_patch (res://scripts/tests/suites/kit_nathan.gd:516)
+   GDScript backtrace (most recent call first):
+       [0] _passive_patch (res://scripts/tests/suites/kit_nathan.gd:516)
+       [1] run (res://scripts/tests/suites/kit_nathan.gd:30)
+       [2] _ubo_owner_and_blind (res://scripts/tests/suites/kit_nathan.gd:74)
+       [3] free_match (res://scripts/tests/test_ctx.gd:131)
+[INTEGRATION TEST] suite kit_jm
+  ✓ [kit_jm] JM data and spec numbers
+  ✓ [kit_jm] TALBOG jump, restrictions, landing push and enemy-only stun
+  ✗ [kit_jm] aim inside range lands on the aim point, got -6.00
+  ✗ [kit_jm] lands just before the jail barrier (x=-13.00)
+  ✓ [kit_jm] TALBOG! range cap and landing clamps
+  ✓ [kit_jm] TALBOG! tagged mid-air
+  ✗ [kit_jm] slows apply to the fixed charge speed (got 1.99)
+  ✓ [kit_jm] TAMARAW!!! fixed speed, duration, can't tag, cooldown
+  ✓ [kit_jm] TAMARAW!!! shoves enemies sideways once, ignores allies
+  ✓ [kit_jm] TAMARAW!!! turn rate
+  ✗ [kit_jm] Tamaraw crosses the former wall footprint
+  ✓ [kit_jm] TAMARAW!!! solid hit slows nearby enemies and stuns JM
+  ✗ [kit_jm] charging again
+  ✓ [kit_jm] TAMARAW!!! recast and tag end the charge
+  ✓ [kit_jm] MAKAPAL! first tag breaks the guard, no jail, no stumble, 1.5 s no-tag
+  ✓ [kit_jm] MAKAPAL! rage (untaggable + spin shove), regen, next tag jails, jail keeps the timer
+  ✓ [kit_jm] MAKAPAL! doesn't protect a capturing JM, state kept in jail
+  ✓ [kit_jm] MAKAPAL! icon and round reset
+[INTEGRATION TEST] suite kit_inday
+SCRIPT ERROR: Parse Error: Function "_hands()" not found in base self.
+   at: GDScript::reload (res://scripts/tests/suites/kit_inday.gd:208)
+   GDScript backtrace (most recent call first):
+       [0] run (res://scripts/tests/integration_test.gd:47)
+       [1] run (res://scripts/tests/suites/kit_jm.gd:33)
+       [2] _makapal_reset_and_icon (res://scripts/tests/suites/kit_jm.gd:596)
+       [3] free_match (res://scripts/tests/test_ctx.gd:131)
+SCRIPT ERROR: Parse Error: Function "_hands()" not found in base self.
+   at: GDScript::reload (res://scripts/tests/suites/kit_inday.gd:210)
+   GDScript backtrace (most recent call first):
+       [0] run (res://scripts/tests/integration_test.gd:47)
+       [1] run (res://scripts/tests/suites/kit_jm.gd:33)
+       [2] _makapal_reset_and_icon (res://scripts/tests/suites/kit_jm.gd:596)
+       [3] free_match (res://scripts/tests/test_ctx.gd:131)
+SCRIPT ERROR: Parse Error: Function "_hands()" not found in base self.
+   at: GDScript::reload (res://scripts/tests/suites/kit_inday.gd:215)
+   GDScript backtrace (most recent call first):
+       [0] run (res://scripts/tests/integration_test.gd:47)
+       [1] run (res://scripts/tests/suites/kit_jm.gd:33)
+       [2] _makapal_reset_and_icon (res://scripts/tests/suites/kit_jm.gd:596)
+       [3] free_match (res://scripts/tests/test_ctx.gd:131)
+SCRIPT ERROR: Parse Error: Function "_hands()" not found in base self.
+   at: GDScript::reload (res://scripts/tests/suites/kit_inday.gd:234)
+   GDScript backtrace (most recent call first):
+       [0] run (res://scripts/tests/integration_test.gd:47)
+       [1] run (res://scripts/tests/suites/kit_jm.gd:33)
+       [2] _makapal_reset_and_icon (res://scripts/tests/suites/kit_jm.gd:596)
+       [3] free_match (res://scripts/tests/test_ctx.gd:131)
+SCRIPT ERROR: Parse Error: Function "_hands()" not found in base self.
+   at: GDScript::reload (res://scripts/tests/suites/kit_inday.gd:292)
+   GDScript backtrace (most recent call first):
+       [0] run (res://scripts/tests/integration_test.gd:47)
+       [1] run (res://scripts/tests/suites/kit_jm.gd:33)
+       [2] _makapal_reset_and_icon (res://scripts/tests/suites/kit_jm.gd:596)
+       [3] free_match (res://scripts/tests/test_ctx.gd:131)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "hands" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/tests/suites/kit_inday.gd:292)
+   GDScript backtrace (most recent call first):
+       [0] run (res://scripts/tests/integration_test.gd:47)
+       [1] run (res://scripts/tests/suites/kit_jm.gd:33)
+       [2] _makapal_reset_and_icon (res://scripts/tests/suites/kit_jm.gd:596)
+       [3] free_match (res://scripts/tests/test_ctx.gd:131)
+SCRIPT ERROR: Parse Error: Function "_hands()" not found in base self.
+   at: GDScript::reload (res://scripts/tests/suites/kit_inday.gd:302)
+   GDScript backtrace (most recent call first):
+       [0] run (res://scripts/tests/integration_test.gd:47)
+       [1] run (res://scripts/tests/suites/kit_jm.gd:33)
+       [2] _makapal_reset_and_icon (res://scripts/tests/suites/kit_jm.gd:596)
+       [3] free_match (res://scripts/tests/test_ctx.gd:131)
+SCRIPT ERROR: Parse Error: Function "_hands()" not found in base self.
+   at: GDScript::reload (res://scripts/tests/suites/kit_inday.gd:345)
+   GDScript backtrace (most recent call first):
+       [0] run (res://scripts/tests/integration_test.gd:47)
+       [1] run (res://scripts/tests/suites/kit_jm.gd:33)
+       [2] _makapal_reset_and_icon (res://scripts/tests/suites/kit_jm.gd:596)
+       [3] free_match (res://scripts/tests/test_ctx.gd:131)
+ERROR: Failed to load script "res://scripts/tests/suites/kit_inday.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+   GDScript backtrace (most recent call first):
+       [0] run (res://scripts/tests/integration_test.gd:47)
+       [1] run (res://scripts/tests/suites/kit_jm.gd:33)
+       [2] _makapal_reset_and_icon (res://scripts/tests/suites/kit_jm.gd:596)
+       [3] free_match (res://scripts/tests/test_ctx.gd:131)
+  ✗ [kit_inday] suite script failed to load or compile
+[INTEGRATION TEST] suite hud
+  ✓ [hud] HUD: timer, tag feed, scoreboard, hide, pause
+  ✓ [hud] announcer: UNANG HULI!, DOBLENG/TRIPLENG, MAINIT!/HALIMAW!/DI MAPIGILAN!, PINAHINTO!, RESBAK!, NAAGAW ANG BASE!, LAHAT HULI!
+  ✓ [hud] HUD: round-1 intro overlay and camera flyover
+  ✓ [hud] private tag strip: actual reach/body sweep, eligibility, locked direction and swing feedback
+  ✓ [hud] layered actions: all rigs, filtered upper body, moving chain, backpedal and tick-aligned contact
+  ✓ [hud] touch controls: multitouch movement, tap TAG, retained aim, pause cleanup, capture
+  ✗ [hud] a hidden opponent immediately loses both lock and marker
+  ✓ [hud] fair touch aim: retreat, switch, visibility/range/wall bounds, private ranges, thin outline
+  ✓ [hud] all skill previews: unique kit controls, distance selection, private intent, public JM tell and exact landing/wall parity
+[INTEGRATION TEST] 5 suites, 1009 checks, 10 failed
+  FAILED [kit_nene] pressing Tag drops the sign (no hitting from behind it)
+  FAILED [kit_nathan] skill, then a 180 deg turn 5 ticks later drops a patch
+  FAILED [kit_nathan] patch dropped
+  FAILED [kit_jm] aim inside range lands on the aim point, got -6.00
+  FAILED [kit_jm] lands just before the jail barrier (x=-13.00)
+  FAILED [kit_jm] slows apply to the fixed charge speed (got 1.99)
+  FAILED [kit_jm] Tamaraw crosses the former wall footprint
+  FAILED [kit_jm] charging again
+  FAILED [kit_inday] suite script failed to load or compile
+  FAILED [hud] a hidden opponent immediately loses both lock and marker
+[INTEGRATION TEST] FAILED

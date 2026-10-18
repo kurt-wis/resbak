@@ -22,6 +22,7 @@ func run(t: TestCtx) -> void:
 	await _occlusion(t)
 	await _castle(t)
 	_weather_and_audio(t)
+	await _court_atmosphere(t)
 	await _soak(t)
 
 # ---- helpers ----------------------------------------------------------------------------------
@@ -439,3 +440,68 @@ func _soak(t: TestCtx) -> void:
 	t.check(stuck.is_empty(), "no bot is stuck for 3 s commanded to move: %s" % "; ".join(stuck))
 	t.ok("Konstruksyon bot soak: %d live ticks, nobody stuck" % ticks_live)
 	await t.free_match(host)
+
+
+func _court_atmosphere(t: TestCtx) -> void:
+	var holder := Node3D.new()
+	t.tree.root.add_child(holder)
+	var court := (load("res://scenes/barangay_court.tscn") as PackedScene).instantiate() as Node3D
+	holder.add_child(court)
+	var site := (load(MAP) as PackedScene).instantiate() as Node3D
+	var court_env := (court.find_child("CourtAtmosphere", true, false) as WorldEnvironment).environment
+	var site_env := (site.find_child("HarborAtmosphere", true, false) as WorldEnvironment).environment
+	var sun := court.find_child("WarmAfternoonSun", true, false) as DirectionalLight3D
+	var site_sun := site.find_child("WarmAfternoonSun", true, false) as DirectionalLight3D
+	t.check(court_env.fog_enabled and t.near(court_env.ambient_light_energy, site_env.ambient_light_energy), "court uses the same authored ambient/fog system")
+	t.check(court_env.fog_density < site_env.fog_density and court_env.ambient_light_color.b > court_env.ambient_light_color.r, "court has lighter haze and cooler fill to retain paint readability")
+	t.check(t.near(sun.light_energy, site_sun.light_energy) and t.near(sun.shadow_opacity, site_sun.shadow_opacity), "court shares the construction sun energy and shadow treatment")
+	t.check(sun.light_color.b > site_sun.light_color.b, "court sun is warm without the construction site's strong amber cast")
+	MapDressing.add_lighting(holder, false, court)
+	t.check(not sun.shadow_enabled and holder.find_children("*", "DirectionalLight3D", true, false).size() == 1, "authored court lighting honors no-shadows without adding a second sun")
+	t.check(holder.find_children("*", "WorldEnvironment", true, false).size() == 1, "court never receives a duplicate fallback environment")
+	var camera := Camera3D.new()
+	holder.add_child(camera)
+	var ink := MapDressing.add_ink_edges(camera, Rect2(-23.4, -13, 46.8, 34.8), court)
+	t.check(ink.shader.resource_path == "res://shaders/illustrated_edges.gdshader" and t.near(ink.get_shader_parameter("stroke_pixels"), 0.8), "court uses the construction site's same illustrated edge shader/width")
+	var profile: Dictionary = court.get_node("Gameplay").get_meta("presentation")
+	t.check(ink.get_shader_parameter("haze_color") == profile.haze_color, "court's shader haze reads its authored palette")
+	var source_paint: ShaderMaterial = null
+	for node in court.find_children("*", "MeshInstance3D", true, false):
+		if node.mesh and node.mesh.get_surface_count() > 0:
+			var candidate := node.get_active_material(0) as ShaderMaterial
+			if candidate and candidate.shader and candidate.shader.resource_path == "res://shaders/reference_paint.gdshader":
+				source_paint = candidate
+				break
+	MapDressing.apply_court_summer(court)
+	var finished := 0
+	for node in court.find_children("*", "MeshInstance3D", true, false):
+		if node.mesh:
+			for index in range(node.mesh.get_surface_count()):
+				var material := node.get_active_material(index) as ShaderMaterial
+				if material and material.get_shader_parameter("summer_wear") == 1.0:
+					finished += 1
+	t.check(finished > 20, "summer finish reaches court architecture and prop material instances")
+	t.check(source_paint != null and source_paint.get_shader_parameter("summer_wear") != 1.0, "summer wear never mutates the shared source material")
+	var plain := StandardMaterial3D.new()
+	plain.albedo_color = Color(.1,.7,.25,1)
+	plain.roughness = .2
+	var localized := MapDressing._summer_material(plain, profile, true, {}) as StandardMaterial3D
+	t.check(localized != plain and t.near(plain.roughness, .2) and t.near(localized.roughness, .7), "prop cohesion keeps source roughness untouched")
+	var bunting := ShaderMaterial.new()
+	bunting.shader = load("res://shaders/reference_bunting.gdshader")
+	var still := MapDressing._summer_material(bunting, profile, true, {}) as ShaderMaterial
+	t.check(still.get_shader_parameter("summer_breeze") == 0.0, "Reduce motion disables decorative breeze")
+	var moving := MapDressing._summer_material(bunting, profile, false, {}) as ShaderMaterial
+	t.check(moving.get_shader_parameter("summer_breeze") == 1.0, "summer bunting gets a gentle breeze without moving collision")
+	var dust := MapDressing.add_dust(court, Rect2(-23.4, -13, 46.8, 34.8), profile)
+	var save := t.tree.root.get_node_or_null("Save")
+	var motion_off: bool = save != null and bool(save.get_setting("accessibility", "reduce_motion"))
+	t.check(dust != null or motion_off, "court uses the shared dust system and respects Reduce motion")
+	if dust:
+		t.check(dust.amount == 52 and dust.amount < 140 and dust.mesh.size.x < 0.12, "court motes are fewer and finer than construction dust")
+		t.check(dust.is_set_as_top_level() and t.near(dust.global_position.y, 1.8), "court motes remain in world space despite the scaled map root")
+	t.check(MapLayout.from_map(court).bounds == Rect2(-23.4, -13, 46.8, 34.8), "presentation retains court gameplay bounds")
+	site.free()
+	holder.queue_free()
+	await t.frames(1)
+	t.ok("court presentation: shared shader, authored sun/fog, lighter motes, shadow/accessibility support")

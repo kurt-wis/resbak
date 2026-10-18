@@ -1,0 +1,20 @@
+02:05:14 | INFO: Data are loaded, start creating Blender stuff
+02:05:14 | INFO: Blender create Mesh node Mesh_0
+02:05:15 | INFO: glTF import finished in 0.55s
+E:\RESBAK\resbak\tools\build_face_cards.py:107: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  if mat is None or not mat.use_nodes:
+INFO Draco is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at E:\Blender\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+02:05:16 | INFO: Starting glTF 2.0 export
+02:05:16 | INFO: Extracting primitive: Eye_L
+02:05:16 | INFO: Primitives created: 1
+02:05:16 | INFO: Extracting primitive: Eye_R
+02:05:16 | INFO: Primitives created: 1
+02:05:16 | INFO: Extracting primitive: Mouth
+02:05:16 | INFO: Primitives created: 1
+02:05:16 | INFO: Finished glTF 2.0 export in 0.01674675941467285 s
+
+FACE jm: mouth tint [0.78  0.524 0.441], lid tint [0.749 0.494 0.402], lid aspect 0.740
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

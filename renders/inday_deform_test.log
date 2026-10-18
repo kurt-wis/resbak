@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[INTEGRATION TEST] suite kit_inday
+  ✓ [kit_inday] Inday data: speed, cooldowns, kinds
+  ✓ [kit_inday] IHIP! cast: lane, cooldown, stands still, no tag, no other skill, taggable
+  ✓ [kit_inday] IHIP! lane: free allies +25 %, enemies and outsiders nothing, leaving drops it
+  ✓ [kit_inday] IHIP! lane turns with aim
+  ✓ [kit_inday] IHIP! lane is cut by walls
+  ✓ [kit_inday] IHIP! ends on timeout (240 ticks), S1, push, stun, round end, tag
+  ✓ [kit_inday] IHIP! and TAKBO NA! take the biggest bonus
+  ✓ [kit_inday] HILA immediate miss return with normal cooldown
+  ✗ [kit_inday] rendered skinned hand meets the authoritative reach target
+  ✓ [kit_inday] HILA moving extend and same-arm recovery
+  ✓ [kit_inday] HILA! pulls the first teammate it touches
+  ✓ [kit_inday] HILA! rescues a chain tip it touches, then pulls it in
+  ✓ [kit_inday] HILA! is stopped by walls and closes when Inday is tagged
+  ✓ [kit_inday] TAKBO NA! after a touch rescue
+  ✓ [kit_inday] another hero's rescue gives no TAKBO NA! and 4 s EP
+[INTEGRATION TEST] 1 suites, 90 checks, 1 failed
+  FAILED [kit_inday] rendered skinned hand meets the authoritative reach target
+[INTEGRATION TEST] FAILED

@@ -45,7 +45,9 @@ const PATH := "res://data/tuning.tres"
 @export var touch_target_release_range := 3.0
 
 @export_group("Character presentation")
+@export var character_pose_fps := 24.0 ## stepped poses; simulation and rendering retain their own rates
 @export var character_outline_pixels := 1.0
+@export var locomotion_idle_blend_speed := 0.12
 
 @export_group("Bases")
 @export var base_ring_radius := 2.0
@@ -144,3 +146,8 @@ static func get_default() -> Tuning:
 @export var skill_preview_line_width := 0.045
 
 @export var touch_cancel_radius := 54.0
+
+@export_group("Cast animation timing")
+@export var skill_cast_plant := 0.3
+@export var smoke_visibility_fade := 0.25
+@export var smoke_cough_animation := 0.7

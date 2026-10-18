@@ -193,7 +193,7 @@ func _movement(t: TestCtx) -> void:
 		inp.gamepad = true
 		inp.move(a, Vector2(0.3, 0))
 		t.steps(host, 20)
-		t.check(a.ground_speed() >= pair[1] * 0.5 - 0.05 and a.ground_speed() <= pair[1] * 0.5 * 1.15 + 0.05, "%s walks at half speed on a light stick tilt (got %.2f)" % [pair[0], a.ground_speed()])
+		t.check(a.ground_speed() >= pair[1] * (0.3 - host.tuning.stick_dead_zone) / (1.0 - host.tuning.stick_dead_zone) - 0.05 and a.ground_speed() <= pair[1] * (0.3 - host.tuning.stick_dead_zone) / (1.0 - host.tuning.stick_dead_zone) * 1.15 + 0.05, "%s creeps proportionally on a light stick tilt (got %.2f)" % [pair[0], a.ground_speed()])
 		inp.move(a, Vector2(0.1, 0)) # inside the dead zone
 		t.steps(host, 15)
 		t.check(a.ground_speed() < 0.05, "%s ignores the 15 %% dead zone" % pair[0])
