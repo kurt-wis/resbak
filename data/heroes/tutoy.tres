@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="HeroData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/match/hero_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/match/skills/tutoy/harurot.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/match/skills/tutoy/lusot.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/match/skills/tutoy/dire_diretso.gd" id="4"]
+
+[resource]
+script = ExtResource("1")
+id = "tutoy"
+display_name = "Tutoy"
+nickname = ""
+role = "Movement"
+secondary_role = "Rescue"
+color = Color(0.8863, 0.2745, 0.2471, 1)
+glb = "res://assets/characters/tutoy.glb"
+model_height = 1.8
+run_speed = 4.85
+tag_reach = 1.0
+walk_clip_speed = 1.42
+run_clip_speed = 4.28
+skill1_name = "HARUROT!"
+skill2_name = "LUSOT!"
+passive_name = "DIRE-DIRETSO"
+skill1_cooldown = 8.0
+skill2_cooldown = 6.0
+skill1_script = ExtResource("2")
+skill2_script = ExtResource("3")
+passive_script = ExtResource("4")
+skill1_text = "Burst to 8.2 m/s for 1.3 s, no turn limit. Leaves a wind trail everyone can see. You can still tag and be tagged."
+skill2_text = "Slide 4 m in 0.4 s; vaults low props. Slide in the last 0.1 s of an enemy's tag wind-up for a PERFECT dodge that stuns them."
+passive_text = "Run without a sharp turn and your speed climbs to +15 % over 3 s. Stopping, sharp turns, tagging or enemy skills reset it."
+values = {
+"harurot_speed": 8.2,
+"harurot_time": 1.3,
+"harurot_trail_part_time": 2.0,
+"harurot_trail_every": 4,
+"harurot_trail_length": 0.8,
+"lusot_distance": 4.0,
+"lusot_time": 0.4,
+"lusot_no_tag_after": 0.3,
+"lusot_perfect_window": 0.1,
+"lusot_perfect_stun": 0.6,
+"lusot_vault_extra": 0.5,
+"dire_max_bonus": 0.15,
+"dire_build_time": 3.0,
+"dire_sharp_turn_deg": 45.0,
+"dire_sharp_turn_window": 0.5
+}

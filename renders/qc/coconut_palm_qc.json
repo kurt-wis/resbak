@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\home\\coconut_palm.glb",
+ "real_height_m": 9.171,
+ "game_scale": 0.196,
+ "dims_m": [
+  4.49,
+  5.05,
+  9.171
+ ],
+ "triangles": 30000,
+ "sheet": "renders\\qc\\coconut_palm_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.001, -0.000) m"
+  },
+  {
+   "check": "normals CoconutPalm",
+   "status": "WARN",
+   "detail": "53% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology CoconutPalm",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (34034 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "WARN",
+   "detail": "30000 (budget 15000)"
+  }
+ ]
+}

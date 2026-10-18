@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\vehicles\\wheel_loader.glb",
+ "real_height_m": 2.183,
+ "game_scale": 1.0,
+ "dims_m": [
+  4.61,
+  1.8,
+  2.183
+ ],
+ "triangles": 7609,
+ "sheet": "renders\\qc\\wheel_loader_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.000, 0.000) m"
+  },
+  {
+   "check": "normals WheelLoader",
+   "status": "WARN",
+   "detail": "55% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology WheelLoader",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (10973 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "7609 (budget 10000)"
+  }
+ ]
+}

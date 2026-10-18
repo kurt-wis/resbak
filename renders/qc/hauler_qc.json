@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\vehicles\\hauler.glb",
+ "real_height_m": 2.462,
+ "game_scale": 1.0,
+ "dims_m": [
+  5.548,
+  2.3,
+  2.462
+ ],
+ "triangles": 7684,
+ "sheet": "renders\\qc\\hauler_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.000, -0.000) m"
+  },
+  {
+   "check": "normals Hauler",
+   "status": "WARN",
+   "detail": "58% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology Hauler",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (6792 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "7684 (budget 10000)"
+  }
+ ]
+}

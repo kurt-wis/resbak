@@ -1,3 +1,16 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Agent / tool state
+.opencode/
+.claude/settings.local.json
+
+# Python / Blender scratch
+__pycache__/
+*.pyc
+*.blend1
+
+# Gate output scratch and stray git-hook folder
+gate_*.txt
+/dev/

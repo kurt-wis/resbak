@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="HeroData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/match/hero_data.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/match/skills/inday/ihip.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/match/skills/inday/hila.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/match/skills/inday/takbo_na.gd" id="4"]
+
+[resource]
+script = ExtResource("1")
+id = "inday"
+display_name = "Inday"
+nickname = ""
+role = "Rescue"
+secondary_role = "Movement"
+color = Color(0.2471, 0.498, 0.851, 1)
+glb = "res://assets/characters/inday.glb"
+model_height = 1.8
+run_speed = 4.5
+tag_reach = 1.2
+walk_clip_speed = 1.02
+run_clip_speed = 2.26
+skill1_name = "IHIP!"
+skill2_name = "HILA!"
+passive_name = "TAKBO NA!"
+skill1_cooldown = 15.0
+skill2_cooldown = 14.0
+skill1_script = ExtResource("2")
+skill2_script = ExtResource("3")
+passive_script = ExtResource("4")
+skill1_text = "Stand and blow a 10 m wind lane for up to 4 s. Free allies inside run 25 % faster. You can't move or tag while blowing."
+skill2_text = "Stretch your hand up to 9 m. The first teammate who touches it is pulled to you. A chain tip that touches it is rescued, then pulled in."
+passive_text = "After you rescue, you and everyone you freed get +20 % speed for 2 s, and your freed teammates get 1 s more protection."
+values = {
+"ihip_time": 4.0,
+"ihip_length": 10.0,
+"ihip_width": 3.0,
+"ihip_bonus": 0.25,
+"hila_speed": 20.0,
+"hila_range": 9.0,
+"hila_hold": 2.0,
+"hila_grab": 0.6,
+"hila_gap": 0.3,
+"takbo_bonus": 0.2,
+"takbo_time": 2.0,
+"takbo_extra_protection": 1.0
+}

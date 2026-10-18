@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\vehicles\\jeepney.glb",
+ "real_height_m": 2.603,
+ "game_scale": 1.0,
+ "dims_m": [
+  6.32,
+  2.291,
+  2.603
+ ],
+ "triangles": 7998,
+ "sheet": "renders\\qc\\jeepney_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.000, 0.000) m"
+  },
+  {
+   "check": "normals Jeepney",
+   "status": "WARN",
+   "detail": "55% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology Jeepney",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (9688 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "7998 (budget 10000)"
+  }
+ ]
+}

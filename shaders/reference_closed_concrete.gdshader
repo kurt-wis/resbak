@@ -2,6 +2,9 @@ shader_type spatial;
 render_mode diffuse_lambert,specular_disabled,cull_disabled;
 uniform vec4 base_color : source_color;
 uniform float roof=0.;
+uniform float court_finish=0.;
+uniform vec2 court_scale=vec2(.864618,.765034);
+uniform vec4 accent_color : source_color=vec4(.36,.61,.57,1.);
 uniform float roof_axis=0.;
 uniform sampler2D roof_texture : source_color,repeat_enable,filter_linear_mipmap;
 uniform float stucco=0.;
@@ -16,14 +19,26 @@ void fragment(){
  vec3 w=pow(abs(n),vec3(6.));w/=max(dot(w,vec3(1.)),.001);
  vec3 wear=texture(wear_texture,p.zy*.12).rgb*w.x+texture(wear_texture,p.xz*.12).rgb*w.y+texture(wear_texture,p.xy*.12).rgb*w.z;
  vec3 fine=texture(fine_texture,p.zy*.38).rgb*w.x+texture(fine_texture,p.xz*.38).rgb*w.y+texture(fine_texture,p.xy*.38).rgb*w.z;
- float grain=clamp((dot(fine,vec3(.3,.5,.2))-.27)*.5,-.045,.045);
- float weather=clamp((dot(wear,vec3(.3,.5,.2))-.27)*.35,-.045,.035);
+ float grain=clamp((dot(fine,vec3(.3,.5,.2))-.27)*.8,-.075,.075);
+ float weather=clamp((dot(wear,vec3(.3,.5,.2))-.27)*.65,-.065,.055);
  vec2 projection=abs(n.y)>.5?p.xz:(abs(n.x)>abs(n.z)?p.zy:p.xy);
- float brush=(soft_noise(projection*.24)-.5)*.045;
- ALBEDO=base_color.rgb*(.99+grain+weather+brush);
+ float brush=(soft_noise(projection*.48)-.5)*.10;
+ // Paint grain follows the surface; directional shadows remain the light's job.
+ float plaster=(soft_noise(projection*9.0)-.5)*.045;
+ float court=step(base_color.g*1.25,base_color.r)*(1.0-stucco)*step(.7,abs(n.y));
+ float roller=(soft_noise(vec2(projection.x*.65,projection.y*3.5))-.5)*.065;
+ brush+=plaster+court*roller;
+ vec3 pigment=base_color.rgb;
+ vec2 court_pos=p.xz/court_scale;
+ float key_mask=step(15.8,abs(court_pos.x))*step(abs(court_pos.x),21.5)*step(abs(court_pos.y-1.4),2.8);
+ float center_mask=1.-smoothstep(1.94,2.,length(court_pos-vec2(-.28,1.4)));
+ pigment=mix(pigment,accent_color.rgb,max(key_mask,center_mask*.65)*court_finish);
+ // Sun-faded pigment and fine aggregate add texture without painted-on shadows.
+ float scuff=smoothstep(.48,.73,soft_noise(projection*3.8))*.035;
+ ALBEDO=pigment*(1.015+grain*.7+weather*.65+brush*.7+scuff);
  // Restrained wear belongs to painted walls, not every concrete slab.
  float chipped=stucco*smoothstep(.005,.035,wear.r-wear.b);
- ALBEDO*=1.-chipped*.11;
+ ALBEDO*=1.-chipped*.10;
  vec2 roof_uv=roof_axis<.5?vec2(p.z*.38,p.x*.23):vec2(p.x*.38,p.z*.23);
  ALBEDO=mix(ALBEDO,texture(roof_texture,roof_uv).rgb*.94,roof);
  ROUGHNESS=1.;SPECULAR=0.;

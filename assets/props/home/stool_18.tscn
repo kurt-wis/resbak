@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/home/stool_18.glb" id="1_stool_18"]
+
+[node name="Stool" instance=ExtResource("1_stool_18")]

@@ -11,20 +11,30 @@ config_version=5
 [application]
 
 config/name="RESBAK"
-run/main_scene="res://scenes/ConstructionSite.tscn"
+run/main_scene="res://scenes/frontend/boot.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="RESBAK"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
+Save="*res://scripts/autoload/save.gd"
+Session="*res://scripts/autoload/session.gd"
+Audio="*res://scripts/autoload/audio.gd"
 MCPRuntimeServer="*res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=3
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[dotnet]
+
+project/assembly_name="RESBAK"
 
 [editor_plugins]
 
@@ -81,6 +91,15 @@ action_tag={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="world"
+3d_physics/layer_2="hero_solid"
+3d_physics/layer_3="hero_ghost"
+3d_physics/layer_4="skill_wall"
+3d_physics/layer_5="vaultable"
+3d_physics/layer_6="base_pole"
+
 [network]
 
 limits/size/viewport_height=648
@@ -94,3 +113,4 @@ limits/size/viewport_height=648
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_3d=2

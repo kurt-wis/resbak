@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/home/facade_pink.glb" id="1_facade_pink"]
+
+[node name="FacadePink" instance=ExtResource("1_facade_pink")]

@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\vehicles\\digger.glb",
+ "real_height_m": 3.102,
+ "game_scale": 1.0,
+ "dims_m": [
+  6.0,
+  2.58,
+  3.102
+ ],
+ "triangles": 9231,
+ "sheet": "renders\\qc\\digger_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.000, 0.000) m"
+  },
+  {
+   "check": "normals Digger",
+   "status": "PASS",
+   "detail": "62% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology Digger",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (6869 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "9231 (budget 10000)"
+  }
+ ]
+}

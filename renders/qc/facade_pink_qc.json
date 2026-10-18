@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\home\\facade_pink.glb",
+ "real_height_m": 3.538,
+ "game_scale": 1.0,
+ "dims_m": [
+  6.0,
+  4.299,
+  3.538
+ ],
+ "triangles": 29999,
+ "sheet": "renders\\qc\\facade_pink_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.000, 0.000) m"
+  },
+  {
+   "check": "normals FacadePink",
+   "status": "PASS",
+   "detail": "70% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology FacadePink",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (30837 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "29999 (budget 60000)"
+  }
+ ]
+}
