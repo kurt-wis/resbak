@@ -192,6 +192,7 @@ static func load_data() -> HomeDioramaData:
 @export var look_rate := 2.5 ## 1/s: how fast the gaze target eases to the next speaker
 @export var gesture_fade_in := 0.5
 @export var gesture_fade_out := 0.5
+@export var gesture_fade_smooth := true ## ease-in-out fades (a linear ramp kinks the hand's velocity at both ends)
 @export var look_off_rate := 4.0 ## 1/s: look-at influence easing to 0 during full-body clips
 
 @export_group("Schedule")
@@ -199,19 +200,19 @@ static func load_data() -> HomeDioramaData:
 ## `dur` can end a long clip early (the one-shot fades out). Few and long: five short gestures in a
 ## row read as twitching, so each hero gets one unhurried turn.
 @export var gestures := [
-	{"t": 2.4, "hero": "inday", "clip": "Menu_TalkHandsOpen", "dur": 6.2},
+	{"t": 2.4, "hero": "inday", "clip": "Menu_TalkHandsOpen", "dur": 3.96},
 	{"t": 4.2, "hero": "tutoy", "clip": "Menu_Listen", "dur": 5.0},
-	{"t": 9.6, "hero": "inday", "clip": "Menu_TalkHip", "dur": 6.4},
-	{"t": 12.0, "hero": "nene", "clip": "Menu_ArmsCrossed", "dur": 4.4},
-	{"t": 17.0, "hero": "nathan", "clip": "Menu_Answer", "dur": 7.2},
-	{"t": 25.0, "hero": "inday", "clip": "Menu_TalkRaised", "dur": 6.0},
+	{"t": 9.6, "hero": "inday", "clip": "Menu_TalkHip", "dur": 5.17},
+	{"t": 12.0, "hero": "nene", "clip": "Menu_ArmsCrossed", "dur": 2.375},
+	{"t": 17.0, "hero": "nathan", "clip": "Menu_Answer", "dur": 7.208},
+	{"t": 25.0, "hero": "inday", "clip": "Menu_TalkRaised", "dur": 4.625},
 	{"t": 30.0, "hero": "jm", "clip": "Menu_DozeOff", "dur": 5.0},
-	{"t": 31.4, "hero": "tutoy", "clip": "Menu_TalkPassionate", "dur": 6.2},
-	{"t": 34.0, "hero": "nathan", "clip": "Menu_CheerLeft", "dur": 3.6},
+	{"t": 31.4, "hero": "tutoy", "clip": "Menu_TalkPassionate", "dur": 6.208},
+	{"t": 34.0, "hero": "nathan", "clip": "Menu_CheerLeft", "dur": 2.667},
 	{"t": 38.0, "hero": "jm", "clip": "Menu_LeanBackLaugh", "dur": 4.0},
-	{"t": 39.0, "hero": "tutoy", "clip": "Menu_StandChat", "dur": 5.0},
-	{"t": 42.4, "hero": "nathan", "clip": "Menu_ThumbsUp", "dur": 3.4},
-	{"t": 42.6, "hero": "nene", "clip": "Menu_FingerWag", "dur": 3.2},
+	{"t": 39.0, "hero": "tutoy", "clip": "Menu_StandChat", "dur": 5.167},
+	{"t": 42.4, "hero": "nathan", "clip": "Menu_ThumbsUp", "dur": 3.417},
+	{"t": 42.6, "hero": "nene", "clip": "Menu_FingerWag", "dur": 3.208},
 ]
 ## {t0, t1, hero, mode}: who moves their mouth when. While a hero talks or laughs the others
 ## look at them (the gaze follows the latest speaker).

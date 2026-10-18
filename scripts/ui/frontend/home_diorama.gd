@@ -639,13 +639,18 @@ func _build_timeline() -> void:
 	var anim := Animation.new()
 	anim.length = data.loop_length
 	anim.loop_mode = Animation.LOOP_LINEAR
-	var track := anim.add_track(Animation.TYPE_METHOD)
-	anim.track_set_path(track, NodePath("."))
+	# One method track per gesture: a track keeps a single key per instant, so two gestures that end
+	# at the same time (Tutoy's and Nathan's both ended at 37.6 s) would silently drop one end cue
+	# and leave that hero's gesture playing to the end of its clip.
 	for i in range(data.gestures.size()):
 		var g: Dictionary = data.gestures[i]
+		var track := anim.add_track(Animation.TYPE_METHOD)
+		anim.track_set_path(track, NodePath("."))
 		anim.track_insert_key(track, g.t, {"method": "_cue_gesture", "args": [i]})
 		anim.track_insert_key(track, minf(g.t + g.dur, data.loop_length - 0.01), {"method": "_cue_gesture_end", "args": [i]})
-	anim.track_insert_key(track, data.pass_t0, {"method": "_cue_pass", "args": []})
+	var pass_track := anim.add_track(Animation.TYPE_METHOD)
+	anim.track_set_path(pass_track, NodePath("."))
+	anim.track_insert_key(pass_track, data.pass_t0, {"method": "_cue_pass", "args": []})
 	var lib := AnimationLibrary.new()
 	lib.add_animation("loop", anim)
 	timeline.add_animation_library("", lib)

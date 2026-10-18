@@ -417,6 +417,73 @@ def loop_blend(frames, blend=6):
     return out
 
 
+def _smooth(t):
+    t = max(0.0, min(1.0, t))
+    return t * t * (3 - 2 * t)
+
+
+def loop_crossfade(frames, overlap=8):
+    """Seamless loop from a slice that does not close, without the velocity kink of `loop_blend`.
+
+    The last `overlap` frames are the continuation of the motion; they are cross-faded (smoothstep)
+    into the first `overlap` frames, and then dropped. The loop therefore leaves its last frame along
+    the source's own path and arrives at its first frame still moving the way the source moves, so
+    neither position nor velocity jumps at the seam (loop_blend eases to rest at the end and restarts
+    at full speed, a kink once per cycle). The result is `len(frames) - overlap` frames plus a copy
+    of the first, so the key at the clip's length equals the key at 0."""
+    n = overlap
+    total = len(frames) - n
+    if n < 1 or total <= n:
+        return frames
+    out = []
+    for i in range(total):
+        if i >= n:
+            out.append(frames[i])
+            continue
+        w = _smooth(i / n)  # 0: still the continuation, 1: the slice's own frame
+        (ra, ha), (rb, hb) = frames[total + i], frames[i]
+        out.append(({k: ra[k].slerp(rb[k], w) if k in ra else rb[k] for k in rb}, ha.lerp(hb, w)))
+    out.append(out[0])
+    return out
+
+
+def mean_pose(frames):
+    """The average pose of a clip ((rot dict, hips)): per-bone quaternion mean (sign-aligned to
+    the first frame), mean hips. What a looping idle looks like on average."""
+    first = frames[0][0]
+    rot = {}
+    for k, q0 in first.items():
+        w = x = y = z = 0.0
+        for r, _ in frames:
+            q = r[k] if r[k].dot(q0) >= 0 else -r[k]
+            w, x, y, z = w + q.w, x + q.x, y + q.y, z + q.z
+        rot[k] = Quaternion((w, x, y, z)).normalized()
+    hips = sum((h for _, h in frames), Vector()) / len(frames)
+    return rot, hips
+
+
+def settle(frames, pose, head=12, tail=12):
+    """Make a one-shot gesture start and end at `pose` (usually the mean pose of the base idle it is
+    layered over): the first `head` frames ease in from it and the last `tail` frames ease back to
+    it (smoothstep, per-bone slerp). The game fades a gesture in and out over a base idle; if the
+    clip's first or last frame is far from the idle, that fade drags the hands across the body in
+    half a second. With a settled clip the fades blend two nearly identical poses."""
+    n = len(frames)
+    prot, phips = pose
+    out = []
+    for i, (rot, hips) in enumerate(frames):
+        w = 1.0
+        if head and i < head:
+            w = min(w, _smooth(i / head))
+        if tail and i > n - 1 - tail:
+            w = min(w, _smooth((n - 1 - i) / tail))
+        if w >= 1.0:
+            out.append((rot, hips))
+            continue
+        out.append(({k: prot[k].slerp(q, w) if k in prot else q for k, q in rot.items()}, phips.lerp(hips, w)))
+    return out
+
+
 if __name__ == "__main__" and "--" in sys.argv:
     PROJ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     path = sys.argv[sys.argv.index("--") + 1]

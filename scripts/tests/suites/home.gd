@@ -7,6 +7,17 @@ extends RefCounted
 
 const HOME_SCENE := "res://scenes/frontend/home.tscn"
 
+## A scheduled gesture lasts as long as its clip (the clips are built to ease in from and out to the
+## base idle, so the clip's own end is where the hero is back at rest). A `dur` well short of the clip
+## cuts it mid-motion and drags the hands across the body in the fade-out; a `dur` well past it just
+## wastes schedule. Seconds.
+const GESTURE_DUR_TOL := 0.15
+## Hand-motion ceilings over a full loop (HomeMotion samples the hands and first finger bones at
+## 60 Hz). Measured after the 2026-10-19 pass (renders/qc/home_motion.json) plus headroom; the
+## pre-fix build peaked at 12 m/s and 12.2 m/s per frame (a lost end cue, then a snap to the next gesture).
+const MAX_HAND_SPEED := 8.0 ## m/s (measured 7.0: Nathan's cheer swings fast on purpose)
+const MAX_HAND_DV := 3.0 ## m/s (measured 2.5) change in one 1/60 s step
+
 func run(t: TestCtx) -> void:
 	_data(t)
 	_clips(t)
@@ -28,6 +39,9 @@ func _clips(t: TestCtx) -> void:
 			wanted[hid] = []
 		if not (String(g.clip) in wanted[hid]):
 			wanted[hid].append(String(g.clip))
+	var wanted_dur := {}
+	for g in d.gestures:
+		wanted_dur[String(g.hero) + "/" + String(g.clip)] = float(g.dur)
 	for hid in wanted:
 		var hd := HeroData.load_hero(hid)
 		if not t.check(hd != null, "%s hero data loads for the diorama cast" % hid):
@@ -45,6 +59,11 @@ func _clips(t: TestCtx) -> void:
 				continue
 			t.check(ap.get_animation(clip).get_track_count() >= 60,
 				"%s clip %s animates the full skeleton (>= 60 tracks)" % [hid, clip])
+			var key: String = hid + "/" + clip
+			if wanted_dur.has(key):
+				var clip_len := ap.get_animation(clip).length
+				t.check(absf(float(wanted_dur[key]) - clip_len) <= GESTURE_DUR_TOL,
+					"%s gesture %s lasts its clip (dur %.2f s, clip %.2f s)" % [hid, clip, wanted_dur[key], clip_len])
 		node.free()
 
 ## The schedule numbers alone (no scene needed): nothing runs past the wrap, nothing overlaps.
@@ -170,7 +189,37 @@ func _diorama(t: TestCtx) -> void:
 		t.check(float(lo[hero]["pelvis"]) >= seat_top - 0.03,
 			"%s never sinks through its stool (lowest pelvis %.3f m, seat top %.3f m)" % [hero, lo[hero]["pelvis"], seat_top])
 	t.check(fired[0] >= 3, "heroes take their turns to talk over a full loop (%d turns)" % fired[0])
+	# Every gesture's end cue must land: one method track once held a single key per instant, so two
+	# gestures ending together dropped one end cue and that hero kept gesturing to the end of the clip.
+	d.seek_to(0.0)
+	var gestures: Array = d.data.gestures
+	var checked := 0
+	var stuck := []
+	var tt := 0.0
+	while tt < d.data.loop_length - 0.2:
+		d.step(1.0 / 30.0)
+		tt += 1.0 / 30.0
+		for g in gestures:
+			var probe: float = float(g.t) + float(g.dur) + d.data.gesture_fade_out + 0.2
+			if tt >= probe and tt < probe + 1.0 / 30.0:
+				checked += 1
+				var again := false
+				for h in gestures:
+					if h.hero == g.hero and h != g and float(h.t) <= probe and probe < float(h.t) + float(h.dur) + d.data.gesture_fade_out:
+						again = true
+				if not again and bool((d.actors[g.hero] as DioramaActor).tree.get("parameters/Upper/active")):
+					stuck.append("%s %s" % [g.hero, g.clip])
+	t.check(checked == gestures.size() and stuck.is_empty(),
+		"every gesture ends on cue and releases the upper body (%d/%d probed, stuck: %s)" % [checked, gestures.size(), stuck])
 	t.check(d.time < 1.0 or d.time > 47.0, "a full loop returns to the start")
+	# Hand pops: the hands never lurch. A gesture cut mid-motion, a lost end cue or a base-idle seam
+	# shows as a velocity-change spike; QC's tools/qc_home_motion.gd prints the worst offenders.
+	var motion: Dictionary = HomeMotion.measure(d, 2.0)
+	for hero in motion.heroes:
+		var h: Dictionary = motion.heroes[hero]
+		t.check(float(h.peak_speed) <= MAX_HAND_SPEED and float(h.peak_dv) <= MAX_HAND_DV,
+			"%s hands stay smooth (peak %.2f m/s, change %.2f m/s per frame @%.2f s in %s; limits %.1f / %.1f)" % [
+				hero, h.peak_speed, h.peak_dv, h.peak_dv_t, h.peak_dv_active, MAX_HAND_SPEED, MAX_HAND_DV])
 	d.queue_free()
 	await t.frames(1)
 	t.ok("Home diorama builds, seats its cast on the computed stools, and loops")

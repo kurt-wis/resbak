@@ -53,7 +53,7 @@ HEROES = {  # id -> source file
 
 
 def clip(src, name=None, trim=None, warp=None, loop=False, in_place=False, blend=0, face=False,
-         turn=0.0, plant=False, on_floor=False):
+         turn=0.0, plant=False, on_floor=False, xfade=0, settle=None):
     """One clip: `src` is relative to source_art/mocap/; `name` None = the file's only clip.
     trim / warp times are seconds in the source clip (Meshy files: frame / 24).
     face : turn the clip so the chest faces -Y on average (clips that stand turned).
@@ -62,10 +62,15 @@ def clip(src, name=None, trim=None, warp=None, loop=False, in_place=False, blend
            its lowest point; for standing clips whose retargeted feet hover, or whose hands
            reach under the floor (Talbog_Slam).
     on_floor: keep the clip's own height and lift only the frames whose mesh dips under the
-           floor (bake_on_floor); for a flip whose hands or head reach below it."""
+           floor (bake_on_floor); for a flip whose hands or head reach below it.
+    xfade: loop a slice that does not close by cross-fading its last `xfade` frames into its first
+           (retarget_clip.loop_crossfade, no velocity kink) instead of easing it to rest (`blend`).
+    settle: Home gestures only: (head, tail) frames to ease in from / out to the base idle's pose
+           (None = SETTLE_FRAMES both). Easing a hand that swings far from the idle pose can itself
+           whip it (slerp across a large angle), so a clip that already opens close to it uses head 0."""
     return {"src": src, "name": name, "trim": trim, "warp": warp, "loop": loop,
             "in_place": in_place, "blend": blend, "face": face, "turn": turn, "plant": plant,
-            "on_floor": on_floor}
+            "on_floor": on_floor, "xfade": xfade, "settle": settle}
 
 
 T, NE, NA, J, I = (f"meshy/{h}_moves.glb" for h in ("tutoy", "nene", "nathan", "jm", "inday"))
@@ -134,20 +139,20 @@ HERO_CLIPS = {
 HERO_CLIPS["tutoy"].update({
     # His own Idle_5 is a wide fighter's crouch; the Quaternius talking idle stands relaxed.
     "Menu_StandIdle": clip("quaternius/UAL1_Standard.glb", "Idle_Talking_Loop", loop=True, face=True, plant=True),
-    "Menu_TalkPassionate": clip(TM, "Talk_Passionately", face=True, in_place=True, plant=True),
+    "Menu_TalkPassionate": clip(TM, "Talk_Passionately", trim=(0.0, 6.2), face=True, in_place=True, plant=True),
     "Menu_HandOnHip": clip(TM, "Hand_on_Hip_Gesture", face=True, in_place=True, plant=True),
     "Menu_Cheer": clip(TM, "Cheer_with_Both_Hands_Up", trim=(12 / 24, 44 / 24), face=True, in_place=True,
                        plant=True),                                  # the first ~11 frames crouch
     "Menu_HandstandFlip": clip(TM, "Handstand_Flip", in_place=True, on_floor=True),  # travels ~1 m in the source
-    "Menu_Listen": clip(MX, "Listening_Gesture", face=True, in_place=True, plant=True),
+    "Menu_Listen": clip(MX, "Listening_Gesture", trim=(0.0, 5.0), face=True, in_place=True, plant=True),
     "Menu_StandChat": clip(MX, "Stand_and_Chat", face=True, in_place=True, plant=True),
 })
 HERO_CLIPS["nene"].update({
     # The source bows her head from ~frame 160; the first 150 frames are the stable stretch.
-    "Menu_SitIdle": clip(NEM, "Chair_Sit_Idle_F", trim=(0.0, 150 / 24), loop=True, blend=12, face=True,
+    "Menu_SitIdle": clip(NEM, "Chair_Sit_Idle_F", trim=(0.0, 150 / 24), loop=True, xfade=12, face=True,
                          in_place=True),  # grounded, not planted: her dangling feet swing 8 cm
     "Menu_SitDrink": clip(NEM, "Sit_and_Drink", face=True, in_place=True),
-    "Menu_FingerWag": clip(NEM, "Sit_Finger_Wag_No", face=True, in_place=True),
+    "Menu_FingerWag": clip(NEM, "Sit_Finger_Wag_No", trim=(0.0, 3.2), face=True, in_place=True),
     "Menu_Clap": clip(NEM, "Sitting_Clap", face=True, in_place=True),
     # The action library has no hands-in-lap or leaning-forward seated idle (only the two
     # Chair_Sit_Idle clips), so the resting variants are these two calm seated actions.
@@ -157,22 +162,22 @@ HERO_CLIPS["nene"].update({
 HERO_CLIPS["jm"].update({
     # The source hunches forward for most of its 10 s and rises upright for ~1.5 s near the end
     # (frames 211-247); that near-still stretch, looped, is the idle.
-    "Menu_SitIdle": clip(JM, "Chair_Sit_Idle_M", trim=(211 / 24, 247 / 24), loop=True, blend=8, face=True,
+    "Menu_SitIdle": clip(JM, "Chair_Sit_Idle_M", trim=(211 / 24, 255 / 24), loop=True, xfade=8, face=True,
                          in_place=True, plant=True),
     "Menu_SitDrink": clip(JM, "Sit_and_Drink", face=True, in_place=True),
-    "Menu_LeanBackLaugh": clip(JM, "Sit_Hands_on_Head_Lean_Back", face=True, in_place=True),
+    "Menu_LeanBackLaugh": clip(JM, "Sit_Hands_on_Head_Lean_Back", trim=(0.0, 4.0), face=True, in_place=True),
     "Menu_Clap": clip(JM, "Sitting_Clap", face=True, in_place=True),
     "Menu_ArmsCrossed": clip(MX, "Sit_on_Chair_Arms_Crossed", face=True, in_place=True),
-    "Menu_DozeOff": clip(MX, "Sit_and_Doze_Off", face=True, in_place=True),
+    "Menu_DozeOff": clip(MX, "Sit_and_Doze_Off", trim=(0.0, 5.0), face=True, in_place=True),
 })
 HERO_CLIPS["nathan"].update({
-    "Menu_SitIdle": clip(NAM, "Chair_Sit_Idle_M", trim=(211 / 24, 247 / 24), loop=True, blend=8, face=True,
+    "Menu_SitIdle": clip(NAM, "Chair_Sit_Idle_M", trim=(211 / 24, 255 / 24), loop=True, xfade=8, face=True,
                          in_place=True, plant=True),
-    "Menu_Answer": clip(NAM, "Sitting_Answering_Questions", face=True, in_place=True),
-    "Menu_ThumbsUp": clip(NAM, "Sit_Thumbs_Up_Right", face=True, in_place=True),
+    "Menu_Answer": clip(NAM, "Sitting_Answering_Questions", trim=(0.0, 7.2), face=True, in_place=True),
+    "Menu_ThumbsUp": clip(NAM, "Sit_Thumbs_Up_Right", trim=(0.0, 3.4), face=True, in_place=True),
     "Menu_Clap": clip(NAM, "Sitting_Clap", face=True, in_place=True),
     "Menu_ArmsCrossed": clip(MX, "Sit_on_Chair_Arms_Crossed", face=True, in_place=True),
-    "Menu_CheerLeft": clip(MX, "Sit_Cheer_with_Left_Hand", face=True, in_place=True),
+    "Menu_CheerLeft": clip(MX, "Sit_Cheer_with_Left_Hand", face=True, in_place=True, settle=(0, 14)),
 })
 HERO_CLIPS["inday"].update({
     # Her own Idle touches her face mid-loop, which would cover the face card; the talking idle does not.
@@ -220,6 +225,8 @@ BREAKDANCE = {
     "inday": [("brooklyn uprock.fbx", 1)],                                # Brooklyn uprock, dips to the floor
 }
 CROSSFADE = 8  # frames between moves and at the loop seam
+SETTLE_SKIP = ("Menu_HandstandFlip",)  # a full-body flip: no idle to settle to
+SETTLE_FRAMES = 14  # frames a Home gesture eases in from / back out to its base idle's mean pose (~0.6 s)
 LOOP_EASE = 3  # frames every loop eases into its first frame (unless its entry sets `blend`)
 PAD_RADIUS = 0.35  # m of floor travel allowed on the select-screen pad
 
@@ -470,18 +477,35 @@ def retarget_table(arm, table):
             label = f"{ours} <- {os.path.basename(src_rel)}:{spec['name'] or act.name}"
             frames = retarget_clip.offsets_from_rig(src, act, arm, label=label, trim=spec["trim"],
                                                     warp=spec["warp"], loop=spec["loop"])
+            if spec["xfade"]:
+                frames = retarget_clip.loop_crossfade(frames, overlap=spec["xfade"])
             if spec["loop"] or spec["in_place"]:
                 frames = retarget_clip.in_place(frames, spec["loop"])
             if spec["face"] or spec["turn"]:
                 frames = retarget_clip.face_front(frames, turn=spec["turn"], auto=spec["face"])
             # Loops end exactly on their first frame: a source loop that was only nearly closed
             # (under LOOP_SEAM_DEG, e.g. Nathan's run_fast_9: 3 cm) would hitch at every wrap.
-            blend = spec["blend"] or (LOOP_EASE if spec["loop"] else 0)
+            blend = 0 if spec["xfade"] else (spec["blend"] or (LOOP_EASE if spec["loop"] else 0))
             if blend:
                 frames = retarget_clip.loop_blend(frames, blend=blend)
             out[ours] = frames
         retarget_clip.discard(src, list(acts.values()))
     return out
+
+
+def settle_menu_gestures(clips, table):
+    """Every Home gesture (a Menu_* one-shot) starts and ends at the mean pose of the hero's base idle
+    (Menu_SitIdle or Menu_StandIdle), which the diorama's AnimationTree fades it in and out over.
+    Without this a gesture that begins or ends with the hands up drags them across in the fade."""
+    base = next((n for n in ("Menu_SitIdle", "Menu_StandIdle") if n in table), None)
+    if base is None:
+        return
+    pose = retarget_clip.mean_pose(clips[base])
+    for name, spec in table.items():
+        if name.startswith("Menu_") and not spec["loop"] and name not in SETTLE_SKIP:
+            head, tail = spec["settle"] or (SETTLE_FRAMES, SETTLE_FRAMES)
+            clips[name] = retarget_clip.settle(clips[name], pose, head=head, tail=tail)
+            log(f"  settled {name} to {base} (in {head} / out {tail} frames)")
 
 
 def chained(arm, idle):
@@ -713,6 +737,7 @@ def build(hero_id):
     for bad in ("Slide", "Dash"):
         assert bad not in table, f"clip name {bad!r} is banned (gate asserts it is absent)"
     clips = retarget_table(arm, table)
+    settle_menu_gestures(clips, table)
     clips[CHAINED] = chained(arm, clips["Idle"])
     names = clip_order(hero_id)
     for name in names:

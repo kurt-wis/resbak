@@ -123,36 +123,41 @@ The Meshy action library (678 actions) has exactly two seated idles — `Chair_S
 | Hero | Clip | Source | Length | Loop |
 | ---- | ---- | ------ | ------ | ---- |
 | Tutoy (stands) | Menu_StandIdle | Quaternius Idle_Talking_Loop, planted (his Idle_5 is a wide fighter's crouch) | 2.917 s | yes |
-| | Menu_TalkPassionate | Talk_Passionately | 10.250 s | no |
+| | Menu_TalkPassionate | Talk_Passionately, 0–6.2 s (the schedule's turn) | 6.208 s | no |
 | | Menu_HandOnHip | Hand_on_Hip_Gesture | 5.000 s | no |
 | | Menu_Cheer | Cheer_with_Both_Hands_Up, 12–44 (the first 11 frames crouch) | 1.333 s | no |
 | | Menu_HandstandFlip | Handstand_Flip, in place, lifted where the head or hands dip under the floor (`on_floor`); starts and ends in a lunge | 3.292 s | no |
-| | Menu_Listen | Listening_Gesture (extra batch), planted | 9.375 s | no |
-| | Menu_StandChat | Stand_and_Chat (extra batch), planted | 5.208 s | no |
-| Nene (sits) | Menu_SitIdle | Chair_Sit_Idle_F, 0–150 (head bows from ~160); legs dangle and swing | 6.250 s | yes |
+| | Menu_Listen | Listening_Gesture (extra batch), 0–5.0 s, planted | 5.000 s | no |
+| | Menu_StandChat | Stand_and_Chat (extra batch), planted | 5.167 s | no |
+| Nene (sits) | Menu_SitIdle | Chair_Sit_Idle_F, 0–150 (head bows from ~160), cross-faded loop (`xfade` 12); legs dangle and swing | 5.792 s | yes |
 | | Menu_SitDrink | Sit_and_Drink | 11.167 s | no |
-| | Menu_FingerWag | Sit_Finger_Wag_No (leans in, head bowed mid-clip) | 3.958 s | no |
+| | Menu_FingerWag | Sit_Finger_Wag_No, 0–3.2 s (leans in, head bowed mid-clip) | 3.208 s | no |
 | | Menu_Clap | Sitting_Clap | 3.333 s | no |
-| | Menu_ArmsCrossed | Sit_on_Chair_Arms_Crossed (extra batch) | 2.417 s | no |
-| | Menu_DozeOff | Sit_and_Doze_Off (extra batch, long slow head nod) | 17.333 s | no |
-| JM (sits) | Menu_SitIdle | Chair_Sit_Idle_M, 211–247 (the only upright stretch of a hunched source), planted | 1.500 s | yes |
+| | Menu_ArmsCrossed | Sit_on_Chair_Arms_Crossed (extra batch) | 2.375 s | no |
+| | Menu_DozeOff | Sit_and_Doze_Off (extra batch, long slow head nod) | 17.292 s | no |
+| JM (sits) | Menu_SitIdle | Chair_Sit_Idle_M, 211–255 (the only upright stretch of a hunched source), cross-faded loop (`xfade` 8), planted | 1.542 s | yes |
 | | Menu_SitDrink | Sit_and_Drink | 11.167 s | no |
-| | Menu_LeanBackLaugh | Sit_Hands_on_Head_Lean_Back | 4.792 s | no |
+| | Menu_LeanBackLaugh | Sit_Hands_on_Head_Lean_Back, 0–4.0 s | 4.000 s | no |
 | | Menu_Clap | Sitting_Clap | 3.333 s | no |
-| | Menu_ArmsCrossed | Sit_on_Chair_Arms_Crossed (extra batch) | 2.417 s | no |
-| | Menu_DozeOff | Sit_and_Doze_Off (extra batch) | 17.333 s | no |
-| Nathan (sits) | Menu_SitIdle | Chair_Sit_Idle_M, 211–247, planted | 1.500 s | yes |
-| | Menu_Answer | Sitting_Answering_Questions | 9.667 s | no |
-| | Menu_ThumbsUp | Sit_Thumbs_Up_Right (a wave with a deep lean) | 3.833 s | no |
+| | Menu_ArmsCrossed | Sit_on_Chair_Arms_Crossed (extra batch) | 2.375 s | no |
+| | Menu_DozeOff | Sit_and_Doze_Off (extra batch), 0–5.0 s | 5.000 s | no |
+| Nathan (sits) | Menu_SitIdle | Chair_Sit_Idle_M, 211–255, cross-faded loop (`xfade` 8), planted | 1.542 s | yes |
+| | Menu_Answer | Sitting_Answering_Questions, 0–7.2 s | 7.208 s | no |
+| | Menu_ThumbsUp | Sit_Thumbs_Up_Right, 0–3.4 s (a wave with a deep lean) | 3.417 s | no |
 | | Menu_Clap | Sitting_Clap | 3.333 s | no |
-| | Menu_ArmsCrossed | Sit_on_Chair_Arms_Crossed (extra batch) | 2.417 s | no |
-| | Menu_CheerLeft | Sit_Cheer_with_Left_Hand (extra batch) | 2.708 s | no |
+| | Menu_ArmsCrossed | Sit_on_Chair_Arms_Crossed (extra batch) | 2.375 s | no |
+| | Menu_CheerLeft | Sit_Cheer_with_Left_Hand (extra batch), eased out only (`settle=(0, 14)`) | 2.667 s | no |
 | Inday (stands) | Menu_StandIdle | Quaternius Idle_Talking_Loop, planted (her own Idle touches her face mid-loop) | 2.917 s | yes |
 | | Menu_TalkHandsOpen | Talk_with_Hands_Open | 3.958 s | no |
 | | Menu_TalkHip | Talk_with_Left_Hand_on_Hip | 5.167 s | no |
 | | Menu_TalkRightOpen | Talk_with_Right_Hand_Open | 3.750 s | no |
 | | Menu_StandChat | Stand_and_Chat (extra batch), planted | 5.208 s | no |
-| | Menu_TalkRaised | Talk_with_Left_Hand_Raised (extra batch), planted | 4.667 s | no |
+| | Menu_TalkRaised | Talk_with_Left_Hand_Raised (extra batch), planted | 4.625 s | no |
+
+**Seamless hands (2026-10-19).** Two things in `build_heroes.py` keep the Home diorama's hands from popping:
+- *Settled gestures.* Every non-looping `Menu_*` clip except `Menu_HandstandFlip` goes through `settle_menu_gestures`, which eases its first and last `SETTLE_FRAMES` (14, about 0.6 s) to the mean pose of the hero's base idle (`retarget_clip.mean_pose`, `retarget_clip.settle`). The diorama fades a gesture in and out over that idle, so both ends of the fade now blend two nearly equal poses. A clip can override it with `clip(..., settle=(head, tail))`; `Menu_CheerLeft` uses `(0, 14)` because easing its fast arm swing in from the idle whipped the hand across the body (a longer ease was worse).
+- *Cross-faded sit idles.* The three sit idles use `xfade` (`retarget_clip.loop_crossfade`), which blends the last frames into the first without dropping the hand velocity to zero. The old `loop_blend` eased each slice to rest, so the loop restarted at full speed.
+- Long clips are trimmed to the length the schedule plays them (`gestures[].dur` in `scripts/ui/frontend/home_diorama_data.gd`); the `home` suite checks that each `dur` is within 0.15 s of its clip, and `tools/qc_home_motion.gd` samples the hands at 60 Hz (`renders/qc/home_motion.json`).
 
 Nathan's `Scheming_Hand_Rub` was downloaded but is not baked: it is a standing clip and bends a sitter's spine too far. The stool seat heights the diorama computes at runtime come from the pelvis height above the soles in each sitter's `Menu_SitIdle` frame 0 (Nene 0.18 m, JM 0.19 m, Nathan 0.24 m on the original stools) minus `seat_pad` 0.06 m. `build_heroes.py` writes a second review sheet per hero, `renders/heroes_<id>_menu.png`, for these clips; `qc_asset.py` reports a loop seam of 0 m for every looping Menu clip and WARNs (expected) on the one-shot gestures.
 

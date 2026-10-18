@@ -118,6 +118,11 @@ func _build_tree(base_clip: String, cycles: int) -> void:
 		var one := AnimationNodeOneShot.new()
 		one.fadein_time = data.gesture_fade_in
 		one.fadeout_time = data.gesture_fade_out
+		if data.gesture_fade_smooth:
+			# Ease-in-out instead of the default linear ramp: a linear blend changes the hand's
+			# velocity in one frame when the fade starts and again when it ends.
+			one.fadein_curve = _smooth_curve()
+			one.fadeout_curve = _smooth_curve()
 		if shot == "Upper":
 			one.filter_enabled = true
 			for path in _upper_paths():
@@ -135,6 +140,13 @@ func _build_tree(base_clip: String, cycles: int) -> void:
 	animator.add_sibling(tree)
 	tree.anim_player = tree.get_path_to(animator)
 	tree.active = true
+
+## Smoothstep as a Curve: 0 -> 1 with flat tangents at both ends.
+static func _smooth_curve() -> Curve:
+	var c := Curve.new()
+	c.add_point(Vector2(0, 0), 0.0, 0.0)
+	c.add_point(Vector2(1, 1), 0.0, 0.0)
+	return c
 
 ## The Spine bone and everything below it, as filter paths relative to the model root.
 func _upper_paths() -> Array[NodePath]:
