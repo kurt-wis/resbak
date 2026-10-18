@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\home\\fruit_stall.glb",
+ "real_height_m": 1.618,
+ "game_scale": 1.0,
+ "dims_m": [
+  2.597,
+  2.607,
+  1.618
+ ],
+ "triangles": 24999,
+ "sheet": "renders\\qc\\fruit_stall_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (-0.001, 0.001) m"
+  },
+  {
+   "check": "normals FruitStall",
+   "status": "WARN",
+   "detail": "52% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology FruitStall",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (23221 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "24999 (budget 60000)"
+  }
+ ]
+}

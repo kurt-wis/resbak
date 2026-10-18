@@ -1,0 +1,218 @@
+{
+	"duration": 50.0,
+	"heroes": {
+		"inday": {
+			"bones": {
+				"mixamorig_LeftHand": {
+					"peak_dv": 1.003,
+					"peak_speed": 1.9794
+				},
+				"mixamorig_LeftHandIndex1": {
+					"peak_dv": 1.4374,
+					"peak_speed": 2.7734
+				},
+				"mixamorig_RightHand": {
+					"peak_dv": 0.9987,
+					"peak_speed": 1.9038
+				},
+				"mixamorig_RightHandIndex1": {
+					"peak_dv": 1.3984,
+					"peak_speed": 2.7411
+				}
+			},
+			"peak_dv": 1.4374,
+			"peak_dv_active": "Menu_TalkHandsOpen",
+			"peak_dv_t": 2.9167,
+			"peak_speed": 2.7734,
+			"peak_speed_active": "Menu_TalkRaised",
+			"peak_speed_t": 27.9
+		},
+		"jm": {
+			"bones": {
+				"mixamorig_LeftHand": {
+					"peak_dv": 0.6676,
+					"peak_speed": 3.6136
+				},
+				"mixamorig_LeftHandIndex1": {
+					"peak_dv": 0.9309,
+					"peak_speed": 4.8231
+				},
+				"mixamorig_RightHand": {
+					"peak_dv": 0.8393,
+					"peak_speed": 3.5911
+				},
+				"mixamorig_RightHandIndex1": {
+					"peak_dv": 1.1614,
+					"peak_speed": 4.7486
+				}
+			},
+			"peak_dv": 1.1614,
+			"peak_dv_active": "Menu_LeanBackLaugh",
+			"peak_dv_t": 38.85,
+			"peak_speed": 4.8231,
+			"peak_speed_active": "Menu_LeanBackLaugh (fade-in)",
+			"peak_speed_t": 38.4833
+		},
+		"nathan": {
+			"bones": {
+				"mixamorig_LeftHand": {
+					"peak_dv": 0.2512,
+					"peak_speed": 0.8854
+				},
+				"mixamorig_LeftHandIndex1": {
+					"peak_dv": 0.3747,
+					"peak_speed": 1.1861
+				},
+				"mixamorig_RightHand": {
+					"peak_dv": 1.4725,
+					"peak_speed": 2.7778
+				},
+				"mixamorig_RightHandIndex1": {
+					"peak_dv": 2.514,
+					"peak_speed": 4.1187
+				}
+			},
+			"peak_dv": 2.514,
+			"peak_dv_active": "Menu_ThumbsUp",
+			"peak_dv_t": 43.75,
+			"peak_speed": 4.1187,
+			"peak_speed_active": "Menu_CheerLeft",
+			"peak_speed_t": 35.2667
+		},
+		"nene": {
+			"bones": {
+				"mixamorig_LeftHand": {
+					"peak_dv": 0.6251,
+					"peak_speed": 1.3314
+				},
+				"mixamorig_LeftHandIndex1": {
+					"peak_dv": 0.7686,
+					"peak_speed": 1.8356
+				},
+				"mixamorig_RightHand": {
+					"peak_dv": 0.663,
+					"peak_speed": 1.5466
+				},
+				"mixamorig_RightHandIndex1": {
+					"peak_dv": 1.3744,
+					"peak_speed": 2.6559
+				}
+			},
+			"peak_dv": 1.3744,
+			"peak_dv_active": "Menu_FingerWag",
+			"peak_dv_t": 43.6167,
+			"peak_speed": 2.6559,
+			"peak_speed_active": "Menu_ArmsCrossed (fade-in)",
+			"peak_speed_t": 12.4333
+		},
+		"tutoy": {
+			"bones": {
+				"mixamorig_LeftHand": {
+					"peak_dv": 0.6227,
+					"peak_speed": 1.514
+				},
+				"mixamorig_LeftHandIndex1": {
+					"peak_dv": 0.7582,
+					"peak_speed": 2.4896
+				},
+				"mixamorig_RightHand": {
+					"peak_dv": 0.4789,
+					"peak_speed": 1.5024
+				},
+				"mixamorig_RightHandIndex1": {
+					"peak_dv": 0.769,
+					"peak_speed": 2.5277
+				}
+			},
+			"peak_dv": 0.769,
+			"peak_dv_active": "Menu_TalkPassionate",
+			"peak_dv_t": 35.5833,
+			"peak_speed": 2.5277,
+			"peak_speed_active": "Menu_StandChat (fade-in)",
+			"peak_speed_t": 39.3667
+		}
+	},
+	"hz": 60,
+	"top_spikes": [
+		{
+			"active": "Menu_ThumbsUp",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 2.514,
+			"hero": "nathan",
+			"speed": 1.22,
+			"t": 43.75
+		},
+		{
+			"active": "Menu_CheerLeft",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 2.1918,
+			"hero": "nathan",
+			"speed": 1.226,
+			"t": 35.317
+		},
+		{
+			"active": "Menu_CheerLeft",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 2.0254,
+			"hero": "nathan",
+			"speed": 3.394,
+			"t": 35.217
+		},
+		{
+			"active": "Menu_ThumbsUp",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 1.7901,
+			"hero": "nathan",
+			"speed": 2.258,
+			"t": 43.583
+		},
+		{
+			"active": "Menu_CheerLeft",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 1.7037,
+			"hero": "nathan",
+			"speed": 1.144,
+			"t": 35.35
+		},
+		{
+			"active": "Menu_ThumbsUp",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 1.5816,
+			"hero": "nathan",
+			"speed": 2.202,
+			"t": 44.083
+		},
+		{
+			"active": "Menu_CheerLeft",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 1.4855,
+			"hero": "nathan",
+			"speed": 1.531,
+			"t": 35.65
+		},
+		{
+			"active": "Menu_CheerLeft",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 1.4793,
+			"hero": "nathan",
+			"speed": 3.131,
+			"t": 35.683
+		},
+		{
+			"active": "Menu_ThumbsUp",
+			"bone": "mixamorig_RightHand",
+			"dv": 1.4725,
+			"hero": "nathan",
+			"speed": 0.732,
+			"t": 43.75
+		},
+		{
+			"active": "Menu_ThumbsUp",
+			"bone": "mixamorig_RightHandIndex1",
+			"dv": 1.4469,
+			"hero": "nathan",
+			"speed": 0.766,
+			"t": 44.217
+		}
+	]
+}

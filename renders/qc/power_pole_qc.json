@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\home\\power_pole.glb",
+ "real_height_m": 7.122,
+ "game_scale": 1.0,
+ "dims_m": [
+  2.071,
+  2.038,
+  7.122
+ ],
+ "triangles": 12449,
+ "sheet": "renders\\qc\\power_pole_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.005, 0.006) m"
+  },
+  {
+   "check": "normals PowerPole",
+   "status": "PASS",
+   "detail": "64% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology PowerPole",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (10861 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "12449 (budget 95000)"
+  }
+ ]
+}

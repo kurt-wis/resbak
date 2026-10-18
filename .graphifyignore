@@ -1,0 +1,7 @@
+.godot/
+.import/
+*.png
+*.jpg
+*.wav
+*.ogg
+*.blend

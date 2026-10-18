@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/props/neighborhood/croton_plant_mesh.res" id="1_m400u"]
+
+[node name="CrotonPlant" type="Node3D" unique_id=1725080773]
+metadata/source_model = "Autumn Croton"
+metadata/triangle_count = 435
+metadata/unit_height = 1.0
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=476682880]
+cast_shadow = 0
+mesh = ExtResource("1_m400u")

@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/home/house_left.glb" id="1_house_left"]
+
+[node name="HouseLeft" instance=ExtResource("1_house_left")]

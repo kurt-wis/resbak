@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\vehicles\\pickup.glb",
+ "real_height_m": 2.421,
+ "game_scale": 1.0,
+ "dims_m": [
+  3.894,
+  2.3,
+  2.421
+ ],
+ "triangles": 3953,
+ "sheet": "renders\\qc\\pickup_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (-0.000, 0.000) m"
+  },
+  {
+   "check": "normals Pickup",
+   "status": "WARN",
+   "detail": "59% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology Pickup",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (3573 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "3953 (budget 10000)"
+  }
+ ]
+}

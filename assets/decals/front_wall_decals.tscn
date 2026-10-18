@@ -1,0 +1,106 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/decals/bawal_umihi_dito.res" id="1_evjkh"]
+[ext_resource type="Texture2D" path="res://assets/decals/malabanan_123_45_67.res" id="2_2we51"]
+[ext_resource type="Texture2D" path="res://assets/decals/meme_67_basketball.res" id="3_2nqud"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0rfjb"]
+resource_name = "bawal_umihi_dito"
+transparency = 2
+alpha_scissor_threshold = 0.15
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("1_evjkh")
+metallic_specular = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_evjkh"]
+size = Vector2(2.75, 1.45)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vj6dh"]
+resource_name = "malabanan_123_45_67"
+transparency = 2
+alpha_scissor_threshold = 0.15
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("2_2we51")
+metallic_specular = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_jeygy"]
+size = Vector2(1.8, 1.05)
+
+[sub_resource type="QuadMesh" id="QuadMesh_63jf6"]
+size = Vector2(1.5, 0.875)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b12gy"]
+resource_name = "meme_67_basketball"
+transparency = 2
+alpha_scissor_threshold = 0.15
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_texture = ExtResource("3_2nqud")
+metallic_specular = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_e5dyg"]
+size = Vector2(3.6, 1.8)
+
+[sub_resource type="QuadMesh" id="QuadMesh_fhpva"]
+size = Vector2(3.2, 1.75)
+
+[sub_resource type="QuadMesh" id="QuadMesh_jgj6t"]
+size = Vector2(1.8, 1.05)
+
+[sub_resource type="QuadMesh" id="QuadMesh_ox2is"]
+size = Vector2(3.6, 1.8)
+
+[sub_resource type="QuadMesh" id="QuadMesh_1fkul"]
+size = Vector2(1.5, 0.875)
+
+[node name="FrontWallDecals" type="Node3D" unique_id=607788134]
+
+[node name="BawalWarningLeft" type="MeshInstance3D" parent="." unique_id=1514911988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.4, 1.4, 14.207)
+material_override = SubResource("StandardMaterial3D_0rfjb")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_evjkh")
+
+[node name="ServicePosterLeft" type="MeshInstance3D" parent="." unique_id=2069946220]
+transform = Transform3D(0.9996875, 0.024997396, 0, -0.024997396, 0.9996875, 0, 0, 0, 1, -18.65, 1.22, 14.207)
+material_override = SubResource("StandardMaterial3D_vj6dh")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_jeygy")
+
+[node name="ServicePosterMidLeft" type="MeshInstance3D" parent="." unique_id=1783635299]
+transform = Transform3D(0.99938756, -0.034992855, 0, 0.034992855, 0.99938756, 0, 0, 0, 1, -10.1, 1.25, 14.207)
+material_override = SubResource("StandardMaterial3D_vj6dh")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_63jf6")
+
+[node name="Meme67MidLeft" type="MeshInstance3D" parent="." unique_id=1692234325]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, 1.17, 14.207)
+material_override = SubResource("StandardMaterial3D_b12gy")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_e5dyg")
+
+[node name="BawalWarningMidRight" type="MeshInstance3D" parent="." unique_id=677484083]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.2, 1.18, 14.207)
+material_override = SubResource("StandardMaterial3D_0rfjb")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_fhpva")
+
+[node name="ServicePosterMidRight" type="MeshInstance3D" parent="." unique_id=493464986]
+transform = Transform3D(0.9996875, -0.024997396, 0, 0.024997396, 0.9996875, 0, 0, 0, 1, 9.2, 1.25, 14.207)
+material_override = SubResource("StandardMaterial3D_vj6dh")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_jgj6t")
+
+[node name="Meme67Right" type="MeshInstance3D" parent="." unique_id=1580910885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1.17, 14.207)
+material_override = SubResource("StandardMaterial3D_b12gy")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_ox2is")
+
+[node name="ServicePosterRight" type="MeshInstance3D" parent="." unique_id=1025643333]
+transform = Transform3D(0.99938756, 0.034992855, 0, -0.034992855, 0.99938756, 0, 0, 0, 1, 23.7, 1.25, 14.207)
+material_override = SubResource("StandardMaterial3D_vj6dh")
+cast_shadow = 0
+mesh = SubResource("QuadMesh_1fkul")

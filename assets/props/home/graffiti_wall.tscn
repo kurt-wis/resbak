@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/home/graffiti_wall.glb" id="1_graffiti_wall"]
+
+[node name="GraffitiWall" instance=ExtResource("1_graffiti_wall")]

@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\home\\mango_tree.glb",
+ "real_height_m": 9.157,
+ "game_scale": 0.197,
+ "dims_m": [
+  5.931,
+  5.801,
+  9.157
+ ],
+ "triangles": 40000,
+ "sheet": "renders\\qc\\mango_tree_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.026, 0.000) m"
+  },
+  {
+   "check": "normals MangoTree",
+   "status": "WARN",
+   "detail": "53% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology MangoTree",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (49230 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "WARN",
+   "detail": "40000 (budget 15000)"
+  }
+ ]
+}

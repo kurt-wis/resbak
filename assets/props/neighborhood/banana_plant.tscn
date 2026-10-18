@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/props/neighborhood/banana_plant_mesh.res" id="1_8wba4"]
+
+[node name="BananaPlant" type="Node3D" unique_id=2082235167]
+metadata/source_model = "Banana Tree"
+metadata/triangle_count = 1055
+metadata/unit_height = 1.0
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=2037670012]
+cast_shadow = 0
+mesh = ExtResource("1_8wba4")
