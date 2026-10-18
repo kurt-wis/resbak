@@ -92,3 +92,17 @@ would otherwise reverse by accident.
 - **Mathew's Meshy vehicles are fitted into the old vehicles' footprints**, not placed at their own size. `tools/build_vehicle_props.py` turns each raw download to face +X, grounds it and scales it uniformly into the old box-built vehicle's local box (`FIT`); the scene keeps every vehicle node's name and transform, swaps its geometry for a `Model` instance and refits its one `StaticBody3D` box to the model (× 0.94 / 0.92 / 0.86, so mirrors and bumpers stay walk-round-able). **Why:** the lanes, routes, spawn checks and occlusion groups were tuned on those footprints; a same-size swap keeps every `konstruksyon` check meaningful.
 - **Vehicle textures are downscaled to 1024 px** (Meshy ships 2048 px base colour, normal and roughness). **Why:** five trucks at 2048 px × 3 maps cost about 60 MB of VRAM for props that fill a few hundred pixels on screen.
 - **Distance focus is radial world distance from the hero, not depth.** The ink pass reconstructs each pixel's world XZ and blurs by its distance from `focus_world` (the local hero, fed by `MatchCamera`). **Why:** Kurt asked for far things blurred and near things sharp; on the orthographic camera depth barely changes across the yard, so a depth-of-field blur was invisible.
+
+## 18 Oct 2026 - Barangay court reference environment
+
+- Keep a separate perspective ReferenceCamera for the supplied wide composition; the existing match camera and input scripts continue to own gameplay views.
+- Let the map own sunlight/environment through the existing MapDressing environment check.
+- Remove the non-reference center volleyball net and its collision only after explicit user approval. Preserve other gameplay interfaces and collision resources; relocate clutter with its colliders.
+- Keep new murals and the vendor cart's trimmed/recolored mesh local to this scene. Reuse Meshy assets and leave their shared source resources intact.
+
+## 19 Oct 2026 - Court mural and street consistency
+
+- Fit each mural to its surface; mirror continuous horizontal repeats because the artwork does not tile at its edges. Preserve motif aspect ratio and persist per-mesh shader bounds.
+- Give side roads, planting and sidewalks separate space. Retain the original utility poles and cables by fitting the road around their verge; avoid broad architecture trimming.
+- Replace road-overlapping neighborhood furniture with individual Meshy instances on sidewalks. Keep shared source scenes unchanged; store relocated clutter with its colliders on rear service aprons.
+

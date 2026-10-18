@@ -22,6 +22,7 @@ config/icon="res://icon.svg"
 Save="*res://scripts/autoload/save.gd"
 Session="*res://scripts/autoload/session.gd"
 Audio="*res://scripts/autoload/audio.gd"
+MCPRuntimeServer="*res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd"
 
 [display]
 
@@ -37,7 +38,7 @@ project/assembly_name="RESBAK"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/meshy-godot-plugin/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_mcp_toolkit/plugin.cfg", "res://addons/meshy-godot-plugin/plugin.cfg")
 
 [input]
 
