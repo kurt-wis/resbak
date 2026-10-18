@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_home_props.py"
 type: "rationale"
-community: "Community 3"
+community: "build_home_props.py"
 location: "L384"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_3
+  - community/build_home_propspy
 ---
 
 # School backpack. Origin on the back panel's outer face, so it sits against the…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[build_backpack()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_3
+#graphify/rationale #graphify/EXTRACTED #community/build_home_propspy

@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_bystanders.py"
 type: "code"
-community: "Community 0"
+community: "os"
 location: "L1"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # build_bystanders.py
@@ -23,4 +23,4 @@ tags:
 - [[sys]] - `imports` [EXTRACTED]
 - [[tris()]] - `contains` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_0
+#graphify/code #graphify/EXTRACTED #community/os

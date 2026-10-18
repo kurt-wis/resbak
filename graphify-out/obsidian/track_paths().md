@@ -1,12 +1,12 @@
 ---
 source_file: "tools/qc_asset.py"
 type: "code"
-community: "Community 0"
+community: "os"
 location: "L121"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # track_paths()
@@ -16,4 +16,4 @@ tags:
 - [[clip_report()]] - `calls` [EXTRACTED]
 - [[qc_asset.py]] - `contains` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_0
+#graphify/code #graphify/EXTRACTED #community/os

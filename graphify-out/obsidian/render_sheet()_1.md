@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_heroes.py"
 type: "code"
-community: "Community 1"
+community: "build_heroes.py"
 location: "L547"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_1
+  - community/build_heroespy
 ---
 
 # render_sheet()
@@ -18,4 +18,4 @@ tags:
 - [[log()_3]] - `calls` [EXTRACTED]
 - [[math]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_1
+#graphify/code #graphify/EXTRACTED #community/build_heroespy

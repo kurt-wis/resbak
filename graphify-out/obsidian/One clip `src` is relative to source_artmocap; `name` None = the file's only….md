@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_heroes.py"
 type: "rationale"
-community: "Community 1"
+community: "build_heroes.py"
 location: "L57"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_1
+  - community/build_heroespy
 ---
 
 # One clip: `src` is relative to source_art/mocap/; `name` None = the file's only…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[clip()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_1
+#graphify/rationale #graphify/EXTRACTED #community/build_heroespy

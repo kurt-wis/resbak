@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_face_cards.py"
 type: "rationale"
-community: "Community 2"
+community: "numpy"
 location: "L172"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # Median skin colour on a ring just outside an ellipse (ra, rb) around (cx, cz);…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[sample_skin()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_2
+#graphify/rationale #graphify/EXTRACTED #community/numpy

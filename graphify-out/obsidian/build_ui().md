@@ -1,12 +1,12 @@
 ---
 source_file: "tools/make_home_audio.py"
 type: "code"
-community: "Community 2"
+community: "numpy"
 location: "L151"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # build_ui()
@@ -19,4 +19,4 @@ tags:
 - [[numpy]] - `calls` [EXTRACTED]
 - [[onepole_fast()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_2
+#graphify/code #graphify/EXTRACTED #community/numpy

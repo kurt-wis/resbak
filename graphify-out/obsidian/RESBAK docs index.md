@@ -1,11 +1,11 @@
 ---
 source_file: "docs/README.md"
 type: "document"
-community: "Community 7"
+community: "CLAUDE.md"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_7
+  - community/CLAUDEmd
 ---
 
 # RESBAK docs index
@@ -16,4 +16,4 @@ tags:
 - [[architecture_1]] - `references` [EXTRACTED]
 - [[status_1]] - `references` [EXTRACTED]
 
-#graphify/document #graphify/EXTRACTED #community/Community_7
+#graphify/document #graphify/EXTRACTED #community/CLAUDEmd

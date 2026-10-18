@@ -1,12 +1,12 @@
 ---
 source_file: "tools/make_home_audio.py"
 type: "rationale"
-community: "Community 2"
+community: "numpy"
 location: "L1"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # Synthesises the Home-diorama audio into assets/audio/home/ (numpy only, no…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[make_home_audio.py]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_2
+#graphify/rationale #graphify/EXTRACTED #community/numpy

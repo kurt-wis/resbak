@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_jm_botsog.py"
 type: "code"
-community: "Community 5"
+community: "build_jm_botsog.py"
 location: "L1561"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_5
+  - community/build_jm_botsogpy
 ---
 
 # build()
@@ -23,4 +23,4 @@ tags:
 - [[phase7_nla_export()]] - `calls` [EXTRACTED]
 - [[phase_render()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_5
+#graphify/code #graphify/EXTRACTED #community/build_jm_botsogpy

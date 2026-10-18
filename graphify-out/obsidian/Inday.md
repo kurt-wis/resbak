@@ -1,11 +1,11 @@
 ---
 source_file: "docs/archive/characters/05_inday.md"
 type: "concept"
-community: "Community 13"
+community: "Inday"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_13
+  - community/Inday
 ---
 
 # Inday
@@ -15,4 +15,4 @@ tags:
 - [[SAGIP!]] - `references` [EXTRACTED]
 - [[TAKBO NA!]] - `references` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_13
+#graphify/concept #graphify/EXTRACTED #community/Inday

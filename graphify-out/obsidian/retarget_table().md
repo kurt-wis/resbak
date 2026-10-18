@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_heroes.py"
 type: "code"
-community: "Community 4"
+community: "math"
 location: "L441"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_4
+  - community/math
 ---
 
 # retarget_table()
@@ -22,4 +22,4 @@ tags:
 - [[offsets_from_rig()]] - `calls` [EXTRACTED]
 - [[{our clip name offset frames}, each source file loaded once.]] - `rationale_for` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_4
+#graphify/code #graphify/EXTRACTED #community/math

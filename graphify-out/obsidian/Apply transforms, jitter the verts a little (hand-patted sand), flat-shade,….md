@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_sand_castle.py"
 type: "rationale"
-community: "Community 6"
+community: "build_sand_castle.py"
 location: "L55"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_6
+  - community/build_sand_castlepy
 ---
 
 # Apply transforms, jitter the verts a little (hand-patted sand), flat-shade,…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[finish()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_6
+#graphify/rationale #graphify/EXTRACTED #community/build_sand_castlepy

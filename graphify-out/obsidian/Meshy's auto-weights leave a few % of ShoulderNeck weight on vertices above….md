@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_heroes.py"
 type: "rationale"
-community: "Community 1"
+community: "build_heroes.py"
 location: "L241"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_1
+  - community/build_heroespy
 ---
 
 # Meshy's auto-weights leave a few % of Shoulder/Neck weight on vertices above…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[rigid_head()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_1
+#graphify/rationale #graphify/EXTRACTED #community/build_heroespy

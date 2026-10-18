@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_home_props.py"
 type: "rationale"
-community: "Community 3"
+community: "build_home_props.py"
 location: "L284"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_3
+  - community/build_home_propspy
 ---
 
 # Painted sign board with raised letters on its -Y (front) face. Hangs with its…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[build_sign()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_3
+#graphify/rationale #graphify/EXTRACTED #community/build_home_propspy

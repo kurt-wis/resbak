@@ -1,12 +1,12 @@
 ---
 source_file: "tools/retarget_clip.py"
 type: "code"
-community: "Community 4"
+community: "math"
 location: "L265"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_4
+  - community/math
 ---
 
 # src_dir()
@@ -15,4 +15,4 @@ tags:
 - [[offsets_from_rig()]] - `contains` [EXTRACTED]
 - [[src_dir()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_4
+#graphify/code #graphify/EXTRACTED #community/math

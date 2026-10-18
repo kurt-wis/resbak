@@ -1,13 +1,13 @@
 ---
 source_file: "assets/fonts/LuckiestGuy-LICENSE.txt"
 type: "document"
-community: "Community 23"
+community: "Luckiest Guy License"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_23
+  - community/Luckiest_Guy_License
 ---
 
 # Luckiest Guy License
 
-#graphify/document #graphify/EXTRACTED #community/Community_23
+#graphify/document #graphify/EXTRACTED #community/Luckiest_Guy_License

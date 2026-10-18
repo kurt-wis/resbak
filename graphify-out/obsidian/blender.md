@@ -1,11 +1,11 @@
 ---
 source_file: "docs/README.md"
 type: "document"
-community: "Community 7"
+community: "CLAUDE.md"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_7
+  - community/CLAUDEmd
 ---
 
 # blender.md
@@ -13,4 +13,4 @@ tags:
 ## Connections
 - [[CLAUDE]] - `references` [EXTRACTED]
 
-#graphify/document #graphify/EXTRACTED #community/Community_7
+#graphify/document #graphify/EXTRACTED #community/CLAUDEmd

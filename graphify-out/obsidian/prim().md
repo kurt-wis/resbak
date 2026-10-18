@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_home_props.py"
 type: "code"
-community: "Community 3"
+community: "build_home_props.py"
 location: "L150"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_3
+  - community/build_home_propspy
 ---
 
 # prim()
@@ -28,4 +28,4 @@ tags:
 - [[build_water_gallon()]] - `calls` [EXTRACTED]
 - [[build_wire_span()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_3
+#graphify/code #graphify/EXTRACTED #community/build_home_propspy

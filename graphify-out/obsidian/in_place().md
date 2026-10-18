@@ -1,12 +1,12 @@
 ---
 source_file: "tools/retarget_clip.py"
 type: "code"
-community: "Community 4"
+community: "math"
 location: "L349"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_4
+  - community/math
 ---
 
 # in_place()
@@ -19,4 +19,4 @@ tags:
 - [[retarget_clip.py]] - `contains` [EXTRACTED]
 - [[retarget_table()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_4
+#graphify/code #graphify/EXTRACTED #community/math

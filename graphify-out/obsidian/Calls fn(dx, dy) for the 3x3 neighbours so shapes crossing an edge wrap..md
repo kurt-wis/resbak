@@ -1,12 +1,12 @@
 ---
 source_file: "tools/make_home_ground.py"
 type: "rationale"
-community: "Community 8"
+community: "make_home_ground.py"
 location: "L42"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_8
+  - community/make_home_groundpy
 ---
 
 # Calls fn(dx, dy) for the 3x3 neighbours so shapes crossing an edge wrap.
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[wrap_draw()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_8
+#graphify/rationale #graphify/EXTRACTED #community/make_home_groundpy

@@ -1,12 +1,12 @@
 ---
 source_file: "tools/make_home_audio.py"
 type: "code"
-community: "Community 2"
+community: "numpy"
 location: "L26"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # write_wav()
@@ -17,4 +17,4 @@ tags:
 - [[numpy]] - `calls` [EXTRACTED]
 - [[wave]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_2
+#graphify/code #graphify/EXTRACTED #community/numpy

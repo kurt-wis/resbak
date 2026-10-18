@@ -1,12 +1,12 @@
 ---
 source_file: "tools/retarget_clip.py"
 type: "rationale"
-community: "Community 4"
+community: "math"
 location: "L196"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_4
+  - community/math
 ---
 
 # World rotation about Z that turns the source rig to face -Y (toes ahead of…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[_yaw_to_front()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_4
+#graphify/rationale #graphify/EXTRACTED #community/math

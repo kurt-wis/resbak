@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_jm_botsog.py"
 type: "code"
-community: "Community 5"
+community: "build_jm_botsog.py"
 location: "L389"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_5
+  - community/build_jm_botsogpy
 ---
 
 # solid_subdiv()
@@ -18,4 +18,4 @@ tags:
 - [[phase3_apparel()]] - `calls` [EXTRACTED]
 - [[set_active()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_5
+#graphify/code #graphify/EXTRACTED #community/build_jm_botsogpy

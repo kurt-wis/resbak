@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_home_props.py"
 type: "rationale"
-community: "Community 3"
+community: "build_home_props.py"
 location: "L193"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_3
+  - community/build_home_propspy
 ---
 
 # Low plastic monobloc-style stool, the kind every sari-sari store has. height =…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[build_stool()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_3
+#graphify/rationale #graphify/EXTRACTED #community/build_home_propspy

@@ -1,11 +1,11 @@
 ---
 source_file: "docs/plans/2026-10-17-home-diorama.md"
 type: "code"
-community: "Community 12"
+community: "Home Diorama Plan"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_12
+  - community/Home_Diorama_Plan
 ---
 
 # Tindera Bystander
@@ -13,4 +13,4 @@ tags:
 ## Connections
 - [[Home Diorama Plan]] - `references` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_12
+#graphify/code #graphify/EXTRACTED #community/Home_Diorama_Plan

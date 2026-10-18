@@ -1,12 +1,12 @@
 ---
 source_file: "tools/retarget_clip.py"
 type: "rationale"
-community: "Community 4"
+community: "math"
 location: "L95"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_4
+  - community/math
 ---
 
 # Import a clip file; return (armature, new actions, file fps). Meshes are…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[_import()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_4
+#graphify/rationale #graphify/EXTRACTED #community/math

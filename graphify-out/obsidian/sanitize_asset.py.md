@@ -1,12 +1,12 @@
 ---
 source_file: "tools/sanitize_asset.py"
 type: "code"
-community: "Community 0"
+community: "os"
 location: "L1"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # sanitize_asset.py
@@ -23,4 +23,4 @@ tags:
 - [[sanitize_asset.py - Make a raw Meshy (or downloaded) PROP game-ready in one…]] - `rationale_for` [EXTRACTED]
 - [[sys]] - `imports` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_0
+#graphify/code #graphify/EXTRACTED #community/os

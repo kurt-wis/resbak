@@ -1,13 +1,13 @@
 ---
 source_file: "docs/plans/2026-10-17-home-diorama.md"
 type: "code"
-community: "Community 19"
+community: "Lola Bystander"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_19
+  - community/Lola_Bystander
 ---
 
 # Lola Bystander
 
-#graphify/code #graphify/EXTRACTED #community/Community_19
+#graphify/code #graphify/EXTRACTED #community/Lola_Bystander

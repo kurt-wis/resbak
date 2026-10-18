@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_batang_hamog.py"
 type: "code"
-community: "Community 0"
+community: "os"
 location: "L47"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # smooth_action()
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[build()]] - `contains` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_0
+#graphify/code #graphify/EXTRACTED #community/os

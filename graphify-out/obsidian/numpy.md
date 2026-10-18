@@ -1,11 +1,11 @@
 ---
 source_file: ""
 type: "concept"
-community: "Community 2"
+community: "numpy"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # numpy
@@ -51,4 +51,4 @@ tags:
 - [[value_noise()]] - `calls` [EXTRACTED]
 - [[write_wav()]] - `calls` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_2
+#graphify/concept #graphify/EXTRACTED #community/numpy

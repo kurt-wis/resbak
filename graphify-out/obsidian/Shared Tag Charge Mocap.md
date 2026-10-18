@@ -1,13 +1,13 @@
 ---
 source_file: "source_art/README.md"
 type: "code"
-community: "Community 30"
+community: "Shared Tag Charge Mocap"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_30
+  - community/Shared_Tag_Charge_Mocap
 ---
 
 # Shared Tag Charge Mocap
 
-#graphify/code #graphify/EXTRACTED #community/Community_30
+#graphify/code #graphify/EXTRACTED #community/Shared_Tag_Charge_Mocap

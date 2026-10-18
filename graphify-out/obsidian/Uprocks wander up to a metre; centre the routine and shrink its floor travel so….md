@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_heroes.py"
 type: "rationale"
-community: "Community 1"
+community: "build_heroes.py"
 location: "L517"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_1
+  - community/build_heroespy
 ---
 
 # Uprocks wander up to a metre; centre the routine and shrink its floor travel so…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[keep_on_pad()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_1
+#graphify/rationale #graphify/EXTRACTED #community/build_heroespy

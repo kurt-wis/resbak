@@ -1,11 +1,11 @@
 ---
 source_file: "docs/README.md"
 type: "document"
-community: "Community 7"
+community: "CLAUDE.md"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_7
+  - community/CLAUDEmd
 ---
 
 # status.md
@@ -14,4 +14,4 @@ tags:
 - [[Decision log]] - `references` [EXTRACTED]
 - [[RESBAK docs index]] - `references` [EXTRACTED]
 
-#graphify/document #graphify/EXTRACTED #community/Community_7
+#graphify/document #graphify/EXTRACTED #community/CLAUDEmd

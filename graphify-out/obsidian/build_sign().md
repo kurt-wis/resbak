@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_home_props.py"
 type: "code"
-community: "Community 3"
+community: "build_home_props.py"
 location: "L283"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_3
+  - community/build_home_propspy
 ---
 
 # build_sign()
@@ -21,4 +21,4 @@ tags:
 - [[mat()]] - `calls` [EXTRACTED]
 - [[prim()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_3
+#graphify/code #graphify/EXTRACTED #community/build_home_propspy

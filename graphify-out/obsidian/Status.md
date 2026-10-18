@@ -1,13 +1,13 @@
 ---
 source_file: "docs/status.md"
 type: "document"
-community: "Community 26"
+community: "Status"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_26
+  - community/Status
 ---
 
 # Status
 
-#graphify/document #graphify/EXTRACTED #community/Community_26
+#graphify/document #graphify/EXTRACTED #community/Status

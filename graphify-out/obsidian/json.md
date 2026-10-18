@@ -1,11 +1,11 @@
 ---
 source_file: ""
 type: "concept"
-community: "Community 0"
+community: "os"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # json
@@ -16,4 +16,4 @@ tags:
 - [[main()_3]] - `calls` [EXTRACTED]
 - [[qc_asset.py]] - `imports` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_0
+#graphify/concept #graphify/EXTRACTED #community/os

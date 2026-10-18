@@ -1,11 +1,11 @@
 ---
 source_file: "docs/archive/characters/04_nathan.md"
 type: "concept"
-community: "Community 9"
+community: "Batang Hamog"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_9
+  - community/Batang_Hamog
 ---
 
 # BUGA!
@@ -14,4 +14,4 @@ tags:
 - [[DIRE-DIRETSO]] - `conceptually_related_to` [EXTRACTED]
 - [[Nathan]] - `references` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_9
+#graphify/concept #graphify/EXTRACTED #community/Batang_Hamog

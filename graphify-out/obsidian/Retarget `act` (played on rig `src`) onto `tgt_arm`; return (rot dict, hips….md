@@ -1,12 +1,12 @@
 ---
 source_file: "tools/retarget_clip.py"
 type: "rationale"
-community: "Community 4"
+community: "math"
 location: "L232"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_4
+  - community/math
 ---
 
 # Retarget `act` (played on rig `src`) onto `tgt_arm`; return [(rot dict, hips…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[offsets_from_rig()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_4
+#graphify/rationale #graphify/EXTRACTED #community/math

@@ -1,11 +1,11 @@
 ---
 source_file: ""
 type: "concept"
-community: "Community 2"
+community: "numpy"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # mathutils_bvhtree
@@ -13,4 +13,4 @@ tags:
 ## Connections
 - [[build_face_cards.py]] - `imports_from` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_2
+#graphify/concept #graphify/EXTRACTED #community/numpy

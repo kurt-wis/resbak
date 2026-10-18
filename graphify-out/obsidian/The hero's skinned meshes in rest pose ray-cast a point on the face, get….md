@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_face_cards.py"
 type: "rationale"
-community: "Community 11"
+community: "Skin"
 location: "L72"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_11
+  - community/Skin
 ---
 
 # The hero's skinned meshes in rest pose: ray-cast a point on the face, get…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[Skin]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_11
+#graphify/rationale #graphify/EXTRACTED #community/Skin

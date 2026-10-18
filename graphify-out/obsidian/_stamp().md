@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_heroes.py"
 type: "code"
-community: "Community 1"
+community: "build_heroes.py"
 location: "L591"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_1
+  - community/build_heroespy
 ---
 
 # _stamp()
@@ -16,4 +16,4 @@ tags:
 - [[build_heroes.py]] - `contains` [EXTRACTED]
 - [[render_moves_sheet()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_1
+#graphify/code #graphify/EXTRACTED #community/build_heroespy

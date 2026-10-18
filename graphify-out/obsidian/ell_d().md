@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_face_cards.py"
 type: "code"
-community: "Community 2"
+community: "numpy"
 location: "L243"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # ell_d()
@@ -16,4 +16,4 @@ tags:
 - [[ell_k()]] - `calls` [EXTRACTED]
 - [[mouth_frame()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_2
+#graphify/code #graphify/EXTRACTED #community/numpy

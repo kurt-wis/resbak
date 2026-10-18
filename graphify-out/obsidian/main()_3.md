@@ -1,12 +1,12 @@
 ---
 source_file: "tools/qc_asset.py"
 type: "code"
-community: "Community 0"
+community: "os"
 location: "L239"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # main()
@@ -24,4 +24,4 @@ tags:
 - [[sys]] - `calls` [EXTRACTED]
 - [[world_bounds()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_0
+#graphify/code #graphify/EXTRACTED #community/os

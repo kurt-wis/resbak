@@ -1,13 +1,13 @@
 ---
 source_file: "docs/architecture.md"
 type: "document"
-community: "Community 24"
+community: "Architecture"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_24
+  - community/Architecture
 ---
 
 # Architecture
 
-#graphify/document #graphify/EXTRACTED #community/Community_24
+#graphify/document #graphify/EXTRACTED #community/Architecture

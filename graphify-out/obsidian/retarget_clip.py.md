@@ -1,12 +1,12 @@
 ---
 source_file: "tools/retarget_clip.py"
 type: "code"
-community: "Community 4"
+community: "math"
 location: "L1"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_4
+  - community/math
 ---
 
 # retarget_clip.py
@@ -39,4 +39,4 @@ tags:
 - [[retarget_clip.py - Put a downloaded animation (Meshy GLB, Mixamo FBX,…]] - `rationale_for` [EXTRACTED]
 - [[sys]] - `imports` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_4
+#graphify/code #graphify/EXTRACTED #community/math

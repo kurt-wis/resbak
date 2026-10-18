@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_bystanders.py"
 type: "code"
-community: "Community 0"
+community: "os"
 location: "L44"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # pose_at()
@@ -15,4 +15,4 @@ tags:
 - [[build_bystanders.py]] - `contains` [EXTRACTED]
 - [[measure()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_0
+#graphify/code #graphify/EXTRACTED #community/os

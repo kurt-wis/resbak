@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_heroes.py"
 type: "rationale"
-community: "Community 1"
+community: "build_heroes.py"
 location: "L605"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_1
+  - community/build_heroespy
 ---
 
 # renders/heroes_<id>_moves.png: `per_clip` evenly spaced frames of every clip…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[render_moves_sheet()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_1
+#graphify/rationale #graphify/EXTRACTED #community/build_heroespy

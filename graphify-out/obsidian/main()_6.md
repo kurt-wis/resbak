@@ -1,12 +1,12 @@
 ---
 source_file: "tools/make_home_ui.py"
 type: "code"
-community: "Community 10"
+community: "make_home_ui.py"
 location: "L72"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_10
+  - community/make_home_uipy
 ---
 
 # main()
@@ -17,4 +17,4 @@ tags:
 - [[os]] - `calls` [EXTRACTED]
 - [[tape()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_10
+#graphify/code #graphify/EXTRACTED #community/make_home_uipy

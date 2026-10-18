@@ -1,13 +1,13 @@
 ---
 source_file: "docs/archive/gameplay/agawan_base_rules.md"
 type: "concept"
-community: "Community 25"
+community: "Base Freshness Priority Engine"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_25
+  - community/Base_Freshness_Priority_Engine
 ---
 
 # Base Freshness Priority Engine
 
-#graphify/concept #graphify/EXTRACTED #community/Community_25
+#graphify/concept #graphify/EXTRACTED #community/Base_Freshness_Priority_Engine

@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_jm_botsog.py"
 type: "code"
-community: "Community 5"
+community: "build_jm_botsog.py"
 location: "L58"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_5
+  - community/build_jm_botsogpy
 ---
 
 # create_prim()
@@ -19,4 +19,4 @@ tags:
 - [[phase2_body()]] - `calls` [EXTRACTED]
 - [[phase3_apparel()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_5
+#graphify/code #graphify/EXTRACTED #community/build_jm_botsogpy

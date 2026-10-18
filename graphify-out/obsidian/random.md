@@ -1,11 +1,11 @@
 ---
 source_file: ""
 type: "concept"
-community: "Community 8"
+community: "make_home_ground.py"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_8
+  - community/make_home_groundpy
 ---
 
 # random
@@ -18,4 +18,4 @@ tags:
 - [[ground_dirt()]] - `calls` [EXTRACTED]
 - [[make_home_ground.py]] - `imports` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_8
+#graphify/concept #graphify/EXTRACTED #community/make_home_groundpy

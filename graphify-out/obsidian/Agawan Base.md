@@ -1,11 +1,11 @@
 ---
 source_file: "docs/glossary.md"
 type: "concept"
-community: "Community 7"
+community: "CLAUDE.md"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_7
+  - community/CLAUDEmd
 ---
 
 # Agawan Base
@@ -13,4 +13,4 @@ tags:
 ## Connections
 - [[Glossary]] - `references` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_7
+#graphify/concept #graphify/EXTRACTED #community/CLAUDEmd

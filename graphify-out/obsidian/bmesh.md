@@ -1,11 +1,11 @@
 ---
 source_file: ""
 type: "concept"
-community: "Community 6"
+community: "build_sand_castle.py"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_6
+  - community/build_sand_castlepy
 ---
 
 # bmesh
@@ -19,4 +19,4 @@ tags:
 - [[qc_asset.py]] - `imports` [EXTRACTED]
 - [[sanitize_asset.py]] - `imports` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_6
+#graphify/concept #graphify/EXTRACTED #community/build_sand_castlepy

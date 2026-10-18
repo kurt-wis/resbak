@@ -3,7 +3,7 @@
     {
       "id": "g0",
       "type": "group",
-      "label": "Community 0",
+      "label": "os",
       "x": 0,
       "y": 0,
       "width": 1760,
@@ -499,7 +499,7 @@
     {
       "id": "g1",
       "type": "group",
-      "label": "Community 1",
+      "label": "build_heroes.py",
       "x": 1840,
       "y": 0,
       "width": 1540,
@@ -950,7 +950,7 @@
     {
       "id": "g2",
       "type": "group",
-      "label": "Community 2",
+      "label": "numpy",
       "x": 3460,
       "y": 0,
       "width": 1540,
@@ -1347,7 +1347,7 @@
     {
       "id": "g3",
       "type": "group",
-      "label": "Community 3",
+      "label": "build_home_props.py",
       "x": 5080,
       "y": 0,
       "width": 1540,
@@ -1735,7 +1735,7 @@
     {
       "id": "g4",
       "type": "group",
-      "label": "Community 4",
+      "label": "math",
       "x": 6700,
       "y": 0,
       "width": 1540,
@@ -2105,7 +2105,7 @@
     {
       "id": "g5",
       "type": "group",
-      "label": "Community 5",
+      "label": "build_jm_botsog.py",
       "x": 8320,
       "y": 0,
       "width": 1320,
@@ -2430,7 +2430,7 @@
     {
       "id": "g6",
       "type": "group",
-      "label": "Community 6",
+      "label": "build_sand_castle.py",
       "x": 0,
       "y": 900,
       "width": 880,
@@ -2575,7 +2575,7 @@
     {
       "id": "g7",
       "type": "group",
-      "label": "Community 7",
+      "label": "CLAUDE.md",
       "x": 1840,
       "y": 900,
       "width": 880,
@@ -2711,7 +2711,7 @@
     {
       "id": "g8",
       "type": "group",
-      "label": "Community 8",
+      "label": "make_home_ground.py",
       "x": 3460,
       "y": 900,
       "width": 880,
@@ -2838,7 +2838,7 @@
     {
       "id": "g9",
       "type": "group",
-      "label": "Community 9",
+      "label": "Batang Hamog",
       "x": 5080,
       "y": 900,
       "width": 880,
@@ -2938,7 +2938,7 @@
     {
       "id": "g10",
       "type": "group",
-      "label": "Community 10",
+      "label": "make_home_ui.py",
       "x": 6700,
       "y": 900,
       "width": 660,
@@ -3011,7 +3011,7 @@
     {
       "id": "g11",
       "type": "group",
-      "label": "Community 11",
+      "label": "Skin",
       "x": 8320,
       "y": 900,
       "width": 660,
@@ -3084,7 +3084,7 @@
     {
       "id": "g12",
       "type": "group",
-      "label": "Community 12",
+      "label": "Home Diorama Plan",
       "x": 0,
       "y": 1500,
       "width": 660,
@@ -3139,7 +3139,7 @@
     {
       "id": "g13",
       "type": "group",
-      "label": "Community 13",
+      "label": "Inday",
       "x": 1840,
       "y": 1500,
       "width": 660,
@@ -3194,7 +3194,7 @@
     {
       "id": "g14",
       "type": "group",
-      "label": "Community 14",
+      "label": "Plan: Konstruksyon overhaul, remaining work (2026-10-17)",
       "x": 3460,
       "y": 1500,
       "width": 660,
@@ -3249,7 +3249,7 @@
     {
       "id": "g15",
       "type": "group",
-      "label": "Community 15",
+      "label": "Konstruksyon Remaining Report",
       "x": 5080,
       "y": 1500,
       "width": 600,
@@ -3295,7 +3295,7 @@
     {
       "id": "g16",
       "type": "group",
-      "label": "Community 16",
+      "label": "Meshy Godot Plugin README",
       "x": 6700,
       "y": 1500,
       "width": 600,
@@ -3332,7 +3332,7 @@
     {
       "id": "g17",
       "type": "group",
-      "label": "Community 17",
+      "label": "AGENTS.md",
       "x": 8320,
       "y": 1500,
       "width": 600,
@@ -3360,7 +3360,7 @@
     {
       "id": "g18",
       "type": "group",
-      "label": "Community 18",
+      "label": "Audio Credits",
       "x": 0,
       "y": 1980,
       "width": 600,
@@ -3379,7 +3379,7 @@
     {
       "id": "g19",
       "type": "group",
-      "label": "Community 19",
+      "label": "Lola Bystander",
       "x": 1840,
       "y": 1980,
       "width": 600,
@@ -3398,7 +3398,7 @@
     {
       "id": "g20",
       "type": "group",
-      "label": "Community 20",
+      "label": "Manong Bystander",
       "x": 3460,
       "y": 1980,
       "width": 600,
@@ -3417,7 +3417,7 @@
     {
       "id": "g21",
       "type": "group",
-      "label": "Community 21",
+      "label": "Student Bystander",
       "x": 5080,
       "y": 1980,
       "width": 600,
@@ -3436,7 +3436,7 @@
     {
       "id": "g22",
       "type": "group",
-      "label": "Community 22",
+      "label": "Wall decal generation prompts",
       "x": 6700,
       "y": 1980,
       "width": 600,
@@ -3455,7 +3455,7 @@
     {
       "id": "g23",
       "type": "group",
-      "label": "Community 23",
+      "label": "Luckiest Guy License",
       "x": 8320,
       "y": 1980,
       "width": 600,
@@ -3474,7 +3474,7 @@
     {
       "id": "g24",
       "type": "group",
-      "label": "Community 24",
+      "label": "Architecture",
       "x": 0,
       "y": 2460,
       "width": 600,
@@ -3493,7 +3493,7 @@
     {
       "id": "g25",
       "type": "group",
-      "label": "Community 25",
+      "label": "Base Freshness Priority Engine",
       "x": 1840,
       "y": 2460,
       "width": 600,
@@ -3512,7 +3512,7 @@
     {
       "id": "g26",
       "type": "group",
-      "label": "Community 26",
+      "label": "Status",
       "x": 3460,
       "y": 2460,
       "width": 600,
@@ -3531,7 +3531,7 @@
     {
       "id": "g27",
       "type": "group",
-      "label": "Community 27",
+      "label": "icon.svg",
       "x": 5080,
       "y": 2460,
       "width": 600,
@@ -3550,7 +3550,7 @@
     {
       "id": "g28",
       "type": "group",
-      "label": "Community 28",
+      "label": "renders/ README",
       "x": 6700,
       "y": 2460,
       "width": 600,
@@ -3569,7 +3569,7 @@
     {
       "id": "g29",
       "type": "group",
-      "label": "Community 29",
+      "label": "scripts/map_pipeline/ README",
       "x": 8320,
       "y": 2460,
       "width": 600,
@@ -3588,7 +3588,7 @@
     {
       "id": "g30",
       "type": "group",
-      "label": "Community 30",
+      "label": "Shared Tag Charge Mocap",
       "x": 0,
       "y": 2940,
       "width": 600,

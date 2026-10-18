@@ -1,11 +1,11 @@
 ---
 source_file: "docs/archive/RESBAK.md"
 type: "document"
-community: "Community 7"
+community: "CLAUDE.md"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_7
+  - community/CLAUDEmd
 ---
 
 # RESBAK Design Specification (Legacy)
@@ -14,4 +14,4 @@ tags:
 - [[Archive README]] - `references` [EXTRACTED]
 - [[RESBAK_1]] - `references` [INFERRED]
 
-#graphify/document #graphify/EXTRACTED #community/Community_7
+#graphify/document #graphify/EXTRACTED #community/CLAUDEmd

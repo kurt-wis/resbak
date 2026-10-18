@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_jm_botsog.py"
 type: "code"
-community: "Community 5"
+community: "build_jm_botsog.py"
 location: "L1316"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_5
+  - community/build_jm_botsogpy
 ---
 
 # clear_pose()
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[phase6_anim()]] - `contains` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_5
+#graphify/code #graphify/EXTRACTED #community/build_jm_botsogpy

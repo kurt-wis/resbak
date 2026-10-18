@@ -1,12 +1,12 @@
 ---
 source_file: "tools/qc_asset.py"
 type: "code"
-community: "Community 0"
+community: "os"
 location: "L1"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # qc_asset.py
@@ -33,4 +33,4 @@ tags:
 - [[track_paths()]] - `contains` [EXTRACTED]
 - [[world_bounds()]] - `contains` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_0
+#graphify/code #graphify/EXTRACTED #community/os

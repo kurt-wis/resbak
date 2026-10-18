@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_face_cards.py"
 type: "code"
-community: "Community 2"
+community: "numpy"
 location: "L367"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # export_cards()
@@ -15,4 +15,4 @@ tags:
 - [[build()_5]] - `calls` [EXTRACTED]
 - [[build_face_cards.py]] - `contains` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_2
+#graphify/code #graphify/EXTRACTED #community/numpy

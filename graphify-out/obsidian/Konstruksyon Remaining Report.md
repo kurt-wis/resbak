@@ -1,11 +1,11 @@
 ---
 source_file: "docs/plans/2026-10-17-konstruksyon-remaining.REPORT.md"
 type: "document"
-community: "Community 15"
+community: "Konstruksyon Remaining Report"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_15
+  - community/Konstruksyon_Remaining_Report
 ---
 
 # Konstruksyon Remaining Report
@@ -14,4 +14,4 @@ tags:
 - [[Audio Autoload]] - `references` [EXTRACTED]
 - [[vfx.gd]] - `references` [EXTRACTED]
 
-#graphify/document #graphify/EXTRACTED #community/Community_15
+#graphify/document #graphify/EXTRACTED #community/Konstruksyon_Remaining_Report

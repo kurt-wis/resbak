@@ -1,11 +1,11 @@
 ---
 source_file: "addons/meshy-godot-plugin/README.md"
 type: "concept"
-community: "Community 16"
+community: "Meshy Godot Plugin README"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_16
+  - community/Meshy_Godot_Plugin_README
 ---
 
 # Godot Engine
@@ -13,4 +13,4 @@ tags:
 ## Connections
 - [[Meshy Godot Plugin README]] - `references` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_16
+#graphify/concept #graphify/EXTRACTED #community/Meshy_Godot_Plugin_README

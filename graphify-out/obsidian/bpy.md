@@ -1,11 +1,11 @@
 ---
 source_file: ""
 type: "concept"
-community: "Community 0"
+community: "os"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # bpy
@@ -24,4 +24,4 @@ tags:
 - [[retarget_clip.py]] - `imports` [EXTRACTED]
 - [[sanitize_asset.py]] - `imports` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_0
+#graphify/concept #graphify/EXTRACTED #community/os

@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_bystanders.py"
 type: "rationale"
-community: "Community 0"
+community: "os"
 location: "L1"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # build_bystanders.py - Meshy bystanders -> game-ready Home-diorama characters…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[build_bystanders.py]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_0
+#graphify/rationale #graphify/EXTRACTED #community/os

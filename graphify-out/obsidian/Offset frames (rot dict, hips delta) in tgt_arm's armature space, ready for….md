@@ -1,12 +1,12 @@
 ---
 source_file: "tools/retarget_clip.py"
 type: "rationale"
-community: "Community 4"
+community: "math"
 location: "L213"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_4
+  - community/math
 ---
 
 # Offset frames (rot dict, hips delta) in tgt_arm's armature space, ready for…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[mocap_offsets()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_4
+#graphify/rationale #graphify/EXTRACTED #community/math

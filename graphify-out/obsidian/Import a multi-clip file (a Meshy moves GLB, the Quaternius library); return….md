@@ -1,12 +1,12 @@
 ---
 source_file: "tools/retarget_clip.py"
 type: "rationale"
-community: "Community 4"
+community: "math"
 location: "L142"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_4
+  - community/math
 ---
 
 # Import a multi-clip file (a Meshy moves GLB, the Quaternius library); return…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[load_clips()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_4
+#graphify/rationale #graphify/EXTRACTED #community/math

@@ -1,11 +1,11 @@
 ---
 source_file: "addons/meshy-godot-plugin/README.md"
 type: "document"
-community: "Community 16"
+community: "Meshy Godot Plugin README"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_16
+  - community/Meshy_Godot_Plugin_README
 ---
 
 # Meshy Godot Plugin README
@@ -14,4 +14,4 @@ tags:
 - [[Godot Engine]] - `references` [EXTRACTED]
 - [[Meshy.ai]] - `references` [EXTRACTED]
 
-#graphify/document #graphify/EXTRACTED #community/Community_16
+#graphify/document #graphify/EXTRACTED #community/Meshy_Godot_Plugin_README

@@ -1,12 +1,12 @@
 ---
 source_file: "tools/qc_asset.py"
 type: "code"
-community: "Community 0"
+community: "os"
 location: "L183"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # render_sheet()
@@ -19,4 +19,4 @@ tags:
 - [[qc_asset.py]] - `contains` [EXTRACTED]
 - [[set_wire()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_0
+#graphify/code #graphify/EXTRACTED #community/os

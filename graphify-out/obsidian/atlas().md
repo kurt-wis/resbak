@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_face_cards.py"
 type: "code"
-community: "Community 2"
+community: "numpy"
 location: "L357"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # atlas()
@@ -16,4 +16,4 @@ tags:
 - [[build_face_cards.py]] - `contains` [EXTRACTED]
 - [[numpy]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_2
+#graphify/code #graphify/EXTRACTED #community/numpy

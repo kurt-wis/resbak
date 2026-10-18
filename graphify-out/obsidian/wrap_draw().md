@@ -1,12 +1,12 @@
 ---
 source_file: "tools/make_home_ground.py"
 type: "code"
-community: "Community 8"
+community: "make_home_ground.py"
 location: "L41"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_8
+  - community/make_home_groundpy
 ---
 
 # wrap_draw()
@@ -18,4 +18,4 @@ tags:
 - [[ground_dirt()]] - `calls` [EXTRACTED]
 - [[make_home_ground.py]] - `contains` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_8
+#graphify/code #graphify/EXTRACTED #community/make_home_groundpy

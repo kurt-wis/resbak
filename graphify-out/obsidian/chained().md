@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_heroes.py"
 type: "code"
-community: "Community 1"
+community: "build_heroes.py"
 location: "L474"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_1
+  - community/build_heroespy
 ---
 
 # chained()
@@ -18,4 +18,4 @@ tags:
 - [[face_front()]] - `calls` [EXTRACTED]
 - [[rest_data()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_1
+#graphify/code #graphify/EXTRACTED #community/build_heroespy

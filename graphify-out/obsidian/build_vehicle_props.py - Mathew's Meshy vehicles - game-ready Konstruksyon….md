@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_vehicle_props.py"
 type: "rationale"
-community: "Community 0"
+community: "os"
 location: "L1"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # build_vehicle_props.py - Mathew's Meshy vehicles -> game-ready Konstruksyon…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[build_vehicle_props.py]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_0
+#graphify/rationale #graphify/EXTRACTED #community/os

@@ -1,13 +1,13 @@
 ---
 source_file: "icon.svg"
 type: "image"
-community: "Community 27"
+community: "icon.svg"
 tags:
   - graphify/image
   - graphify/EXTRACTED
-  - community/Community_27
+  - community/iconsvg
 ---
 
 # icon.svg
 
-#graphify/image #graphify/EXTRACTED #community/Community_27
+#graphify/image #graphify/EXTRACTED #community/iconsvg

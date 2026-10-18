@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_home_props.py"
 type: "code"
-community: "Community 3"
+community: "build_home_props.py"
 location: "L1"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_3
+  - community/build_home_propspy
 ---
 
 # build_home_props.py
@@ -45,4 +45,4 @@ tags:
 - [[tris()_1]] - `contains` [EXTRACTED]
 - [[write_tscn()]] - `contains` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_3
+#graphify/code #graphify/EXTRACTED #community/build_home_propspy

@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_hamog_moveset.py"
 type: "rationale"
-community: "Community 0"
+community: "os"
 location: "L1"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # Batang Hamog moveset authoring — Phase 1. Loads the current game-ready GLB…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[build_hamog_moveset.py]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_0
+#graphify/rationale #graphify/EXTRACTED #community/os

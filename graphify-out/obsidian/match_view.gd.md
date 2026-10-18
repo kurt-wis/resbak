@@ -1,11 +1,11 @@
 ---
 source_file: "docs/plans/2026-10-17-konstruksyon-remaining.md"
 type: "code"
-community: "Community 15"
+community: "Konstruksyon Remaining Report"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_15
+  - community/Konstruksyon_Remaining_Report
 ---
 
 # match_view.gd
@@ -13,4 +13,4 @@ tags:
 ## Connections
 - [[vfx.gd]] - `references` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_15
+#graphify/code #graphify/EXTRACTED #community/Konstruksyon_Remaining_Report

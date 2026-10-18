@@ -1,11 +1,11 @@
 ---
 source_file: "docs/archive/characters/01_jm_botsog.md"
 type: "document"
-community: "Community 7"
+community: "CLAUDE.md"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_7
+  - community/CLAUDEmd
 ---
 
 # Character Dossier: JM (Botsog)
@@ -13,4 +13,4 @@ tags:
 ## Connections
 - [[Archive README]] - `references` [EXTRACTED]
 
-#graphify/document #graphify/EXTRACTED #community/Community_7
+#graphify/document #graphify/EXTRACTED #community/CLAUDEmd

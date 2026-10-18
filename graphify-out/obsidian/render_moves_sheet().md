@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_heroes.py"
 type: "code"
-community: "Community 1"
+community: "build_heroes.py"
 location: "L604"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_1
+  - community/build_heroespy
 ---
 
 # render_moves_sheet()
@@ -20,4 +20,4 @@ tags:
 - [[os]] - `calls` [EXTRACTED]
 - [[rendersheroes_id_moves.png `per_clip` evenly spaced frames of every clip…]] - `rationale_for` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_1
+#graphify/code #graphify/EXTRACTED #community/build_heroespy

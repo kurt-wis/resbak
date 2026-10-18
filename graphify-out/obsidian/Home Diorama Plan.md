@@ -1,11 +1,11 @@
 ---
 source_file: "docs/plans/2026-10-17-home-diorama.md"
 type: "document"
-community: "Community 12"
+community: "Home Diorama Plan"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_12
+  - community/Home_Diorama_Plan
 ---
 
 # Home Diorama Plan
@@ -16,4 +16,4 @@ tags:
 - [[Jeepney Asset]] - `references` [EXTRACTED]
 - [[Tindera Bystander]] - `references` [EXTRACTED]
 
-#graphify/document #graphify/EXTRACTED #community/Community_12
+#graphify/document #graphify/EXTRACTED #community/Home_Diorama_Plan

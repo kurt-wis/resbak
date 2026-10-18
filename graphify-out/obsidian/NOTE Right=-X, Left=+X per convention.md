@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_jm_botsog.py"
 type: "rationale"
-community: "Community 5"
+community: "build_jm_botsog.py"
 location: "L246"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_5
+  - community/build_jm_botsogpy
 ---
 
 # # NOTE: Right=-X, Left=+X per convention
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[build_jm_botsog.py]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_5
+#graphify/rationale #graphify/EXTRACTED #community/build_jm_botsogpy

@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_face_cards.py"
 type: "rationale"
-community: "Community 2"
+community: "numpy"
 location: "L192"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # A (nu+1) x (nv+1) grid of w x h metres centred on (cx, cz), rotated tilt_deg in…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[project_grid()]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_2
+#graphify/rationale #graphify/EXTRACTED #community/numpy

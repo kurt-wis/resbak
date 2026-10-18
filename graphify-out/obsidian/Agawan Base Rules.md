@@ -1,11 +1,11 @@
 ---
 source_file: "docs/archive/gameplay/agawan_base_rules.md"
 type: "document"
-community: "Community 13"
+community: "Inday"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_13
+  - community/Inday
 ---
 
 # Agawan Base Rules
@@ -13,4 +13,4 @@ tags:
 ## Connections
 - [[SAGIP!]] - `implements` [EXTRACTED]
 
-#graphify/document #graphify/EXTRACTED #community/Community_13
+#graphify/document #graphify/EXTRACTED #community/Inday

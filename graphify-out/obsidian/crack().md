@@ -1,12 +1,12 @@
 ---
 source_file: "tools/make_home_ground.py"
 type: "code"
-community: "Community 8"
+community: "make_home_ground.py"
 location: "L97"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_8
+  - community/make_home_groundpy
 ---
 
 # crack()
@@ -16,4 +16,4 @@ tags:
 - [[ground_concrete()]] - `contains` [EXTRACTED]
 - [[wrap_draw()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_8
+#graphify/code #graphify/EXTRACTED #community/make_home_groundpy

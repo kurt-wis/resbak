@@ -1,11 +1,11 @@
 ---
 source_file: "AGENTS.md"
 type: "document"
-community: "Community 17"
+community: "AGENTS.md"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_17
+  - community/AGENTSmd
 ---
 
 # AGENTS.md
@@ -13,4 +13,4 @@ tags:
 ## Connections
 - [[RESBAK]] - `references` [EXTRACTED]
 
-#graphify/document #graphify/EXTRACTED #community/Community_17
+#graphify/document #graphify/EXTRACTED #community/AGENTSmd

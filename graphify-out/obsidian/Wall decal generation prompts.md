@@ -1,13 +1,13 @@
 ---
 source_file: "assets/decals/PROMPTS.md"
 type: "document"
-community: "Community 22"
+community: "Wall decal generation prompts"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_22
+  - community/Wall_decal_generation_prompts
 ---
 
 # Wall decal generation prompts
 
-#graphify/document #graphify/EXTRACTED #community/Community_22
+#graphify/document #graphify/EXTRACTED #community/Wall_decal_generation_prompts

@@ -1,12 +1,12 @@
 ---
 source_file: "tools/make_home_audio.py"
 type: "code"
-community: "Community 2"
+community: "numpy"
 location: "L1"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # make_home_audio.py
@@ -31,4 +31,4 @@ tags:
 - [[wave]] - `imports` [EXTRACTED]
 - [[write_wav()]] - `contains` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_2
+#graphify/code #graphify/EXTRACTED #community/numpy

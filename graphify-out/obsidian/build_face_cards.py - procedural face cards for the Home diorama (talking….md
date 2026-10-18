@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_face_cards.py"
 type: "rationale"
-community: "Community 2"
+community: "numpy"
 location: "L1"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # build_face_cards.py - procedural face cards for the Home diorama (talking…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[build_face_cards.py]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_2
+#graphify/rationale #graphify/EXTRACTED #community/numpy

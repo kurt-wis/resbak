@@ -1,11 +1,11 @@
 ---
 source_file: ""
 type: "concept"
-community: "Community 0"
+community: "os"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # mathutils
@@ -22,4 +22,4 @@ tags:
 - [[retarget_clip.py]] - `imports_from` [EXTRACTED]
 - [[sanitize_asset.py]] - `imports_from` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_0
+#graphify/concept #graphify/EXTRACTED #community/os

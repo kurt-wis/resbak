@@ -1,11 +1,11 @@
 ---
 source_file: "docs/pipelines/assets.md"
 type: "code"
-community: "Community 9"
+community: "Batang Hamog"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_9
+  - community/Batang_Hamog
 ---
 
 # batang_hamog.glb
@@ -14,4 +14,4 @@ tags:
 - [[batang_hamog.gd]] - `references` [EXTRACTED]
 - [[build_heroes.py]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_9
+#graphify/code #graphify/EXTRACTED #community/Batang_Hamog

@@ -1,12 +1,12 @@
 ---
 source_file: "tools/build_sand_castle.py"
 type: "code"
-community: "Community 6"
+community: "build_sand_castle.py"
 location: "L54"
 tags:
   - graphify/code
   - graphify/EXTRACTED
-  - community/Community_6
+  - community/build_sand_castlepy
 ---
 
 # finish()
@@ -18,4 +18,4 @@ tags:
 - [[cone()]] - `calls` [EXTRACTED]
 - [[cyl()]] - `calls` [EXTRACTED]
 
-#graphify/code #graphify/EXTRACTED #community/Community_6
+#graphify/code #graphify/EXTRACTED #community/build_sand_castlepy

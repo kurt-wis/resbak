@@ -1,11 +1,11 @@
 ---
 source_file: "docs/plans/2026-10-17-konstruksyon-remaining.md"
 type: "concept"
-community: "Community 1"
+community: "build_heroes.py"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_1
+  - community/build_heroespy
 ---
 
 # TagCharge Animation
@@ -13,4 +13,4 @@ tags:
 ## Connections
 - [[build_heroes.py]] - `references` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_1
+#graphify/concept #graphify/EXTRACTED #community/build_heroespy

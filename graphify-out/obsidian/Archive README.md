@@ -1,11 +1,11 @@
 ---
 source_file: "docs/archive/README.md"
 type: "document"
-community: "Community 7"
+community: "CLAUDE.md"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_7
+  - community/CLAUDEmd
 ---
 
 # Archive README
@@ -15,4 +15,4 @@ tags:
 - [[Character Dossier Nene]] - `references` [EXTRACTED]
 - [[RESBAK Design Specification (Legacy)]] - `references` [EXTRACTED]
 
-#graphify/document #graphify/EXTRACTED #community/Community_7
+#graphify/document #graphify/EXTRACTED #community/CLAUDEmd

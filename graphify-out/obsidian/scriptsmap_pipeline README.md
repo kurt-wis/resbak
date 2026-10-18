@@ -1,13 +1,13 @@
 ---
 source_file: "scripts/map_pipeline/README.md"
 type: "document"
-community: "Community 29"
+community: "scripts/map_pipeline/ README"
 tags:
   - graphify/document
   - graphify/EXTRACTED
-  - community/Community_29
+  - community/scripts/map_pipeline/_README
 ---
 
 # scripts/map_pipeline/ README
 
-#graphify/document #graphify/EXTRACTED #community/Community_29
+#graphify/document #graphify/EXTRACTED #community/scripts/map_pipeline/_README

@@ -1,11 +1,11 @@
 ---
 source_file: ""
 type: "concept"
-community: "Community 4"
+community: "math"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_4
+  - community/math
 ---
 
 # math
@@ -38,4 +38,4 @@ tags:
 - [[retarget_clip.py]] - `imports` [EXTRACTED]
 - [[sample_skin()]] - `calls` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_4
+#graphify/concept #graphify/EXTRACTED #community/math

@@ -1,11 +1,11 @@
 ---
 source_file: ""
 type: "concept"
-community: "Community 2"
+community: "numpy"
 tags:
   - graphify/concept
   - graphify/EXTRACTED
-  - community/Community_2
+  - community/numpy
 ---
 
 # wave
@@ -14,4 +14,4 @@ tags:
 - [[make_home_audio.py]] - `imports` [EXTRACTED]
 - [[write_wav()]] - `calls` [EXTRACTED]
 
-#graphify/concept #graphify/EXTRACTED #community/Community_2
+#graphify/concept #graphify/EXTRACTED #community/numpy

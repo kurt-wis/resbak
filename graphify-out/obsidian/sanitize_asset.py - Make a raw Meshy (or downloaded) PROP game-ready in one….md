@@ -1,12 +1,12 @@
 ---
 source_file: "tools/sanitize_asset.py"
 type: "rationale"
-community: "Community 0"
+community: "os"
 location: "L1"
 tags:
   - graphify/rationale
   - graphify/EXTRACTED
-  - community/Community_0
+  - community/os
 ---
 
 # sanitize_asset.py - Make a raw Meshy (or downloaded) PROP game-ready in one…
@@ -14,4 +14,4 @@ tags:
 ## Connections
 - [[sanitize_asset.py]] - `rationale_for` [EXTRACTED]
 
-#graphify/rationale #graphify/EXTRACTED #community/Community_0
+#graphify/rationale #graphify/EXTRACTED #community/os
