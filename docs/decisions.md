@@ -143,3 +143,22 @@ User requested dedicated character controls with visible landing/wall placement.
 
 ## 2026-10-18 — Cancel with a separate release target
 User reported rushed long aim drags could accidentally cancel. Remove radial cancellation for TAG and skills: clamp aim distance, keep direction, and cancel only when released inside the explicit × target. Moving across the target does not latch cancellation; leaving restores aim. Check the release location itself to tolerate coalesced pointer events. Preserve system-cancel/focus/pause cleanup. Dark control backplates and colored rims improve contrast against both maps without increasing the control footprint.
+## 2026-10-18: Barangay court reference environment
+
+- Keep a separate perspective ReferenceCamera for the supplied wide composition; the existing match camera and input scripts continue to own gameplay views.
+- Let the map own sunlight/environment through the existing MapDressing environment check.
+- Remove the non-reference center volleyball net and its collision only after explicit user approval. Preserve other gameplay interfaces and collision resources; relocate clutter with its colliders.
+- Keep new murals and the vendor cart's trimmed/recolored mesh local to this scene. Reuse Meshy assets and leave their shared source resources intact.
+
+## 2026-10-19: Court mural and street consistency
+
+- Fit each mural to its surface; mirror continuous horizontal repeats because the artwork does not tile at its edges. Preserve motif aspect ratio and persist per-mesh shader bounds.
+- Give side roads, planting and sidewalks separate space. Retain the original utility poles and cables by fitting the road around their verge; avoid broad architecture trimming.
+- Replace road-overlapping neighborhood furniture with individual Meshy instances on sidewalks. Keep shared source scenes unchanged; store relocated clutter with its colliders on rear service aprons.
+
+## 2026-10-19: Merge Mathew's Barangay Court, drop the duplicated baggage
+
+- Took his court scene wholesale and re-inserted our `Gameplay/TrainingSpawn` marker (the training menu needs it).
+- Did not take `ConstructionSite.tscn`, `assets/vehicles/`, `scenes/vehicles/` (Konstruksyon already ships the same Meshy vehicles under `assets/props/vehicles/`), `harbor_player` (stray prototype) or the `godot_mcp_toolkit` addon with its `MCPRuntimeServer` autoload (editor-only tooling must not run in the game). A `project` suite check now fails if any autoload points into `addons/`.
+- Kept our `.import` files for the hero GLBs and court textures to avoid UID and compression churn.
+

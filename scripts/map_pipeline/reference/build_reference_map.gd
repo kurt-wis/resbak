@@ -160,9 +160,7 @@ func ramp(name: String,x: float,width: float,z0: float,h0: float,z1: float,h1: f
  var shape=ConcavePolygonShape3D.new();shape.set_faces(PackedVector3Array([a,b,c,a,c,d]));shape.backface_collision=true
  var body=StaticBody3D.new();body.name=name;arch.add_child(body,true);body.owner=map
  var col=CollisionShape3D.new();col.shape=shape;body.add_child(col,true);col.owner=map
-func if ResourceLoader.exists("res://scenes/neighborhood_backdrop.tscn"):
-  var backdrop=load("res://scenes/neighborhood_backdrop.tscn").instantiate();map.add_child(backdrop);backdrop.owner=map
- batch_architecture():
+func batch_architecture():
  var batches={};var originals=[]
  for group_node in [arch,homes]:
   for visual in group_node.find_children("*","MeshInstance3D",true,false):

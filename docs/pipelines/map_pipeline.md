@@ -39,3 +39,60 @@ The original run order was not recorded. All of them landed in the initial commi
 
 The old `scripts/tests/legacy/verify_*.gd` checks were snapshots taken between these
 passes and no longer match the map (see `scripts/tests/README.md`).
+
+## Reference environment pass (18 Oct 2026)
+
+The existing `scenes/barangay_court.tscn` remains the map. `ReferenceDetails` instances
+`scenes/barangay_reference_details.tscn`: individually editable Meshy trees, plants,
+bench, vendor cart, traffic, streets, bins and bunting. The ten original concrete
+court obstacles have individually visible painted meshes and their original
+collision shapes; their duplicate faces were removed from the static batch.
+
+`ReferenceCamera` is a separate perspective composition for the supplied 1886x834
+reference. Its pose, FOV and resolution are in the root's `reference_camera`
+metadata. Run the map directly for this view. `match.tscn` still removes map cameras
+and uses MatchCamera with existing zoom/flip controls. ReferenceAfternoonSun and
+ReferenceEnvironment are scene-local; MapDressing recognizes the environment and
+avoids duplicate lighting. No project rendering settings changed.
+
+With user approval, unwanted prop clusters and spare barriers moved together with
+their colliders, and the center volleyball net assembly and collision were removed.
+Other gameplay node paths, groups, signals, scripts, collision shapes and the
+Gameplay subtree were preserved. Shared Meshy source resources are unchanged;
+the cart's original small umbrella was trimmed in a scene-local mesh copy. Temporary
+authoring helpers were removed. Do not re-run historical pipeline scripts.
+
+Validation: full gate 15 suites / 1421 checks passed. Saved-scene checks verified
+resources, prop persistence, ten barrier/collider pairs, three stair collision
+surfaces, floor support and a character walking through the former net position.
+Interactive movement, wheel zoom, camera flip and pause/resume were checked.
+Baseline and final gate runs reported resource leaks on exit; baseline also
+reported a talbog.gd teardown remove_child error.
+
+## 19 Oct 2026 - Court visual consistency corrections
+
+The mural artwork is not a seamless tile. Each visible wall, shelter backdrop and
+barrier now has a scene-local fitted ShaderMaterial with its own mesh bounds.
+The shader fits the full height, preserves the artwork's 3:1 aspect ratio and
+mirrors long horizontal runs continuously. Narrow endcaps and tops use solid
+paint. Refresh the editor's loaded Shader code before saving new uniform values;
+writing the .gdshader file alone can leave its cached parameter list stale.
+
+Side streets now have separate carriageways (6.55 m), planted verges and 3.2 m
+outer sidewalks that stop at intersections. The original gravel render batch is
+hidden, with rear/far verges shown individually. Original utility-pole, foot and
+cable geometry stays intact. Existing sidewalk strips and duplicate furniture
+that crossed the roads are hidden through local NeighborhoodBackdrop overrides.
+Its shared source scene is unchanged. Tree MultiMeshes changed here are local
+resource copies. New sidewalk furniture reuses individually editable Meshy props.
+
+Traffic uses separate lanes, rests on the road, and clears all sidewalk furniture.
+Stored chairs, tires, crates and spare barriers moved as whole parents with their
+existing colliders onto two rear service aprons. Seven new slabs have matching
+box colliders. The center remains open and original gameplay interfaces remain.
+
+Validation: saved-scene mural/traffic/furniture/sidewalk/pole/collider assertions,
+the original floor/stairs/barrier/center-walk checks, and a structural comparison
+of original gameplay scripts, signals, groups and collision resources. Fresh
+rendered views cover the barrier, shelter, both streets, rear and reference view.
+

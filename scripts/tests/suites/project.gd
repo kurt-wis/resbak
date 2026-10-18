@@ -38,4 +38,15 @@ func run(t: TestCtx) -> void:
 	t.check(t.near(tu.round_time, 120.0) and t.near(tu.sudden_death_time, 30.0) and tu.points_to_win == 4, "round 120 s / sudden death 30 s / first to 4 (v0.1.1 pacing; spec 3)")
 	t.check(t.near(tu.rescue_touch, 0.8) and t.near(tu.chain_link, 1.5) and tu.chain_max == 4, "rescue touch 0.8 / link 1.5 / max chain 4")
 	t.check(t.near(tu.danger_border_range, 10.0) and t.near(tu.footstep_range, 15.0), "danger 10 / footsteps 15")
+	# The merged Barangay Court keeps the training marker, and no autoload reaches into addons/
+	# (a teammate's editor-only tooling must never become a runtime dependency).
+	var court := (load("res://scenes/barangay_court.tscn") as PackedScene).instantiate()
+	t.check(court.get_node_or_null("Gameplay/TrainingSpawn") is Marker3D, "barangay_court has Gameplay/TrainingSpawn for the training menu")
+	court.free()
+	var addon_autoloads := 0
+	for prop in ProjectSettings.get_property_list():
+		var pname := String(prop.name)
+		if pname.begins_with("autoload/") and String(ProjectSettings.get_setting(pname)).contains("addons/"):
+			addon_autoloads += 1
+	t.check(addon_autoloads == 0, "no autoload points into addons/ (%d do)" % addon_autoloads)
 	t.ok("project settings, autoloads, input map, tuning")
