@@ -1,0 +1,308 @@
+{
+  "assets/characters/face_cards/face_cards.json": {
+    "mtime": 1792304086.6691673,
+    "seen": 1792306957.5422142,
+    "ast_hash": "f53516524900b0d0b925e5d99bf0487e",
+    "semantic_hash": "f53516524900b0d0b925e5d99bf0487e"
+  },
+  "assets/environment/moved_concrete_blocks.json": {
+    "mtime": 1792304092.9755526,
+    "seen": 1792306957.5422208,
+    "ast_hash": "e4244a1e2a14238a9af32923dd6dd56e",
+    "semantic_hash": "e4244a1e2a14238a9af32923dd6dd56e"
+  },
+  "assets/environment/reference_layout.json": {
+    "mtime": 1792304093.1509929,
+    "seen": 1792306957.5422237,
+    "ast_hash": "b09b2439c8fc85aea0fa9092d7a84f1d",
+    "semantic_hash": "b09b2439c8fc85aea0fa9092d7a84f1d"
+  },
+  "assets/props/neighborhood/model_report.json": {
+    "mtime": 1792304095.7510624,
+    "seen": 1792306957.5422254,
+    "ast_hash": "54631271eccdcebfc7da5d7c20b17eae",
+    "semantic_hash": "54631271eccdcebfc7da5d7c20b17eae"
+  },
+  "renders/jm_build_meta.json": {
+    "mtime": 1792304103.1895425,
+    "seen": 1792306957.5422268,
+    "ast_hash": "83ffb769b32262fb4e5969559c717ae8",
+    "semantic_hash": "83ffb769b32262fb4e5969559c717ae8"
+  },
+  "renders/qc/coconut_palm_qc.json": {
+    "mtime": 1792304103.5907817,
+    "seen": 1792306957.5422285,
+    "ast_hash": "22d1c32fe97034feabf8d70c6c84d393",
+    "semantic_hash": "22d1c32fe97034feabf8d70c6c84d393"
+  },
+  "renders/qc/digger_qc.json": {
+    "mtime": 1792304103.5918522,
+    "seen": 1792306957.5422304,
+    "ast_hash": "fcba4f2e38894c903710653e63170bd0",
+    "semantic_hash": "fcba4f2e38894c903710653e63170bd0"
+  },
+  "renders/qc/facade_pink_qc.json": {
+    "mtime": 1792304103.5934534,
+    "seen": 1792306957.5422316,
+    "ast_hash": "b379235ae831568364c8b6b00d163701",
+    "semantic_hash": "b379235ae831568364c8b6b00d163701"
+  },
+  "renders/qc/facade_teal_qc.json": {
+    "mtime": 1792304103.594526,
+    "seen": 1792306957.5422337,
+    "ast_hash": "a2169b874f4361b7c7b899b46345bd80",
+    "semantic_hash": "a2169b874f4361b7c7b899b46345bd80"
+  },
+  "renders/qc/fruit_stall_qc.json": {
+    "mtime": 1792304103.5955784,
+    "seen": 1792306957.542235,
+    "ast_hash": "e67728d872d4726ee56f4385470e065c",
+    "semantic_hash": "e67728d872d4726ee56f4385470e065c"
+  },
+  "renders/qc/graffiti_wall_qc.json": {
+    "mtime": 1792304103.5972214,
+    "seen": 1792306957.542236,
+    "ast_hash": "0c0d4ec58c540c9677bb7fdd095e2893",
+    "semantic_hash": "0c0d4ec58c540c9677bb7fdd095e2893"
+  },
+  "renders/qc/hauler_qc.json": {
+    "mtime": 1792304103.5977697,
+    "seen": 1792306957.542238,
+    "ast_hash": "5bcd3832b3b9c3a049720f545b3b4408",
+    "semantic_hash": "5bcd3832b3b9c3a049720f545b3b4408"
+  },
+  "renders/qc/inday_qc.json": {
+    "mtime": 1792304103.5990176,
+    "seen": 1792306957.5422392,
+    "ast_hash": "d714b400dfd12b4c6d157172631f618c",
+    "semantic_hash": "d714b400dfd12b4c6d157172631f618c"
+  },
+  "renders/qc/jeepney_qc.json": {
+    "mtime": 1792304103.6365812,
+    "seen": 1792306957.5422406,
+    "ast_hash": "ea0996d19c31be346f7b1d53f82a4676",
+    "semantic_hash": "ea0996d19c31be346f7b1d53f82a4676"
+  },
+  "renders/qc/jm_qc.json": {
+    "mtime": 1792304103.637974,
+    "seen": 1792306957.542242,
+    "ast_hash": "924e198c593f25ab0886813b9aca3e3a",
+    "semantic_hash": "924e198c593f25ab0886813b9aca3e3a"
+  },
+  "renders/qc/lola_qc.json": {
+    "mtime": 1792304103.658866,
+    "seen": 1792306957.5422432,
+    "ast_hash": "55190ee648e7980b44bd7da9c78ca41e",
+    "semantic_hash": "55190ee648e7980b44bd7da9c78ca41e"
+  },
+  "renders/qc/mango_tree_qc.json": {
+    "mtime": 1792304103.6600218,
+    "seen": 1792306957.542245,
+    "ast_hash": "38c6b4ebf4cdf48072d3f38ec9180784",
+    "semantic_hash": "38c6b4ebf4cdf48072d3f38ec9180784"
+  },
+  "renders/qc/manong_qc.json": {
+    "mtime": 1792304103.6744537,
+    "seen": 1792306957.5422463,
+    "ast_hash": "b20d31f76f16fe7cc6bf278956b248e9",
+    "semantic_hash": "b20d31f76f16fe7cc6bf278956b248e9"
+  },
+  "renders/qc/manong_walk_qc.json": {
+    "mtime": 1792304103.676861,
+    "seen": 1792306957.5422478,
+    "ast_hash": "8324681b3dc16d5617922eb6a9554e9f",
+    "semantic_hash": "8324681b3dc16d5617922eb6a9554e9f"
+  },
+  "renders/qc/nathan_qc.json": {
+    "mtime": 1792304103.6779802,
+    "seen": 1792306957.5422492,
+    "ast_hash": "3f24f8528e149ff6e4a4dfcdaedf4f22",
+    "semantic_hash": "3f24f8528e149ff6e4a4dfcdaedf4f22"
+  },
+  "renders/qc/nene_qc.json": {
+    "mtime": 1792304103.701906,
+    "seen": 1792306957.5422504,
+    "ast_hash": "1392e2a12bbce7a3f1ade0bcd69dd9c0",
+    "semantic_hash": "1392e2a12bbce7a3f1ade0bcd69dd9c0"
+  },
+  "renders/qc/pickup_qc.json": {
+    "mtime": 1792304103.7402802,
+    "seen": 1792306957.5422518,
+    "ast_hash": "13e921db447cfee0c21f1002ac6070ed",
+    "semantic_hash": "13e921db447cfee0c21f1002ac6070ed"
+  },
+  "renders/qc/sand_castle_qc.json": {
+    "mtime": 1792304103.7423742,
+    "seen": 1792306957.5422537,
+    "ast_hash": "fa2b04278733aa5c6e51416ade3fa78f",
+    "semantic_hash": "fa2b04278733aa5c6e51416ade3fa78f"
+  },
+  "renders/qc/store_qc.json": {
+    "mtime": 1792304103.7437248,
+    "seen": 1792306957.5422552,
+    "ast_hash": "b4be383c44027c38e077e4dccdf1fee5",
+    "semantic_hash": "b4be383c44027c38e077e4dccdf1fee5"
+  },
+  "renders/qc/student_qc.json": {
+    "mtime": 1792304103.7453382,
+    "seen": 1792306957.5422566,
+    "ast_hash": "7639702651d9cb852f849798758e5220",
+    "semantic_hash": "7639702651d9cb852f849798758e5220"
+  },
+  "renders/qc/tindera_qc.json": {
+    "mtime": 1792304103.7458546,
+    "seen": 1792306957.542258,
+    "ast_hash": "975e018e038235d69aa416b84aa3475d",
+    "semantic_hash": "975e018e038235d69aa416b84aa3475d"
+  },
+  "renders/qc/tutoy_qc.json": {
+    "mtime": 1792304103.7470279,
+    "seen": 1792306957.5422592,
+    "ast_hash": "e8c9373916caf77721457a7c9a8b395a",
+    "semantic_hash": "e8c9373916caf77721457a7c9a8b395a"
+  },
+  "renders/qc/wheel_loader_qc.json": {
+    "mtime": 1792304103.7753487,
+    "seen": 1792306957.5422606,
+    "ast_hash": "4e9a25f7c9f8c40312b33d0616d82f4a",
+    "semantic_hash": "4e9a25f7c9f8c40312b33d0616d82f4a"
+  },
+  "tools/build_batang_hamog.py": {
+    "mtime": 1792304115.1779737,
+    "seen": 1792306957.542262,
+    "ast_hash": "b5c2b2ea214da79842bc818dce02bb6f",
+    "semantic_hash": "b5c2b2ea214da79842bc818dce02bb6f"
+  },
+  "tools/build_bystanders.py": {
+    "mtime": 1792304115.1785414,
+    "seen": 1792306957.5422635,
+    "ast_hash": "a3252dcd9b2e247c6c60a2b9da290fd4",
+    "semantic_hash": "a3252dcd9b2e247c6c60a2b9da290fd4"
+  },
+  "tools/build_face_cards.py": {
+    "mtime": 1792304115.1785414,
+    "seen": 1792306957.542265,
+    "ast_hash": "a47b450e01482f66f87424db98133669",
+    "semantic_hash": "a47b450e01482f66f87424db98133669"
+  },
+  "tools/build_hamog_moveset.py": {
+    "mtime": 1792304115.179114,
+    "seen": 1792306957.5422664,
+    "ast_hash": "284f3d5ace494042cfbd299f4a16e529",
+    "semantic_hash": "284f3d5ace494042cfbd299f4a16e529"
+  },
+  "tools/build_heroes.py": {
+    "mtime": 1792304115.1802287,
+    "seen": 1792306957.5422673,
+    "ast_hash": "1fb7042d52178fd2907b45317fe52472",
+    "semantic_hash": "1fb7042d52178fd2907b45317fe52472"
+  },
+  "tools/build_home_props.py": {
+    "mtime": 1792304115.1809876,
+    "seen": 1792306957.542269,
+    "ast_hash": "89ca9889aa2487f081c1debeba64cf60",
+    "semantic_hash": "89ca9889aa2487f081c1debeba64cf60"
+  },
+  "tools/build_jm_botsog.py": {
+    "mtime": 1792304115.1815243,
+    "seen": 1792306957.5422702,
+    "ast_hash": "7e09520012c464ec32f4700b06251edf",
+    "semantic_hash": "7e09520012c464ec32f4700b06251edf"
+  },
+  "tools/build_sand_castle.py": {
+    "mtime": 1792304115.1815243,
+    "seen": 1792306957.5422719,
+    "ast_hash": "4efcee29fe4af063931e41b9b5360d43",
+    "semantic_hash": "4efcee29fe4af063931e41b9b5360d43"
+  },
+  "tools/build_vehicle_props.py": {
+    "mtime": 1792304115.182215,
+    "seen": 1792306957.5422733,
+    "ast_hash": "90336e20d795e59a34d247a48a0962f1",
+    "semantic_hash": "90336e20d795e59a34d247a48a0962f1"
+  },
+  "tools/make_home_audio.py": {
+    "mtime": 1792304115.1828575,
+    "seen": 1792306957.5422742,
+    "ast_hash": "2557f38cc15f8b8350947b3801f2a66e",
+    "semantic_hash": "2557f38cc15f8b8350947b3801f2a66e"
+  },
+  "tools/make_home_ground.py": {
+    "mtime": 1792304115.183365,
+    "seen": 1792306957.542276,
+    "ast_hash": "15ddd9e8ec5f6d71f13af4a87774aad3",
+    "semantic_hash": "15ddd9e8ec5f6d71f13af4a87774aad3"
+  },
+  "tools/make_home_ui.py": {
+    "mtime": 1792304115.183365,
+    "seen": 1792306957.542277,
+    "ast_hash": "5868be3db981dbfdea2294c7a37a8ea4",
+    "semantic_hash": "5868be3db981dbfdea2294c7a37a8ea4"
+  },
+  "tools/qc_asset.py": {
+    "mtime": 1792304115.1840174,
+    "seen": 1792306957.5422783,
+    "ast_hash": "041d911844e6f96049882b9d5c7fe8fa",
+    "semantic_hash": "041d911844e6f96049882b9d5c7fe8fa"
+  },
+  "tools/retarget_clip.py": {
+    "mtime": 1792304115.185655,
+    "seen": 1792306957.54228,
+    "ast_hash": "b477694849c3458924ff786384c5377c",
+    "semantic_hash": "b477694849c3458924ff786384c5377c"
+  },
+  "tools/sanitize_asset.py": {
+    "mtime": 1792304115.1861846,
+    "seen": 1792306957.5422812,
+    "ast_hash": "bdd65240ea604489f029f1d6cc7af52e",
+    "semantic_hash": "bdd65240ea604489f029f1d6cc7af52e"
+  },
+  "AGENTS.md": {
+    "mtime": 1792304085.1006255,
+    "seen": 1792306957.5422833,
+    "ast_hash": "03db944dfa0e2c641e8d1495f02889e8",
+    "semantic_hash": "03db944dfa0e2c641e8d1495f02889e8"
+  },
+  "assets/audio/CREDITS.md": {
+    "mtime": 1792304085.1021326,
+    "seen": 1792306957.5422845,
+    "ast_hash": "46a772bee8c1e5cf858716909c472afd",
+    "semantic_hash": "46a772bee8c1e5cf858716909c472afd"
+  },
+  "docs/RESBAK.md": {
+    "mtime": 1792304098.584294,
+    "seen": 1792306957.542286,
+    "ast_hash": "bded8fa90df245f93ed2057f3e0abc78",
+    "semantic_hash": "bded8fa90df245f93ed2057f3e0abc78"
+  },
+  "docs/architecture.md": {
+    "mtime": 1792304098.584294,
+    "seen": 1792306957.542287,
+    "ast_hash": "80ab4c622d5224679acdc693059d34d5",
+    "semantic_hash": "80ab4c622d5224679acdc693059d34d5"
+  },
+  "docs/plans/2026-10-17-home-diorama.md": {
+    "mtime": 1792304098.6097345,
+    "seen": 1792306957.5422883,
+    "ast_hash": "c178a397660e7a912907229cec1d9972",
+    "semantic_hash": "c178a397660e7a912907229cec1d9972"
+  },
+  "docs/plans/2026-10-17-konstruksyon-remaining.REPORT.md": {
+    "mtime": 1792304098.610735,
+    "seen": 1792306957.54229,
+    "ast_hash": "f3090572021f905bbafc9b5d1407ddef",
+    "semantic_hash": "f3090572021f905bbafc9b5d1407ddef"
+  },
+  "docs/status.md": {
+    "mtime": 1792304098.6120253,
+    "seen": 1792306957.5422912,
+    "ast_hash": "c932f79ee13f80f08225cae2f6cf2736",
+    "semantic_hash": "c932f79ee13f80f08225cae2f6cf2736"
+  },
+  "source_art/README.md": {
+    "mtime": 1792304105.0489926,
+    "seen": 1792306957.5422926,
+    "ast_hash": "80bc112e50a6430332da02fa322bb40f",
+    "semantic_hash": "80bc112e50a6430332da02fa322bb40f"
+  }
+}

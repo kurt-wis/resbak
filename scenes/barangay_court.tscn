@@ -20908,3 +20908,7 @@ curve = SubResource("JailLineCurve_Dilaw")
 
 [node name="JailLine_Lila" type="Path3D" parent="Gameplay" unique_id=1700000041]
 curve = SubResource("JailLineCurve_Lila")
+
+[node name="TrainingSpawn" type="Marker3D" parent="Gameplay"]
+position = Vector3(-6, 0.05, 1)
+rotation = Vector3(0, 1.5707963, 0)

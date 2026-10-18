@@ -3,13 +3,14 @@ extends RefCounted
 ## Front-end loop: every screen instantiates, snake draft order and rules, name rules,
 ## results maths (MVP, badges) and settings persisting through Save.
 
-const SCREENS := ["boot", "title", "first_setup", "home", "play_menu", "roulette", "draft", "results", "settings"]
+const SCREENS := ["boot", "title", "first_setup", "home", "play_menu", "training", "roulette", "draft", "results", "settings"]
 
 func run(t: TestCtx) -> void:
 	await _screens(t)
 	_draft(t)
 	_names(t)
 	_results(t)
+	await _training_menu(t)
 	await _settings(t)
 
 func _screens(t: TestCtx) -> void:
@@ -28,6 +29,9 @@ func _screens(t: TestCtx) -> void:
 		t.tree.root.add_child(inst)
 		await t.frames(3)
 		t.check(inst.content != null and inst.content.get_child_count() > 0, "%s builds its content" % s)
+		if s == "home":
+			inst.buttons["Ensayo"].pressed.emit()
+			t.check(inst.last_go == "training", "Home ENSAYO opens the training menu")
 		inst.queue_free()
 		await t.frames(1)
 	t.ok("all %d front-end screens build" % SCREENS.size())
@@ -88,3 +92,25 @@ func _settings(t: TestCtx) -> void:
 	t.check(int(save.get_setting("audio", "music")) == 33, "a setting survives a reload of settings.cfg")
 	save.set_setting("audio", "music", before)
 	t.ok("settings persist through Save")
+
+func _training_menu(t: TestCtx) -> void:
+	var session := t.tree.root.get_node("Session")
+	var saved := {"settings": session.settings.duplicate(true), "mode": session.mode, "lineup": session.lineup, "local_slot": session.local_slot, "results": session.last_results}
+	var screen = load("res://scenes/frontend/training.tscn").instantiate()
+	screen.navigate = false
+	t.tree.root.add_child(screen)
+	screen.hero_choice.select(2)
+	screen.map_choice.select(1)
+	screen.targets.select(1)
+	screen.start_training()
+	t.check(screen.last_go == "training" and session.mode == "training" and session.settings.map == "construction_site", "training menu bypasses draft and selects the testing map")
+	t.check(session.lineup[0].hero_id == HeroData.ORDER[2] and session.lineup.size() == 4 and session.settings.training_bots, "training menu selects a hero and three active opponents")
+	screen.start_tutorial()
+	t.check(screen.last_go == "tutorial" and session.mode == "tutorial", "guided tutorial remains independently available")
+	screen.queue_free()
+	await t.frames(1)
+	session.settings = saved.settings
+	session.mode = saved.mode
+	session.lineup = saved.lineup
+	session.local_slot = saved.local_slot
+	session.last_results = saved.results

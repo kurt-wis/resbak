@@ -2,11 +2,8 @@ class_name TagSystem
 extends RefCounted
 
 ## Unahan tagging (docs/RESBAK.md § 2 "Tagging (Unahan: first clean tag wins)").
-## v0.2 charged hampas: pressing Tag starts a charge (EP ends); holding fills it over
-## tag_charge_time (the hero moves slower); releasing starts the wind-up (tag_windup, 18 ticks)
-## with up to +60 % reach. A tap swings at once with the normal reach. On the landing tick
-## (step 5) the hit test picks the nearest taggable enemy within the swing's reach (edge to
-## edge) and 45 deg of the lunge.
+## One attack edge commits a normal-reach swing. PlayerInput emits it on aim release.
+## Selection and direction lock at commitment. At landing the selected body must still overlap.
 ## Results are stored and applied in step 7 together with rescues. Sabay: two enemies whose
 ## valid tags land on each other the same tick both stumble and nobody is jailed.
 
@@ -32,7 +29,7 @@ func can_tag(tagger: Hero, target: Hero) -> bool:
 func reach_clear(tagger: Hero, target_pos: Vector3) -> bool:
 	return host.los_clear(tagger.global_position, target_pos, RB.L_WORLD | RB.L_SKILL_WALL)
 
-## Hit-test geometry only (reach edge to edge + arc), no state rules.
+## Hit-test geometry only: edge-to-edge reach and a narrow straight sweep expanded by body radius.
 func in_tag_shape(tagger: Hero, lunge: Vector3, target_pos: Vector3, target_radius: float) -> bool:
 	var t := host.tuning
 	var to := RB.flat(target_pos - tagger.global_position)
@@ -41,40 +38,55 @@ func in_tag_shape(tagger: Hero, lunge: Vector3, target_pos: Vector3, target_radi
 		return false
 	if to.length() < 0.001:
 		return true
-	return rad_to_deg(lunge.angle_to(to.normalized())) <= t.tag_arc_deg
+	var forward := to.dot(lunge.normalized())
+	var lateral := (to - lunge.normalized() * forward).length()
+	return forward >= 0.0 and lateral <= t.tag_strip_half_width + target_radius
 
-## Step 2: the Tag button. Press = start charging (ends EP and see-through); held = keep
-## charging; released (or never held) = swing. Rules that stop a charge (stun, stumble, being
-## tagged, round end) clear charge_ticks on the hero.
+## Step 2: only a fresh button press starts a swing, even when held across many ticks.
 func handle_tag_button(h: Hero, f: InputFrame) -> void:
-	if h.is_charging():
-		if not h.round_live() or h.is_disabled() or h.capturing:
-			h.charge_ticks = -1
-		elif f.is_held(RB.BTN_TAG):
-			h.charge_ticks = mini(h.charge_ticks + 1, RB.ticks(host.tuning.tag_charge_time))
-		else:
-			start_windup(h, false)
-		return
 	if f.was_pressed(RB.BTN_TAG) and h.can_press_tag():
-		h.notify_tag_pressed()
-		h.charge_ticks = 0
-		host.emit_event("tag_charge", {"hero": h})
-		if not f.is_held(RB.BTN_TAG):
-			start_windup(h, false)
+		start_windup(h)
 
-## Swing: aims the lunge, locks in the charged reach, lands tag_windup later.
-func start_windup(h: Hero, notify := true) -> void:
-	if notify:
-		h.notify_tag_pressed()
-	var charge := h.charge_fraction()
-	h.strike_reach = h.charged_reach()
-	h.charge_ticks = -1
+## Shared by the preview and the committed swing; assist never changes after the press.
+func aim_direction(h: Hero) -> Vector3:
+	if h.frame.tag_aim_dir != Vector2.ZERO:
+		return Vector3(h.frame.tag_aim_dir.x, 0, h.frame.tag_aim_dir.y).normalized()
 	var lunge := h.aim if h.aim != Vector3.ZERO else h.facing
-	if h.frame.from_gamepad:
-		lunge = _assisted(h, lunge)
-	h.lunge_dir = lunge.normalized()
+	return (_assisted(h, lunge) if h.frame.from_gamepad else lunge).normalized()
+
+func start_windup(h: Hero) -> void:
+	h.notify_tag_pressed()
+	h.strike_reach = h.tag_reach()
+	h.lunge_dir = aim_direction(h)
+	h.strike_target_slot = h.frame.tag_target_slot
+	if h.strike_target_slot < 0:
+		var selected := preview_target(h, h.lunge_dir)
+		if selected:
+			h.strike_target_slot = selected.slot
+	h.tag_started_tick = host.tick
 	h.windup_end_tick = host.tick + RB.ticks(host.tuning.tag_windup)
-	host.emit_event("tag_windup", {"hero": h, "dir": h.lunge_dir, "charge": charge})
+	host.emit_event("tag_windup", {"hero": h, "dir": h.lunge_dir})
+
+## Read-only query: same geometry, eligibility, nearest-target and wall checks as landing.
+func preview_target(h: Hero, direction: Vector3) -> Hero:
+	if h.is_winding_up() or h.windup_end_tick == host.tick or (h.tag_started_tick >= 0 and host.tick == h.tag_started_tick + RB.ticks(host.tuning.tag_windup)):
+		if h.strike_target_slot >= 0:
+			var selected := host.hero_by_slot(h.strike_target_slot)
+			if selected and can_tag(h, selected) and reach_clear(h, selected.global_position) and in_tag_shape(h, direction, selected.global_position, host.tuning.body_radius):
+				return selected
+			return null
+	var best: Hero = null
+	var best_d := INF
+	for e in host.enemies_of(h):
+		if not in_tag_shape(h, direction, e.global_position, host.tuning.body_radius):
+			continue
+		if not can_tag(h, e) or not reach_clear(h, e.global_position):
+			continue
+		var d := RB.flat_dist(h.global_position, e.global_position)
+		if d < best_d:
+			best_d = d
+			best = e
+	return best
 
 ## Tag assist (gamepad, spec § 9): nearest taggable enemy within 2.4 m and 30 deg of the aim
 ## turns the lunge toward it by up to 15 deg.
@@ -85,7 +97,7 @@ func _assisted(h: Hero, lunge: Vector3) -> Vector3:
 	var best: Hero = null
 	var best_d := INF
 	for e in host.enemies_of(h):
-		if not can_tag(h, e) or not reach_clear(h, e.global_position):
+		if not can_tag(h, e) or not reach_clear(h, e.global_position) or host.visibility(h, e) < 0.5 or e.is_warded():
 			continue
 		var to := RB.flat(e.global_position - h.global_position)
 		var d := to.length()
@@ -113,7 +125,7 @@ func resolve() -> Array:
 		h.windup_end_tick = -1
 		if h.is_free():
 			results.append(_resolve_one(h))
-		h.strike_reach = 0.0 # the charged reach lasts one swing only
+		h.strike_reach = 0.0 # clear the committed reach after landing
 	# Sabay: valid tags on each other this tick.
 	for i in range(results.size()):
 		var a: Dictionary = results[i]
@@ -132,20 +144,12 @@ func _resolve_one(h: Hero) -> Dictionary:
 	for e in host.enemies_of(h):
 		if not e.is_free():
 			continue
+		if h.strike_target_slot >= 0 and e.slot != h.strike_target_slot:
+			continue
 		for s in e.skills:
 			if s.evade_tag(h, lunge):
 				return {"type": "evaded", "tagger": h, "evader": e, "stun": s.evade_stun_seconds()}
-	var best: Hero = null
-	var best_d := INF
-	for e in host.enemies_of(h):
-		if not in_tag_shape(h, lunge, e.global_position, host.tuning.body_radius):
-			continue
-		if not can_tag(h, e) or not reach_clear(h, e.global_position):
-			continue
-		var d := RB.flat_dist(h.global_position, e.global_position)
-		if d < best_d:
-			best_d = d
-			best = e
+	var best := preview_target(h, lunge)
 	if best:
 		return {"type": "hit", "tagger": h, "target": best}
 	var decoys: Array = []
@@ -173,10 +177,10 @@ func apply(results: Array) -> Array:
 					continue
 				var saved := _is_save(target)
 				if target.passive and target.passive.absorb_tag(tagger):
-					host.emit_event("guard_break", {"tagger": tagger, "target": target})
+					host.emit_event("guard_break", {"tagger": tagger, "target": target, "point": contact_point(tagger, target)})
 				else:
 					target.on_tagged(tagger)
-					host.emit_event("tag", {"tagger": tagger, "target": target})
+					host.emit_event("tag", {"tagger": tagger, "target": target, "point": contact_point(tagger, target)})
 				host.add_stat(tagger, "tags")
 				host.add_impact(tagger, 2 + (2 if saved else 0))
 				if saved:
@@ -195,10 +199,15 @@ func apply(results: Array) -> Array:
 				tagger.stun(r.stun, true)
 				host.emit_event("perfect_slide", {"tagger": tagger, "evader": r.evader})
 			"sabay":
-				tagger.stumble(host.tuning.failed_tag_stumble)
+				tagger.sabay_fall()
 				if r.tagger.slot < r.target.slot:
 					host.emit_event("sabay", {"a": r.tagger, "b": r.target})
 	return landed
+
+## Impact is on the target body surface, not the reach indicator. Pure host geometry.
+func contact_point(tagger: Hero, target: Hero) -> Vector3:
+	var from := RB.flat(tagger.global_position - target.global_position).normalized()
+	return target.global_position + from * host.tuning.body_radius + Vector3.UP * target.data.model_height * host.tuning.tag_contact_height
 
 ## Saved +2: the target was capturing, or was within 5 m of the tip of a chain holding
 ## its teammates (i.e. about to rescue) (spec § 6 Results, Impact).

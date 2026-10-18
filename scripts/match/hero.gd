@@ -36,11 +36,13 @@ var stumble_ticks := 0
 var stun_ticks := 0
 var tag_block_ticks := 0 ## can't press Tag (LUSOT! recovery, MAKAPAL! guard break)
 var immune_ticks := 0 ## can't be tagged, stays solid (MAKAPAL! rage after a guard break)
+var tag_started_tick := -1 ## presentation timeline, set by the same host tick as the swing
 var windup_end_tick := -1 ## host tick this hero's tag lands, or -1
-var charge_ticks := -1 ## ticks Tag has been held (charged hampas), -1 = not charging
-var strike_reach := 0.0 ## reach of the swing in flight (charge included); 0 = tag_reach()
+var sabay_ticks := 0 ## host-timed fall/recovery; Free and taggable, never jailed by Sabay
+var strike_reach := 0.0 ## normal reach locked for the swing in flight; 0 = tag_reach()
 var hallucinate_ticks := 0 ## BAWAL! curse: the move stick is turned around
 var lunge_dir := Vector3.ZERO
+var strike_target_slot := -1
 var tagged_by: Hero = null ## sends us to the tagger's jail
 
 var capturing := false
@@ -127,19 +129,6 @@ func is_stumbling() -> bool:
 func is_winding_up() -> bool:
 	return windup_end_tick >= 0
 
-func is_charging() -> bool:
-	return charge_ticks >= 0
-
-## 0..1 how full the hampas charge is (the bar over the hero).
-func charge_fraction() -> float:
-	if charge_ticks < 0:
-		return 0.0
-	return clampf(float(charge_ticks) / maxf(1.0, float(RB.ticks(tuning.tag_charge_time))), 0.0, 1.0)
-
-## Reach a swing released now would have.
-func charged_reach() -> float:
-	return tag_reach() * (1.0 + tuning.tag_charge_reach_bonus * charge_fraction())
-
 ## A skill shows a "don't hit me" warning (BAWAL!).
 func is_warded() -> bool:
 	for s in skills:
@@ -162,15 +151,19 @@ func active_skill() -> Skill:
 			return s
 	return null
 
+## Brief planted attack: the same host clock drives animation, movement and action lock.
+func is_attacking() -> bool:
+	return state == State.FREE and tag_started_tick >= 0 and round_live() and host.tick < tag_started_tick + RB.ticks(tuning.tag_windup + tuning.tag_followthrough)
+
 func can_move() -> bool:
-	if frozen or state == State.TAGGED or capturing or is_disabled():
+	if frozen or state == State.TAGGED or capturing or is_disabled() or is_attacking():
 		return false
 	if state == State.CHAINED:
 		return host != null and host.jail_system.can_steer(self)
 	return true
 
 func can_press_tag() -> bool:
-	if not round_live() or state != State.FREE or is_disabled() or capturing or is_winding_up() or is_charging():
+	if not round_live() or state != State.FREE or is_disabled() or capturing or is_winding_up() or is_attacking():
 		return false
 	if tag_block_ticks > 0:
 		return false
@@ -180,7 +173,7 @@ func can_press_tag() -> bool:
 	return true
 
 func can_use_skills() -> bool:
-	if not round_live() or state != State.FREE or is_disabled() or capturing or frozen:
+	if not round_live() or state != State.FREE or is_disabled() or capturing or frozen or is_attacking():
 		return false
 	for s in skills:
 		if s.active and s.blocks_other_skills():
@@ -188,7 +181,7 @@ func can_use_skills() -> bool:
 	return true
 
 func can_start_capture() -> bool:
-	return round_live() and state == State.FREE and not is_disabled() and not is_winding_up() and lockout_ticks <= 0 and active_skill() == null
+	return round_live() and state == State.FREE and not is_disabled() and not is_winding_up() and not is_attacking() and lockout_ticks <= 0 and active_skill() == null
 
 ## Taggable by an enemy right now (state and EP; teams and height are TagSystem's job).
 func is_taggable() -> bool:
@@ -206,7 +199,7 @@ func current_speed(walking := false) -> float:
 	if state == State.CHAINED: # the tip drags the whole chain: slow, no bonuses or slows
 		return tuning.chain_tip_speed * (tuning.walk_fraction if walking else 1.0)
 	var slow := strongest_slow()
-	var k := tuning.move_speed_scale * ((1.0 - tuning.tag_charge_slow) if is_charging() else 1.0)
+	var k := tuning.move_speed_scale
 	for s in skills:
 		if s.active and s.fixed_speed() > 0.0:
 			return s.fixed_speed() * (1.0 - slow) * k
@@ -304,9 +297,17 @@ func stumble(secs: float) -> void:
 	stumble_ticks = maxi(stumble_ticks, RB.ticks(secs))
 	_disrupt()
 
+## Simultaneous valid hits: both fall, recover and can retry; ordinary stumble rules apply.
+func sabay_fall() -> void:
+	stumble(tuning.failed_tag_stumble)
+	if is_stumbling():
+		sabay_ticks = stumble_ticks
+
 func _disrupt() -> void:
 	windup_end_tick = -1
-	charge_ticks = -1
+	strike_target_slot = -1
+	tag_started_tick = -1
+	sabay_ticks = 0
 	if capturing:
 		host.base_system.cancel_capture(self, "disrupted")
 
@@ -370,7 +371,9 @@ func on_tagged(tagger: Hero) -> void:
 	if capturing:
 		host.base_system.cancel_capture(self, "tagged")
 	windup_end_tick = -1
-	charge_ticks = -1
+	strike_target_slot = -1
+	tag_started_tick = -1
+	sabay_ticks = 0
 	hallucinate_ticks = 0
 	_push_ticks = 0
 	stun_ticks = 0
@@ -423,7 +426,9 @@ func reset_for_round(at: Vector3, face: Vector3) -> void:
 	tag_block_ticks = 0
 	immune_ticks = 0
 	windup_end_tick = -1
-	charge_ticks = -1
+	strike_target_slot = -1
+	tag_started_tick = -1
+	sabay_ticks = 0
 	strike_reach = 0.0
 	hallucinate_ticks = 0
 	capturing = false
@@ -466,6 +471,7 @@ func tick_timers() -> void:
 			_update_collision()
 	lockout_ticks = maxi(0, lockout_ticks - 1)
 	stumble_ticks = maxi(0, stumble_ticks - 1)
+	sabay_ticks = maxi(0, sabay_ticks - 1)
 	stun_ticks = maxi(0, stun_ticks - 1)
 	tag_block_ticks = maxi(0, tag_block_ticks - 1)
 	immune_ticks = maxi(0, immune_ticks - 1)
@@ -489,6 +495,11 @@ func tick_move(dt: float) -> void:
 		move_body(dt)
 		if _push_ticks == 0: # the push ends dead: no extra slide while decelerating
 			velocity = Vector3(0, velocity.y, 0)
+		return
+	if is_attacking():
+		velocity = Vector3(0, velocity.y, 0)
+		move_body(dt)
+		facing = lunge_dir
 		return
 	for s in skills:
 		if s.active and s.controls_movement():

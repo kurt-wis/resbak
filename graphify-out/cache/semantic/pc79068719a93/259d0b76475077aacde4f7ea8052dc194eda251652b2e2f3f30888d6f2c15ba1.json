@@ -1,0 +1,1 @@
+{"nodes": [{"id": "docs_status", "label": "Status", "file_type": "document", "source_file": "docs/status.md", "rationale": "Implementation matrix tracking built vs designed features and known gaps.", "_origin": "semantic"}], "edges": [], "hyperedges": []}

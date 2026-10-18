@@ -1,0 +1,578 @@
+{
+  "communities": {
+    "0": [
+      "argparse",
+      "bpy",
+      "json",
+      "mathutils",
+      "os",
+      "sys",
+      "tools_build_batang_hamog",
+      "tools_build_batang_hamog_build",
+      "tools_build_batang_hamog_build_set_bone",
+      "tools_build_batang_hamog_build_smooth_action",
+      "tools_build_bystanders",
+      "tools_build_bystanders_build",
+      "tools_build_bystanders_log",
+      "tools_build_bystanders_main",
+      "tools_build_bystanders_measure",
+      "tools_build_bystanders_pose_at",
+      "tools_build_bystanders_rationale_1",
+      "tools_build_bystanders_rationale_52",
+      "tools_build_bystanders_tris",
+      "tools_build_face_cards_main",
+      "tools_build_hamog_moveset",
+      "tools_build_hamog_moveset_build",
+      "tools_build_hamog_moveset_build_apply_pose",
+      "tools_build_hamog_moveset_build_euler_to_quat",
+      "tools_build_hamog_moveset_build_shifted",
+      "tools_build_hamog_moveset_build_smooth_action",
+      "tools_build_hamog_moveset_rationale_1",
+      "tools_build_vehicle_props",
+      "tools_build_vehicle_props_bounds",
+      "tools_build_vehicle_props_build",
+      "tools_build_vehicle_props_log",
+      "tools_build_vehicle_props_main",
+      "tools_build_vehicle_props_rationale_1",
+      "tools_qc_asset",
+      "tools_qc_asset_args",
+      "tools_qc_asset_check",
+      "tools_qc_asset_clip_report",
+      "tools_qc_asset_load",
+      "tools_qc_asset_main",
+      "tools_qc_asset_mesh_checks",
+      "tools_qc_asset_rationale_1",
+      "tools_qc_asset_rationale_122",
+      "tools_qc_asset_rationale_169",
+      "tools_qc_asset_rationale_184",
+      "tools_qc_asset_render_sheet",
+      "tools_qc_asset_set_wire",
+      "tools_qc_asset_track_paths",
+      "tools_qc_asset_world_bounds",
+      "tools_sanitize_asset",
+      "tools_sanitize_asset_args",
+      "tools_sanitize_asset_log",
+      "tools_sanitize_asset_main",
+      "tools_sanitize_asset_main_bounds",
+      "tools_sanitize_asset_rationale_1"
+    ],
+    "1": [
+      "tag_charge_animation",
+      "tools_build_heroes",
+      "tools_build_heroes_bake",
+      "tools_build_heroes_bake_grounded",
+      "tools_build_heroes_bake_on_floor",
+      "tools_build_heroes_bake_planted",
+      "tools_build_heroes_blend_frame",
+      "tools_build_heroes_breakdance",
+      "tools_build_heroes_build",
+      "tools_build_heroes_chained",
+      "tools_build_heroes_clip",
+      "tools_build_heroes_clip_order",
+      "tools_build_heroes_concat",
+      "tools_build_heroes_contact_sheet",
+      "tools_build_heroes_export",
+      "tools_build_heroes_import_hero",
+      "tools_build_heroes_keep_on_pad",
+      "tools_build_heroes_log",
+      "tools_build_heroes_main",
+      "tools_build_heroes_mesh_lows",
+      "tools_build_heroes_ordered_bones",
+      "tools_build_heroes_ordered_bones_walk",
+      "tools_build_heroes_rationale_1",
+      "tools_build_heroes_rationale_241",
+      "tools_build_heroes_rationale_285",
+      "tools_build_heroes_rationale_334",
+      "tools_build_heroes_rationale_350",
+      "tools_build_heroes_rationale_365",
+      "tools_build_heroes_rationale_372",
+      "tools_build_heroes_rationale_399",
+      "tools_build_heroes_rationale_412",
+      "tools_build_heroes_rationale_425",
+      "tools_build_heroes_rationale_475",
+      "tools_build_heroes_rationale_517",
+      "tools_build_heroes_rationale_531",
+      "tools_build_heroes_rationale_548",
+      "tools_build_heroes_rationale_57",
+      "tools_build_heroes_rationale_592",
+      "tools_build_heroes_rationale_605",
+      "tools_build_heroes_rationale_733",
+      "tools_build_heroes_remove_drift",
+      "tools_build_heroes_render_dance_strip",
+      "tools_build_heroes_render_moves_sheet",
+      "tools_build_heroes_render_sheet",
+      "tools_build_heroes_reset",
+      "tools_build_heroes_rest_data",
+      "tools_build_heroes_rigid_head",
+      "tools_build_heroes_sole_mask",
+      "tools_build_heroes_stamp"
+    ],
+    "2": [
+      "mathutils_bvhtree",
+      "mathutils_interpolate",
+      "numpy",
+      "tools_build_face_cards",
+      "tools_build_face_cards_arc_d",
+      "tools_build_face_cards_atlas",
+      "tools_build_face_cards_blank",
+      "tools_build_face_cards_build",
+      "tools_build_face_cards_cell_grid",
+      "tools_build_face_cards_cov",
+      "tools_build_face_cards_ell_d",
+      "tools_build_face_cards_ell_k",
+      "tools_build_face_cards_export_cards",
+      "tools_build_face_cards_feather",
+      "tools_build_face_cards_feature_xz",
+      "tools_build_face_cards_lid_frame",
+      "tools_build_face_cards_mouth_frame",
+      "tools_build_face_cards_over",
+      "tools_build_face_cards_project_grid",
+      "tools_build_face_cards_rationale_1",
+      "tools_build_face_cards_rationale_172",
+      "tools_build_face_cards_rationale_192",
+      "tools_build_face_cards_sample_skin",
+      "tools_build_face_cards_save_png",
+      "tools_make_home_audio",
+      "tools_make_home_audio_build_chatter",
+      "tools_make_home_audio_build_horn",
+      "tools_make_home_audio_build_jeep_pass",
+      "tools_make_home_audio_build_music",
+      "tools_make_home_audio_build_ui",
+      "tools_make_home_audio_env_ad",
+      "tools_make_home_audio_highpass_fast",
+      "tools_make_home_audio_horn_note",
+      "tools_make_home_audio_lowpass",
+      "tools_make_home_audio_main",
+      "tools_make_home_audio_mtof",
+      "tools_make_home_audio_onepole_fast",
+      "tools_make_home_audio_pluck",
+      "tools_make_home_audio_rationale_1",
+      "tools_make_home_audio_rationale_51",
+      "tools_make_home_audio_rationale_73",
+      "tools_make_home_audio_write_wav",
+      "wave"
+    ],
+    "3": [
+      "tools_build_home_props",
+      "tools_build_home_props_bounds",
+      "tools_build_home_props_build_backpack",
+      "tools_build_home_props_build_bench",
+      "tools_build_home_props_build_bottle_crate",
+      "tools_build_home_props_build_meshy",
+      "tools_build_home_props_build_palamig_bag",
+      "tools_build_home_props_build_paper_fan",
+      "tools_build_home_props_build_payong",
+      "tools_build_home_props_build_power_pole",
+      "tools_build_home_props_build_sidewalk",
+      "tools_build_home_props_build_sign",
+      "tools_build_home_props_build_soda_bottle",
+      "tools_build_home_props_build_stool",
+      "tools_build_home_props_build_water_gallon",
+      "tools_build_home_props_build_wire_span",
+      "tools_build_home_props_export",
+      "tools_build_home_props_fin",
+      "tools_build_home_props_fresh",
+      "tools_build_home_props_hexc",
+      "tools_build_home_props_log",
+      "tools_build_home_props_main",
+      "tools_build_home_props_mat",
+      "tools_build_home_props_prim",
+      "tools_build_home_props_rationale_1",
+      "tools_build_home_props_rationale_145",
+      "tools_build_home_props_rationale_151",
+      "tools_build_home_props_rationale_171",
+      "tools_build_home_props_rationale_193",
+      "tools_build_home_props_rationale_206",
+      "tools_build_home_props_rationale_221",
+      "tools_build_home_props_rationale_236",
+      "tools_build_home_props_rationale_249",
+      "tools_build_home_props_rationale_284",
+      "tools_build_home_props_rationale_306",
+      "tools_build_home_props_rationale_344",
+      "tools_build_home_props_rationale_354",
+      "tools_build_home_props_rationale_371",
+      "tools_build_home_props_rationale_384",
+      "tools_build_home_props_text_mesh",
+      "tools_build_home_props_tris",
+      "tools_build_home_props_write_tscn"
+    ],
+    "4": [
+      "math",
+      "tools_build_heroes_rationale_442",
+      "tools_build_heroes_retarget_table",
+      "tools_retarget_clip",
+      "tools_retarget_clip_discard",
+      "tools_retarget_clip_face_front",
+      "tools_retarget_clip_heading",
+      "tools_retarget_clip_import",
+      "tools_retarget_clip_in_place",
+      "tools_retarget_clip_interp",
+      "tools_retarget_clip_is_meshy_rig",
+      "tools_retarget_clip_is_smpl_rig",
+      "tools_retarget_clip_key_step",
+      "tools_retarget_clip_load_clips",
+      "tools_retarget_clip_load_source",
+      "tools_retarget_clip_log",
+      "tools_retarget_clip_loop_blend",
+      "tools_retarget_clip_mixamo_name",
+      "tools_retarget_clip_mocap_offsets",
+      "tools_retarget_clip_offsets_from_rig",
+      "tools_retarget_clip_offsets_from_rig_sample",
+      "tools_retarget_clip_offsets_from_rig_src_dir",
+      "tools_retarget_clip_pose_distance",
+      "tools_retarget_clip_rationale_1",
+      "tools_retarget_clip_rationale_133",
+      "tools_retarget_clip_rationale_142",
+      "tools_retarget_clip_rationale_155",
+      "tools_retarget_clip_rationale_163",
+      "tools_retarget_clip_rationale_178",
+      "tools_retarget_clip_rationale_196",
+      "tools_retarget_clip_rationale_213",
+      "tools_retarget_clip_rationale_222",
+      "tools_retarget_clip_rationale_232",
+      "tools_retarget_clip_rationale_350",
+      "tools_retarget_clip_rationale_392",
+      "tools_retarget_clip_rationale_405",
+      "tools_retarget_clip_rationale_75",
+      "tools_retarget_clip_rationale_95",
+      "tools_retarget_clip_set_action",
+      "tools_retarget_clip_yaw_to_front"
+    ],
+    "5": [
+      "tools_build_jm_botsog",
+      "tools_build_jm_botsog_add_chalk_to_mat",
+      "tools_build_jm_botsog_bmesh_scale_lower_cheeks",
+      "tools_build_jm_botsog_build",
+      "tools_build_jm_botsog_clear_scene",
+      "tools_build_jm_botsog_create_prim",
+      "tools_build_jm_botsog_deselect_all",
+      "tools_build_jm_botsog_do_render",
+      "tools_build_jm_botsog_hex_to_rgb",
+      "tools_build_jm_botsog_log",
+      "tools_build_jm_botsog_make_principled",
+      "tools_build_jm_botsog_phase1_setup",
+      "tools_build_jm_botsog_phase2_body",
+      "tools_build_jm_botsog_phase2_body_limb_cyl",
+      "tools_build_jm_botsog_phase3_apparel",
+      "tools_build_jm_botsog_phase4_shaders",
+      "tools_build_jm_botsog_phase4_shaders_assign",
+      "tools_build_jm_botsog_phase5_rig",
+      "tools_build_jm_botsog_phase5_rig_new_bone",
+      "tools_build_jm_botsog_phase5_rig_set_rigid",
+      "tools_build_jm_botsog_phase6_anim",
+      "tools_build_jm_botsog_phase6_anim_clear_pose",
+      "tools_build_jm_botsog_phase6_anim_key_all",
+      "tools_build_jm_botsog_phase6_anim_set_euler",
+      "tools_build_jm_botsog_phase6_anim_set_loc",
+      "tools_build_jm_botsog_phase7_nla_export",
+      "tools_build_jm_botsog_phase_render",
+      "tools_build_jm_botsog_rationale_1",
+      "tools_build_jm_botsog_rationale_1389",
+      "tools_build_jm_botsog_rationale_246",
+      "tools_build_jm_botsog_set_active",
+      "tools_build_jm_botsog_set_cam",
+      "tools_build_jm_botsog_shade_smooth_obj",
+      "tools_build_jm_botsog_smooth_action",
+      "tools_build_jm_botsog_solid_subdiv"
+    ],
+    "6": [
+      "bmesh",
+      "tools_build_sand_castle",
+      "tools_build_sand_castle_box",
+      "tools_build_sand_castle_build",
+      "tools_build_sand_castle_cone",
+      "tools_build_sand_castle_cyl",
+      "tools_build_sand_castle_export",
+      "tools_build_sand_castle_finish",
+      "tools_build_sand_castle_log",
+      "tools_build_sand_castle_material",
+      "tools_build_sand_castle_rationale_1",
+      "tools_build_sand_castle_rationale_55",
+      "tools_build_sand_castle_rationale_72",
+      "tools_build_sand_castle_srgb",
+      "tools_build_sand_castle_wipe"
+    ],
+    "7": [
+      "agawan_base",
+      "claude_md",
+      "docs_architecture_md",
+      "docs_archive_characters_01_jm_botsog",
+      "docs_archive_characters_02_nene",
+      "docs_archive_readme",
+      "docs_archive_resbak",
+      "docs_decisions",
+      "docs_glossary",
+      "docs_pipelines_blender_md",
+      "docs_readme",
+      "docs_resbak_md",
+      "docs_status_md",
+      "match_host"
+    ],
+    "8": [
+      "random",
+      "tools_make_home_ground",
+      "tools_make_home_ground_facade",
+      "tools_make_home_ground_ground_concrete",
+      "tools_make_home_ground_ground_concrete_crack",
+      "tools_make_home_ground_ground_dirt",
+      "tools_make_home_ground_main",
+      "tools_make_home_ground_periodic_noise",
+      "tools_make_home_ground_rationale_1",
+      "tools_make_home_ground_rationale_22",
+      "tools_make_home_ground_rationale_42",
+      "tools_make_home_ground_shade",
+      "tools_make_home_ground_wrap_draw"
+    ],
+    "9": [
+      "docs_archive_characters_03_batang_hamog_batang_hamog",
+      "docs_archive_characters_03_batang_hamog_dire_diretso",
+      "docs_archive_characters_03_batang_hamog_harurot",
+      "docs_archive_characters_03_batang_hamog_lusot",
+      "docs_archive_characters_04_nathan_buga",
+      "docs_archive_characters_04_nathan_may_tira_pa",
+      "docs_archive_characters_04_nathan_nathan",
+      "docs_archive_characters_04_nathan_ubo_ubo",
+      "docs_pipelines_assets_characters_batang_hamog_glb",
+      "scripts_runtime_batang_hamog_gd"
+    ],
+    "10": [
+      "pil",
+      "tools_make_home_ui",
+      "tools_make_home_ui_cardboard",
+      "tools_make_home_ui_main",
+      "tools_make_home_ui_rationale_1",
+      "tools_make_home_ui_tape",
+      "tools_make_home_ui_value_noise"
+    ],
+    "11": [
+      "tools_build_face_cards_rationale_122",
+      "tools_build_face_cards_rationale_72",
+      "tools_build_face_cards_skin",
+      "tools_build_face_cards_skin_cast",
+      "tools_build_face_cards_skin_image",
+      "tools_build_face_cards_skin_init",
+      "tools_build_face_cards_skin_tri_poly"
+    ],
+    "12": [
+      "assets_characters_bystanders_tindera",
+      "assets_props_vehicles_jeepney",
+      "docs_plans_2026_10_17_home_diorama",
+      "scripts_tests_suites_home",
+      "scripts_ui_frontend_hero_picker"
+    ],
+    "13": [
+      "docs_archive_characters_05_inday_ihip",
+      "docs_archive_characters_05_inday_inday",
+      "docs_archive_characters_05_inday_sagip",
+      "docs_archive_characters_05_inday_takbo_na",
+      "docs_archive_gameplay_agawan_base_rules_agawan_base"
+    ],
+    "14": [
+      "docs_plans_2026_10_17_konstruksyon_remaining",
+      "jail_chain_system",
+      "meshy_api",
+      "scripts_match_hero_visual",
+      "scripts_tests_integration_test"
+    ],
+    "15": [
+      "docs_plans_2026_10_17_konstruksyon_remaining_report",
+      "scripts_autoload_audio",
+      "scripts_match_match_view",
+      "scripts_match_vfx"
+    ],
+    "16": [
+      "addons_meshy_godot_plugin_readme",
+      "godot_engine",
+      "meshy_ai"
+    ],
+    "17": [
+      "agents_md",
+      "docs_resbak"
+    ],
+    "18": [
+      "assets_audio_credits"
+    ],
+    "19": [
+      "assets_characters_bystanders_lola"
+    ],
+    "20": [
+      "assets_characters_bystanders_manong"
+    ],
+    "21": [
+      "assets_characters_bystanders_student"
+    ],
+    "22": [
+      "assets_decals_prompts"
+    ],
+    "23": [
+      "assets_fonts_luckiestguy_license"
+    ],
+    "24": [
+      "docs_architecture"
+    ],
+    "25": [
+      "docs_archive_gameplay_agawan_base_rules_freshness_engine"
+    ],
+    "26": [
+      "docs_status"
+    ],
+    "27": [
+      "icon_svg"
+    ],
+    "28": [
+      "renders_readme"
+    ],
+    "29": [
+      "scripts_map_pipeline_readme"
+    ],
+    "30": [
+      "source_art_mocap_meshy_shared_tag_charge"
+    ]
+  },
+  "cohesion": {
+    "0": 0.06778476589797344,
+    "1": 0.07653061224489796,
+    "2": 0.11627906976744186,
+    "3": 0.13588850174216027,
+    "4": 0.08205128205128205,
+    "5": 0.17983193277310924,
+    "6": 0.24761904761904763,
+    "7": 0.15384615384615385,
+    "8": 0.34615384615384615,
+    "9": 0.2,
+    "10": 0.47619047619047616,
+    "11": 0.38095238095238093,
+    "12": 0.4,
+    "13": 0.4,
+    "14": 0.5,
+    "15": 0.5,
+    "16": 0.6666666666666666,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0
+  },
+  "gods": [
+    {
+      "id": "tools_build_jm_botsog_log",
+      "label": "log()",
+      "degree": 19
+    },
+    {
+      "id": "tools_build_home_props_fin",
+      "label": "fin()",
+      "degree": 17
+    },
+    {
+      "id": "tools_build_heroes_build",
+      "label": "build()",
+      "degree": 16
+    },
+    {
+      "id": "tools_build_home_props_prim",
+      "label": "prim()",
+      "degree": 15
+    },
+    {
+      "id": "tools_retarget_clip_offsets_from_rig",
+      "label": "offsets_from_rig()",
+      "degree": 15
+    },
+    {
+      "id": "tools_build_home_props_fresh",
+      "label": "fresh()",
+      "degree": 14
+    },
+    {
+      "id": "tools_build_home_props_hexc",
+      "label": "hexc()",
+      "degree": 14
+    },
+    {
+      "id": "tools_build_home_props_mat",
+      "label": "mat()",
+      "degree": 14
+    },
+    {
+      "id": "tools_build_jm_botsog_deselect_all",
+      "label": "deselect_all()",
+      "degree": 14
+    },
+    {
+      "id": "tools_build_heroes_log",
+      "label": "log()",
+      "degree": 13
+    }
+  ],
+  "surprises": [
+    {
+      "source": "integration_test.gd",
+      "target": "hero_visual.gd",
+      "source_files": [
+        "scripts/tests/README.md",
+        "docs/plans/2026-10-17-konstruksyon-remaining.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "Plan: Konstruksyon overhaul, remaining work (2026-10-17)",
+      "target": "integration_test.gd",
+      "source_files": [
+        "docs/plans/2026-10-17-konstruksyon-remaining.md",
+        "scripts/tests/README.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
+    },
+    {
+      "source": "breakdance()",
+      "target": "loop_blend()",
+      "source_files": [
+        "tools/build_heroes.py",
+        "tools/retarget_clip.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "breakdance()",
+      "target": "mocap_offsets()",
+      "source_files": [
+        "tools/build_heroes.py",
+        "tools/retarget_clip.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "chained()",
+      "target": "face_front()",
+      "source_files": [
+        "tools/build_heroes.py",
+        "tools/retarget_clip.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    }
+  ],
+  "tokens": {
+    "input": 39925,
+    "output": 7065
+  }
+}

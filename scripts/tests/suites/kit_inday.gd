@@ -24,6 +24,7 @@ func run(t: TestCtx) -> void:
 	await _ihip_ends(t)
 	await _ihip_no_stack(t)
 	await _hila_cast(t)
+	await _hila_animation_phases(t)
 	await _hila_pull_ally(t)
 	await _hila_rescue(t)
 	await _hila_wall(t)
@@ -450,3 +451,30 @@ func _takbo_other_rescuer(t: TestCtx) -> void:
 	t.check(not _has(c, "takbo") and not _has(inday, "takbo") and not _has(other, "takbo"), "TAKBO NA! only follows Inday's own rescues")
 	t.ok("another hero's rescue gives no TAKBO NA! and 4 s EP")
 	await t.free_match(host)
+
+## Extend/hold/retract are presentation only and leave the existing touch/pull timing intact.
+func _hila_animation_phases(t: TestCtx) -> void:
+	var host := _live(t)
+	var inday := _inday(host)
+	TestCtx.put(inday, -6, -5)
+	t.inputs(host).aim_at(inday, Vector3(10, 0, -5))
+	_cast(t, host, inday, 1)
+	var hand: HilaHand = _hands(host)[0]
+	var visual: HeroVisual = inday.visual
+	t.check(visual.hila_pose_active() and visual.is_upper_action("Sagip"), "HILA! uses an upper-body pose with independent locomotion")
+	var early := visual.hila_clip_position()
+	t.steps(host, 8)
+	t.check(visual.hila_clip_position() > early and not hand.holding, "extension advances the arm pose with hand travel")
+	inday.velocity = Vector3.RIGHT * 2.0
+	visual._update_animation()
+	t.check(float(visual.tree.get("parameters/Loco/blend_position")) > 0.0, "Inday's legs keep moving while her hand extends")
+	t.steps(host, 28)
+	t.check(hand.holding, "the hand enters its existing open hold phase")
+	var hold := visual.hila_clip_position()
+	t.steps(host, 5)
+	t.check(t.near(hold, visual.hila_clip_position()), "only the upper-body reach holds while waiting for a teammate")
+	hand._close("test")
+	t.check(hand.expired and _hila(inday).rescue_touch_point() == Vector3.INF, "retraction immediately disables all gameplay touch points")
+	t.check(host.world.get_node_or_null("HilaReturn") != null and visual.hila_pose_active(), "a visual-only returning hand and body recovery replace the instant disappearance")
+	await t.free_match(host)
+	t.ok("HILA! animation phases: moving extend, open hold, visual-only retract")

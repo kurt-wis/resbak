@@ -38,7 +38,7 @@ func tick_action(_frame: InputFrame) -> void:
 		end("stunned")
 
 func move(dt: float) -> void:
-	if hero.wish_dir != Vector3.ZERO:
+	if hero.wish_dir != Vector3.ZERO and not (host.tick == cast_tick and hero.frame.skill_aimed):
 		_dir = hero.wish_dir
 	var spd := hero.current_speed()
 	hero.velocity = Vector3(_dir.x * spd, hero.velocity.y, _dir.z * spd)
@@ -77,6 +77,8 @@ func hud_note() -> String:
 	return "%.1f s" % RB.seconds(_ticks_left) if active else ""
 
 func _pick_dir() -> Vector3:
+	if hero.frame.skill_aimed:
+		return hero.frame.aim_direction(hero.global_position)
 	if hero.wish_dir != Vector3.ZERO:
 		return hero.wish_dir
 	if hero.ground_speed() > 1.0:

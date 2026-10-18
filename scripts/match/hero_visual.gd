@@ -10,7 +10,8 @@ extends Node3D
 
 const LOOP_CLIPS := ["Idle", "Walking", "Running", "BreakDance", "Stunned", "Jailed", "Chained",
 		"Capture", "TagCharge", "Harurot", "Tamaraw", "Ihip", "Iyak"]
-const XFADE := 0.12
+const UPPER_ACTIONS := [ "Chained", "Jailed", "Sagip", "Ihip", "Sumbong", "Buga", "Ubo", "Iyak", "GuardBreak"]
+const XFADE := 0.08
 const TURN_RATE := 16.0 ## rad/s the model turns toward `facing`
 
 var hero: Hero
@@ -22,24 +23,32 @@ var meshes: Array[MeshInstance3D] = []
 var _opaque: Array = [] ## [mesh, surface, material]
 var _faded: Array = []
 var _alpha := 1.0
+var nametag: Label3D
 var ring: MeshInstance3D
 var icon: Label3D
-var charge_bg: MeshInstance3D ## the hampas charge bar over the head (v0.2)
-var charge_fill: MeshInstance3D
-const CHARGE_W := 0.9
-const CHARGE_H := 0.11
+const SABAY_ROLL := 80.0 ## degrees; visual only, body and hit tests stay upright
 var shield: MeshInstance3D
 var extras: Node3D ## skills and passives may parent presentation nodes here
 
+var _layer_weight := 0.0
 var _slot := 0 ## alternates 0/1 so a new action always restarts
 var _cur_key := ""
 var _req_clip := ""
+var _action_facing := Vector3.FORWARD
 var _req_until := 0.0 ## engine seconds; <= 0 means until stop_action()
 var _req_dur := -1.0
 var _req_loop := false
 var _req_serial := 0
 var _cur_serial := -1
-var _tag_anim_until := 0.0
+var _upper_paths: Array[NodePath] = []
+var _model_origin := Vector3.ZERO
+var leg_heading: SkeletonModifier3D
+var _hila_hand: HilaHand
+var _hila_return_until := 0.0
+var _hila_return_from := Vector3.ZERO
+var _hila_serial := 0
+var _hila_facing := Vector3.FORWARD
+var _tag_impact_point := Vector3.INF
 var _victory := false
 
 # Human chain: two-bone IK on both arms so prisoners really hold the post and each other.
@@ -85,6 +94,9 @@ func setup(p_hero: Hero) -> void:
 	_build_tree()
 	_build_markers()
 	_build_arm_ik()
+	_build_leg_heading()
+	if hero.host:
+		hero.host.event.connect(_on_host_event)
 
 # ---- public API ------------------------------------------------------------------------
 func has_clip(clip: String) -> bool:
@@ -99,6 +111,7 @@ func play_action(clip: String, duration: float = -1.0, hold := false) -> void:
 	if not has_clip(clip):
 		return
 	_req_clip = clip
+	_action_facing = hero.aim if hero.aim != Vector3.ZERO else hero.facing
 	_req_dur = duration
 	_req_loop = clip in LOOP_CLIPS or hold
 	var natural := clip_length(clip)
@@ -138,7 +151,8 @@ func set_view_alpha(alpha: float) -> void:
 	if use_fade:
 		for entry in _faded:
 			(entry[2] as ShaderMaterial).set_shader_parameter("alpha", alpha)
-	ring.visible = alpha > 0.01
+	ring.visible = false
+	nametag.visible = alpha >= 0.5
 
 func set_outline(color: Color) -> void:
 	if outline_mat:
@@ -146,7 +160,8 @@ func set_outline(color: Color) -> void:
 
 ## "" none, "taggable" orange "!", "untaggable" none; ep adds the shield.
 func set_markers(taggable_mark: bool, ep: bool) -> void:
-	icon.visible = taggable_mark and _alpha > 0.01
+	icon.visible = false
+	nametag.modulate = Color("ffe59a") if taggable_mark else RB.TEAM_COLORS[hero.team].lerp(Color.WHITE, 0.6)
 	shield.visible = ep and _alpha > 0.01
 
 func set_ring_color(color: Color) -> void:
@@ -179,11 +194,13 @@ func _load_model() -> void:
 	if animator:
 		for clip in animator.get_animation_list():
 			animator.get_animation(clip).loop_mode = Animation.LOOP_LINEAR if clip in LOOP_CLIPS else Animation.LOOP_NONE
+	_model_origin = model.position
 	_apply_materials()
 
 func _apply_materials() -> void:
 	outline_mat = ShaderMaterial.new()
 	outline_mat.shader = load("res://shaders/character_outline.gdshader")
+	outline_mat.set_shader_parameter("outline_pixels", hero.tuning.character_outline_pixels)
 	outline_mat.set_shader_parameter("ink_color", Color(0.055, 0.045, 0.075))
 	var toon := load("res://shaders/character_toon.gdshader")
 	var fade := load("res://shaders/character_toon_fade.gdshader")
@@ -227,25 +244,40 @@ func _build_tree() -> void:
 	bt.add_node("Loco", space, Vector2(0, 0))
 	bt.add_node("LocoSpeed", AnimationNodeTimeScale.new(), Vector2(200, 0))
 	bt.connect_node("LocoSpeed", 0, "Loco")
-	for s in ["A", "B"]:
-		var a := AnimationNodeAnimation.new()
-		a.animation = "Idle"
-		bt.add_node("Act" + s, a, Vector2(0, 200 if s == "A" else 400))
-		bt.add_node("Speed" + s, AnimationNodeTimeScale.new(), Vector2(200, 200 if s == "A" else 400))
-		bt.connect_node("Speed" + s, 0, "Act" + s)
+	# Every source clip stays full-skeleton. Runtime filters select spine/arms/head only.
+	_upper_paths.clear()
+	var source := animator.get_animation("Idle")
+	for i in range(source.get_track_count()):
+		var path := source.track_get_path(i)
+		if path.get_subname_count() > 0 and _is_upper_bone(String(path.get_subname(0))):
+			_upper_paths.append(path)
+	for slot in ["A", "B"]:
+		var action := AnimationNodeAnimation.new()
+		action.animation = "Idle"
+		bt.add_node("Act" + slot, action)
+		bt.add_node("Seek" + slot, AnimationNodeTimeSeek.new())
+		bt.connect_node("Seek" + slot, 0, "Act" + slot)
+		bt.add_node("Speed" + slot, AnimationNodeTimeScale.new())
+		bt.connect_node("Speed" + slot, 0, "Seek" + slot)
 	var mode := AnimationNodeTransition.new()
 	mode.xfade_time = XFADE
-	mode.input_count = 3
-	mode.set_input_name(0, "loco")
-	mode.set_input_name(1, "a")
-	mode.set_input_name(2, "b")
-	for i in range(3):
-		mode.set_input_reset(i, true)
-	bt.add_node("Mode", mode, Vector2(400, 0))
-	bt.connect_node("Mode", 0, "LocoSpeed")
-	bt.connect_node("Mode", 1, "SpeedA")
-	bt.connect_node("Mode", 2, "SpeedB")
-	bt.connect_node("output", 0, "Mode")
+	mode.input_count = 2
+	mode.set_input_name(0, "a")
+	mode.set_input_name(1, "b")
+	mode.set_input_reset(0, false)
+	mode.set_input_reset(1, false)
+	bt.add_node("Mode", mode)
+	bt.connect_node("Mode", 0, "SpeedA")
+	bt.connect_node("Mode", 1, "SpeedB")
+	var layer := AnimationNodeBlend2.new()
+	layer.filter_enabled = true
+	layer.sync = true
+	for path in _upper_paths:
+		layer.set_filter_path(path, true)
+	bt.add_node("ActionLayer", layer)
+	bt.connect_node("ActionLayer", 0, "LocoSpeed")
+	bt.connect_node("ActionLayer", 1, "Mode")
+	bt.connect_node("output", 0, "ActionLayer")
 	tree = AnimationTree.new()
 	tree.name = "AnimTree"
 	tree.tree_root = bt
@@ -254,7 +286,25 @@ func _build_tree() -> void:
 	tree.set("parameters/LocoSpeed/scale", 1.0)
 	tree.set("parameters/SpeedA/scale", 1.0)
 	tree.set("parameters/SpeedB/scale", 1.0)
+	tree.set("parameters/ActionLayer/blend_amount", 0.0)
 	tree.active = true
+
+func _is_upper_bone(name: String) -> bool:
+	var tail := name.replace("mixamorig:", "").replace("mixamorig_", "")
+	return tail.begins_with("Spine") or tail in ["Neck", "Head", "HeadTop_End"] or "Shoulder" in tail or "Arm" in tail or "Hand" in tail
+
+func is_upper_action(clip: String) -> bool:
+	return clip in UPPER_ACTIONS and not _upper_paths.is_empty()
+
+func _build_leg_heading() -> void:
+	if _skel == null:
+		return
+	leg_heading = preload("res://scripts/match/locomotion_heading.gd").new()
+	leg_heading.name = "LocomotionHeading"
+	leg_heading.set("hips", _skel.find_bone(_bone_by_tail("Hips")))
+	leg_heading.set("spine", _skel.find_bone(_bone_by_tail("Spine")))
+	_skel.add_child(leg_heading)
+	_skel.move_child(leg_heading, 0)
 
 func _build_markers() -> void:
 	ring = MeshInstance3D.new()
@@ -272,7 +322,17 @@ func _build_markers() -> void:
 	rm.albedo_color = RB.TEAM_COLORS[hero.team]
 	ring.material_override = rm
 	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	ring.visible = false
 	add_child(ring)
+	nametag = Label3D.new()
+	nametag.name = "NameTag"
+	nametag.text = hero.display_name
+	nametag.font_size = 40
+	nametag.pixel_size = 0.004
+	nametag.outline_size = 8
+	nametag.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	nametag.position.y = hero.data.model_height + 0.24
+	add_child(nametag)
 	icon = Label3D.new()
 	icon.name = "TaggableIcon"
 	icon.text = "!"
@@ -285,13 +345,7 @@ func _build_markers() -> void:
 	icon.position.y = hero.data.model_height + 0.45
 	icon.visible = false
 	add_child(icon)
-	charge_bg = _bar_quad(CHARGE_W + 0.06, CHARGE_H + 0.06, Color("1a1020"), 0)
-	charge_fill = _bar_quad(CHARGE_W, CHARGE_H, Color("ffd27a"), 1)
-	charge_bg.name = "ChargeBar"
-	charge_bg.add_child(charge_fill)
-	charge_bg.position.y = hero.data.model_height + 0.3
-	charge_bg.visible = false
-	add_child(charge_bg)
+
 	shield = MeshInstance3D.new()
 	shield.name = "ProtectionShield"
 	var sph := SphereMesh.new()
@@ -575,6 +629,13 @@ func _update_arm_ik(delta: float) -> void:
 	if arm_ik == null or _skel == null:
 		return
 	var grips := chain_grips()
+	if grips.is_empty() and tag_pose_active():
+		_ik_weight = 0.0
+		arm_ik.active = false
+		return
+	if grips.is_empty() and hila_pose_active():
+		_update_action_arm_ik()
+		return
 	var want := 1.0 if not grips.is_empty() else 0.0
 	_ik_weight = move_toward(_ik_weight, want, delta * 4.0)
 	arm_ik.active = _ik_weight > 0.001
@@ -596,6 +657,30 @@ func _update_arm_ik(delta: float) -> void:
 			_hand_targets[i].global_position = _reach_to(shoulder, grips[map[i]], _arm_reach(i))
 		# elbows drop down and drift behind the body, so the arms hang instead of pointing out
 		_hand_poles[i].global_position = shoulder + side * 0.15 + Vector3(0, -0.75, 0) - face * 0.35
+
+## Same rig solver as the chain, but only the right arm reaches during free actions.
+func _update_action_arm_ik() -> void:
+	var target := tag_contact_target() if tag_pose_active() else hila_visual_target()
+	var weight := _tag_weight() if tag_pose_active() else 1.0
+	_ik_weight = weight
+	arm_ik.active = weight > 0.001
+	arm_ik.influence = weight
+	for i in range(2):
+		var shoulder := _animation_bone_position(_arm_bones[i][0])
+		var goal := target if i == 0 else _animation_bone_position(_arm_bones[i][2])
+		_hand_targets[i].global_position = goal
+		var side := (goal - shoulder).cross(Vector3.UP).normalized()
+		_hand_poles[i].global_position = shoulder + side * 0.2 + Vector3.DOWN * 0.4
+
+func _animation_bone_position(name: String) -> Vector3:
+	var index := _skel.find_bone(name)
+	return _skel.global_transform * _skel.get_bone_global_pose(index).origin
+
+func hila_visual_target() -> Vector3:
+	if is_instance_valid(_hila_hand) and not _hila_hand.expired:
+		return _hila_hand.palm_position()
+	var amount := 1.0 - clampf((_hila_return_until - _now()) / hero.tuning.hila_retract_time, 0.0, 1.0)
+	return _hila_return_from.lerp(bone_world("RightHand"), amount)
 
 ## Which grip each arm takes: [grip index of the right arm, of the left arm] (0 = rear grip,
 ## 1 = front grip). The arm on the rear side of the body (as the model faces across the chain)
@@ -636,49 +721,43 @@ func chain_facing() -> Vector3:
 func _process(delta: float) -> void:
 	if hero == null:
 		return
+	if tree:
+		tree.active = hero.host == null or not hero.host.paused
+	if hero.host and hero.host.paused:
+		return
 	var cf := chain_facing()
-	var look := cf if cf != Vector3.ZERO else hero.facing
+	var look := hero.facing
+	if cf != Vector3.ZERO:
+		look = cf
+	elif tag_pose_active():
+		look = hero.lunge_dir
+	elif hila_pose_active():
+		look = RB.flat(_hila_hand.palm_position() - global_position).normalized() if is_instance_valid(_hila_hand) and not _hila_hand.expired else _hila_facing
+	elif is_upper_action(_req_clip) and (_req_until <= 0.0 or _now() < _req_until):
+		look = hero.aim if _req_clip == "Ihip" else _action_facing
 	var want := atan2(look.x, look.z)
 	if model and _now() < _spin_until:
 		model.rotation.y = wrapf(model.rotation.y + _spin_rate * delta, -PI, PI)
 	elif model:
 		model.rotation.y = lerp_angle(model.rotation.y, want, minf(TURN_RATE * delta, 1.0))
-	if hero.is_winding_up():
-		_tag_anim_until = _now() + 0.35
-	_update_charge_bar()
-	_update_animation()
+	_update_sabay_fall()
+	_update_tag_step(delta)
 	settle_chain_draw(minf(PULL_RATE * delta, 1.0))
+	_update_animation(delta)
 	_update_arm_ik(delta)
 
-## Billboarded, unshaded quad; the mesh is offset (not the node) so it survives billboarding.
-func _bar_quad(w: float, h: float, color: Color, priority: int) -> MeshInstance3D:
-	var mi := MeshInstance3D.new()
-	var q := QuadMesh.new()
-	q.size = Vector2(w, h)
-	mi.mesh = q
-	var m := StandardMaterial3D.new()
-	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	m.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
-	m.no_depth_test = true
-	m.render_priority = priority
-	m.albedo_color = color
-	mi.material_override = m
-	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	return mi
-
-## Fills left to right while Tag is held; turns orange-white at full charge.
-func _update_charge_bar() -> void:
-	if charge_bg == null:
+## Host-timed fall and get-up on Sabay. Preserve the model's authored origin and scale.
+func _update_sabay_fall() -> void:
+	if model == null:
 		return
-	var on := hero.is_charging() and _alpha > 0.01
-	charge_bg.visible = on
-	if not on:
-		return
-	var k := hero.charge_fraction()
-	var q := charge_fill.mesh as QuadMesh
-	q.size.x = maxf(0.001, CHARGE_W * k)
-	q.center_offset.x = -CHARGE_W * 0.5 + q.size.x * 0.5
-	(charge_fill.material_override as StandardMaterial3D).albedo_color = Color("ffd27a").lerp(Color("ff5a1f"), k) if k < 1.0 else Color("fff4e0")
+	var roll := 0.0
+	if hero.sabay_ticks > 0:
+		var duration := float(maxi(1, RB.ticks(hero.tuning.failed_tag_stumble)))
+		var progress := clampf(1.0 - float(hero.sabay_ticks) / duration, 0.0, 1.0)
+		var down := smoothstep(0.0, 0.25, progress)
+		var up := 1.0 - smoothstep(0.65, 1.0, progress)
+		roll = deg_to_rad(SABAY_ROLL) * down * up
+	model.rotation.z = roll
 
 func _now() -> float:
 	return Time.get_ticks_msec() / 1000.0
@@ -694,52 +773,145 @@ func _desired() -> Array:
 		return ["Stumble", h.tuning.failed_tag_stumble, -4]
 	if h.capturing:
 		return ["Capture", -1.0, -5]
+	if h.state == Hero.State.CHAINED:
+		return ["Chained", -1.0, -8] # arms hold while locomotion continues underneath
+	if h.state == Hero.State.JAILED:
+		return ["Jailed", -1.0, -9]
+	if tag_pose_active():
+		return ["Tag", h.tuning.tag_windup + h.tuning.tag_followthrough, h.tag_started_tick]
+	if hila_pose_active():
+		return ["Sagip", -1.0, _hila_serial]
 	if _req_clip != "" and (_req_until <= 0.0 or _now() < _req_until):
 		return [_req_clip, _req_dur, _req_serial]
 	_req_clip = ""
-	# Held hampas: the wind-up loop (clip is optional, tools/build_heroes.py TagCharge; no clip = normal pose)
-	if h.is_charging() and h.is_free() and has_clip("TagCharge"):
-		return ["TagCharge", -1.0, -6]
-	if _tag_anim_until > _now() and h.is_free():
-		return ["Tag", 0.45, -6]
 	if _victory:
 		return ["Victory", -1.0, -7]
-	if h.state == Hero.State.CHAINED and h.ground_speed() < 0.3:
-		return ["Chained", -1.0, -8]
-	if h.state == Hero.State.JAILED and h.ground_speed() < 0.3:
-		return ["Jailed", -1.0, -9]
 	return ["", -1.0, -1]
 
-func _update_animation() -> void:
+func tag_elapsed() -> float:
+	if hero.host == null or hero.tag_started_tick < 0:
+		return -1.0
+	return RB.seconds(hero.host.tick - hero.tag_started_tick)
+
+func tag_pose_active() -> bool:
+	var elapsed := tag_elapsed()
+	return hero.is_free() and not hero.is_disabled() and hero.round_live() and elapsed >= 0.0 and elapsed <= hero.tuning.tag_windup + hero.tuning.tag_followthrough
+
+## The pose reaches contact on the authoritative landing tick, then follows through.
+func tag_clip_position() -> float:
+	var elapsed := maxf(0.0, tag_elapsed())
+	var t := hero.tuning
+	var contact := clip_length("Tag") * t.tag_contact_fraction
+	if elapsed <= t.tag_windup:
+		return contact * clampf(elapsed / t.tag_windup, 0.0, 1.0)
+	return lerpf(contact, clip_length("Tag"), clampf((elapsed - t.tag_windup) / t.tag_followthrough, 0.0, 1.0))
+
+func _update_animation(delta := 0.0) -> void:
 	if tree == null:
 		return
-	var d := _desired()
-	var clip: String = d[0]
+	var desired := _desired()
+	var clip: String = desired[0]
 	if clip != "" and not has_clip(clip):
 		clip = ""
-	var key := "%s#%d" % [clip, d[2]]
+	var upper := is_upper_action(clip)
+	# Always update locomotion, including while an upper-body action remains on the same frame.
+	var travel := RB.flat(hero.velocity)
+	if tag_pose_active():
+		travel = Vector3.ZERO
+	var speed := travel.length()
+	if hero.state == Hero.State.CHAINED:
+		speed = minf(speed, hero.data.run_speed * hero.tuning.walk_fraction)
+	var rate := _loco_scale(speed)
+	var heading := 0.0
+	if upper and speed > 0.05:
+		var front := Vector3(sin(model.rotation.y), 0, cos(model.rotation.y))
+		heading = front.signed_angle_to(travel.normalized(), Vector3.UP)
+		if absf(heading) > PI * 0.5:
+			heading = wrapf(heading + PI, -PI, PI)
+			rate = -rate # backpedal with the same planted-foot cycle, not forward moonwalking
+	if leg_heading:
+		leg_heading.set("heading_delta", heading)
+	tree.set("parameters/Loco/blend_position", clampf(speed, 0.0, hero.data.run_speed))
+	tree.set("parameters/LocoSpeed/scale", rate)
+	var key := "%s#%d" % [clip, desired[2]]
+	var goal := 0.0 if clip == "" else 1.0
+	_layer_weight = move_toward(_layer_weight, goal, delta / XFADE) if delta > 0.0 else goal
+	tree.set("parameters/ActionLayer/blend_amount", _layer_weight)
 	if clip == "":
-		if _cur_key != "loco":
-			tree.set("parameters/Mode/transition_request", "loco")
-			_cur_key = "loco"
-		var spd := hero.ground_speed()
-		tree.set("parameters/Loco/blend_position", clampf(spd, 0.0, hero.data.run_speed))
-		tree.set("parameters/LocoSpeed/scale", _loco_scale(spd))
+		_cur_key = "loco"
 		return
-	if key == _cur_key:
+	var layer := (tree.tree_root as AnimationNodeBlendTree).get_node("ActionLayer") as AnimationNodeBlend2
+	layer.filter_enabled = upper
+	if key != _cur_key:
+		_cur_key = key
+		_slot = 1 - _slot
+		var slot := "A" if _slot == 0 else "B"
+		var action := (tree.tree_root as AnimationNodeBlendTree).get_node("Act" + slot) as AnimationNodeAnimation
+		action.animation = clip
+		var scale := 1.0
+		if float(desired[1]) > 0.0 and animator.get_animation(clip).loop_mode == Animation.LOOP_NONE:
+			scale = clip_length(clip) / float(desired[1])
+		tree.set("parameters/Speed%s/scale" % slot, scale)
+		tree.set("parameters/Seek%s/seek_request" % slot, 0.0)
+		tree.set("parameters/Mode/transition_request", slot.to_lower())
+	var slot := "A" if _slot == 0 else "B"
+	if clip == "Tag":
+		tree.set("parameters/Speed%s/scale" % slot, 0.0)
+		tree.set("parameters/Seek%s/seek_request" % slot, tag_clip_position())
+	elif clip == "Sagip" and hila_pose_active():
+		tree.set("parameters/Speed%s/scale" % slot, 0.0)
+		tree.set("parameters/Seek%s/seek_request" % slot, hila_clip_position())
+
+func hila_pose_active() -> bool:
+	return hero.is_free() and hero.round_live() and not hero.is_disabled() and (is_instance_valid(_hila_hand) and not _hila_hand.expired or _now() < _hila_return_until)
+
+func hila_clip_position() -> float:
+	var length := clip_length("Sagip")
+	if is_instance_valid(_hila_hand) and not _hila_hand.expired:
+		return length * 0.55 * clampf(_hila_hand.travelled / maxf(0.01, float(_hila_hand.cfg.range)), 0.0, 1.0)
+	var progress := 1.0 - clampf((_hila_return_until - _now()) / hero.tuning.hila_retract_time, 0.0, 1.0)
+	return length * lerpf(0.55, 1.0, progress)
+
+func _on_host_event(kind: String, data: Dictionary) -> void:
+	if kind == "tag_windup" and data.get("hero") == hero:
+		_tag_impact_point = Vector3.INF
+	elif kind in ["tag", "guard_break"] and data.get("tagger") == hero:
+		_tag_impact_point = data.get("point", hero.host.tag_system.contact_point(hero, data.target))
+	elif kind == "hila" and data.get("hero") == hero:
+		_hila_hand = data.get("object")
+		_hila_facing = data.get("dir", hero.aim)
+		_hila_serial += 1
+	elif kind == "hila_close" and data.get("hero") == hero:
+		_hila_return_from = data.get("pos", hero.global_position)
+		_hila_facing = RB.flat(_hila_return_from - hero.global_position).normalized()
+		_hila_return_until = _now() + hero.tuning.hila_retract_time
+
+## A brief model-only reach step and arm IK make the hand meet the target body, not the arc.
+func tag_contact_target() -> Vector3:
+	if _tag_impact_point != Vector3.INF:
+		return _tag_impact_point
+	var target := hero.host.hero_by_slot(hero.strike_target_slot)
+	if target and hero.host.tag_system.can_tag(hero, target) and hero.host.tag_system.reach_clear(hero, target.global_position) and hero.host.tag_system.in_tag_shape(hero, hero.lunge_dir, target.global_position, hero.tuning.body_radius):
+		return hero.host.tag_system.contact_point(hero, target)
+	return hero.global_position + hero.lunge_dir * (hero.tag_reach() + hero.tuning.body_radius) + Vector3.UP * hero.data.model_height * hero.tuning.tag_contact_height
+
+func _tag_weight() -> float:
+	if not tag_pose_active():
+		return 0.0
+	var elapsed := tag_elapsed()
+	if elapsed <= hero.tuning.tag_windup:
+		return smoothstep(0.0, 1.0, elapsed / hero.tuning.tag_windup)
+	return 1.0 - smoothstep(0.0, 1.0, (elapsed - hero.tuning.tag_windup) / hero.tuning.tag_followthrough)
+
+func _update_tag_step(delta := 0.0) -> void:
+	if model == null:
 		return
-	_cur_key = key
-	_slot = 1 - _slot
-	var s := "A" if _slot == 0 else "B"
-	var node := (tree.tree_root as AnimationNodeBlendTree).get_node("Act" + s) as AnimationNodeAnimation
-	node.animation = clip
-	var dur: float = d[1]
-	var natural := clip_length(clip)
-	var scale := 1.0
-	if dur > 0.0 and natural > 0.0 and animator.get_animation(clip).loop_mode == Animation.LOOP_NONE:
-		scale = natural / dur
-	tree.set("parameters/Speed%s/scale" % s, scale)
-	tree.set("parameters/Mode/transition_request", s.to_lower())
+	# Stationary authored hit: no cosmetic forward step or target-reaching translation.
+	model.position = _model_origin
+	for marker in [ring, icon, shield, extras, nametag]:
+		if marker:
+			marker.position.x = 0.0
+			marker.position.z = 0.0
 
 ## Clip rate that makes the planted foot match the body (walk/run clip speeds from qc_asset).
 func _loco_scale(spd: float) -> float:

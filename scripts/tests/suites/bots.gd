@@ -6,6 +6,7 @@ extends RefCounted
 ## Jail_Lila (16.6, -7.2) holds Dilaw (see TestCtx.build_arena).
 
 func run(t: TestCtx) -> void:
+	await _tag_decisions(t)
 	await _roles(t)
 	await _perception(t)
 	await _hunts_stationary(t)
@@ -315,4 +316,45 @@ func _full_match(t: TestCtx) -> void:
 	for e in events:
 		kinds[e.kind] = int(kinds.get(e.kind, 0)) + 1
 	t.ok("5v5 bots: %.0f s simulated, events %s" % [RB.seconds(n), str(kinds)])
+	await t.free_match(host)
+
+## Decisions vary deterministically by seed/slot; recovery does not force another shared swing.
+func _tag_decisions(t: TestCtx) -> void:
+	var host := t.make_match([_entry("nathan", RB.DILAW), _entry("nathan", RB.LILA)], {"seed": 71})
+	t.go_live(host)
+	var a: Hero = host.heroes[0]
+	var b: Hero = host.heroes[1]
+	TestCtx.put(a, 0, 0)
+	TestCtx.put(b, 1.6, 0)
+	a.facing = Vector3.RIGHT
+	b.facing = Vector3.LEFT
+	var first := BotBrain.new()
+	host.get_parent().add_child(first)
+	first.setup(a, host, 1)
+	var second := BotBrain.new()
+	host.get_parent().add_child(second)
+	second.setup(b, host, 1)
+	first.perceived = [b]
+	second.perceived = [a]
+	var frame := InputFrame.new()
+	first._try_tag(a, frame)
+	t.check(not frame.was_pressed(RB.BTN_TAG) and first._tag_ready_tick > host.tick, "a bot thinks before each eligible tag attempt")
+	var due := first._tag_ready_tick
+	host.tick = due
+	first._try_tag(a, frame)
+	t.check(frame.was_pressed(RB.BTN_TAG) and not frame.is_held(RB.BTN_TAG), "the bot sends a normal tap once its decision is ready")
+	a.sabay_fall()
+	b.sabay_fall()
+	first._update_tag_recovery(a)
+	second._update_tag_recovery(b)
+	t.check(first._reposition_until > host.tick + a.sabay_ticks and second._reposition_until > host.tick + b.sabay_ticks, "both bots plan a short reposition after Sabay recovery")
+	t.check(first._reposition_until != second._reposition_until or first._tag_ready_tick != second._tag_ready_tick, "different slots do not share a synchronized Sabay retry schedule")
+	var duplicate := BotBrain.new()
+	host.get_parent().add_child(duplicate)
+	duplicate.setup(a, host, 1)
+	first.rng.seed = duplicate.rng.seed
+	t.check(first._tag_delay_ticks() == duplicate._tag_delay_ticks(), "decision variation is reproducible with the same seed")
+	# Human timing/range and exact-tick Sabay were never changed by bot decisions.
+	t.check(RB.ticks(host.tuning.tag_windup) == 18 and t.near(host.tuning.failed_tag_stumble, 0.5), "bot variation leaves the shared attack/recovery rules intact")
+	t.ok("bot attempts: seeded decision delay and post-Sabay reposition, no attack buffs")
 	await t.free_match(host)

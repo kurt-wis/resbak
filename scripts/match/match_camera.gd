@@ -5,7 +5,8 @@ extends Camera3D
 ## Orthographic, 35.264 deg down, yawed so the player's own end is nearest and the enemy base is
 ## "up the screen", then turned 45 deg courtside. A small swivel (up to 6 deg) follows the hero's
 ## lateral position, the view leads the hero's motion and looks 1.4 m ahead toward the enemy end.
-## Mouse wheel zooms (view size 8..15), camera_flip (V / right stick) turns the view 180 deg in
+## Gameplay zoom stays at the closest framing; no mouse or gesture zoom.
+## camera_flip (V / right stick) turns the view 180 deg in
 ## 0.65 s. Presentation only: PlayerInput reads view_yaw() to turn screen-relative movement into
 ## world directions, so InputFrames stay in world space and bots never see the camera.
 ## Round-1 intro (2026-10-17): MatchView sets intro_w (0..1), intro_focus and intro_size each
@@ -15,20 +16,16 @@ extends Camera3D
 
 const COURTSIDE_ANGLE := 45.0
 const FLIP_DURATION := 0.65
-const MIN_SIZE := 8.0
-const MAX_SIZE := 15.0
+const FIXED_SIZE := 8.0
 
 @export var pitch_deg := -35.264
 @export var arm := 20.0
-@export var base_size := 10.2 ## orthographic view height in metres (wheel changes it)
-@export var run_widen := 1.0 ## extra view size at full run
 @export var ahead := 1.4 ## metres the focus sits toward the enemy end
 @export var lead_time := 0.18 ## seconds of velocity the focus leads by
 @export var swivel_deg := 6.0
 var target: Node3D
 var bounds := Rect2() ## play area (XZ); empty = no clamp
 var enemy_dir := Vector3.RIGHT ## toward the enemy base (set by the match scene)
-var zoom_out := 0.0 ## 0..1, high ground widens the view 15 %
 var ink: ShaderMaterial ## the illustrated-edges finish (focus follows the hero)
 var intro_w := 0.0 ## 0 = follow the hero, 1 = the flyover pose
 var intro_focus := Vector3.ZERO
@@ -38,7 +35,6 @@ var _yaw_from := 0.0
 var _yaw_to := 0.0
 var _flip_t := -1.0
 var _swivel := 0.0
-var _size := 10.2
 var _lead := Vector3.ZERO
 var _focus := Vector3.ZERO
 var _last_pos := Vector3.ZERO
@@ -61,7 +57,6 @@ func snap() -> void:
 	_yaw_to = yaw
 	_flip_t = -1.0
 	_lead = Vector3.ZERO
-	_size = base_size
 	if target:
 		_last_pos = target.global_position
 	_place(0.0)
@@ -95,11 +90,6 @@ func shake(amount: float, time := 0.25) -> void:
 	_shake_time = maxf(_shake_time, time)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			base_size = maxf(MIN_SIZE, base_size - 0.5)
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			base_size = minf(MAX_SIZE, base_size + 0.5)
 	if InputMap.has_action("camera_flip") and event.is_action_pressed("camera_flip") and not event.is_echo():
 		flip()
 
@@ -132,25 +122,21 @@ func _place(delta: float) -> void:
 	var centre := Vector3(bounds.get_center().x, 0, bounds.get_center().y) if bounds.size != Vector2.ZERO else Vector3.ZERO
 	var lateral := (pos - centre).dot(court_right)
 	var want_swivel := 0.0 if _flip_t >= 0.0 else deg_to_rad(swivel_deg) * clampf(lateral / 12.0, -1.0, 1.0)
-	var run := clampf(vel.length() / 6.0, 0.0, 1.0)
-	var want_size := (base_size + run_widen * run) * (1.0 + 0.15 * zoom_out)
 	var want_lead := vel * lead_time
 	if delta <= 0.0:
 		_swivel = want_swivel
-		_size = want_size
 		_lead = want_lead
 	else:
 		_swivel = lerp_angle(_swivel, want_swivel, 1.0 - exp(-2.0 * delta))
-		_size = lerpf(_size, want_size, 1.0 - exp(-2.5 * delta))
 		_lead = _lead.lerp(want_lead, 1.0 - exp(-4.0 * delta))
 	var fwd := Basis(Vector3.UP, yaw) * Vector3(0, 0, -ahead)
 	var goal := _clamped(pos + fwd + _lead) + Vector3(0, 1.4, 0)
 	_focus = goal if delta <= 0.0 else _focus.lerp(goal, 1.0 - exp(-8.0 * delta))
 	var shown_focus := _focus
-	size = _size
+	size = FIXED_SIZE
 	if intro_w > 0.0:
 		shown_focus = _focus.lerp(intro_focus, intro_w)
-		size = lerpf(_size, intro_size, intro_w)
+		size = lerpf(FIXED_SIZE, intro_size, intro_w)
 	var orbit := Basis.from_euler(Vector3(deg_to_rad(pitch_deg), view_yaw(), 0))
 	var jitter := Vector3.ZERO
 	if _shake_time > 0.0:

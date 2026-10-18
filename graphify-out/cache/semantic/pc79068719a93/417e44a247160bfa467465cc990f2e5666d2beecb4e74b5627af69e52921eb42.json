@@ -1,0 +1,1 @@
+{"nodes": [{"id": "docs_architecture", "label": "Architecture", "file_type": "document", "source_file": "docs/architecture.md", "rationale": "Describes runtime architecture, scene flow, and system interactions.", "_origin": "semantic"}], "edges": [], "hyperedges": []}

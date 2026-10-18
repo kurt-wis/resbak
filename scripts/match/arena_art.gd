@@ -24,6 +24,9 @@ var _t := 0.0
 
 func setup(p_host: MatchHost) -> void:
 	host = p_host
+	host.event.connect(func(kind: String, _data: Dictionary):
+		if kind == "round_reset":
+			_crumble.assign([-1.0, -1.0]))
 	name = "ArenaArt"
 	for team in range(2):
 		_build_base(team)

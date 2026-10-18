@@ -69,3 +69,19 @@ func start_match() -> void:
 	if lineup.is_empty():
 		lineup = quick_lineup("tutoy")
 	get_tree().change_scene_to_file(MATCH_SCENE)
+
+## Free testing bypasses draft/roulette and never writes match results.
+func prepare_training(hero_id: String, map_id: String, moving_bots := false) -> void:
+	reset_settings()
+	mode = "training"
+	settings["practice"] = true
+	settings["free_training"] = true
+	settings["training_bots"] = moving_bots
+	settings["skip_intro"] = true
+	settings["hazards"] = false
+	settings["map"] = map_id if map_id in ["barangay_court", "construction_site"] else "barangay_court"
+	local_slot = 0
+	last_results = {}
+	lineup = [{"hero_id": hero_id, "team": RB.DILAW, "team_slot": 0, "is_bot": false, "name": player_name()}]
+	for i in range(3):
+		lineup.append({"hero_id": HeroData.ORDER[i], "team": RB.LILA, "team_slot": i, "is_bot": true, "name": ("Bot " if moving_bots else "Dummy ") + str(i + 1)})

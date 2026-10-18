@@ -6,8 +6,8 @@ extends RefCounted
 ## Gameplay reads only these, never Input directly, so local players, bots and (later)
 ## remote clients all drive heroes the same way.
 
-## Stick-scaled move: x = screen right (+X world), y = screen down (+Z world). The camera
-## never rotates, so screen and world axes line up. Length is the stick tilt (keys = 1).
+## World-space move: x maps to world X, y to world Z. PlayerInput converts camera-relative
+## directions before producing this frame. Length is the stick tilt (keys = 1).
 var move := Vector2.ZERO
 ## Where the player aims, on the ground plane (y ignored). `has_aim` false = face movement.
 var aim_point := Vector3.ZERO
@@ -17,6 +17,9 @@ var aim_dir := Vector2.ZERO
 var held := 0 ## RB.BTN_* bits held this tick
 var pressed := 0 ## RB.BTN_* bits pressed since the previous tick (edges)
 var from_gamepad := false ## enables tag assist and the 15-50 % walk band
+var tag_aim_dir := Vector2.ZERO ## optional exact tag-only aim; movement and skill aim stay independent
+var skill_aimed := false ## explicit dragged skill aim takes precedence over movement on cast
+var tag_target_slot := -1 ## selected opponent at commitment; -1 = unselected directional swing
 
 func is_held(button: int) -> bool:
 	return held & button != 0
@@ -33,6 +36,9 @@ func duplicate_frame() -> InputFrame:
 	f.held = held
 	f.pressed = pressed
 	f.from_gamepad = from_gamepad
+	f.tag_aim_dir = tag_aim_dir
+	f.tag_target_slot = tag_target_slot
+	f.skill_aimed = skill_aimed
 	return f
 
 ## World-space aim direction for `from` (flat, normalized), or Vector3.ZERO if none.

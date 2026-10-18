@@ -41,8 +41,8 @@ func frame_for(h: Hero, _host: MatchHost) -> InputFrame:
 		f.aim_point = _aim[h.slot]
 		f.has_aim = true
 	f.pressed = int(_pressed.get(h.slot, 0))
-	# A press() is held for its one tick only, except Tag: a pressed Tag is a tap (pressed and
-	# released on the same tick) so it swings at once; hold()/release() charge it (v0.2).
-	f.held = int(_held.get(h.slot, 0)) | (f.pressed & ~RB.BTN_TAG)
+	# A press() is held for one tick; explicit hold()/release() keep it down.
+	# Tag uses only the pressed edge, independent of held state.
+	f.held = int(_held.get(h.slot, 0)) | f.pressed
 	_pressed.erase(h.slot)
 	return f

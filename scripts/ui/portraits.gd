@@ -141,7 +141,7 @@ static func _toon(model: Node3D) -> void:
 	var toon := load("res://shaders/character_toon.gdshader")
 	var outline := ShaderMaterial.new()
 	outline.shader = load("res://shaders/character_outline.gdshader")
-	outline.set_shader_parameter("outline_pixels", 2.0)
+	outline.set_shader_parameter("outline_pixels", (load(Tuning.PATH) as Tuning).character_outline_pixels)
 	for node in model.find_children("*", "MeshInstance3D", true, false):
 		var mi := node as MeshInstance3D
 		for s in range(mi.mesh.get_surface_count()):

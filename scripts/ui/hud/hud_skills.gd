@@ -26,6 +26,8 @@ func skill_rect(i: int) -> Rect2:
 	return Rect2(cx - GAP * 0.5 - BOX_W if i == 0 else cx + GAP * 0.5, _top(), BOX_W, BOX_H)
 
 func passive_rect() -> Rect2:
+	if hud and hud.touch and hud.touch.visible:
+		return Rect2(sz().x * 0.5 - BOX_W * 0.5, _top(), BOX_W, BOX_H)
 	return Rect2(skill_rect(0).position.x - GAP - BOX_W, _top(), BOX_W, BOX_H)
 
 func refresh(_delta: float) -> void:
@@ -49,6 +51,9 @@ func _chips(me: Hero) -> Array:
 	var out: Array = []
 	if not me.is_free() or not hud.host.round_live():
 		return out
+	var input := hud.input_source as PlayerInput
+	if input and input.tag_aiming and not input.touch_active:
+		out.append(["BITAW: TAG | %s: KANSELA" % ("B" if input.last_device_gamepad else "RMB"), HudStyle.GOLD])
 	if me.has_ep():
 		out.append(["PROTEKTADO %ds" % ceili(RB.seconds(me.ep_ticks)), Color("7fd0ff")])
 	if me.is_immune():
@@ -80,6 +85,8 @@ func _draw() -> void:
 		"skills", "locked":
 			_draw_passive(me)
 			for i in range(2):
+				if hud.touch and hud.touch.visible:
+					continue # use the actual skill buttons rather than duplicate keyboard cards
 				_draw_skill(me.skills[i], skill_rect(i), hud.key_label("skill_%d" % (i + 1)), mode == "locked")
 			if mode == "locked":
 				var r := Rect2(skill_rect(0).position + Vector2(0, -34), Vector2(BOX_W * 2.0 + GAP, 28))

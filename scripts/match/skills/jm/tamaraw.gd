@@ -44,6 +44,9 @@ func _cast(_frame: InputFrame) -> void:
 	hero.visual.play_action("Tamaraw")
 	host.emit_event("tamaraw_start", {"hero": hero, "dir": _dir})
 
+func can_recast() -> bool:
+	return active
+
 func on_recast(_frame: InputFrame) -> void:
 	if active:
 		end("recast")

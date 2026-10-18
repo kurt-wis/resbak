@@ -41,17 +41,13 @@ func build(origin: Vector3, dir: Vector3, p_width: float, offset: float, p_heigh
 	earth.cull_mode = BaseMaterial3D.CULL_BACK
 	var top := Vfx.flat_material(Color("a98a5e"), false)
 	top.cull_mode = BaseMaterial3D.CULL_BACK
-	var seg_len := 2.0 * arc_radius * sin(half_angle / SEGMENTS) * 1.15
-	for i in range(SEGMENTS):
-		var th := -half_angle + 2.0 * half_angle * (i + 0.5) / SEGMENTS
-		var local := _arc_point(th) # world XZ
-		var yaw := atan2(_tangent(th).x, _tangent(th).z)
+	for segment in segment_layout(origin, dir, p_width, offset, p_height):
 		var cs := CollisionShape3D.new()
 		var box := BoxShape3D.new()
-		box.size = Vector3(THICKNESS, height, seg_len)
+		box.size = segment.size
 		cs.shape = box
-		cs.position = Vector3(local.x, height * 0.5, local.z)
-		cs.rotation.y = yaw
+		cs.position = segment.position - position
+		cs.rotation.y = segment.yaw
 		body.add_child(cs)
 		var mi := MeshInstance3D.new()
 		var bm := BoxMesh.new()
@@ -59,17 +55,33 @@ func build(origin: Vector3, dir: Vector3, p_width: float, offset: float, p_heigh
 		mi.mesh = bm
 		mi.material_override = earth
 		mi.position = cs.position
-		mi.rotation.y = yaw
+		mi.rotation.y = cs.rotation.y
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 		visual.add_child(mi)
 		var cap := MeshInstance3D.new()
 		var cm := BoxMesh.new()
-		cm.size = Vector3(THICKNESS * 1.15, 0.18, seg_len)
+		cm.size = Vector3(THICKNESS * 1.15, 0.18, box.size.z)
 		cap.mesh = cm
 		cap.material_override = top
-		cap.position = Vector3(local.x, height + 0.05, local.z)
-		cap.rotation.y = yaw
+		cap.position = Vector3(cs.position.x, height + 0.05, cs.position.z)
+		cap.rotation.y = cs.rotation.y
 		visual.add_child(cap)
+
+## Exact collision-box layout, also used by private aiming and public landing telegraphs.
+static func segment_layout(origin: Vector3, dir: Vector3, p_width: float, offset: float, p_height: float) -> Array[Dictionary]:
+	var forward := RB.flat(dir).normalized()
+	var right := Vector3(forward.z, 0, -forward.x)
+	var radius := p_width * 0.6
+	var half := asin(clampf(p_width * 0.5 / radius, 0.0, 1.0))
+	var centre := RB.flat(origin) + forward * (offset - radius)
+	var length := 2.0 * radius * sin(half / SEGMENTS) * 1.15
+	var result: Array[Dictionary] = []
+	for i in range(SEGMENTS):
+		var angle := -half + 2.0 * half * (i + 0.5) / SEGMENTS
+		var point := centre + (forward * cos(angle) + right * sin(angle)) * radius
+		var tangent := (-forward * sin(angle) + right * cos(angle)).normalized()
+		result.append({"position": Vector3(point.x, origin.y + p_height * 0.5, point.z), "yaw": atan2(tangent.x, tangent.z), "size": Vector3(THICKNESS, p_height, length)})
+	return result
 
 func _arc_point(theta: float) -> Vector3:
 	return arc_centre + (forward * cos(theta) + _right * sin(theta)) * arc_radius

@@ -8,6 +8,7 @@ extends FrontScreen
 ## [section, key, Filipino, English, kind, options/range]
 const ROWS := {
 	"gameplay": [
+		["gameplay", "on_screen_controls", "Mga pindutan sa screen", "On-screen controls", "bool", null],
 		["gameplay", "danger_border", "Babala sa panganib", "Danger border", "bool", null],
 		["gameplay", "tag_assist", "Tulong sa taya", "Tag assist", "bool", null],
 		["gameplay", "camera_shake", "Yanig ng kamera", "Camera shake", "slider", [0.0, 1.0, 0.05]],

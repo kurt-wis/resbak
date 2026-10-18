@@ -23,19 +23,29 @@ const PATH := "res://data/tuning.tres"
 
 @export_group("Tagging")
 @export var tag_arc_deg := 45.0 ## either side of the lunge
+@export var tag_strip_fill_alpha := 0.12
+@export var tag_strip_attack_alpha := 0.18
+@export var tag_strip_outline_alpha := 0.9
+@export var tag_strip_outline_width := 0.025
+@export var tag_strip_half_width := 0.16 ## narrow straight sweep, expanded by the target body radius
+@export var tag_aim_drag_pixels := 22.0 ## reference UI pixels before manual selection
+@export var tag_aim_cancel_pixels := 210.0 ## legacy aim-pad extent (not a cancellation threshold)
+@export var tag_followthrough := 0.18
+@export var tag_contact_fraction := 0.55 ## source Tag clip pose at impact
+@export var tag_contact_height := 0.65 ## fraction of the tagged model height
+@export var hila_retract_time := 0.2 ## presentation only; rescue/pull ends immediately
 @export var tag_windup := 0.3 ## v0.2: a slower, readable hampas (spec 0.15)
-## Charged hampas (v0.2): hold Tag to charge, release to swing. A full charge takes
-## tag_charge_time and adds tag_charge_reach_bonus x reach; you move tag_charge_slow slower
-## while charging. A tap swings at once with the normal reach.
-@export var tag_charge_time := 0.8
-@export var tag_charge_reach_bonus := 0.6
-@export var tag_charge_slow := 0.35
 @export var tagged_freeze := 0.8
 @export var failed_tag_stumble := 0.5
 @export var danger_border_range := 10.0
 @export var tag_assist_range := 2.4
 @export var tag_assist_angle_deg := 30.0
 @export var tag_assist_turn_deg := 15.0
+## Touch can keep aiming at an acquired visible enemy while moving away. This is aim only.
+@export var touch_target_release_range := 3.0
+
+@export_group("Character presentation")
+@export var character_outline_pixels := 1.0
 
 @export_group("Bases")
 @export var base_ring_radius := 2.0
@@ -96,6 +106,11 @@ const PATH := "res://data/tuning.tres"
 @export var bot_retreat_range := 6.0
 @export var bot_pain_teammate_range := 15.0
 ## index 0 Madali, 1 Katamtaman, 2 Mahirap (spec § 11 table)
+## Per-attempt decision delay and post-Sabay sidestep break synchronized retry loops.
+@export var bot_tag_delay_min := PackedFloat32Array([0.12, 0.08, 0.04])
+@export var bot_tag_delay_max := PackedFloat32Array([0.28, 0.2, 0.14])
+@export var bot_sabay_reposition_min := 0.12
+@export var bot_sabay_reposition_max := 0.3
 @export var bot_reaction := PackedFloat32Array([0.6, 0.35, 0.2])
 @export var bot_retreat_ignore := PackedFloat32Array([0.3, 0.1, 0.0])
 @export var bot_skill_use := PackedFloat32Array([0.2, 0.5, 0.9])
@@ -114,3 +129,18 @@ static func get_default() -> Tuning:
 	if _cached == null:
 		_cached = load(PATH) as Tuning if ResourceLoader.exists(PATH) else Tuning.new()
 	return _cached
+
+@export_group("Free training")
+@export var training_reset_delay := 3.0
+@export var training_cooldown_scale := 0.5
+@export var training_dummy_distance := 3.0
+@export var training_dummy_spacing := 2.5
+
+@export_group("Skill aiming presentation")
+@export var skill_aim_pad_radius := 130.0
+@export var skill_preview_fill_alpha := 0.12
+@export var skill_preview_outline_alpha := 0.9
+@export var skill_preview_wall_alpha := 0.22
+@export var skill_preview_line_width := 0.045
+
+@export var touch_cancel_radius := 54.0

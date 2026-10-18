@@ -1,0 +1,4810 @@
+{
+  "nodes": [
+    {
+      "id": "g0",
+      "type": "group",
+      "label": "Community 0",
+      "x": 0,
+      "y": 0,
+      "width": 1760,
+      "height": 820,
+      "color": "1"
+    },
+    {
+      "id": "n_tools_build_hamog_moveset_rationale_1",
+      "type": "file",
+      "file": "Batang Hamog moveset authoring \u2014 Phase 1. Loads the current game-ready GLB\u2026.md",
+      "x": 20,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_rationale_184",
+      "type": "file",
+      "file": "Four ortho views, solid shading with a wireframe pass multiplied on top..md",
+      "x": 220,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_bystanders_rationale_52",
+      "type": "file",
+      "file": "Meshy rigs are authored in centimetres under a 0.01-scaled armature, which\u2026.md",
+      "x": 420,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_rationale_122",
+      "type": "file",
+      "file": "Unique animated channels (Blender 5 actions keep F-curves in layered\u2026.md",
+      "x": 620,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_rationale_169",
+      "type": "file",
+      "file": "Workbench renders ignore wireframe shading, so the wire pass swaps in a\u2026.md",
+      "x": 820,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_hamog_moveset_build_apply_pose",
+      "type": "file",
+      "file": "apply_pose().md",
+      "x": 1020,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_argparse",
+      "type": "file",
+      "file": "argparse.md",
+      "x": 1220,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_args",
+      "type": "file",
+      "file": "args().md",
+      "x": 1420,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_sanitize_asset_args",
+      "type": "file",
+      "file": "args()_1.md",
+      "x": 20,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_vehicle_props_bounds",
+      "type": "file",
+      "file": "bounds().md",
+      "x": 220,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_sanitize_asset_main_bounds",
+      "type": "file",
+      "file": "bounds()_1.md",
+      "x": 420,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_bpy",
+      "type": "file",
+      "file": "bpy.md",
+      "x": 620,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_batang_hamog_build",
+      "type": "file",
+      "file": "build().md",
+      "x": 820,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_bystanders_build",
+      "type": "file",
+      "file": "build()_1.md",
+      "x": 1020,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_hamog_moveset_build",
+      "type": "file",
+      "file": "build()_2.md",
+      "x": 1220,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_vehicle_props_build",
+      "type": "file",
+      "file": "build()_3.md",
+      "x": 1420,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_batang_hamog",
+      "type": "file",
+      "file": "build_batang_hamog.py.md",
+      "x": 20,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_bystanders",
+      "type": "file",
+      "file": "build_bystanders.py.md",
+      "x": 220,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_bystanders_rationale_1",
+      "type": "file",
+      "file": "build_bystanders.py - Meshy bystanders - game-ready Home-diorama characters\u2026.md",
+      "x": 420,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_hamog_moveset",
+      "type": "file",
+      "file": "build_hamog_moveset.py.md",
+      "x": 620,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_vehicle_props",
+      "type": "file",
+      "file": "build_vehicle_props.py.md",
+      "x": 820,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_vehicle_props_rationale_1",
+      "type": "file",
+      "file": "build_vehicle_props.py - Mathew's Meshy vehicles - game-ready Konstruksyon\u2026.md",
+      "x": 1020,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_check",
+      "type": "file",
+      "file": "check().md",
+      "x": 1220,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_clip_report",
+      "type": "file",
+      "file": "clip_report().md",
+      "x": 1420,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_hamog_moveset_build_euler_to_quat",
+      "type": "file",
+      "file": "euler_to_quat().md",
+      "x": 20,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_json",
+      "type": "file",
+      "file": "json.md",
+      "x": 220,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_load",
+      "type": "file",
+      "file": "load().md",
+      "x": 420,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_bystanders_log",
+      "type": "file",
+      "file": "log().md",
+      "x": 620,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_vehicle_props_log",
+      "type": "file",
+      "file": "log()_1.md",
+      "x": 820,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_sanitize_asset_log",
+      "type": "file",
+      "file": "log()_2.md",
+      "x": 1020,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_bystanders_main",
+      "type": "file",
+      "file": "main().md",
+      "x": 1220,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_main",
+      "type": "file",
+      "file": "main()_1.md",
+      "x": 1420,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_vehicle_props_main",
+      "type": "file",
+      "file": "main()_2.md",
+      "x": 20,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_main",
+      "type": "file",
+      "file": "main()_3.md",
+      "x": 220,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_sanitize_asset_main",
+      "type": "file",
+      "file": "main()_4.md",
+      "x": 420,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_mathutils",
+      "type": "file",
+      "file": "mathutils.md",
+      "x": 620,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_bystanders_measure",
+      "type": "file",
+      "file": "measure().md",
+      "x": 820,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_mesh_checks",
+      "type": "file",
+      "file": "mesh_checks().md",
+      "x": 1020,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_os",
+      "type": "file",
+      "file": "os.md",
+      "x": 1220,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_bystanders_pose_at",
+      "type": "file",
+      "file": "pose_at().md",
+      "x": 1420,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset",
+      "type": "file",
+      "file": "qc_asset.py.md",
+      "x": 20,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_rationale_1",
+      "type": "file",
+      "file": "qc_asset.py - Look at a model before calling it done a 4-view sheet plus hard\u2026.md",
+      "x": 220,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_render_sheet",
+      "type": "file",
+      "file": "render_sheet().md",
+      "x": 420,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_sanitize_asset",
+      "type": "file",
+      "file": "sanitize_asset.py.md",
+      "x": 620,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_sanitize_asset_rationale_1",
+      "type": "file",
+      "file": "sanitize_asset.py - Make a raw Meshy (or downloaded) PROP game-ready in one\u2026.md",
+      "x": 820,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_batang_hamog_build_set_bone",
+      "type": "file",
+      "file": "set_bone().md",
+      "x": 1020,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_set_wire",
+      "type": "file",
+      "file": "set_wire().md",
+      "x": 1220,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_hamog_moveset_build_shifted",
+      "type": "file",
+      "file": "shifted().md",
+      "x": 1420,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_batang_hamog_build_smooth_action",
+      "type": "file",
+      "file": "smooth_action().md",
+      "x": 20,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_hamog_moveset_build_smooth_action",
+      "type": "file",
+      "file": "smooth_action()_1.md",
+      "x": 220,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_sys",
+      "type": "file",
+      "file": "sys.md",
+      "x": 420,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_track_paths",
+      "type": "file",
+      "file": "track_paths().md",
+      "x": 620,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_bystanders_tris",
+      "type": "file",
+      "file": "tris().md",
+      "x": 820,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_qc_asset_world_bounds",
+      "type": "file",
+      "file": "world_bounds().md",
+      "x": 1020,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g1",
+      "type": "group",
+      "label": "Community 1",
+      "x": 1840,
+      "y": 0,
+      "width": 1540,
+      "height": 820,
+      "color": "2"
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_425",
+      "type": "file",
+      "file": "Bake, then lift any frame whose skinned mesh dips under the floor (a kid's big\u2026.md",
+      "x": 1860,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_412",
+      "type": "file",
+      "file": "Bake, then move each frame up or down so its lowest sole sits on the floor.\u2026.md",
+      "x": 2060,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_399",
+      "type": "file",
+      "file": "Bake, then shift the whole clip so its lowest sole touches the floor\u2026.md",
+      "x": 2260,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_334",
+      "type": "file",
+      "file": "Cancel a move's net travel, height change and spin so its last frame lands on\u2026.md",
+      "x": 2460,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_475",
+      "type": "file",
+      "file": "Chained the hero's own Idle with both arms held out to the sides, about\u2026.md",
+      "x": 2660,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_531",
+      "type": "file",
+      "file": "Evenly spaced BreakDance frames from the review camera, for the contact sheet..md",
+      "x": 2860,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_372",
+      "type": "file",
+      "file": "Lowest skinned-mesh point (armature space Z) on each of the first `count`\u2026.md",
+      "x": 3060,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_241",
+      "type": "file",
+      "file": "Meshy's auto-weights leave a few % of ShoulderNeck weight on vertices above\u2026.md",
+      "x": 1860,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_57",
+      "type": "file",
+      "file": "One clip `src` is relative to source_artmocap; `name` None = the file's only\u2026.md",
+      "x": 2060,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_548",
+      "type": "file",
+      "file": "Quarter top-down review sheet idle  walk  run, matching the game camera..md",
+      "x": 2260,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_733",
+      "type": "file",
+      "file": "Rows = heroes, columns = dance frames, packed into one PNG for review..md",
+      "x": 2460,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tag_charge_animation",
+      "type": "file",
+      "file": "TagCharge Animation.md",
+      "x": 2660,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_517",
+      "type": "file",
+      "file": "Uprocks wander up to a metre; centre the routine and shrink its floor travel so\u2026.md",
+      "x": 2860,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_365",
+      "type": "file",
+      "file": "Vertices of mesh `o` skinned mostly ( 50 %) to foot and toe bones..md",
+      "x": 3060,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_592",
+      "type": "file",
+      "file": "Write `text` into an (H, W, 4) top-down image..md",
+      "x": 1860,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_285",
+      "type": "file",
+      "file": "Write offset frames onto `arm` as a new action named `name`..md",
+      "x": 2060,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_blend_frame",
+      "type": "file",
+      "file": "_blend_frame().md",
+      "x": 2260,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_contact_sheet",
+      "type": "file",
+      "file": "_contact_sheet().md",
+      "x": 2460,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_mesh_lows",
+      "type": "file",
+      "file": "_mesh_lows().md",
+      "x": 2660,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_sole_mask",
+      "type": "file",
+      "file": "_sole_mask().md",
+      "x": 2860,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_stamp",
+      "type": "file",
+      "file": "_stamp().md",
+      "x": 3060,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_350",
+      "type": "file",
+      "file": "a then b, with the last `fade` frames of a cross-faded into the first `fade` of\u2026.md",
+      "x": 1860,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_bake",
+      "type": "file",
+      "file": "bake().md",
+      "x": 2060,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_bake_grounded",
+      "type": "file",
+      "file": "bake_grounded().md",
+      "x": 2260,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_bake_on_floor",
+      "type": "file",
+      "file": "bake_on_floor().md",
+      "x": 2460,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_bake_planted",
+      "type": "file",
+      "file": "bake_planted().md",
+      "x": 2660,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_breakdance",
+      "type": "file",
+      "file": "breakdance().md",
+      "x": 2860,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_build",
+      "type": "file",
+      "file": "build()_4.md",
+      "x": 3060,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes",
+      "type": "file",
+      "file": "build_heroes.py.md",
+      "x": 1860,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_1",
+      "type": "file",
+      "file": "build_heroes.py - Every clip of the five Meshy-rigged heroes, from one clip\u2026.md",
+      "x": 2060,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_chained",
+      "type": "file",
+      "file": "chained().md",
+      "x": 2260,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_clip",
+      "type": "file",
+      "file": "clip().md",
+      "x": 2460,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_clip_order",
+      "type": "file",
+      "file": "clip_order().md",
+      "x": 2660,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_concat",
+      "type": "file",
+      "file": "concat().md",
+      "x": 2860,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_export",
+      "type": "file",
+      "file": "export().md",
+      "x": 3060,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_import_hero",
+      "type": "file",
+      "file": "import_hero().md",
+      "x": 1860,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_keep_on_pad",
+      "type": "file",
+      "file": "keep_on_pad().md",
+      "x": 2060,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_log",
+      "type": "file",
+      "file": "log()_3.md",
+      "x": 2260,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_main",
+      "type": "file",
+      "file": "main()_5.md",
+      "x": 2460,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_ordered_bones",
+      "type": "file",
+      "file": "ordered_bones().md",
+      "x": 2660,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_remove_drift",
+      "type": "file",
+      "file": "remove_drift().md",
+      "x": 2860,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_render_dance_strip",
+      "type": "file",
+      "file": "render_dance_strip().md",
+      "x": 3060,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_render_moves_sheet",
+      "type": "file",
+      "file": "render_moves_sheet().md",
+      "x": 1860,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_render_sheet",
+      "type": "file",
+      "file": "render_sheet()_1.md",
+      "x": 2060,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_605",
+      "type": "file",
+      "file": "rendersheroes_id_moves.png `per_clip` evenly spaced frames of every clip\u2026.md",
+      "x": 2260,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_reset",
+      "type": "file",
+      "file": "reset().md",
+      "x": 2460,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rest_data",
+      "type": "file",
+      "file": "rest_data().md",
+      "x": 2660,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rigid_head",
+      "type": "file",
+      "file": "rigid_head().md",
+      "x": 2860,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_ordered_bones_walk",
+      "type": "file",
+      "file": "walk().md",
+      "x": 3060,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "label": "Community 2",
+      "x": 3460,
+      "y": 0,
+      "width": 1540,
+      "height": 820,
+      "color": "3"
+    },
+    {
+      "id": "n_tools_build_face_cards_rationale_192",
+      "type": "file",
+      "file": "A (nu+1) x (nv+1) grid of w x h metres centred on (cx, cz), rotated tilt_deg in\u2026.md",
+      "x": 3480,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_rationale_51",
+      "type": "file",
+      "file": "FFT brick-wall-ish lowpass; fast for long buffers..md",
+      "x": 3680,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_rationale_73",
+      "type": "file",
+      "file": "Karplus-Strong string, block-vectorised..md",
+      "x": 3880,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_rationale_172",
+      "type": "file",
+      "file": "Median skin colour on a ring just outside an ellipse (ra, rb) around (cx, cz);\u2026.md",
+      "x": 4080,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_rationale_1",
+      "type": "file",
+      "file": "Synthesises the Home-diorama audio into assetsaudiohome (numpy only, no\u2026.md",
+      "x": 4280,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_arc_d",
+      "type": "file",
+      "file": "arc_d().md",
+      "x": 4480,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_atlas",
+      "type": "file",
+      "file": "atlas().md",
+      "x": 4680,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_blank",
+      "type": "file",
+      "file": "blank().md",
+      "x": 3480,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_build",
+      "type": "file",
+      "file": "build()_5.md",
+      "x": 3680,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_build_chatter",
+      "type": "file",
+      "file": "build_chatter().md",
+      "x": 3880,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards",
+      "type": "file",
+      "file": "build_face_cards.py.md",
+      "x": 4080,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_rationale_1",
+      "type": "file",
+      "file": "build_face_cards.py - procedural face cards for the Home diorama (talking\u2026.md",
+      "x": 4280,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_build_horn",
+      "type": "file",
+      "file": "build_horn().md",
+      "x": 4480,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_build_jeep_pass",
+      "type": "file",
+      "file": "build_jeep_pass().md",
+      "x": 4680,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_build_music",
+      "type": "file",
+      "file": "build_music().md",
+      "x": 3480,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_build_ui",
+      "type": "file",
+      "file": "build_ui().md",
+      "x": 3680,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_cell_grid",
+      "type": "file",
+      "file": "cell_grid().md",
+      "x": 3880,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_cov",
+      "type": "file",
+      "file": "cov().md",
+      "x": 4080,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_ell_d",
+      "type": "file",
+      "file": "ell_d().md",
+      "x": 4280,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_ell_k",
+      "type": "file",
+      "file": "ell_k().md",
+      "x": 4480,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_env_ad",
+      "type": "file",
+      "file": "env_ad().md",
+      "x": 4680,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_export_cards",
+      "type": "file",
+      "file": "export_cards().md",
+      "x": 3480,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_feather",
+      "type": "file",
+      "file": "feather().md",
+      "x": 3680,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_feature_xz",
+      "type": "file",
+      "file": "feature_xz().md",
+      "x": 3880,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_highpass_fast",
+      "type": "file",
+      "file": "highpass_fast().md",
+      "x": 4080,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_horn_note",
+      "type": "file",
+      "file": "horn_note().md",
+      "x": 4280,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_lid_frame",
+      "type": "file",
+      "file": "lid_frame().md",
+      "x": 4480,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_lowpass",
+      "type": "file",
+      "file": "lowpass().md",
+      "x": 4680,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_main",
+      "type": "file",
+      "file": "main()_7.md",
+      "x": 3480,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio",
+      "type": "file",
+      "file": "make_home_audio.py.md",
+      "x": 3680,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_mathutils_bvhtree",
+      "type": "file",
+      "file": "mathutils_bvhtree.md",
+      "x": 3880,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_mathutils_interpolate",
+      "type": "file",
+      "file": "mathutils_interpolate.md",
+      "x": 4080,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_mouth_frame",
+      "type": "file",
+      "file": "mouth_frame().md",
+      "x": 4280,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_mtof",
+      "type": "file",
+      "file": "mtof().md",
+      "x": 4480,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_numpy",
+      "type": "file",
+      "file": "numpy.md",
+      "x": 4680,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_onepole_fast",
+      "type": "file",
+      "file": "onepole_fast().md",
+      "x": 3480,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_over",
+      "type": "file",
+      "file": "over().md",
+      "x": 3680,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_pluck",
+      "type": "file",
+      "file": "pluck().md",
+      "x": 3880,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_project_grid",
+      "type": "file",
+      "file": "project_grid().md",
+      "x": 4080,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_sample_skin",
+      "type": "file",
+      "file": "sample_skin().md",
+      "x": 4280,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_save_png",
+      "type": "file",
+      "file": "save_png().md",
+      "x": 4480,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_wave",
+      "type": "file",
+      "file": "wave.md",
+      "x": 4680,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_audio_write_wav",
+      "type": "file",
+      "file": "write_wav().md",
+      "x": 3480,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "label": "Community 3",
+      "x": 5080,
+      "y": 0,
+      "width": 1540,
+      "height": 720,
+      "color": "4"
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_145",
+      "type": "file",
+      "file": "RRGGBB' in sRGB - linear floats for Blender's colour sockets..md",
+      "x": 5100,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_371",
+      "type": "file",
+      "file": "Blue 5-gallon refill bottle. Grip at the neck ring, the body hangs below it\u2026.md",
+      "x": 5300,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_171",
+      "type": "file",
+      "file": "Centre on XY and ground on Z = 0 (each optional a prop whose origin is its\u2026.md",
+      "x": 5500,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_306",
+      "type": "file",
+      "file": "Concrete sidewalk with 2 m tiles and a raised curb on the +Y edge (the road\u2026.md",
+      "x": 5700,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_193",
+      "type": "file",
+      "file": "Low plastic monobloc-style stool, the kind every sari-sari store has. height =\u2026.md",
+      "x": 5900,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_151",
+      "type": "file",
+      "file": "One primitive baked into world space. kind cube  cyl  cone  sphere. size =\u2026.md",
+      "x": 6100,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_284",
+      "type": "file",
+      "file": "Painted sign board with raised letters on its -Y (front) face. Hangs with its\u2026.md",
+      "x": 6300,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_344",
+      "type": "file",
+      "file": "Pamaypay a round woven fan on a short handle. Grip at the handle, the disc\u2026.md",
+      "x": 5100,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_206",
+      "type": "file",
+      "file": "Plank bench with a back rest, 1.7 m long, seat top 0.45 m. Sitters face -Y\u2026.md",
+      "x": 5300,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_221",
+      "type": "file",
+      "file": "Red plastic bottle crate with a dozen brown glass bottles; works as a side\u2026.md",
+      "x": 5500,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_384",
+      "type": "file",
+      "file": "School backpack. Origin on the back panel's outer face, so it sits against the\u2026.md",
+      "x": 5700,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_249",
+      "type": "file",
+      "file": "Three sagging cables hung between two pole tops `span` m apart along X,\u2026.md",
+      "x": 5900,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_354",
+      "type": "file",
+      "file": "Umbrella (payong), canopy open overhead. The grip is the origin; the shaft\u2026.md",
+      "x": 6100,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_236",
+      "type": "file",
+      "file": "Wooden utility pole, 7 m, two crossarms with insulators. The wires are a\u2026.md",
+      "x": 6300,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_text_mesh",
+      "type": "file",
+      "file": "_text_mesh().md",
+      "x": 5100,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_bounds",
+      "type": "file",
+      "file": "bounds()_2.md",
+      "x": 5300,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_backpack",
+      "type": "file",
+      "file": "build_backpack().md",
+      "x": 5500,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_bench",
+      "type": "file",
+      "file": "build_bench().md",
+      "x": 5700,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_bottle_crate",
+      "type": "file",
+      "file": "build_bottle_crate().md",
+      "x": 5900,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props",
+      "type": "file",
+      "file": "build_home_props.py.md",
+      "x": 6100,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_rationale_1",
+      "type": "file",
+      "file": "build_home_props.py - the set dressing for the Home diorama (2026-10-17). Two\u2026.md",
+      "x": 6300,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_meshy",
+      "type": "file",
+      "file": "build_meshy().md",
+      "x": 5100,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_palamig_bag",
+      "type": "file",
+      "file": "build_palamig_bag().md",
+      "x": 5300,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_paper_fan",
+      "type": "file",
+      "file": "build_paper_fan().md",
+      "x": 5500,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_payong",
+      "type": "file",
+      "file": "build_payong().md",
+      "x": 5700,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_power_pole",
+      "type": "file",
+      "file": "build_power_pole().md",
+      "x": 5900,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_sidewalk",
+      "type": "file",
+      "file": "build_sidewalk().md",
+      "x": 6100,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_sign",
+      "type": "file",
+      "file": "build_sign().md",
+      "x": 6300,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_soda_bottle",
+      "type": "file",
+      "file": "build_soda_bottle().md",
+      "x": 5100,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_stool",
+      "type": "file",
+      "file": "build_stool().md",
+      "x": 5300,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_water_gallon",
+      "type": "file",
+      "file": "build_water_gallon().md",
+      "x": 5500,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_build_wire_span",
+      "type": "file",
+      "file": "build_wire_span().md",
+      "x": 5700,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_export",
+      "type": "file",
+      "file": "export()_1.md",
+      "x": 5900,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_fin",
+      "type": "file",
+      "file": "fin().md",
+      "x": 6100,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_fresh",
+      "type": "file",
+      "file": "fresh().md",
+      "x": 6300,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_hexc",
+      "type": "file",
+      "file": "hexc().md",
+      "x": 5100,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_log",
+      "type": "file",
+      "file": "log()_4.md",
+      "x": 5300,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_main",
+      "type": "file",
+      "file": "main()_8.md",
+      "x": 5500,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_mat",
+      "type": "file",
+      "file": "mat().md",
+      "x": 5700,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_prim",
+      "type": "file",
+      "file": "prim().md",
+      "x": 5900,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_tris",
+      "type": "file",
+      "file": "tris()_1.md",
+      "x": 6100,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_home_props_write_tscn",
+      "type": "file",
+      "file": "write_tscn().md",
+      "x": 6300,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g4",
+      "type": "group",
+      "label": "Community 4",
+      "x": 6700,
+      "y": 0,
+      "width": 1540,
+      "height": 720,
+      "color": "5"
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_155",
+      "type": "file",
+      "file": "Delete a loaded source rig and its actions..md",
+      "x": 6720,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_133",
+      "type": "file",
+      "file": "Import a clip file; return (armature, action) its active clip, else its\u2026.md",
+      "x": 6920,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_95",
+      "type": "file",
+      "file": "Import a clip file; return (armature, new actions, file fps). Meshes are\u2026.md",
+      "x": 7120,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_142",
+      "type": "file",
+      "file": "Import a multi-clip file (a Meshy moves GLB, the Quaternius library); return\u2026.md",
+      "x": 7320,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_405",
+      "type": "file",
+      "file": "Make a clip loop seamlessly ease the last `blend` frames into frame 0 (slerp\u2026.md",
+      "x": 7520,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_178",
+      "type": "file",
+      "file": "Mean rotation difference in degrees between two offset frames' bones..md",
+      "x": 7720,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_213",
+      "type": "file",
+      "file": "Offset frames (rot dict, hips delta) in tgt_arm's armature space, ready for\u2026.md",
+      "x": 7920,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_222",
+      "type": "file",
+      "file": "Piecewise-linear lookup in (x, y), ... (sorted by x), clamped at the ends..md",
+      "x": 6720,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_350",
+      "type": "file",
+      "file": "Remove the clip's horizontal root travel; vertical bob and jumps stay. loop \u2026.md",
+      "x": 6920,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_232",
+      "type": "file",
+      "file": "Retarget `act` (played on rig `src`) onto `tgt_arm`; return (rot dict, hips\u2026.md",
+      "x": 7120,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_163",
+      "type": "file",
+      "file": "Spacing of the clip's own keys in scene frames (Meshy 30 fps keys on a 24 fps\u2026.md",
+      "x": 7320,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_392",
+      "type": "file",
+      "file": "Turn the whole clip about Z so `bone` (the chest) faces -Y on average (auto),\u2026.md",
+      "x": 7520,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_196",
+      "type": "file",
+      "file": "World rotation about Z that turns the source rig to face -Y (toes ahead of\u2026.md",
+      "x": 7720,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_heading",
+      "type": "file",
+      "file": "_heading().md",
+      "x": 7920,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_import",
+      "type": "file",
+      "file": "_import().md",
+      "x": 6720,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_interp",
+      "type": "file",
+      "file": "_interp().md",
+      "x": 6920,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_key_step",
+      "type": "file",
+      "file": "_key_step().md",
+      "x": 7120,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_set_action",
+      "type": "file",
+      "file": "_set_action().md",
+      "x": 7320,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_yaw_to_front",
+      "type": "file",
+      "file": "_yaw_to_front().md",
+      "x": 7520,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_discard",
+      "type": "file",
+      "file": "discard().md",
+      "x": 7720,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_face_front",
+      "type": "file",
+      "file": "face_front().md",
+      "x": 7920,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_in_place",
+      "type": "file",
+      "file": "in_place().md",
+      "x": 6720,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_is_meshy_rig",
+      "type": "file",
+      "file": "is_meshy_rig().md",
+      "x": 6920,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_is_smpl_rig",
+      "type": "file",
+      "file": "is_smpl_rig().md",
+      "x": 7120,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_load_clips",
+      "type": "file",
+      "file": "load_clips().md",
+      "x": 7320,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_load_source",
+      "type": "file",
+      "file": "load_source().md",
+      "x": 7520,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_log",
+      "type": "file",
+      "file": "log()_5.md",
+      "x": 7720,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_loop_blend",
+      "type": "file",
+      "file": "loop_blend().md",
+      "x": 7920,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_math",
+      "type": "file",
+      "file": "math.md",
+      "x": 6720,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_mixamo_name",
+      "type": "file",
+      "file": "mixamo_name().md",
+      "x": 6920,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_75",
+      "type": "file",
+      "file": "mixamorig5LeftArm' - 'mixamorigLeftArm'; 'upperarm_l' -\u2026.md",
+      "x": 7120,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_mocap_offsets",
+      "type": "file",
+      "file": "mocap_offsets().md",
+      "x": 7320,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_offsets_from_rig",
+      "type": "file",
+      "file": "offsets_from_rig().md",
+      "x": 7520,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_pose_distance",
+      "type": "file",
+      "file": "pose_distance().md",
+      "x": 7720,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip",
+      "type": "file",
+      "file": "retarget_clip.py.md",
+      "x": 7920,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_rationale_1",
+      "type": "file",
+      "file": "retarget_clip.py - Put a downloaded animation (Meshy GLB, Mixamo FBX,\u2026.md",
+      "x": 6720,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_retarget_table",
+      "type": "file",
+      "file": "retarget_table().md",
+      "x": 6920,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_offsets_from_rig_sample",
+      "type": "file",
+      "file": "sample().md",
+      "x": 7120,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_retarget_clip_offsets_from_rig_src_dir",
+      "type": "file",
+      "file": "src_dir().md",
+      "x": 7320,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_heroes_rationale_442",
+      "type": "file",
+      "file": "{our clip name offset frames}, each source file loaded once..md",
+      "x": 7520,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g5",
+      "type": "group",
+      "label": "Community 5",
+      "x": 8320,
+      "y": 0,
+      "width": 1320,
+      "height": 720,
+      "color": "6"
+    },
+    {
+      "id": "n_tools_build_jm_botsog_rationale_1389",
+      "type": "file",
+      "file": "NOTE Mixamo shin bends + use x negative as spec (backward bend). Keep as is..md",
+      "x": 8340,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_rationale_246",
+      "type": "file",
+      "file": "NOTE Right=-X, Left=+X per convention.md",
+      "x": 8540,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_rationale_1",
+      "type": "file",
+      "file": "JM (Botsog) procedural builder \u2014 pure bpy, phase-by-phase, headless-safe. Faces\u2026.md",
+      "x": 8740,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_add_chalk_to_mat",
+      "type": "file",
+      "file": "add_chalk_to_mat().md",
+      "x": 8940,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase4_shaders_assign",
+      "type": "file",
+      "file": "assign().md",
+      "x": 9140,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_bmesh_scale_lower_cheeks",
+      "type": "file",
+      "file": "bmesh_scale_lower_cheeks().md",
+      "x": 9340,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_build",
+      "type": "file",
+      "file": "build()_6.md",
+      "x": 8340,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog",
+      "type": "file",
+      "file": "build_jm_botsog.py.md",
+      "x": 8540,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase6_anim_clear_pose",
+      "type": "file",
+      "file": "clear_pose().md",
+      "x": 8740,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_clear_scene",
+      "type": "file",
+      "file": "clear_scene().md",
+      "x": 8940,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_create_prim",
+      "type": "file",
+      "file": "create_prim().md",
+      "x": 9140,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_deselect_all",
+      "type": "file",
+      "file": "deselect_all().md",
+      "x": 9340,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_do_render",
+      "type": "file",
+      "file": "do_render().md",
+      "x": 8340,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_hex_to_rgb",
+      "type": "file",
+      "file": "hex_to_rgb().md",
+      "x": 8540,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase6_anim_key_all",
+      "type": "file",
+      "file": "key_all().md",
+      "x": 8740,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase2_body_limb_cyl",
+      "type": "file",
+      "file": "limb_cyl().md",
+      "x": 8940,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_log",
+      "type": "file",
+      "file": "log()_6.md",
+      "x": 9140,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_make_principled",
+      "type": "file",
+      "file": "make_principled().md",
+      "x": 9340,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase5_rig_new_bone",
+      "type": "file",
+      "file": "new_bone().md",
+      "x": 8340,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase1_setup",
+      "type": "file",
+      "file": "phase1_setup().md",
+      "x": 8540,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase2_body",
+      "type": "file",
+      "file": "phase2_body().md",
+      "x": 8740,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase3_apparel",
+      "type": "file",
+      "file": "phase3_apparel().md",
+      "x": 8940,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase4_shaders",
+      "type": "file",
+      "file": "phase4_shaders().md",
+      "x": 9140,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase5_rig",
+      "type": "file",
+      "file": "phase5_rig().md",
+      "x": 9340,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase6_anim",
+      "type": "file",
+      "file": "phase6_anim().md",
+      "x": 8340,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase7_nla_export",
+      "type": "file",
+      "file": "phase7_nla_export().md",
+      "x": 8540,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase_render",
+      "type": "file",
+      "file": "phase_render().md",
+      "x": 8740,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_set_active",
+      "type": "file",
+      "file": "set_active().md",
+      "x": 8940,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_set_cam",
+      "type": "file",
+      "file": "set_cam().md",
+      "x": 9140,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase6_anim_set_euler",
+      "type": "file",
+      "file": "set_euler().md",
+      "x": 9340,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase6_anim_set_loc",
+      "type": "file",
+      "file": "set_loc().md",
+      "x": 8340,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_phase5_rig_set_rigid",
+      "type": "file",
+      "file": "set_rigid().md",
+      "x": 8540,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_shade_smooth_obj",
+      "type": "file",
+      "file": "shade_smooth_obj().md",
+      "x": 8740,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_smooth_action",
+      "type": "file",
+      "file": "smooth_action()_2.md",
+      "x": 8940,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_jm_botsog_solid_subdiv",
+      "type": "file",
+      "file": "solid_subdiv().md",
+      "x": 9140,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g6",
+      "type": "group",
+      "label": "Community 6",
+      "x": 0,
+      "y": 900,
+      "width": 880,
+      "height": 520,
+      "color": "1"
+    },
+    {
+      "id": "n_tools_build_sand_castle_rationale_55",
+      "type": "file",
+      "file": "Apply transforms, jitter the verts a little (hand-patted sand), flat-shade,\u2026.md",
+      "x": 20,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_rationale_72",
+      "type": "file",
+      "file": "Cylinder (or tapered cylinder) standing on z0..md",
+      "x": 220,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_bmesh",
+      "type": "file",
+      "file": "bmesh.md",
+      "x": 420,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_box",
+      "type": "file",
+      "file": "box().md",
+      "x": 620,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_build",
+      "type": "file",
+      "file": "build()_7.md",
+      "x": 20,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle",
+      "type": "file",
+      "file": "build_sand_castle.py.md",
+      "x": 220,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_rationale_1",
+      "type": "file",
+      "file": "build_sand_castle.py - Procedural sand castle the Konstruksyon base prop\u2026.md",
+      "x": 420,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_cone",
+      "type": "file",
+      "file": "cone().md",
+      "x": 620,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_cyl",
+      "type": "file",
+      "file": "cyl().md",
+      "x": 20,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_export",
+      "type": "file",
+      "file": "export()_2.md",
+      "x": 220,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_finish",
+      "type": "file",
+      "file": "finish().md",
+      "x": 420,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_log",
+      "type": "file",
+      "file": "log()_7.md",
+      "x": 620,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_material",
+      "type": "file",
+      "file": "material().md",
+      "x": 20,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_srgb",
+      "type": "file",
+      "file": "srgb().md",
+      "x": 220,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_sand_castle_wipe",
+      "type": "file",
+      "file": "wipe().md",
+      "x": 420,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g7",
+      "type": "group",
+      "label": "Community 7",
+      "x": 1840,
+      "y": 900,
+      "width": 880,
+      "height": 520,
+      "color": "2"
+    },
+    {
+      "id": "n_agawan_base",
+      "type": "file",
+      "file": "Agawan Base.md",
+      "x": 1860,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_readme",
+      "type": "file",
+      "file": "Archive README.md",
+      "x": 2060,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_claude_md",
+      "type": "file",
+      "file": "CLAUDE.md",
+      "x": 2260,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_01_jm_botsog",
+      "type": "file",
+      "file": "Character Dossier JM (Botsog).md",
+      "x": 2460,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_02_nene",
+      "type": "file",
+      "file": "Character Dossier Nene.md",
+      "x": 1860,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_decisions",
+      "type": "file",
+      "file": "Decision log.md",
+      "x": 2060,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_glossary",
+      "type": "file",
+      "file": "Glossary.md",
+      "x": 2260,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_match_host",
+      "type": "file",
+      "file": "MatchHost.md",
+      "x": 2460,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_resbak",
+      "type": "file",
+      "file": "RESBAK Design Specification (Legacy).md",
+      "x": 1860,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_readme",
+      "type": "file",
+      "file": "RESBAK docs index.md",
+      "x": 2060,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_resbak_md",
+      "type": "file",
+      "file": "RESBAK_1.md",
+      "x": 2260,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_architecture_md",
+      "type": "file",
+      "file": "architecture_1.md",
+      "x": 2460,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_pipelines_blender_md",
+      "type": "file",
+      "file": "blender.md",
+      "x": 1860,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_status_md",
+      "type": "file",
+      "file": "status_1.md",
+      "x": 2060,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g8",
+      "type": "group",
+      "label": "Community 8",
+      "x": 3460,
+      "y": 900,
+      "width": 880,
+      "height": 520,
+      "color": "3"
+    },
+    {
+      "id": "n_tools_make_home_ground_rationale_42",
+      "type": "file",
+      "file": "Calls fn(dx, dy) for the 3x3 neighbours so shapes crossing an edge wrap..md",
+      "x": 3480,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ground_rationale_1",
+      "type": "file",
+      "file": "Home diorama ground and backdrop textures (PIL + numpy only, deterministic).\u2026.md",
+      "x": 3680,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ground_rationale_22",
+      "type": "file",
+      "file": "Seamless value noise in 0..1 (cosine interpolation on a wrapping lattice)..md",
+      "x": 3880,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ground_ground_concrete_crack",
+      "type": "file",
+      "file": "crack().md",
+      "x": 4080,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ground_facade",
+      "type": "file",
+      "file": "facade().md",
+      "x": 3480,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ground_ground_concrete",
+      "type": "file",
+      "file": "ground_concrete().md",
+      "x": 3680,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ground_ground_dirt",
+      "type": "file",
+      "file": "ground_dirt().md",
+      "x": 3880,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ground_main",
+      "type": "file",
+      "file": "main()_9.md",
+      "x": 4080,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ground",
+      "type": "file",
+      "file": "make_home_ground.py.md",
+      "x": 3480,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ground_periodic_noise",
+      "type": "file",
+      "file": "periodic_noise().md",
+      "x": 3680,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_random",
+      "type": "file",
+      "file": "random.md",
+      "x": 3880,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ground_shade",
+      "type": "file",
+      "file": "shade().md",
+      "x": 4080,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ground_wrap_draw",
+      "type": "file",
+      "file": "wrap_draw().md",
+      "x": 3480,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g9",
+      "type": "group",
+      "label": "Community 9",
+      "x": 5080,
+      "y": 900,
+      "width": 880,
+      "height": 420,
+      "color": "4"
+    },
+    {
+      "id": "n_docs_archive_characters_04_nathan_buga",
+      "type": "file",
+      "file": "BUGA!.md",
+      "x": 5100,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_03_batang_hamog_batang_hamog",
+      "type": "file",
+      "file": "Batang Hamog.md",
+      "x": 5300,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_03_batang_hamog_dire_diretso",
+      "type": "file",
+      "file": "DIRE-DIRETSO.md",
+      "x": 5500,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_03_batang_hamog_harurot",
+      "type": "file",
+      "file": "HARUROT!.md",
+      "x": 5700,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_03_batang_hamog_lusot",
+      "type": "file",
+      "file": "LUSOT!.md",
+      "x": 5100,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_04_nathan_may_tira_pa",
+      "type": "file",
+      "file": "MAY TIRA PA!.md",
+      "x": 5300,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_04_nathan_nathan",
+      "type": "file",
+      "file": "Nathan.md",
+      "x": 5500,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_04_nathan_ubo_ubo",
+      "type": "file",
+      "file": "UBO! UBO!.md",
+      "x": 5700,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_scripts_runtime_batang_hamog_gd",
+      "type": "file",
+      "file": "batang_hamog.gd.md",
+      "x": 5100,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_pipelines_assets_characters_batang_hamog_glb",
+      "type": "file",
+      "file": "batang_hamog.glb.md",
+      "x": 5300,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g10",
+      "type": "group",
+      "label": "Community 10",
+      "x": 6700,
+      "y": 900,
+      "width": 660,
+      "height": 420,
+      "color": "5"
+    },
+    {
+      "id": "n_tools_make_home_ui_rationale_1",
+      "type": "file",
+      "file": "Draws the Home screen's cardboard skins into assetsuihome (numpy + PIL only,\u2026.md",
+      "x": 6720,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ui_cardboard",
+      "type": "file",
+      "file": "cardboard().md",
+      "x": 6920,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ui_main",
+      "type": "file",
+      "file": "main()_6.md",
+      "x": 7120,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ui",
+      "type": "file",
+      "file": "make_home_ui.py.md",
+      "x": 6720,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_pil",
+      "type": "file",
+      "file": "pil.md",
+      "x": 6920,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ui_tape",
+      "type": "file",
+      "file": "tape().md",
+      "x": 7120,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_make_home_ui_value_noise",
+      "type": "file",
+      "file": "value_noise().md",
+      "x": 6720,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g11",
+      "type": "group",
+      "label": "Community 11",
+      "x": 8320,
+      "y": 900,
+      "width": 660,
+      "height": 420,
+      "color": "6"
+    },
+    {
+      "id": "n_tools_build_face_cards_skin_init",
+      "type": "file",
+      "file": "dot-__init__().md",
+      "x": 8340,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_skin_image",
+      "type": "file",
+      "file": "dot-_image().md",
+      "x": 8540,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_skin_tri_poly",
+      "type": "file",
+      "file": "dot-_tri_poly().md",
+      "x": 8740,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_skin_cast",
+      "type": "file",
+      "file": "dot-cast().md",
+      "x": 8340,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_rationale_122",
+      "type": "file",
+      "file": "Nearest front-facing surface under (x, z) from -Y. Returns (pos, normal, rgb)\u2026.md",
+      "x": 8540,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_skin",
+      "type": "file",
+      "file": "Skin.md",
+      "x": 8740,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tools_build_face_cards_rationale_72",
+      "type": "file",
+      "file": "The hero's skinned meshes in rest pose ray-cast a point on the face, get\u2026.md",
+      "x": 8340,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g12",
+      "type": "group",
+      "label": "Community 12",
+      "x": 0,
+      "y": 1500,
+      "width": 660,
+      "height": 400,
+      "color": "1"
+    },
+    {
+      "id": "n_scripts_ui_frontend_hero_picker",
+      "type": "file",
+      "file": "Hero Picker UI.md",
+      "x": 20,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_plans_2026_10_17_home_diorama",
+      "type": "file",
+      "file": "Home Diorama Plan.md",
+      "x": 220,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_scripts_tests_suites_home",
+      "type": "file",
+      "file": "Home Test Suite.md",
+      "x": 420,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_assets_props_vehicles_jeepney",
+      "type": "file",
+      "file": "Jeepney Asset.md",
+      "x": 20,
+      "y": 1660,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_assets_characters_bystanders_tindera",
+      "type": "file",
+      "file": "Tindera Bystander.md",
+      "x": 220,
+      "y": 1660,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g13",
+      "type": "group",
+      "label": "Community 13",
+      "x": 1840,
+      "y": 1500,
+      "width": 660,
+      "height": 400,
+      "color": "2"
+    },
+    {
+      "id": "n_docs_archive_gameplay_agawan_base_rules_agawan_base",
+      "type": "file",
+      "file": "Agawan Base Rules.md",
+      "x": 1860,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_05_inday_ihip",
+      "type": "file",
+      "file": "IHIP!.md",
+      "x": 2060,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_05_inday_inday",
+      "type": "file",
+      "file": "Inday.md",
+      "x": 2260,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_05_inday_sagip",
+      "type": "file",
+      "file": "SAGIP!.md",
+      "x": 1860,
+      "y": 1660,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_archive_characters_05_inday_takbo_na",
+      "type": "file",
+      "file": "TAKBO NA!.md",
+      "x": 2060,
+      "y": 1660,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g14",
+      "type": "group",
+      "label": "Community 14",
+      "x": 3460,
+      "y": 1500,
+      "width": 660,
+      "height": 400,
+      "color": "3"
+    },
+    {
+      "id": "n_jail_chain_system",
+      "type": "file",
+      "file": "Jail Chain Presentation.md",
+      "x": 3480,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_meshy_api",
+      "type": "file",
+      "file": "Meshy MCP Server  API.md",
+      "x": 3680,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_plans_2026_10_17_konstruksyon_remaining",
+      "type": "file",
+      "file": "Plan Konstruksyon overhaul, remaining work (2026-10-17).md",
+      "x": 3880,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_scripts_match_hero_visual",
+      "type": "file",
+      "file": "hero_visual.gd.md",
+      "x": 3480,
+      "y": 1660,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_scripts_tests_integration_test",
+      "type": "file",
+      "file": "integration_test.gd.md",
+      "x": 3680,
+      "y": 1660,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g15",
+      "type": "group",
+      "label": "Community 15",
+      "x": 5080,
+      "y": 1500,
+      "width": 600,
+      "height": 400,
+      "color": "4"
+    },
+    {
+      "id": "n_scripts_autoload_audio",
+      "type": "file",
+      "file": "Audio Autoload.md",
+      "x": 5100,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_plans_2026_10_17_konstruksyon_remaining_report",
+      "type": "file",
+      "file": "Konstruksyon Remaining Report.md",
+      "x": 5300,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_scripts_match_match_view",
+      "type": "file",
+      "file": "match_view.gd.md",
+      "x": 5100,
+      "y": 1660,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_scripts_match_vfx",
+      "type": "file",
+      "file": "vfx.gd.md",
+      "x": 5300,
+      "y": 1660,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g16",
+      "type": "group",
+      "label": "Community 16",
+      "x": 6700,
+      "y": 1500,
+      "width": 600,
+      "height": 400,
+      "color": "5"
+    },
+    {
+      "id": "n_godot_engine",
+      "type": "file",
+      "file": "Godot Engine.md",
+      "x": 6720,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_addons_meshy_godot_plugin_readme",
+      "type": "file",
+      "file": "Meshy Godot Plugin README.md",
+      "x": 6920,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_meshy_ai",
+      "type": "file",
+      "file": "Meshy.ai.md",
+      "x": 6720,
+      "y": 1660,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g17",
+      "type": "group",
+      "label": "Community 17",
+      "x": 8320,
+      "y": 1500,
+      "width": 600,
+      "height": 400,
+      "color": "6"
+    },
+    {
+      "id": "n_agents_md",
+      "type": "file",
+      "file": "AGENTS.md",
+      "x": 8340,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_docs_resbak",
+      "type": "file",
+      "file": "RESBAK.md",
+      "x": 8540,
+      "y": 1580,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g18",
+      "type": "group",
+      "label": "Community 18",
+      "x": 0,
+      "y": 1980,
+      "width": 600,
+      "height": 400,
+      "color": "1"
+    },
+    {
+      "id": "n_assets_audio_credits",
+      "type": "file",
+      "file": "Audio Credits.md",
+      "x": 20,
+      "y": 2060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g19",
+      "type": "group",
+      "label": "Community 19",
+      "x": 1840,
+      "y": 1980,
+      "width": 600,
+      "height": 400,
+      "color": "2"
+    },
+    {
+      "id": "n_assets_characters_bystanders_lola",
+      "type": "file",
+      "file": "Lola Bystander.md",
+      "x": 1860,
+      "y": 2060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g20",
+      "type": "group",
+      "label": "Community 20",
+      "x": 3460,
+      "y": 1980,
+      "width": 600,
+      "height": 400,
+      "color": "3"
+    },
+    {
+      "id": "n_assets_characters_bystanders_manong",
+      "type": "file",
+      "file": "Manong Bystander.md",
+      "x": 3480,
+      "y": 2060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g21",
+      "type": "group",
+      "label": "Community 21",
+      "x": 5080,
+      "y": 1980,
+      "width": 600,
+      "height": 400,
+      "color": "4"
+    },
+    {
+      "id": "n_assets_characters_bystanders_student",
+      "type": "file",
+      "file": "Student Bystander.md",
+      "x": 5100,
+      "y": 2060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g22",
+      "type": "group",
+      "label": "Community 22",
+      "x": 6700,
+      "y": 1980,
+      "width": 600,
+      "height": 400,
+      "color": "5"
+    },
+    {
+      "id": "n_assets_decals_prompts",
+      "type": "file",
+      "file": "Wall decal generation prompts.md",
+      "x": 6720,
+      "y": 2060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g23",
+      "type": "group",
+      "label": "Community 23",
+      "x": 8320,
+      "y": 1980,
+      "width": 600,
+      "height": 400,
+      "color": "6"
+    },
+    {
+      "id": "n_assets_fonts_luckiestguy_license",
+      "type": "file",
+      "file": "Luckiest Guy License.md",
+      "x": 8340,
+      "y": 2060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g24",
+      "type": "group",
+      "label": "Community 24",
+      "x": 0,
+      "y": 2460,
+      "width": 600,
+      "height": 400,
+      "color": "1"
+    },
+    {
+      "id": "n_docs_architecture",
+      "type": "file",
+      "file": "Architecture.md",
+      "x": 20,
+      "y": 2540,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g25",
+      "type": "group",
+      "label": "Community 25",
+      "x": 1840,
+      "y": 2460,
+      "width": 600,
+      "height": 400,
+      "color": "2"
+    },
+    {
+      "id": "n_docs_archive_gameplay_agawan_base_rules_freshness_engine",
+      "type": "file",
+      "file": "Base Freshness Priority Engine.md",
+      "x": 1860,
+      "y": 2540,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g26",
+      "type": "group",
+      "label": "Community 26",
+      "x": 3460,
+      "y": 2460,
+      "width": 600,
+      "height": 400,
+      "color": "3"
+    },
+    {
+      "id": "n_docs_status",
+      "type": "file",
+      "file": "Status.md",
+      "x": 3480,
+      "y": 2540,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g27",
+      "type": "group",
+      "label": "Community 27",
+      "x": 5080,
+      "y": 2460,
+      "width": 600,
+      "height": 400,
+      "color": "4"
+    },
+    {
+      "id": "n_icon_svg",
+      "type": "file",
+      "file": "icon.svg.md",
+      "x": 5100,
+      "y": 2540,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g28",
+      "type": "group",
+      "label": "Community 28",
+      "x": 6700,
+      "y": 2460,
+      "width": 600,
+      "height": 400,
+      "color": "5"
+    },
+    {
+      "id": "n_renders_readme",
+      "type": "file",
+      "file": "renders README.md",
+      "x": 6720,
+      "y": 2540,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g29",
+      "type": "group",
+      "label": "Community 29",
+      "x": 8320,
+      "y": 2460,
+      "width": 600,
+      "height": 400,
+      "color": "6"
+    },
+    {
+      "id": "n_scripts_map_pipeline_readme",
+      "type": "file",
+      "file": "scriptsmap_pipeline README.md",
+      "x": 8340,
+      "y": 2540,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g30",
+      "type": "group",
+      "label": "Community 30",
+      "x": 0,
+      "y": 2940,
+      "width": 600,
+      "height": 400,
+      "color": "1"
+    },
+    {
+      "id": "n_source_art_mocap_meshy_shared_tag_charge",
+      "type": "file",
+      "file": "Shared Tag Charge Mocap.md",
+      "x": 20,
+      "y": 3020,
+      "width": 180,
+      "height": 60
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_tools_build_face_cards_build_tools_build_face_cards_skin",
+      "fromNode": "n_tools_build_face_cards_build",
+      "toNode": "n_tools_build_face_cards_skin",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_tools_build_face_cards_skin",
+      "fromNode": "n_tools_build_face_cards",
+      "toNode": "n_tools_build_face_cards_skin",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_skin_tools_build_face_cards_skin_image",
+      "fromNode": "n_tools_build_face_cards_skin",
+      "toNode": "n_tools_build_face_cards_skin_image",
+      "label": "method [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_skin_tools_build_face_cards_skin_cast",
+      "fromNode": "n_tools_build_face_cards_skin",
+      "toNode": "n_tools_build_face_cards_skin_cast",
+      "label": "method [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_skin_tools_build_face_cards_skin_init",
+      "fromNode": "n_tools_build_face_cards_skin",
+      "toNode": "n_tools_build_face_cards_skin_init",
+      "label": "method [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_skin_tools_build_face_cards_skin_tri_poly",
+      "fromNode": "n_tools_build_face_cards_skin",
+      "toNode": "n_tools_build_face_cards_skin_tri_poly",
+      "label": "method [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_rationale_72_tools_build_face_cards_skin",
+      "fromNode": "n_tools_build_face_cards_rationale_72",
+      "toNode": "n_tools_build_face_cards_skin",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_batang_hamog_build_tools_build_batang_hamog_build_set_bone",
+      "fromNode": "n_tools_build_batang_hamog_build",
+      "toNode": "n_tools_build_batang_hamog_build_set_bone",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_batang_hamog_build_tools_build_batang_hamog_build_smooth_action",
+      "fromNode": "n_tools_build_batang_hamog_build",
+      "toNode": "n_tools_build_batang_hamog_build_smooth_action",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_batang_hamog_tools_build_batang_hamog_build",
+      "fromNode": "n_tools_build_batang_hamog",
+      "toNode": "n_tools_build_batang_hamog_build",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_build_tools_build_bystanders_log",
+      "fromNode": "n_tools_build_bystanders_build",
+      "toNode": "n_tools_build_bystanders_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_build_tools_build_bystanders_measure",
+      "fromNode": "n_tools_build_bystanders_build",
+      "toNode": "n_tools_build_bystanders_measure",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_build_os",
+      "fromNode": "n_tools_build_bystanders_build",
+      "toNode": "n_os",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_build_tools_build_bystanders_tris",
+      "fromNode": "n_tools_build_bystanders_build",
+      "toNode": "n_tools_build_bystanders_tris",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_main_tools_build_bystanders_build",
+      "fromNode": "n_tools_build_bystanders_main",
+      "toNode": "n_tools_build_bystanders_build",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_tools_build_bystanders_build",
+      "fromNode": "n_tools_build_bystanders",
+      "toNode": "n_tools_build_bystanders_build",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_tools_build_bystanders_log",
+      "fromNode": "n_tools_build_bystanders",
+      "toNode": "n_tools_build_bystanders_log",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_tools_build_bystanders_main",
+      "fromNode": "n_tools_build_bystanders",
+      "toNode": "n_tools_build_bystanders_main",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_measure_tools_build_bystanders_pose_at",
+      "fromNode": "n_tools_build_bystanders_measure",
+      "toNode": "n_tools_build_bystanders_pose_at",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_tools_build_bystanders_measure",
+      "fromNode": "n_tools_build_bystanders",
+      "toNode": "n_tools_build_bystanders_measure",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_rationale_52_tools_build_bystanders_measure",
+      "fromNode": "n_tools_build_bystanders_rationale_52",
+      "toNode": "n_tools_build_bystanders_measure",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_tools_build_bystanders_pose_at",
+      "fromNode": "n_tools_build_bystanders",
+      "toNode": "n_tools_build_bystanders_pose_at",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_bystanders_tools_build_bystanders_tris",
+      "fromNode": "n_tools_build_bystanders",
+      "toNode": "n_tools_build_bystanders_tris",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_main_os",
+      "fromNode": "n_tools_build_face_cards_main",
+      "toNode": "n_os",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_main_json",
+      "fromNode": "n_tools_build_face_cards_main",
+      "toNode": "n_json",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_main_tools_build_face_cards_build",
+      "fromNode": "n_tools_build_face_cards_main",
+      "toNode": "n_tools_build_face_cards_build",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_tools_build_face_cards_main",
+      "fromNode": "n_tools_build_face_cards",
+      "toNode": "n_tools_build_face_cards_main",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_hamog_moveset_build_tools_build_hamog_moveset_build_shifted",
+      "fromNode": "n_tools_build_hamog_moveset_build",
+      "toNode": "n_tools_build_hamog_moveset_build_shifted",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_hamog_moveset_build_tools_build_hamog_moveset_build_apply_pose",
+      "fromNode": "n_tools_build_hamog_moveset_build",
+      "toNode": "n_tools_build_hamog_moveset_build_apply_pose",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_hamog_moveset_build_tools_build_hamog_moveset_build_smooth_action",
+      "fromNode": "n_tools_build_hamog_moveset_build",
+      "toNode": "n_tools_build_hamog_moveset_build_smooth_action",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_hamog_moveset_tools_build_hamog_moveset_build",
+      "fromNode": "n_tools_build_hamog_moveset",
+      "toNode": "n_tools_build_hamog_moveset_build",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_hamog_moveset_build_tools_build_hamog_moveset_build_euler_to_quat",
+      "fromNode": "n_tools_build_hamog_moveset_build",
+      "toNode": "n_tools_build_hamog_moveset_build_euler_to_quat",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_hamog_moveset_build_apply_pose_tools_build_hamog_moveset_build_euler_to_quat",
+      "fromNode": "n_tools_build_hamog_moveset_build_apply_pose",
+      "toNode": "n_tools_build_hamog_moveset_build_euler_to_quat",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_vehicle_props_build_tools_build_vehicle_props_bounds",
+      "fromNode": "n_tools_build_vehicle_props_build",
+      "toNode": "n_tools_build_vehicle_props_bounds",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_vehicle_props_tools_build_vehicle_props_bounds",
+      "fromNode": "n_tools_build_vehicle_props",
+      "toNode": "n_tools_build_vehicle_props_bounds",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_vehicle_props_build_os",
+      "fromNode": "n_tools_build_vehicle_props_build",
+      "toNode": "n_os",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_vehicle_props_build_tools_build_vehicle_props_log",
+      "fromNode": "n_tools_build_vehicle_props_build",
+      "toNode": "n_tools_build_vehicle_props_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_vehicle_props_main_tools_build_vehicle_props_build",
+      "fromNode": "n_tools_build_vehicle_props_main",
+      "toNode": "n_tools_build_vehicle_props_build",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_vehicle_props_tools_build_vehicle_props_build",
+      "fromNode": "n_tools_build_vehicle_props",
+      "toNode": "n_tools_build_vehicle_props_build",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_vehicle_props_tools_build_vehicle_props_log",
+      "fromNode": "n_tools_build_vehicle_props",
+      "toNode": "n_tools_build_vehicle_props_log",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_vehicle_props_tools_build_vehicle_props_main",
+      "fromNode": "n_tools_build_vehicle_props",
+      "toNode": "n_tools_build_vehicle_props_main",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_args_argparse",
+      "fromNode": "n_tools_qc_asset_args",
+      "toNode": "n_argparse",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_main_tools_qc_asset_args",
+      "fromNode": "n_tools_qc_asset_main",
+      "toNode": "n_tools_qc_asset_args",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_tools_qc_asset_args",
+      "fromNode": "n_tools_qc_asset",
+      "toNode": "n_tools_qc_asset_args",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_main_tools_qc_asset_check",
+      "fromNode": "n_tools_qc_asset_main",
+      "toNode": "n_tools_qc_asset_check",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_mesh_checks_tools_qc_asset_check",
+      "fromNode": "n_tools_qc_asset_mesh_checks",
+      "toNode": "n_tools_qc_asset_check",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_tools_qc_asset_check",
+      "fromNode": "n_tools_qc_asset",
+      "toNode": "n_tools_qc_asset_check",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_clip_report_tools_qc_asset_track_paths",
+      "fromNode": "n_tools_qc_asset_clip_report",
+      "toNode": "n_tools_qc_asset_track_paths",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_main_tools_qc_asset_clip_report",
+      "fromNode": "n_tools_qc_asset_main",
+      "toNode": "n_tools_qc_asset_clip_report",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_tools_qc_asset_clip_report",
+      "fromNode": "n_tools_qc_asset",
+      "toNode": "n_tools_qc_asset_clip_report",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_main_tools_qc_asset_load",
+      "fromNode": "n_tools_qc_asset_main",
+      "toNode": "n_tools_qc_asset_load",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_tools_qc_asset_load",
+      "fromNode": "n_tools_qc_asset",
+      "toNode": "n_tools_qc_asset_load",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_main_os",
+      "fromNode": "n_tools_qc_asset_main",
+      "toNode": "n_os",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_main_tools_qc_asset_world_bounds",
+      "fromNode": "n_tools_qc_asset_main",
+      "toNode": "n_tools_qc_asset_world_bounds",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_main_tools_qc_asset_mesh_checks",
+      "fromNode": "n_tools_qc_asset_main",
+      "toNode": "n_tools_qc_asset_mesh_checks",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_main_tools_qc_asset_render_sheet",
+      "fromNode": "n_tools_qc_asset_main",
+      "toNode": "n_tools_qc_asset_render_sheet",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_main_json",
+      "fromNode": "n_tools_qc_asset_main",
+      "toNode": "n_json",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_main_sys",
+      "fromNode": "n_tools_qc_asset_main",
+      "toNode": "n_sys",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_tools_qc_asset_main",
+      "fromNode": "n_tools_qc_asset",
+      "toNode": "n_tools_qc_asset_main",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_mesh_checks_math",
+      "fromNode": "n_tools_qc_asset_mesh_checks",
+      "toNode": "n_math",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_mesh_checks_bmesh",
+      "fromNode": "n_tools_qc_asset_mesh_checks",
+      "toNode": "n_bmesh",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_tools_qc_asset_mesh_checks",
+      "fromNode": "n_tools_qc_asset",
+      "toNode": "n_tools_qc_asset_mesh_checks",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_render_sheet_math",
+      "fromNode": "n_tools_qc_asset_render_sheet",
+      "toNode": "n_math",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_render_sheet_tools_qc_asset_set_wire",
+      "fromNode": "n_tools_qc_asset_render_sheet",
+      "toNode": "n_tools_qc_asset_set_wire",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_render_sheet_os",
+      "fromNode": "n_tools_qc_asset_render_sheet",
+      "toNode": "n_os",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_tools_qc_asset_render_sheet",
+      "fromNode": "n_tools_qc_asset",
+      "toNode": "n_tools_qc_asset_render_sheet",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_rationale_184_tools_qc_asset_render_sheet",
+      "fromNode": "n_tools_qc_asset_rationale_184",
+      "toNode": "n_tools_qc_asset_render_sheet",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_tools_qc_asset_set_wire",
+      "fromNode": "n_tools_qc_asset",
+      "toNode": "n_tools_qc_asset_set_wire",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_rationale_169_tools_qc_asset_set_wire",
+      "fromNode": "n_tools_qc_asset_rationale_169",
+      "toNode": "n_tools_qc_asset_set_wire",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_tools_qc_asset_track_paths",
+      "fromNode": "n_tools_qc_asset",
+      "toNode": "n_tools_qc_asset_track_paths",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_rationale_122_tools_qc_asset_track_paths",
+      "fromNode": "n_tools_qc_asset_rationale_122",
+      "toNode": "n_tools_qc_asset_track_paths",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_qc_asset_tools_qc_asset_world_bounds",
+      "fromNode": "n_tools_qc_asset",
+      "toNode": "n_tools_qc_asset_world_bounds",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_sanitize_asset_args_argparse",
+      "fromNode": "n_tools_sanitize_asset_args",
+      "toNode": "n_argparse",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_sanitize_asset_main_tools_sanitize_asset_args",
+      "fromNode": "n_tools_sanitize_asset_main",
+      "toNode": "n_tools_sanitize_asset_args",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_sanitize_asset_tools_sanitize_asset_args",
+      "fromNode": "n_tools_sanitize_asset",
+      "toNode": "n_tools_sanitize_asset_args",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_sanitize_asset_main_tools_sanitize_asset_log",
+      "fromNode": "n_tools_sanitize_asset_main",
+      "toNode": "n_tools_sanitize_asset_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_sanitize_asset_tools_sanitize_asset_log",
+      "fromNode": "n_tools_sanitize_asset",
+      "toNode": "n_tools_sanitize_asset_log",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_sanitize_asset_main_os",
+      "fromNode": "n_tools_sanitize_asset_main",
+      "toNode": "n_os",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_sanitize_asset_main_bmesh",
+      "fromNode": "n_tools_sanitize_asset_main",
+      "toNode": "n_bmesh",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_sanitize_asset_main_tools_sanitize_asset_main_bounds",
+      "fromNode": "n_tools_sanitize_asset_main",
+      "toNode": "n_tools_sanitize_asset_main_bounds",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_sanitize_asset_tools_sanitize_asset_main",
+      "fromNode": "n_tools_sanitize_asset",
+      "toNode": "n_tools_sanitize_asset_main",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_tools_build_heroes_rest_data",
+      "fromNode": "n_tools_build_heroes_bake",
+      "toNode": "n_tools_build_heroes_rest_data",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_tools_build_heroes_ordered_bones",
+      "fromNode": "n_tools_build_heroes_bake",
+      "toNode": "n_tools_build_heroes_ordered_bones",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_bake",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_grounded_tools_build_heroes_bake",
+      "fromNode": "n_tools_build_heroes_bake_grounded",
+      "toNode": "n_tools_build_heroes_bake",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_on_floor_tools_build_heroes_bake",
+      "fromNode": "n_tools_build_heroes_bake_on_floor",
+      "toNode": "n_tools_build_heroes_bake",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_planted_tools_build_heroes_bake",
+      "fromNode": "n_tools_build_heroes_bake_planted",
+      "toNode": "n_tools_build_heroes_bake",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_bake",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_bake",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_285_tools_build_heroes_bake",
+      "fromNode": "n_tools_build_heroes_rationale_285",
+      "toNode": "n_tools_build_heroes_bake",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_grounded_tools_build_heroes_mesh_lows",
+      "fromNode": "n_tools_build_heroes_bake_grounded",
+      "toNode": "n_tools_build_heroes_mesh_lows",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_grounded_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_bake_grounded",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_bake_grounded",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_bake_grounded",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_bake_grounded",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_bake_grounded",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_399_tools_build_heroes_bake_grounded",
+      "fromNode": "n_tools_build_heroes_rationale_399",
+      "toNode": "n_tools_build_heroes_bake_grounded",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_on_floor_tools_build_heroes_mesh_lows",
+      "fromNode": "n_tools_build_heroes_bake_on_floor",
+      "toNode": "n_tools_build_heroes_mesh_lows",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_on_floor_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_bake_on_floor",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_bake_on_floor",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_bake_on_floor",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_bake_on_floor",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_bake_on_floor",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_425_tools_build_heroes_bake_on_floor",
+      "fromNode": "n_tools_build_heroes_rationale_425",
+      "toNode": "n_tools_build_heroes_bake_on_floor",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_planted_tools_build_heroes_mesh_lows",
+      "fromNode": "n_tools_build_heroes_bake_planted",
+      "toNode": "n_tools_build_heroes_mesh_lows",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_bake_planted_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_bake_planted",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_bake_planted",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_bake_planted",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_bake_planted",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_bake_planted",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_412_tools_build_heroes_bake_planted",
+      "fromNode": "n_tools_build_heroes_rationale_412",
+      "toNode": "n_tools_build_heroes_bake_planted",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_concat_tools_build_heroes_blend_frame",
+      "fromNode": "n_tools_build_heroes_concat",
+      "toNode": "n_tools_build_heroes_blend_frame",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_blend_frame",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_blend_frame",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_breakdance_tools_build_heroes_remove_drift",
+      "fromNode": "n_tools_build_heroes_breakdance",
+      "toNode": "n_tools_build_heroes_remove_drift",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_breakdance_tools_retarget_clip_mocap_offsets",
+      "fromNode": "n_tools_build_heroes_breakdance",
+      "toNode": "n_tools_retarget_clip_mocap_offsets",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_breakdance_tools_build_heroes_concat",
+      "fromNode": "n_tools_build_heroes_breakdance",
+      "toNode": "n_tools_build_heroes_concat",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_breakdance_tools_build_heroes_keep_on_pad",
+      "fromNode": "n_tools_build_heroes_breakdance",
+      "toNode": "n_tools_build_heroes_keep_on_pad",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_breakdance_tools_retarget_clip_loop_blend",
+      "fromNode": "n_tools_build_heroes_breakdance",
+      "toNode": "n_tools_retarget_clip_loop_blend",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_breakdance",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_breakdance",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_breakdance",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_breakdance",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_reset",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_reset",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_import_hero",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_import_hero",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_retarget_table",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_retarget_table",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_chained",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_chained",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_clip_order",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_clip_order",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_render_sheet",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_render_sheet",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_render_dance_strip",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_render_dance_strip",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_render_moves_sheet",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_render_moves_sheet",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_build_tools_build_heroes_export",
+      "fromNode": "n_tools_build_heroes_build",
+      "toNode": "n_tools_build_heroes_export",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_main_tools_build_heroes_build",
+      "fromNode": "n_tools_build_heroes_main",
+      "toNode": "n_tools_build_heroes_build",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_build",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_build",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_chained_tools_build_heroes_rest_data",
+      "fromNode": "n_tools_build_heroes_chained",
+      "toNode": "n_tools_build_heroes_rest_data",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_chained_tools_retarget_clip_face_front",
+      "fromNode": "n_tools_build_heroes_chained",
+      "toNode": "n_tools_retarget_clip_face_front",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_chained",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_chained",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_475_tools_build_heroes_chained",
+      "fromNode": "n_tools_build_heroes_rationale_475",
+      "toNode": "n_tools_build_heroes_chained",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_clip",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_clip",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_57_tools_build_heroes_clip",
+      "fromNode": "n_tools_build_heroes_rationale_57",
+      "toNode": "n_tools_build_heroes_clip",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_clip_order",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_clip_order",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_concat",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_concat",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_350_tools_build_heroes_concat",
+      "fromNode": "n_tools_build_heroes_rationale_350",
+      "toNode": "n_tools_build_heroes_concat",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_contact_sheet_os",
+      "fromNode": "n_tools_build_heroes_contact_sheet",
+      "toNode": "n_os",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_contact_sheet_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_contact_sheet",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_main_tools_build_heroes_contact_sheet",
+      "fromNode": "n_tools_build_heroes_main",
+      "toNode": "n_tools_build_heroes_contact_sheet",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_contact_sheet",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_contact_sheet",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_733_tools_build_heroes_contact_sheet",
+      "fromNode": "n_tools_build_heroes_rationale_733",
+      "toNode": "n_tools_build_heroes_contact_sheet",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_export_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_export",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_export",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_export",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_import_hero_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_import_hero",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_import_hero_tools_build_heroes_rigid_head",
+      "fromNode": "n_tools_build_heroes_import_hero",
+      "toNode": "n_tools_build_heroes_rigid_head",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_import_hero",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_import_hero",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_keep_on_pad",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_keep_on_pad",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_517_tools_build_heroes_keep_on_pad",
+      "fromNode": "n_tools_build_heroes_rationale_517",
+      "toNode": "n_tools_build_heroes_keep_on_pad",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_main_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_main",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_render_moves_sheet_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_render_moves_sheet",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_render_sheet_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_render_sheet",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rigid_head_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes_rigid_head",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_log",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_log",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_main_os",
+      "fromNode": "n_tools_build_heroes_main",
+      "toNode": "n_os",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_main",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_main",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_mesh_lows_tools_build_heroes_sole_mask",
+      "fromNode": "n_tools_build_heroes_mesh_lows",
+      "toNode": "n_tools_build_heroes_sole_mask",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_mesh_lows_numpy",
+      "fromNode": "n_tools_build_heroes_mesh_lows",
+      "toNode": "n_numpy",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_mesh_lows",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_mesh_lows",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_372_tools_build_heroes_mesh_lows",
+      "fromNode": "n_tools_build_heroes_rationale_372",
+      "toNode": "n_tools_build_heroes_mesh_lows",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_ordered_bones_tools_build_heroes_ordered_bones_walk",
+      "fromNode": "n_tools_build_heroes_ordered_bones",
+      "toNode": "n_tools_build_heroes_ordered_bones_walk",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_ordered_bones",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_ordered_bones",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_ordered_bones_walk_tools_build_heroes_ordered_bones_walk",
+      "fromNode": "n_tools_build_heroes_ordered_bones_walk",
+      "toNode": "n_tools_build_heroes_ordered_bones_walk",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_remove_drift_tools_retarget_clip_heading",
+      "fromNode": "n_tools_build_heroes_remove_drift",
+      "toNode": "n_tools_retarget_clip_heading",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_remove_drift",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_remove_drift",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_334_tools_build_heroes_remove_drift",
+      "fromNode": "n_tools_build_heroes_rationale_334",
+      "toNode": "n_tools_build_heroes_remove_drift",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_render_dance_strip",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_render_dance_strip",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_531_tools_build_heroes_render_dance_strip",
+      "fromNode": "n_tools_build_heroes_rationale_531",
+      "toNode": "n_tools_build_heroes_render_dance_strip",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_render_moves_sheet_numpy",
+      "fromNode": "n_tools_build_heroes_render_moves_sheet",
+      "toNode": "n_numpy",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_render_moves_sheet_tools_build_heroes_stamp",
+      "fromNode": "n_tools_build_heroes_render_moves_sheet",
+      "toNode": "n_tools_build_heroes_stamp",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_render_moves_sheet_os",
+      "fromNode": "n_tools_build_heroes_render_moves_sheet",
+      "toNode": "n_os",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_render_moves_sheet",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_render_moves_sheet",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_605_tools_build_heroes_render_moves_sheet",
+      "fromNode": "n_tools_build_heroes_rationale_605",
+      "toNode": "n_tools_build_heroes_render_moves_sheet",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_render_sheet_math",
+      "fromNode": "n_tools_build_heroes_render_sheet",
+      "toNode": "n_math",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_render_sheet",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_render_sheet",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_548_tools_build_heroes_render_sheet",
+      "fromNode": "n_tools_build_heroes_rationale_548",
+      "toNode": "n_tools_build_heroes_render_sheet",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_reset",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_reset",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_rest_data",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_rest_data",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_rigid_head",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_rigid_head",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_241_tools_build_heroes_rigid_head",
+      "fromNode": "n_tools_build_heroes_rationale_241",
+      "toNode": "n_tools_build_heroes_rigid_head",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_sole_mask_numpy",
+      "fromNode": "n_tools_build_heroes_sole_mask",
+      "toNode": "n_numpy",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_sole_mask",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_sole_mask",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_365_tools_build_heroes_sole_mask",
+      "fromNode": "n_tools_build_heroes_rationale_365",
+      "toNode": "n_tools_build_heroes_sole_mask",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_tools_build_heroes_stamp",
+      "fromNode": "n_tools_build_heroes",
+      "toNode": "n_tools_build_heroes_stamp",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_heroes_rationale_592_tools_build_heroes_stamp",
+      "fromNode": "n_tools_build_heroes_rationale_592",
+      "toNode": "n_tools_build_heroes_stamp",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_cardboard_tools_make_home_ui_value_noise",
+      "fromNode": "n_tools_make_home_ui_cardboard",
+      "toNode": "n_tools_make_home_ui_value_noise",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_cardboard_numpy",
+      "fromNode": "n_tools_make_home_ui_cardboard",
+      "toNode": "n_numpy",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_main_tools_make_home_ui_cardboard",
+      "fromNode": "n_tools_make_home_ui_main",
+      "toNode": "n_tools_make_home_ui_cardboard",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_tools_make_home_ui_cardboard",
+      "fromNode": "n_tools_make_home_ui",
+      "toNode": "n_tools_make_home_ui_cardboard",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_main_os",
+      "fromNode": "n_tools_make_home_ui_main",
+      "toNode": "n_os",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_main_tools_make_home_ui_tape",
+      "fromNode": "n_tools_make_home_ui_main",
+      "toNode": "n_tools_make_home_ui_tape",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_tools_make_home_ui_main",
+      "fromNode": "n_tools_make_home_ui",
+      "toNode": "n_tools_make_home_ui_main",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_tape_tools_make_home_ui_value_noise",
+      "fromNode": "n_tools_make_home_ui_tape",
+      "toNode": "n_tools_make_home_ui_value_noise",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_tape_numpy",
+      "fromNode": "n_tools_make_home_ui_tape",
+      "toNode": "n_numpy",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_tools_make_home_ui_tape",
+      "fromNode": "n_tools_make_home_ui",
+      "toNode": "n_tools_make_home_ui_tape",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_value_noise_numpy",
+      "fromNode": "n_tools_make_home_ui_value_noise",
+      "toNode": "n_numpy",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_make_home_ui_tools_make_home_ui_value_noise",
+      "fromNode": "n_tools_make_home_ui",
+      "toNode": "n_tools_make_home_ui_value_noise",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_skin_cast_tools_build_face_cards_skin_tri_poly",
+      "fromNode": "n_tools_build_face_cards_skin_cast",
+      "toNode": "n_tools_build_face_cards_skin_tri_poly",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_skin_cast_tools_build_face_cards_skin_image",
+      "fromNode": "n_tools_build_face_cards_skin_cast",
+      "toNode": "n_tools_build_face_cards_skin_image",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_rationale_122_tools_build_face_cards_skin_cast",
+      "fromNode": "n_tools_build_face_cards_rationale_122",
+      "toNode": "n_tools_build_face_cards_skin_cast",
+      "label": "rationale_for [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_arc_d_numpy",
+      "fromNode": "n_tools_build_face_cards_arc_d",
+      "toNode": "n_numpy",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_lid_frame_tools_build_face_cards_arc_d",
+      "fromNode": "n_tools_build_face_cards_lid_frame",
+      "toNode": "n_tools_build_face_cards_arc_d",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_tools_build_face_cards_mouth_frame_tools_build_face_cards_arc_d",
+      "fromNode": "n_tools_build_face_cards_mouth_frame",
+      "toNode": "n_tools_build_face_cards_arc_d",
+      "label": "calls [EXTRACTED]"
+    }
+  ]
+}

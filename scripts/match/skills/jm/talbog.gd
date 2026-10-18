@@ -40,15 +40,9 @@ func hud_note() -> String:
 # ---- cast -------------------------------------------------------------------------------
 func _cast(frame: InputFrame) -> void:
 	_start = hero.global_position
-	_dir = hero.aim if hero.aim.length() > 0.01 else hero.facing
-	_dir = RB.flat(_dir).normalized()
-	var want := frame.aim_distance(_start)
-	var reach := float(v("talbog_range"))
-	if want >= 0.0:
-		reach = minf(want, reach)
-	reach = clampf(reach, 0.0, float(v("talbog_range")))
-	reach = _clamp_reach(_dir, reach)
-	_target = _start + _dir * reach
+	var preview := aim_preview(frame)
+	_dir = preview.direction
+	_target = preview.point
 	last_target = _target
 	_air_ticks = maxi(1, RB.ticks(v("talbog_air_time")))
 	active = true
@@ -62,20 +56,22 @@ func _cast(frame: InputFrame) -> void:
 
 ## How far along `dir` JM may land: stops just before a blocking wall/solid (ray), a pole, the jail
 ## barrier.
-func _clamp_reach(dir: Vector3, reach: float) -> float:
+func _clamp_reach(dir: Vector3, reach: float, origin := Vector3.INF) -> float:
+	if origin == Vector3.INF:
+		origin = _start
 	var t := host.tuning
 	var limit := reach
-	var end := _start + dir * reach
-	var hit := host.ray_hit(_start, end)
+	var end := origin + dir * reach
+	var hit := host.ray_hit(origin, end)
 	if not hit.is_empty():
 		var hp: Vector3 = hit.position
-		limit = minf(limit, maxf(0.0, RB.flat_dist(_start, hp) - t.body_radius - 0.05))
+		limit = minf(limit, maxf(0.0, RB.flat_dist(origin, hp) - t.body_radius - 0.05))
 	var step := 0.1
 	var safe := 0.0
 	var d := step
 	while true:
 		var dd := minf(d, limit)
-		if _blocked_spot(_start + dir * dd):
+		if _blocked_spot(origin + dir * dd):
 			return safe
 		safe = dd
 		if dd >= limit:
@@ -94,14 +90,35 @@ func _blocked_spot(p: Vector3) -> bool:
 	var enemy := host.base_system.pole_pos(RB.other_team(hero.team))
 	return RB.flat_dist(p, enemy) < t.pole_radius + t.body_radius
 
+## Read-only query shared by aiming, release and public flight telegraph.
+func aim_preview(frame: InputFrame) -> Dictionary:
+	var info := super.aim_preview(frame)
+	var dir := frame.aim_direction(hero.global_position)
+	if dir == Vector3.ZERO:
+		dir = hero.aim if hero.aim.length() > 0.01 else hero.facing
+	dir = RB.flat(dir).normalized()
+	var want := frame.aim_distance(hero.global_position)
+	var reach := float(v("talbog_range"))
+	if want >= 0.0:
+		reach = clampf(want, 0.0, reach)
+	reach = _clamp_reach(dir, reach, hero.global_position)
+	info.direction = dir
+	info.point = hero.global_position + dir * reach
+	info.distance = reach
+	info.wall = Wall.segment_layout(info.point, dir, float(v("talbog_wall_width")), float(v("talbog_wall_offset")), float(v("talbog_wall_height")))
+	return info
+
 # ---- flight -----------------------------------------------------------------------------
+static func sample_arc(from: Vector3, to: Vector3, progress: float, peak: float) -> Vector3:
+	var point := from.lerp(to, progress)
+	point.y += 4.0 * peak * progress * (1.0 - progress)
+	return point
+
 func move(dt: float) -> void:
 	var elapsed := host.tick - cast_tick
 	var u := clampf(float(elapsed) / _air_ticks, 0.0, 1.0)
 	var prev := hero.global_position
-	var flat_pos := _start.lerp(_target, u)
-	var peak := float(v("talbog_jump_height", 0.95))
-	hero.global_position = Vector3(flat_pos.x, _start.y + 4.0 * peak * u * (1.0 - u), flat_pos.z)
+	hero.global_position = sample_arc(_start, _target, u, float(v("talbog_jump_height", 0.95)))
 	hero.velocity = Vector3((hero.global_position.x - prev.x) / dt, 0.0, (hero.global_position.z - prev.z) / dt)
 	hero.facing = _dir
 	if elapsed >= _air_ticks:
@@ -169,6 +186,18 @@ func _show_marker() -> void:
 	var col: Color = RB.TEAM_COLORS[hero.team]
 	_marker = Vfx.ground_ring(host.world, _target, float(v("talbog_push_radius")), Color(col.r, col.g, col.b, 0.85), 0.14, 0.14)
 	_marker.name = "TalbogMarker"
+	_marker.set_meta("landing", _target)
+	for segment in Wall.segment_layout(_target, _dir, float(v("talbog_wall_width")), float(v("talbog_wall_offset")), float(v("talbog_wall_height"))):
+		var ghost := MeshInstance3D.new()
+		var mesh := BoxMesh.new()
+		mesh.size = segment.size
+		ghost.mesh = mesh
+		ghost.material_override = Vfx.flat_material(Color(col.r, col.g, col.b, host.tuning.skill_preview_wall_alpha))
+		ghost.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_marker.add_child(ghost)
+		ghost.global_position = segment.position
+		ghost.rotation.y = segment.yaw
+
 
 func _clear_marker() -> void:
 	if _marker != null and is_instance_valid(_marker):
@@ -178,4 +207,8 @@ func _clear_marker() -> void:
 	_marker = null
 
 func _exit_tree() -> void:
-	_clear_marker()
+	# The world's children may be exiting together when leaving/resetting training.
+	# Queue deletion without removing a sibling from that busy parent.
+	if is_instance_valid(_marker):
+		_marker.queue_free()
+	_marker = null
