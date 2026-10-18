@@ -1,7 +1,7 @@
 {
  "file": "assets\\characters\\tutoy.glb",
  "real_height_m": 1.547,
- "game_scale": 1.163,
+ "game_scale": 1.0,
  "dims_m": [
   0.939,
   0.547,
@@ -17,7 +17,7 @@
    ],
    "seconds": 3.0,
    "tracks": 660,
-   "foot_plant_speed_mps": 5.87,
+   "foot_plant_speed_mps": 5.02,
    "loop_seam_m": 0.0,
    "hips_root_motion_m": 0.0
   },
@@ -29,7 +29,7 @@
    ],
    "seconds": 2.667,
    "tracks": 660,
-   "foot_plant_speed_mps": 0.3,
+   "foot_plant_speed_mps": 0.27,
    "loop_seam_m": 0.0,
    "hips_root_motion_m": 0.0
   },
@@ -53,7 +53,7 @@
    ],
    "seconds": 0.583,
    "tracks": 660,
-   "foot_plant_speed_mps": 6.06,
+   "foot_plant_speed_mps": 4.47,
    "loop_seam_m": 0.0,
    "hips_root_motion_m": 0.0
   },
@@ -89,9 +89,9 @@
    ],
    "seconds": 0.833,
    "tracks": 660,
-   "foot_plant_speed_mps": 0.5,
-   "loop_seam_m": 0.905,
-   "hips_root_motion_m": 0.046
+   "foot_plant_speed_mps": 0.43,
+   "loop_seam_m": 0.778,
+   "hips_root_motion_m": 0.039
   },
   {
    "clip": "Lusot_Vault",
@@ -101,9 +101,9 @@
    ],
    "seconds": 0.833,
    "tracks": 660,
-   "foot_plant_speed_mps": 3.54,
-   "loop_seam_m": 0.332,
-   "hips_root_motion_m": 0.013
+   "foot_plant_speed_mps": 3.04,
+   "loop_seam_m": 0.286,
+   "hips_root_motion_m": 0.011
   },
   {
    "clip": "Menu_Cheer",
@@ -113,9 +113,9 @@
    ],
    "seconds": 1.333,
    "tracks": 660,
-   "foot_plant_speed_mps": 0.11,
-   "loop_seam_m": 0.932,
-   "hips_root_motion_m": 0.065
+   "foot_plant_speed_mps": 0.09,
+   "loop_seam_m": 0.801,
+   "hips_root_motion_m": 0.056
   },
   {
    "clip": "Menu_HandOnHip",
@@ -137,9 +137,33 @@
    ],
    "seconds": 3.292,
    "tracks": 660,
-   "foot_plant_speed_mps": 1.26,
-   "loop_seam_m": 0.105,
+   "foot_plant_speed_mps": 1.07,
+   "loop_seam_m": 0.09,
    "hips_root_motion_m": 0.002
+  },
+  {
+   "clip": "Menu_Listen",
+   "frames": [
+    0,
+    224
+   ],
+   "seconds": 9.333,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.04,
+   "loop_seam_m": 0.001,
+   "hips_root_motion_m": 0.0
+  },
+  {
+   "clip": "Menu_StandChat",
+   "frames": [
+    0,
+    124
+   ],
+   "seconds": 5.167,
+   "tracks": 660,
+   "foot_plant_speed_mps": 0.03,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
   },
   {
    "clip": "Menu_StandIdle",
@@ -173,10 +197,10 @@
    ],
    "seconds": 0.583,
    "tracks": 660,
-   "foot_plant_speed_mps": 4.28,
+   "foot_plant_speed_mps": 3.5,
    "loop_seam_m": 0.0,
    "hips_root_motion_m": 0.0,
-   "skate_ratio": 1.26
+   "skate_ratio": 1.22
   },
   {
    "clip": "Stumble",
@@ -186,9 +210,9 @@
    ],
    "seconds": 0.75,
    "tracks": 660,
-   "foot_plant_speed_mps": 0.89,
-   "loop_seam_m": 0.428,
-   "hips_root_motion_m": 0.061
+   "foot_plant_speed_mps": 0.76,
+   "loop_seam_m": 0.368,
+   "hips_root_motion_m": 0.052
   },
   {
    "clip": "Stunned",
@@ -198,7 +222,7 @@
    ],
    "seconds": 1.083,
    "tracks": 660,
-   "foot_plant_speed_mps": 0.07,
+   "foot_plant_speed_mps": 0.06,
    "loop_seam_m": 0.0,
    "hips_root_motion_m": 0.0
   },
@@ -210,9 +234,9 @@
    ],
    "seconds": 0.667,
    "tracks": 660,
-   "foot_plant_speed_mps": 0.78,
-   "loop_seam_m": 0.702,
-   "hips_root_motion_m": 0.014
+   "foot_plant_speed_mps": 0.65,
+   "loop_seam_m": 0.604,
+   "hips_root_motion_m": 0.012
   },
   {
    "clip": "TagCharge",
@@ -235,8 +259,8 @@
    "seconds": 0.917,
    "tracks": 660,
    "foot_plant_speed_mps": 0.05,
-   "loop_seam_m": 0.717,
-   "hips_root_motion_m": 0.105
+   "loop_seam_m": 0.617,
+   "hips_root_motion_m": 0.09
   },
   {
    "clip": "Victory",
@@ -246,7 +270,7 @@
    ],
    "seconds": 1.375,
    "tracks": 660,
-   "foot_plant_speed_mps": 0.16,
+   "foot_plant_speed_mps": 0.14,
    "loop_seam_m": 0.0,
    "hips_root_motion_m": 0.0
   },
@@ -258,10 +282,9 @@
    ],
    "seconds": 1.0,
    "tracks": 660,
-   "foot_plant_speed_mps": 1.42,
+   "foot_plant_speed_mps": 1.21,
    "loop_seam_m": 0.0,
-   "hips_root_motion_m": 0.0,
-   "skate_ratio": 1.9
+   "hips_root_motion_m": 0.0
   }
  ],
  "sheet": "renders\\qc\\tutoy_sheet.png",
@@ -304,12 +327,12 @@
   {
    "check": "clip BreakDance",
    "status": "PASS",
-   "detail": "3.0 s, 660 channels, foot plant 5.87 m/s, loop seam 0.0 m, root motion 0.0 m"
+   "detail": "3.0 s, 660 channels, foot plant 5.02 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
    "check": "clip Capture",
    "status": "PASS",
-   "detail": "2.667 s, 660 channels, foot plant 0.3 m/s, loop seam 0.0 m, root motion 0.0 m"
+   "detail": "2.667 s, 660 channels, foot plant 0.27 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
    "check": "clip Chained",
@@ -319,7 +342,7 @@
   {
    "check": "clip Harurot",
    "status": "PASS",
-   "detail": "0.583 s, 660 channels, foot plant 6.06 m/s, loop seam 0.0 m, root motion 0.0 m"
+   "detail": "0.583 s, 660 channels, foot plant 4.47 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
    "check": "clip Idle",
@@ -334,17 +357,17 @@
   {
    "check": "clip Lusot_Slide",
    "status": "WARN",
-   "detail": "0.833 s, 660 channels, foot plant 0.5 m/s, loop seam 0.905 m, root motion 0.046 m"
+   "detail": "0.833 s, 660 channels, foot plant 0.43 m/s, loop seam 0.778 m, root motion 0.039 m"
   },
   {
    "check": "clip Lusot_Vault",
    "status": "WARN",
-   "detail": "0.833 s, 660 channels, foot plant 3.54 m/s, loop seam 0.332 m, root motion 0.013 m"
+   "detail": "0.833 s, 660 channels, foot plant 3.04 m/s, loop seam 0.286 m, root motion 0.011 m"
   },
   {
    "check": "clip Menu_Cheer",
    "status": "WARN",
-   "detail": "1.333 s, 660 channels, foot plant 0.11 m/s, loop seam 0.932 m, root motion 0.065 m"
+   "detail": "1.333 s, 660 channels, foot plant 0.09 m/s, loop seam 0.801 m, root motion 0.056 m"
   },
   {
    "check": "clip Menu_HandOnHip",
@@ -354,7 +377,17 @@
   {
    "check": "clip Menu_HandstandFlip",
    "status": "WARN",
-   "detail": "3.292 s, 660 channels, foot plant 1.26 m/s, loop seam 0.105 m, root motion 0.002 m"
+   "detail": "3.292 s, 660 channels, foot plant 1.07 m/s, loop seam 0.09 m, root motion 0.002 m"
+  },
+  {
+   "check": "clip Menu_Listen",
+   "status": "PASS",
+   "detail": "9.333 s, 660 channels, foot plant 0.04 m/s, loop seam 0.001 m, root motion 0.0 m"
+  },
+  {
+   "check": "clip Menu_StandChat",
+   "status": "PASS",
+   "detail": "5.167 s, 660 channels, foot plant 0.03 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
    "check": "clip Menu_StandIdle",
@@ -369,27 +402,27 @@
   {
    "check": "clip Running",
    "status": "PASS",
-   "detail": "0.583 s, 660 channels, foot plant 4.28 m/s, loop seam 0.0 m, root motion 0.0 m"
+   "detail": "0.583 s, 660 channels, foot plant 3.5 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
    "check": "foot slide Running",
    "status": "FAIL",
-   "detail": "moves 5.4 m/s, feet push 4.28 m/s: x1.26 (play the clip at x1.26 or put its blend point at 4.28 m/s)"
+   "detail": "moves 4.28 m/s, feet push 3.5 m/s: x1.22 (play the clip at x1.22 or put its blend point at 3.5 m/s)"
   },
   {
    "check": "clip Stumble",
    "status": "WARN",
-   "detail": "0.75 s, 660 channels, foot plant 0.89 m/s, loop seam 0.428 m, root motion 0.061 m"
+   "detail": "0.75 s, 660 channels, foot plant 0.76 m/s, loop seam 0.368 m, root motion 0.052 m"
   },
   {
    "check": "clip Stunned",
    "status": "PASS",
-   "detail": "1.083 s, 660 channels, foot plant 0.07 m/s, loop seam 0.0 m, root motion 0.0 m"
+   "detail": "1.083 s, 660 channels, foot plant 0.06 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
    "check": "clip Tag",
    "status": "WARN",
-   "detail": "0.667 s, 660 channels, foot plant 0.78 m/s, loop seam 0.702 m, root motion 0.014 m"
+   "detail": "0.667 s, 660 channels, foot plant 0.65 m/s, loop seam 0.604 m, root motion 0.012 m"
   },
   {
    "check": "clip TagCharge",
@@ -399,22 +432,17 @@
   {
    "check": "clip Tagged",
    "status": "WARN",
-   "detail": "0.917 s, 660 channels, foot plant 0.05 m/s, loop seam 0.717 m, root motion 0.105 m"
+   "detail": "0.917 s, 660 channels, foot plant 0.05 m/s, loop seam 0.617 m, root motion 0.09 m"
   },
   {
    "check": "clip Victory",
    "status": "PASS",
-   "detail": "1.375 s, 660 channels, foot plant 0.16 m/s, loop seam 0.0 m, root motion 0.0 m"
+   "detail": "1.375 s, 660 channels, foot plant 0.14 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
    "check": "clip Walking",
    "status": "PASS",
-   "detail": "1.0 s, 660 channels, foot plant 1.42 m/s, loop seam 0.0 m, root motion 0.0 m"
-  },
-  {
-   "check": "foot slide Walking",
-   "status": "FAIL",
-   "detail": "moves 2.7 m/s, feet push 1.42 m/s: x1.90 (play the clip at x1.90 or put its blend point at 1.42 m/s)"
+   "detail": "1.0 s, 660 channels, foot plant 1.21 m/s, loop seam 0.0 m, root motion 0.0 m"
   }
  ]
 }

@@ -1,5 +1,0 @@
-[gd_scene load_steps=2 format=3]
-
-[ext_resource type="PackedScene" path="res://assets/props/home/soda_bottle.glb" id="1_soda_bottle"]
-
-[node name="SodaBottle" instance=ExtResource("1_soda_bottle")]

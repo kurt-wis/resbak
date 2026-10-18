@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\home\\crate_stack.glb",
+ "real_height_m": 1.477,
+ "game_scale": 1.0,
+ "dims_m": [
+  1.498,
+  0.765,
+  1.477
+ ],
+ "triangles": 24000,
+ "sheet": "renders\\qc\\crate_stack_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.001, 0.000) m"
+  },
+  {
+   "check": "normals CrateStack",
+   "status": "WARN",
+   "detail": "53% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology CrateStack",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (31998 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "24000 (budget 95000)"
+  }
+ ]
+}

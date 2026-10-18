@@ -1,13 +1,13 @@
 {
  "file": "assets\\props\\home\\store.glb",
- "real_height_m": 3.047,
+ "real_height_m": 3.027,
  "game_scale": 1.0,
  "dims_m": [
   5.2,
-  5.2,
-  3.047
+  3.345,
+  3.027
  ],
- "triangles": 60000,
+ "triangles": 90000,
  "sheet": "renders\\qc\\store_sheet.png",
  "checks": [
   {
@@ -23,17 +23,17 @@
   {
    "check": "normals SariSariStore",
    "status": "WARN",
-   "detail": "59% of faces point outward (inside-out meshes score under 40%)"
+   "detail": "50% of faces point outward (inside-out meshes score under 40%)"
   },
   {
    "check": "topology SariSariStore",
    "status": "PASS",
-   "detail": "0 non-manifold edges (56102 open edges, normal at UV seams)"
+   "detail": "0 non-manifold edges (96424 open edges, normal at UV seams)"
   },
   {
    "check": "triangles",
    "status": "PASS",
-   "detail": "60000 (budget 60000)"
+   "detail": "90000 (budget 95000)"
   }
  ]
 }

@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\home\\plastic_stool.glb",
+ "real_height_m": 0.572,
+ "game_scale": 1.0,
+ "dims_m": [
+  0.4,
+  0.373,
+  0.572
+ ],
+ "triangles": 8000,
+ "sheet": "renders\\qc\\plastic_stool_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.000, 0.000) m"
+  },
+  {
+   "check": "normals PlasticStool",
+   "status": "WARN",
+   "detail": "49% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology PlasticStool",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (9854 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "8000 (budget 95000)"
+  }
+ ]
+}

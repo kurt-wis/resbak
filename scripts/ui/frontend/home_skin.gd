@@ -52,19 +52,59 @@ static func tape(parent: Control, pos: Vector2, deg: float) -> TextureRect:
 	parent.add_child(t)
 	return t
 
-## Re-skin an FE.button as a sticker. kind: "primary" (yellow) or "paper" (cream).
-static func skin_button(b: Button, kind := "paper") -> void:
-	var fill := YELLOW if kind == "primary" else PAPER
-	b.add_theme_stylebox_override("normal", sticker(fill))
-	b.add_theme_stylebox_override("hover", sticker(fill.lightened(0.14), INK, 5, 16, 9))
-	b.add_theme_stylebox_override("pressed", sticker(fill.darkened(0.12), INK, 5, 16, 2))
-	b.add_theme_stylebox_override("focus", sticker(fill.lightened(0.1), Color.WHITE, 7, 16, 9))
-	b.add_theme_stylebox_override("disabled", sticker(fill))
+## A round outlined badge (the reference's stat circles: a ring with the number inside).
+static func ring(diameter: float, fill: Color, border := INK, bw := 3) -> StyleBoxFlat:
+	var s := FE.box_style(fill, border, bw, int(diameter * 0.5))
+	s.content_margin_left = 0
+	s.content_margin_right = 0
+	s.content_margin_top = 0
+	s.content_margin_bottom = 0
+	return s
+
+## Re-skin an FE.button as a sticker. kind: "primary" (yellow PLAY), "paper" (cream), "locked"
+## (translucent, for tiles that are not built yet) or "settings".
+## `english_main` swaps the emphasis of the two label lines: the reference labels the Home column in
+## English with the Filipino name as the smaller line, while the rest of the front end is Filipino-first.
+static func skin_button(b: Button, kind := "paper", english_main := false) -> void:
 	var fil := b.get_node_or_null("Text/Fil") as Label
+	var en := b.get_node_or_null("Text/En") as Label
+	var two := en != null and en.visible
 	if fil:
 		fil.add_theme_font_override("font", font())
+	if en:
+		en.add_theme_font_override("font", font())
+	if kind == "locked":
+		var fill := Color(0.86, 0.87, 0.89, 0.30)
+		var edge := Color(1, 1, 1, 0.46)
+		for st in ["normal", "pressed", "disabled"]:
+			b.add_theme_stylebox_override(st, FE.box_style(fill, edge, 2, 14))
+		b.add_theme_stylebox_override("hover", FE.box_style(Color(0.90, 0.91, 0.93, 0.38), edge, 2, 14))
+		b.add_theme_stylebox_override("focus", FE.box_style(fill, Color(1, 1, 1, 0.85), 4, 14))
+		if fil:
+			fil.add_theme_color_override("font_color", Color(1, 1, 1, 0.92))
+			fil.add_theme_color_override("font_outline_color", Color(0.16, 0.13, 0.11, 0.55))
+		if en:
+			en.add_theme_color_override("font_color", Color(1, 1, 1, 0.70))
+		return
+	var fill := YELLOW if kind == "primary" else PAPER
+	var edge := Color("fff6dc") if kind == "primary" else INK
+	var bw := 8 if kind == "primary" else 4
+	var lift := 9 if kind == "primary" else 7
+	var radius := 26 if kind == "primary" else 18
+	b.add_theme_stylebox_override("normal", sticker(fill, edge, bw, radius, lift))
+	b.add_theme_stylebox_override("hover", sticker(fill.lightened(0.14), edge, bw, radius, lift + 2))
+	b.add_theme_stylebox_override("pressed", sticker(fill.darkened(0.12), edge, bw, radius, maxf(2, lift - 5)))
+	b.add_theme_stylebox_override("focus", sticker(fill.lightened(0.1), Color.WHITE, bw + 3, radius, lift + 2))
+	b.add_theme_stylebox_override("disabled", sticker(fill, edge, bw, radius, lift))
+	if english_main and two and fil and en:
+		var big := fil.get_theme_font_size("font_size")
+		fil.add_theme_font_size_override("font_size", maxi(12, int(big * 0.42)))
+		en.add_theme_font_size_override("font_size", big)
+		fil.add_theme_color_override("font_color", Color(INK, 0.66))
+		en.add_theme_color_override("font_color", INK)
+		return
+	if fil:
 		fil.add_theme_color_override("font_color", INK)
-	var en := b.get_node_or_null("Text/En") as Label
 	if en:
 		en.add_theme_color_override("font_color", Color(INK, 0.72))
 

@@ -1,5 +1,0 @@
-[gd_scene load_steps=2 format=3]
-
-[ext_resource type="PackedScene" path="res://assets/props/home/bench.glb" id="1_bench"]
-
-[node name="Bench" instance=ExtResource("1_bench")]

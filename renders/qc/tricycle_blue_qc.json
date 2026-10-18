@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\home\\tricycle_blue.glb",
+ "real_height_m": 1.75,
+ "game_scale": 1.0,
+ "dims_m": [
+  2.133,
+  1.096,
+  1.75
+ ],
+ "triangles": 32000,
+ "sheet": "renders\\qc\\tricycle_blue_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.000, 0.000) m"
+  },
+  {
+   "check": "normals TricycleBlue",
+   "status": "WARN",
+   "detail": "53% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology TricycleBlue",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (33618 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "32000 (budget 95000)"
+  }
+ ]
+}

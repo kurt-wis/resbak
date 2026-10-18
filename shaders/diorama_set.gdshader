@@ -7,18 +7,18 @@ uniform sampler2D base_texture : source_color, filter_linear_mipmap, repeat_enab
 uniform vec4 base_color : source_color = vec4(1.0);
 uniform bool use_texture = true;
 uniform vec2 uv_scale = vec2(1.0); // tiles the texture (ground slabs and building fronts)
-uniform float saturation : hint_range(0.0, 1.5) = 0.62;
-uniform float value_gain : hint_range(0.3, 1.5) = 0.95;
-uniform vec3 tint : source_color = vec3(1.0, 0.95, 0.88);
+uniform float saturation : hint_range(0.0, 1.5) = 0.85;
+uniform float value_gain : hint_range(0.3, 1.5) = 1.02;
+uniform vec3 tint : source_color = vec3(1.0, 0.97, 0.92);
 uniform bool remap_palette = false;
 uniform vec3 teal_to : source_color = vec3(0.74, 0.80, 0.66); // dusty mint
 uniform vec3 orange_to : source_color = vec3(0.56, 0.27, 0.17); // weathered terracotta
-uniform float grain_strength : hint_range(0.0, 0.5) = 0.10;
+uniform float grain_strength : hint_range(0.0, 0.5) = 0.07;
 uniform float grain_scale = 5.0;
-uniform float patch_strength : hint_range(0.0, 0.5) = 0.10;
+uniform float patch_strength : hint_range(0.0, 0.5) = 0.06;
 uniform float patch_scale = 0.35;
 uniform float grime_height = 0.9; // metres: soot/damp darkening toward the ground
-uniform float grime_strength : hint_range(0.0, 0.6) = 0.18;
+uniform float grime_strength : hint_range(0.0, 0.6) = 0.10;
 varying vec3 wpos;
 
 float hash(vec3 p) {

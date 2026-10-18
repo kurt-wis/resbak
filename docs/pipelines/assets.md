@@ -23,18 +23,30 @@ Each prop scene has a `SolidCollision` body matching its visible mesh.
 collider). Rebuild with `& $env:BLENDER -b --python tools/build_vehicle_props.py` (`-- <name>` for one),
 then `tools/qc_asset.py`.
 
-**Home diorama set** (`assets/props/home/`, built by `tools/build_home_props.py`): Meshy `store`,
-`facade_teal`, `facade_pink`, `fruit_stall`, `mango_tree`, `coconut_palm`, `graffiti_wall` (raw downloads in `source_art/props/home/`, Godot-ignored) and
-16 procedural props (`stool_18/19/24`, `bench`, `bottle_crate`, `power_pole`, `wire_span`, `sign_sari_sari`,
-`sign_tindahan`, `sidewalk`, and the hand-held `soda_bottle`, `palamig_bag`, `paper_fan`, `payong`,
-`water_gallon`, `backpack`). Each is a `<name>.glb` plus a `<name>.tscn` wrapper; none has collision.
-Their colours are graded at runtime by `shaders/diorama_set.gdshader` (the Meshy textures are baked saturated
-teal/orange and look plastic ungraded). Home UI art: `assets/ui/home/` (cardboard, tape; `tools/make_home_ui.py`),
-`assets/fonts/LuckiestGuy-Regular.ttf`, and `assets/audio/home/` (`tools/make_home_audio.py`).
-Ground and skyline façade textures (`ground_*`, `facade_a..e` in `assets/props/home/`) are drawn by
-`tools/make_home_ground.py` (PIL, no Meshy); their `.import` files enable mipmaps. The graffiti wall is Meshy
-image-to-3D from a nano-banana mural image (29,999 tris after decimation; QC sheet `renders/qc/graffiti_wall_sheet.png`).
-Meshy spend for v0.1.2: 465 of the 500-credit cap.
+**Home diorama set** (`assets/props/home/`, built by `tools/build_home_props.py`): the props that make the
+reference composition — `store`, `store_base` (the counter plinth the store stands on), `crate_stack`,
+`plastic_stool` (one neutral-grey model, tinted per sitter in `HomeDioramaData`), `banana_plant`,
+`house_left`, `power_pole`, `tricycle_blue` and `tricycle_right` — all Meshy image-to-3D from crops of
+`source_art/reference/home_target.webp` (`tools/crop_home_reference.py` writes the crops; raw GLBs and the
+street decal are in `source_art/props/home/`, Godot-ignored). Older Meshy pieces still in the folder
+(`fruit_stall`, `mango_tree`, `coconut_palm`, `graffiti_wall`) now stand only in the skyline or unused. The
+procedural props left are `wire_span`, `sign_sari_sari`, `sign_tindahan`, `sidewalk`, `store_base` and the
+hand-held `paper_fan`, `payong`, `water_gallon`, `backpack` (the bystanders hold those). Each prop is a
+`<name>.glb` plus a `<name>.tscn` wrapper; none has collision. Overhead cables are procedural catenary spans:
+the generator reads thin cables as flat strips. `build_meshy` also cleans Meshy artefacts — `cut_radius`
+drops the pole's baked cable strips, `light_marks` inpaints the crates' light soda lettering out (no
+trademark), `desaturate` makes the stool tintable. Colours are graded at runtime by
+`shaders/diorama_set.gdshader` (grain, grime, wrapped light, filmic tonemap; the palette remap is off now
+that the new textures carry the reference palette). Home UI art: `assets/ui/home/` (cardboard, tape;
+`tools/make_home_ui.py`), `assets/fonts/LuckiestGuy-Regular.ttf`, and `assets/audio/home/`
+(`tools/make_home_audio.py`). Skyline façade textures (`facade_a..e`, `ground_dirt`) are drawn by
+`tools/make_home_ground.py` (PIL, no Meshy); their `.import` files enable mipmaps. The street is Meshy
+text-to-image (`street_decal.png`, hopscotch and paint splats, tiled every 10 m).
+Meshy spend: 465 of the 500-credit cap before 2026-10-18; 250 more that day — nine Home props built from
+reference crops, the street decal, a generated tricycle concept image, its retexture and six extra Home
+animation presets — which takes the project 215 past the old cap. The project owner approved that spend
+(balance 228 left of the monthly pool, resetting 2026-11-18) and the cap in this line is what needs
+re-setting, not the spend.
 
 ## Characters
 Game-ready GLBs in `assets/characters/`; character visuals get `character_toon.gdshader`

@@ -2,18 +2,22 @@ class_name HomeDiorama
 extends Node3D
 
 ## The Home screen's living backdrop: a sari-sari store at golden hour, five heroes talking and
-## gesturing around it, a jeepney and four bystanders passing, all on a seamless 48 s loop
+## gesturing around it, a tricycle and four bystanders passing, all on a seamless 48 s loop
 ## (docs/plans/2026-10-17-home-diorama.md). Presentation only: nothing here touches gameplay.
 ## Heroes are stepped (AnimationTree one-shots fired by method tracks on `Timeline`); bystanders
-## and the jeepney are pure functions of the loop time. Every number is in HomeDioramaData.
+## and the tricycle are pure functions of the loop time. Every number is in HomeDioramaData.
 
 signal turn_started(hero_id: String, line_id: int) ## a hero starts talking or laughing (audio chatter)
-signal jeep_started ## the jeepney enters the road
+signal pass_started ## the tricycle enters the back road
 
 const SCENE := "res://scenes/frontend/home_diorama.tscn"
 const PROP_DIR := "res://assets/props/home/"
 const SET_SHADER := "res://shaders/diorama_set.gdshader"
 const HEROES := ["inday", "nene", "jm", "nathan", "tutoy"]
+const HIPS_BONE := "mixamorig_Hips" ## the seat fit reads the pelvis out of the sit clip
+const TOE_BONES := ["mixamorig_LeftToeBase", "mixamorig_RightToeBase"] ## no sole may sink into the floor
+const SEAT_SAMPLES := 24 ## frames of the sit clip sampled for the lowest sole
+const REF_FLAG := "--home-ref" ## dev only: overlay the reference image at 50 % to line the set up
 const STEP_MAX := 0.1 ## a stalled frame never skips a cue
 const SEEK_STEP := 1.0 / 30.0
 const DUST_LIFETIME := 14.0
@@ -27,16 +31,18 @@ var actors := {} ## hero id -> DioramaActor
 var walkers := {} ## bystander id -> DioramaActor
 var camera: Camera3D
 var timeline: AnimationPlayer
-var jeep: Node3D
+var pass_vehicle: Node3D
+var seat_fit := {} ## hero id -> {pelvis, seat_top, sole, scale}: measured, not hand-tuned
+var ref_overlay: TextureRect ## only built for --home-ref
 var _speaker := ""
 var _speaker_line := -1
 var _built := false
 var _env_node: WorldEnvironment
 var _sky_mat: ShaderMaterial
 var audio_enabled := false ## Home turns this on before adding the node; QC tools and tests stay silent
-var _jeep_engine: AudioStreamPlayer3D
-var _jeep_horn: AudioStreamPlayer3D
-var _jeep_u_prev := -1.0
+var _pass_engine: AudioStreamPlayer3D
+var _pass_horn: AudioStreamPlayer3D
+var _pass_u_prev := -1.0
 
 func _ready() -> void:
 	build()
@@ -56,10 +62,41 @@ func build(p_data: HomeDioramaData = null) -> void:
 	_build_walls()
 	_build_cast()
 	_build_bystanders()
-	_build_jeep()
+	_build_pass()
 	_build_dust()
 	_build_timeline()
+	_build_ref_overlay()
 	seek_to(0.0)
+
+## Dev only: a 50 % reference image over the frame so the camera, the set and each prop can be lined
+## up 1:1 with the target art. Built for `--home-ref` (any command line) and nothing else, so it can
+## never reach a build.
+## Dev only, behind --home-ref: the reference image at 50 % over the frame, so the camera and every
+## prop can be lined up 1:1. The reference lives under source_art/ (Godot-ignored, never imported), so
+## it is decoded straight off disk instead of being loaded as a resource.
+func _build_ref_overlay() -> void:
+	if not OS.get_cmdline_args().has(REF_FLAG) and not OS.get_cmdline_user_args().has(REF_FLAG):
+		return
+	if not FileAccess.file_exists(data.ref_overlay):
+		push_warning("HomeDiorama: no reference at %s" % data.ref_overlay)
+		return
+	var img := Image.load_from_file(data.ref_overlay)
+	if img == null or img.is_empty():
+		push_warning("HomeDiorama: could not decode %s" % data.ref_overlay)
+		return
+	var layer := CanvasLayer.new()
+	layer.name = "RefOverlay"
+	layer.layer = 128
+	add_child(layer)
+	ref_overlay = TextureRect.new()
+	ref_overlay.name = "RefImage"
+	ref_overlay.texture = ImageTexture.create_from_image(img)
+	ref_overlay.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	ref_overlay.stretch_mode = TextureRect.STRETCH_SCALE
+	ref_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	ref_overlay.modulate = Color(1, 1, 1, data.ref_overlay_alpha)
+	ref_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(ref_overlay)
 
 # ---- world ----------------------------------------------------------------------------------
 func _node(name_: String, parent: Node = self) -> Node3D:
@@ -220,6 +257,9 @@ func _style_piece(root: Node, piece: Dictionary) -> void:
 			m.set_shader_parameter("remap_palette", piece.get("remap", false))
 			m.set_shader_parameter("saturation", piece.get("sat", data.set_saturation))
 			m.set_shader_parameter("grain_scale", piece.get("grain_scale", 5.0))
+			m.set_shader_parameter("grime_strength", piece.get("grime", 0.10))
+			m.set_shader_parameter("value_gain", piece.get("gain", 1.02))
+			m.set_shader_parameter("tint", piece.get("tint_shader", Color(1.0, 0.97, 0.92)))
 			if ink:
 				m.next_pass = ink
 			mi.set_surface_override_material(s, m)
@@ -333,12 +373,29 @@ func _build_set() -> void:
 		s.add_child(prop)
 		prop.position = piece.pos
 		prop.rotation_degrees.y = piece.get("yaw", 0.0)
-		prop.scale = Vector3.ONE * float(piece.get("scale", 1.0))
+		var sc: Variant = piece.get("scale", 1.0)
+		prop.scale = sc if sc is Vector3 else Vector3.ONE * float(sc)
 		if piece.get("toon", false):
+			if piece.has("tint"):
+				tint_root(prop, piece.tint)
 			DioramaActor.toonify(prop, piece.get("outline", true))
 		else:
 			_style_piece(prop, piece)
 		i += 1
+
+## Multiply every opaque material's albedo by `color`: the plastic props are baked neutral grey in
+## Blender so one stool model can be a red, blue or teal stool from data (HomeSkin-style tinting).
+func tint_root(root: Node, color: Color) -> void:
+	for node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		for s in range(mi.mesh.get_surface_count()):
+			var src := mi.get_active_material(s)
+			if src is not StandardMaterial3D:
+				continue
+			var sm := src as StandardMaterial3D
+			var m := sm.duplicate() as StandardMaterial3D
+			m.albedo_color = sm.albedo_color * color
+			mi.set_surface_override_material(s, m)
 
 func _build_walls() -> void:
 	var holder := _node("Walls")
@@ -381,26 +438,115 @@ func _build_walls() -> void:
 		cb.add_child(cr)
 		i += 1
 
+## Sit each hero on its stool from measured geometry rather than hand-tuned offsets (the old build
+## put every stool under the hero root with `stool_dy` 0, so the sitters floated or sank): the pelvis
+## comes from the sit clip itself, the seat height from the stool's own mesh, and the stool is scaled
+## so its seat top lands `seat_pad` under the pelvis. If the clip would push a sole through the floor,
+## both the hero and the stool rise by that amount - the gap stays 0 on the ground.
 func _build_cast() -> void:
 	var holder := _node("Heroes")
 	for hero_id in HEROES:
 		var e: Dictionary = data.cast[hero_id]
-		if String(e.stool) != "":
-			var stool := (load(PROP_DIR + String(e.stool) + ".tscn") as PackedScene).instantiate() as Node3D
-			stool.name = "Stool_" + hero_id
-			get_node("Set").add_child(stool)
-			stool.position = e.pos + Vector3(0, e.stool_dy, 0)
-			stool.rotation_degrees.y = e.yaw
-			DioramaActor.toonify(stool, true)
 		var actor := DioramaActor.new()
 		actor.name = hero_id
 		holder.add_child(actor)
-		actor.position = e.pos + Vector3(0, e.hero_dy, 0)
+		actor.position = e.pos + Vector3(0, float(e.get("hero_dy", 0.0)), 0)
 		actor.rotation_degrees.y = e.yaw
-		if actor.build_hero(hero_id, data, e):
-			actors[hero_id] = actor
-		else:
+		if not actor.build_hero(hero_id, data, e):
 			push_warning("HomeDiorama: could not build %s" % hero_id)
+			continue
+		actors[hero_id] = actor
+		if String(e.get("stool", "")) != "":
+			_seat_actor(actor, hero_id, e)
+
+## Sample the hero's base clip by hand: the AnimationTree owns the skeleton at runtime, so the
+## AnimationPlayer has to be played and seeked explicitly to ask the skeleton what a frame looks like.
+## The tree re-applies its own pose on its next advance, so hand-driving the player is safe here.
+func _sample_base(actor: DioramaActor) -> Array:
+	var samples: Array = []
+	if actor == null or actor.animator == null or actor.skeleton == null or actor._clip == "":
+		return samples
+	var skel := actor.skeleton
+	var hips := skel.find_bone(HIPS_BONE)
+	if hips < 0:
+		return samples
+	var toes: Array[int] = []
+	for n in TOE_BONES:
+		var b := skel.find_bone(n)
+		if b >= 0:
+			toes.append(b)
+	actor.animator.play(actor._clip)
+	for i in SEAT_SAMPLES + 1:
+		actor.animator.seek(actor._clip_len * float(i) / float(SEAT_SAMPLES), true)
+		skel.force_update_all_bone_transforms()
+		var sole := INF
+		for b in toes:
+			sole = minf(sole, (skel.global_transform * skel.get_bone_global_pose(b).origin).y)
+		samples.append({"pelvis": skel.global_transform * skel.get_bone_global_pose(hips).origin, "sole": sole})
+	actor.animator.stop()
+	return samples
+
+func _seat_actor(actor: DioramaActor, hero_id: String, e: Dictionary) -> void:
+	var samples := _sample_base(actor)
+	if samples.is_empty():
+		return
+	var pelvis: Vector3 = samples[0].pelvis
+	var sole := INF
+	for s in samples:
+		sole = minf(sole, float(s.sole))
+	var lift := maxf(0.0, -sole) if sole < INF else 0.0
+	if lift > 0.0:
+		actor.position.y += lift
+		pelvis.y += lift
+	var stool := (load(PROP_DIR + String(e.stool) + ".tscn") as PackedScene).instantiate() as Node3D
+	stool.name = "Stool_" + hero_id
+	get_node("Set").add_child(stool)
+	var seat := _local_top(stool)
+	if seat <= 0.01:
+		return
+	var s := maxf(0.05, (pelvis.y - data.seat_pad) / seat)
+	if e.has("stool_tint"):
+		tint_root(stool, e.stool_tint)
+	DioramaActor.toonify(stool, true)
+	stool.scale = Vector3.ONE * s
+	stool.position = Vector3(pelvis.x, 0.0, pelvis.z)
+	stool.rotation_degrees.y = e.yaw
+	seat_fit[hero_id] = {"pelvis": pelvis.y, "seat_top": seat * s, "sole": sole, "scale": s}
+
+## Highest point of a prop in its own local space - a stool's seat - before scaling.
+func _local_top(root: Node3D) -> float:
+	var top := 0.0
+	var inv := root.global_transform.affine_inverse()
+	for node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := node as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		var a: AABB = mi.get_aabb()
+		var xf: Transform3D = inv * mi.global_transform
+		for c in 8:
+			top = maxf(top, (xf * a.get_endpoint(c)).y)
+	return top
+
+## The sitter's pelvis and lowest toe *right now*, plus the seat fit the builder stored. The suite reads
+## this at rest and all through the loop, so the seat fit is held to the tolerance by measurement on the
+## pose the AnimationTree actually drives, not by trusting the builder's own numbers.
+func sitter_pose(hero_id: String) -> Dictionary:
+	var actor: DioramaActor = actors.get(hero_id)
+	if actor == null or actor.skeleton == null or not seat_fit.has(hero_id):
+		return {}
+	var skel := actor.skeleton
+	var hips := skel.find_bone(HIPS_BONE)
+	if hips < 0:
+		return {}
+	var pelvis: Vector3 = skel.global_transform * skel.get_bone_global_pose(hips).origin
+	var sole := INF
+	for n in TOE_BONES:
+		var b := skel.find_bone(n)
+		if b >= 0:
+			sole = minf(sole, (skel.global_transform * skel.get_bone_global_pose(b).origin).y)
+	var fit: Dictionary = seat_fit[hero_id]
+	return {"pelvis": pelvis.y, "pelvis_x": pelvis.x, "pelvis_z": pelvis.z, "sole": sole,
+			"seat_top": float(fit.seat_top), "pad": data.seat_pad, "scale": float(fit.scale)}
 
 func _build_bystanders() -> void:
 	var holder := _node("Bystanders")
@@ -417,22 +563,22 @@ func _build_bystanders() -> void:
 		else:
 			push_warning("HomeDiorama: could not build bystander %s" % who)
 
-func _build_jeep() -> void:
+func _build_pass() -> void:
 	var holder := _node("Vehicles")
-	jeep = (load(data.jeep_scene) as PackedScene).instantiate() as Node3D
-	jeep.name = "Jeepney"
-	holder.add_child(jeep)
-	jeep.scale = Vector3.ONE * data.jeep_scale
-	jeep.rotation_degrees.y = data.jeep_yaw
-	DioramaActor.toonify(jeep, true)
-	jeep.visible = false
+	pass_vehicle = (load(data.pass_scene) as PackedScene).instantiate() as Node3D
+	pass_vehicle.name = "Tricycle"
+	holder.add_child(pass_vehicle)
+	pass_vehicle.scale = Vector3.ONE * data.pass_scale
+	pass_vehicle.rotation_degrees.y = data.pass_yaw
+	DioramaActor.toonify(pass_vehicle, true)
+	pass_vehicle.visible = false
 	if audio_enabled:
-		_jeep_engine = _jeep_voice("home/jeep_pass")
-		_jeep_horn = _jeep_voice("home/jeep_horn")
+		_pass_engine = _pass_voice("home/jeep_pass")
+		_pass_horn = _pass_voice("home/jeep_horn")
 
-## The jeepney carries its own 3D voices, so the pass pans and fades with it (the Home viewport
+## The tricycle carries its own 3D voices, so the pass pans and fades with it (the Home viewport
 ## listens through the diorama camera).
-func _jeep_voice(sound: String) -> AudioStreamPlayer3D:
+func _pass_voice(sound: String) -> AudioStreamPlayer3D:
 	var path := "res://assets/audio/%s.wav" % sound
 	if not ResourceLoader.exists(path):
 		return null
@@ -440,9 +586,9 @@ func _jeep_voice(sound: String) -> AudioStreamPlayer3D:
 	p.name = sound.get_file().to_pascal_case()
 	p.stream = load(path)
 	p.bus = "Effects"
-	p.max_distance = data.jeep_audio_range
+	p.max_distance = data.pass_audio_range
 	p.unit_size = 8.0
-	jeep.add_child(p)
+	pass_vehicle.add_child(p)
 	return p
 
 func _build_dust() -> void:
@@ -499,7 +645,7 @@ func _build_timeline() -> void:
 		var g: Dictionary = data.gestures[i]
 		anim.track_insert_key(track, g.t, {"method": "_cue_gesture", "args": [i]})
 		anim.track_insert_key(track, minf(g.t + g.dur, data.loop_length - 0.01), {"method": "_cue_gesture_end", "args": [i]})
-	anim.track_insert_key(track, data.jeep_t0, {"method": "_cue_jeep", "args": []})
+	anim.track_insert_key(track, data.pass_t0, {"method": "_cue_pass", "args": []})
 	var lib := AnimationLibrary.new()
 	lib.add_animation("loop", anim)
 	timeline.add_animation_library("", lib)
@@ -518,8 +664,8 @@ func _cue_gesture_end(i: int) -> void:
 	if a:
 		a.end_gesture(g.get("full", false))
 
-func _cue_jeep() -> void:
-	jeep_started.emit()
+func _cue_pass() -> void:
+	pass_started.emit()
 
 # ---- stepping -------------------------------------------------------------------------------
 func _process(delta: float) -> void:
@@ -535,7 +681,7 @@ func step(delta: float) -> void:
 	for hero_id in actors:
 		(actors[hero_id] as DioramaActor).step(delta, time)
 	_update_bystanders()
-	_update_jeep()
+	_update_pass()
 	_sky_mat.set_shader_parameter("phase", fposmod(time, data.loop_length) / data.loop_length)
 
 ## Jump to loop time `t`: aborts every gesture, then replays the schedule from 0 at 30 Hz so a
@@ -614,29 +760,29 @@ func _update_bystanders() -> void:
 		a.rotation.y = atan2(dir.x, dir.z)
 		a.seek_clip(u)
 
-func _update_jeep() -> void:
-	var dist: float = (data.jeep_to - data.jeep_from).length()
-	var dur: float = dist / data.jeep_speed
-	var u: float = time - data.jeep_t0
-	_jeep_audio(u)
-	jeep.visible = u >= 0.0 and u <= dur
-	if not jeep.visible:
+func _update_pass() -> void:
+	var dist: float = (data.pass_to - data.pass_from).length()
+	var dur: float = dist / data.pass_speed
+	var u: float = time - data.pass_t0
+	_pass_audio(u)
+	pass_vehicle.visible = u >= 0.0 and u <= dur
+	if not pass_vehicle.visible:
 		return
-	var dir: Vector3 = (data.jeep_to - data.jeep_from) / dist
-	var ph := TAU * data.jeep_bob_hz * u
-	jeep.position = data.jeep_from + dir * data.jeep_speed * u + Vector3(0, data.jeep_bob_amp * sin(ph), 0)
-	jeep.rotation.x = deg_to_rad(data.jeep_pitch_deg) * sin(ph * 0.5)
+	var dir: Vector3 = (data.pass_to - data.pass_from) / dist
+	var ph := TAU * data.pass_bob_hz * u
+	pass_vehicle.position = data.pass_from + dir * data.pass_speed * u + Vector3(0, data.pass_bob_amp * sin(ph), 0)
+	pass_vehicle.rotation.x = deg_to_rad(data.pass_pitch_deg) * sin(ph * 0.5)
 
-## Engine at the start of the pass, horn at `jeep_horn_u`; only on a live (non-manual) diorama.
-func _jeep_audio(u: float) -> void:
+## Engine at the start of the pass, horn at `pass_horn_u`; only on a live (non-manual) diorama.
+func _pass_audio(u: float) -> void:
 	if audio_enabled and not manual:
-		if _jeep_engine and _jeep_u_prev < 0.0 and u >= 0.0:
-			_jeep_engine.play()
-		if _jeep_horn and _jeep_u_prev >= 0.0 and _jeep_u_prev < data.jeep_horn_u and u >= data.jeep_horn_u:
-			_jeep_horn.play()
-	_jeep_u_prev = u
+		if _pass_engine and _pass_u_prev < 0.0 and u >= 0.0:
+			_pass_engine.play()
+		if _pass_horn and _pass_u_prev >= 0.0 and _pass_u_prev < data.pass_horn_u and u >= data.pass_horn_u:
+			_pass_horn.play()
+	_pass_u_prev = u
 
-## Where the jeepney is along its road at loop time (0 before it enters, 1 after it leaves).
-func jeep_progress() -> float:
-	var dur: float = (data.jeep_to - data.jeep_from).length() / data.jeep_speed
-	return clampf((time - data.jeep_t0) / dur, 0.0, 1.0)
+## Where the tricycle is along its road at loop time (0 before it enters, 1 after it leaves).
+func pass_progress() -> float:
+	var dur: float = (data.pass_to - data.pass_from).length() / data.pass_speed
+	return clampf((time - data.pass_t0) / dur, 0.0, 1.0)

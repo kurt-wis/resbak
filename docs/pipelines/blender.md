@@ -111,8 +111,10 @@ Meshy presets from `source_art/mocap/meshy/<id>_moves.glb` unless noted; frame n
 | | Ihip | mage_soell_cast_3, 32.8–60.8: held two-arms-forward push | 1.167 s | yes |
 | | Sagip | Cheer_with_Both_Hands_Up, 3–36 | 1.375 s | no |
 
-### Menu clips (Home diorama, 2026-10-17)
-`Menu_*` clips exist only for the Home screen's sari-sari store scene (`scripts/ui/frontend/home_diorama.gd`); gameplay never plays them. Sources: Meshy `meshy_animate` presets bundled into one `source_art/mocap/meshy/<id>_menu.glb` per hero (3 credits per action; 63 credits for all five), plus Quaternius `Idle_Talking_Loop` for the two standers. Every Menu clip is `face`-turned to -Y and in place, so a gesture laid over a base on the upper body never twists the torso. Sitters (Nene, JM, Nathan) sit on a stool: grounded as a whole or planted (soles on the floor), so `Hips` height above the floor is the same in every clip of one hero. Per-clip frame numbers are source frames at 24 fps; the `hero_assets` suite checks the names and that every Menu clip animates the full skeleton.
+### Menu clips (Home diorama, 2026-10-17, extended 2026-10-18)
+`Menu_*` clips exist only for the Home screen's sari-sari store scene (`scripts/ui/frontend/home_diorama.gd`); gameplay never plays them. Sources: Meshy `meshy_animate` presets bundled into one `source_art/mocap/meshy/<id>_menu.glb` per hero (3 credits per action; 63 credits for all five), plus Quaternius `Idle_Talking_Loop` for the two standers, plus a second batch of six actions in one `source_art/mocap/meshy/menu_extra.glb` (one Meshy animate task, 18 credits, 2026-10-18) shared across the cast. Every Menu clip is `face`-turned to -Y and in place, so a gesture laid over a base on the upper body never twists the torso. Sitters (Nene, JM, Nathan) sit on a stool: grounded as a whole or planted (soles on the floor), so `Hips` height above the floor is the same in every clip of one hero. Per-clip frame numbers are source frames at 24 fps; the `home` suite checks that every clip the schedule names exists on its hero and animates the full skeleton.
+
+The Meshy action library (678 actions) has exactly two seated idles — `Chair_Sit_Idle_F` and `Chair_Sit_Idle_M`, both already in use — and no hands-in-lap or leaning-forward seated idle, so the calm seated variants are `Menu_ArmsCrossed`, `Menu_DozeOff` and `Menu_CheerLeft` from the extra batch.
 
 | Hero | Clip | Source | Length | Loop |
 | ---- | ---- | ------ | ------ | ---- |
@@ -121,24 +123,34 @@ Meshy presets from `source_art/mocap/meshy/<id>_moves.glb` unless noted; frame n
 | | Menu_HandOnHip | Hand_on_Hip_Gesture | 5.000 s | no |
 | | Menu_Cheer | Cheer_with_Both_Hands_Up, 12–44 (the first 11 frames crouch) | 1.333 s | no |
 | | Menu_HandstandFlip | Handstand_Flip, in place, lifted where the head or hands dip under the floor (`on_floor`); starts and ends in a lunge | 3.292 s | no |
+| | Menu_Listen | Listening_Gesture (extra batch), planted | 9.375 s | no |
+| | Menu_StandChat | Stand_and_Chat (extra batch), planted | 5.208 s | no |
 | Nene (sits) | Menu_SitIdle | Chair_Sit_Idle_F, 0–150 (head bows from ~160); legs dangle and swing | 6.250 s | yes |
 | | Menu_SitDrink | Sit_and_Drink | 11.167 s | no |
 | | Menu_FingerWag | Sit_Finger_Wag_No (leans in, head bowed mid-clip) | 3.958 s | no |
 | | Menu_Clap | Sitting_Clap | 3.333 s | no |
+| | Menu_ArmsCrossed | Sit_on_Chair_Arms_Crossed (extra batch) | 2.417 s | no |
+| | Menu_DozeOff | Sit_and_Doze_Off (extra batch, long slow head nod) | 17.333 s | no |
 | JM (sits) | Menu_SitIdle | Chair_Sit_Idle_M, 211–247 (the only upright stretch of a hunched source), planted | 1.500 s | yes |
 | | Menu_SitDrink | Sit_and_Drink | 11.167 s | no |
 | | Menu_LeanBackLaugh | Sit_Hands_on_Head_Lean_Back | 4.792 s | no |
 | | Menu_Clap | Sitting_Clap | 3.333 s | no |
+| | Menu_ArmsCrossed | Sit_on_Chair_Arms_Crossed (extra batch) | 2.417 s | no |
+| | Menu_DozeOff | Sit_and_Doze_Off (extra batch) | 17.333 s | no |
 | Nathan (sits) | Menu_SitIdle | Chair_Sit_Idle_M, 211–247, planted | 1.500 s | yes |
 | | Menu_Answer | Sitting_Answering_Questions | 9.667 s | no |
 | | Menu_ThumbsUp | Sit_Thumbs_Up_Right (a wave with a deep lean) | 3.833 s | no |
 | | Menu_Clap | Sitting_Clap | 3.333 s | no |
+| | Menu_ArmsCrossed | Sit_on_Chair_Arms_Crossed (extra batch) | 2.417 s | no |
+| | Menu_CheerLeft | Sit_Cheer_with_Left_Hand (extra batch) | 2.708 s | no |
 | Inday (stands) | Menu_StandIdle | Quaternius Idle_Talking_Loop, planted (her own Idle touches her face mid-loop) | 2.917 s | yes |
 | | Menu_TalkHandsOpen | Talk_with_Hands_Open | 3.958 s | no |
 | | Menu_TalkHip | Talk_with_Left_Hand_on_Hip | 5.167 s | no |
 | | Menu_TalkRightOpen | Talk_with_Right_Hand_Open | 3.750 s | no |
+| | Menu_StandChat | Stand_and_Chat (extra batch), planted | 5.208 s | no |
+| | Menu_TalkRaised | Talk_with_Left_Hand_Raised (extra batch), planted | 4.667 s | no |
 
-Nathan's `Scheming_Hand_Rub` was downloaded but is not baked: it is a standing clip and bends a sitter's spine too far. Pelvis heights above the soles in `Menu_SitIdle` (the stool seat heights the diorama needs): Nene 0.18 m, JM 0.19 m, Nathan 0.24 m. `build_heroes.py` writes a second review sheet per hero, `renders/heroes_<id>_menu.png`, for these clips; `qc_asset.py` reports a loop seam of 0 m for every looping Menu clip and WARNs (expected) on the one-shot gestures.
+Nathan's `Scheming_Hand_Rub` was downloaded but is not baked: it is a standing clip and bends a sitter's spine too far. The stool seat heights the diorama computes at runtime come from the pelvis height above the soles in each sitter's `Menu_SitIdle` frame 0 (Nene 0.18 m, JM 0.19 m, Nathan 0.24 m on the original stools) minus `seat_pad` 0.06 m. `build_heroes.py` writes a second review sheet per hero, `renders/heroes_<id>_menu.png`, for these clips; `qc_asset.py` reports a loop seam of 0 m for every looping Menu clip and WARNs (expected) on the one-shot gestures.
 
 Planted-foot speeds from `qc_asset.py` (game m/s, 2026-10-16), for `data/heroes/<id>.tres`:
 

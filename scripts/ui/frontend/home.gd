@@ -111,8 +111,8 @@ func _build_vignette() -> void:
 func _build_player_card() -> void:
 	card = Button.new()
 	card.name = "PlayerCard"
-	card.position = Vector2(70, 48)
-	card.size = Vector2(660, 196)
+	card.position = Vector2(74, 56)
+	card.size = Vector2(860, 184)
 	card.custom_minimum_size = card.size
 	card.focus_mode = Control.FOCUS_ALL
 	card.tooltip_text = "Palitan ang katropa  ·  Change your character"
@@ -129,12 +129,12 @@ func _build_player_card() -> void:
 	HomeSkin.tape(card, Vector2(card.size.x - 76, -8), 30)
 
 	var row := HBoxContainer.new()
-	row.position = Vector2(30, 24)
-	row.size = Vector2(card.size.x - 60, card.size.y - 48)
-	row.add_theme_constant_override("separation", 24)
+	row.position = Vector2(26, 20)
+	row.size = Vector2(card.size.x - 52, card.size.y - 40)
+	row.add_theme_constant_override("separation", 22)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(row)
-	card_face = FaceBadge.new(bench_id, 140)
+	card_face = FaceBadge.new(bench_id, 125)
 	card_face.name = "PlayerFace"
 	row.add_child(card_face)
 	var col := VBoxContainer.new()
@@ -143,25 +143,34 @@ func _build_player_card() -> void:
 	col.add_theme_constant_override("separation", 6)
 	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(col)
-	card_name = HomeSkin.shout(Session.player_name(), 50, HomeSkin.PAPER)
+	card_name = HomeSkin.shout(Session.player_name(), 46, HomeSkin.PAPER)
 	card_name.name = "PlayerName"
 	card_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	card_name.clip_text = true
 	col.add_child(card_name)
 	var stats := HBoxContainer.new()
 	stats.name = "Stats"
-	stats.add_theme_constant_override("separation", 34)
+	stats.add_theme_constant_override("separation", 26)
 	stats.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(stats)
 	var s := FE.save()
 	var t: Dictionary = s.get_profile().get("totals", {}) if s else {}
 	for st in [["matches", "Laro", "Matches"], ["wins", "Panalo", "Wins"], ["mvps", "MVP", "MVP"]]:
 		var cell := VBoxContainer.new()
-		cell.add_theme_constant_override("separation", -6)
+		cell.add_theme_constant_override("separation", 2)
 		cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var v := HomeSkin.shout(str(int(t.get(st[0], 0))), 40, HomeSkin.YELLOW)
-		v.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		cell.add_child(v)
+		# The reference's stat is a yellow ring with the count inside and the label under it.
+		var circle := Panel.new()
+		circle.custom_minimum_size = Vector2(46, 46)
+		circle.size = Vector2(46, 46)
+		circle.add_theme_stylebox_override("panel", HomeSkin.ring(46, Color(0, 0, 0, 0), HomeSkin.YELLOW, 4))
+		circle.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var v := HomeSkin.shout(str(int(t.get(st[0], 0))), 26, HomeSkin.INK, HomeSkin.YELLOW)
+		v.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		v.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		circle.add_child(v)
+		cell.add_child(circle)
 		var p := FE.pair(st[1], st[2])
 		var cap := FE.label(p[0] if p[1] == "" or p[0] == p[1] else "%s · %s" % [p[0], p[1]], 18, HomeSkin.INK)
 		cell.add_child(cap)
@@ -179,7 +188,7 @@ func _build_player_card() -> void:
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var bl := HomeSkin.shout("PALITAN", 26, HomeSkin.PAPER)
 	badge.add_child(bl)
-	badge.position = Vector2(card.size.x - 186, card.size.y - 38)
+	badge.position = Vector2(card.size.x - 386, card.size.y - 34)
 	badge.rotation_degrees = 5.0
 	card.add_child(badge)
 
@@ -199,33 +208,34 @@ func _wiggle_card() -> void:
 func _build_nav() -> void:
 	var col := VBoxContainer.new()
 	col.name = "Nav"
-	col.position = Vector2(86, 290)
-	col.add_theme_constant_override("separation", 16)
+	col.position = Vector2(93, 300)
+	col.add_theme_constant_override("separation", 14)
 	content.add_child(col)
-	# The column ends at x = 566 so Inday (the leftmost hero) stands clear of it in the 3D backdrop.
-	var laro := btn("Laro", "LARO", "Play", Vector2(480, 150), 84, false, true)
-	HomeSkin.skin_button(laro, "primary")
+	# The column ends at x = 568 so Inday (the leftmost hero) stands clear of it in the 3D backdrop.
+	# The label pairs read English-first here, as the reference labels them (see HomeSkin.skin_button).
+	var laro := btn("Laro", "LARO", "PLAY", Vector2(475, 151), 84, false, true)
+	HomeSkin.skin_button(laro, "primary", true)
 	col.add_child(laro)
 	laro.pressed.connect(func(): go("play_menu"))
-	var ensayo := btn("Ensayo", "ENSAYO", "Tutorial", Vector2(480, 100), 40)
-	HomeSkin.skin_button(ensayo)
+	var ensayo := btn("Ensayo", "ENSAYO", "TUTORIAL", Vector2(475, 95), 44)
+	HomeSkin.skin_button(ensayo, "paper", true)
 	col.add_child(ensayo)
 	ensayo.pressed.connect(start_tutorial)
 	var soon_row := HBoxContainer.new()
-	soon_row.add_theme_constant_override("separation", 14)
+	soon_row.add_theme_constant_override("separation", 20)
 	col.add_child(soon_row)
 	for g in [["Barkada", "BARKADA"], ["Locker", "LOCKER"], ["Gawain", "GAWAIN"]]:
-		var b := btn(g[0], g[1], "", Vector2(150, 92), 24, true)
-		HomeSkin.skin_button(b)
+		var b := btn(g[0], g[1], "", Vector2(134, 75), 24, true)
+		HomeSkin.skin_button(b, "locked")
 		soon_row.add_child(b)
 	col.add_child(FE.spacer(8))
-	var quit := btn("Lumabas", "LUMABAS", "Back to title", Vector2(400, 92), 38)
-	HomeSkin.skin_button(quit)
+	var quit := btn("Lumabas", "LUMABAS", "BACK TO TITLE", Vector2(475, 80), 36)
+	HomeSkin.skin_button(quit, "paper", true)
 	col.add_child(quit)
 	quit.pressed.connect(func(): go("title"))
-	var settings := btn("Settings", "Settings", "", Vector2(240, 76), 32)
-	HomeSkin.skin_button(settings)
-	settings.position = Vector2(1620, 48)
+	var settings := btn("Settings", "MGA SETTING", "SETTINGS", Vector2(238, 72), 32)
+	HomeSkin.skin_button(settings, "paper", true)
+	settings.position = Vector2(1620, 49)
 	content.add_child(settings)
 	settings.pressed.connect(func():
 		FE.back_to = "home"
@@ -242,12 +252,12 @@ func start_tutorial() -> void:
 	go_call("tutorial", func(): Session.start_match())
 
 func _build_soon_tiles() -> void:
-	var tiles := [["Tansan", "Tansan", Vector2(1660, 144)],
-		["News", "Balita", Vector2(1660, 218)],
-		["Profile", "Profile", Vector2(1660, 292)]]
+	var tiles := [["Tansan", "TANSAN", Vector2(1660, 140)],
+		["News", "BALITA", Vector2(1660, 206)],
+		["Profile", "PROFILE", Vector2(1660, 272)]]
 	for t in tiles:
-		var b := btn(t[0], t[1], "", Vector2(200, 64), 24, true)
-		HomeSkin.skin_button(b)
+		var b := btn(t[0], t[1], "", Vector2(199, 58), 24, true)
+		HomeSkin.skin_button(b, "locked")
 		b.position = t[2]
 		content.add_child(b)
 

@@ -1,0 +1,39 @@
+{
+ "file": "assets\\props\\home\\banana_plant.glb",
+ "real_height_m": 0.915,
+ "game_scale": 1.0,
+ "dims_m": [
+  1.8,
+  1.696,
+  0.915
+ ],
+ "triangles": 30000,
+ "sheet": "renders\\qc\\banana_plant_sheet.png",
+ "checks": [
+  {
+   "check": "ground",
+   "status": "PASS",
+   "detail": "lowest point Z = 0.000 m (want 0)"
+  },
+  {
+   "check": "centred",
+   "status": "PASS",
+   "detail": "XY centre (0.000, 0.000) m"
+  },
+  {
+   "check": "normals BananaPlant",
+   "status": "PASS",
+   "detail": "63% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology BananaPlant",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (23338 open edges, normal at UV seams)"
+  },
+  {
+   "check": "triangles",
+   "status": "PASS",
+   "detail": "30000 (budget 95000)"
+  }
+ ]
+}

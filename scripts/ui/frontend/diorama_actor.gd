@@ -79,6 +79,11 @@ func build_hero(hero_id: String, p_data: HomeDioramaData, entry: Dictionary) -> 
 	var base: String = entry.get("base", "Menu_StandIdle")
 	for clip in animator.get_animation_list():
 		animator.get_animation(clip).loop_mode = Animation.LOOP_LINEAR if clip == base else Animation.LOOP_NONE
+	# The base clip is the hero's own idle: the seat fit reads its first frame, and the QC tools and
+	# the loop edge both measure poses against it, so it is worth the two book-keeping fields.
+	_clip = base
+	if animator.has_animation(base):
+		_clip_len = animator.get_animation(base).length
 	_build_tree(base, int(entry.get("cycles", 1)))
 	face = FaceRig.new()
 	face.attach(hero_id, model, data)

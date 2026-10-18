@@ -25,26 +25,30 @@ static func load_data() -> HomeDioramaData:
 @export var quiet_end := 46.0 ## ...and everything has finished by this
 
 @export_group("Camera")
-@export var cam_position := Vector3(1.0, 1.05, 6.4) ## low and close, like the reference: kids fill the lower half
-@export var cam_target := Vector3(1.1, 1.3, 0.0)
+## Solved against the reference with the projection solver (renders/qc/fit_layout.py): 1.7 m eye
+## height, 2.4 degrees down, horizon at reference y 340. `--home-ref` overlays the reference to check.
+@export var cam_position := Vector3(0.75, 1.70, 7.2)
+@export var cam_target := Vector3(0.75, 1.40, 0.0)
 @export var cam_fov := 40.0
+@export var ref_overlay := "res://source_art/reference/home_target.webp" ## drawn by --home-ref only
+@export var ref_overlay_alpha := 0.5
 
 @export_group("Light")
 @export var sun_color := Color("ffc27a")
-@export var sun_energy := 1.15
+@export var sun_energy := 1.30
 @export var sun_rotation := Vector3(-20.0, 128.0, 0.0) ## degrees: elevation 20, from screen-right and behind
 @export var sun_shadow_max := 40.0
 @export var sun_shadow_opacity := 0.82
 @export var fill_color := Color("9fc0e6") ## cool fill from camera-left, no shadow
-@export var fill_energy := 0.28
+@export var fill_energy := 0.34
 @export var fill_rotation := Vector3(-18.0, -35.0, 0.0)
 @export var ambient_color := Color("8fb4d9")
-@export var ambient_energy := 0.42
-@export var exposure := 0.9 ## filmic tonemap exposure (keeps the sky from washing out)
+@export var ambient_energy := 0.52
+@export var exposure := 1.12 ## filmic tonemap exposure (keeps the sky from washing out)
 @export var sky_top := Color("5d86b8")
 @export var sky_horizon := Color("f0a566")
 @export var fog_color := Color("f0c9a0") ## warm-peach depth haze
-@export var fog_density := 0.008
+@export var fog_density := 0.0035
 @export var sky_mid := Color("7f9cc4") ## the blue the gradient reaches a few degrees above the horizon
 @export var sky_glow := Color("ffb866") ## low-sun glow added around the sun and under the clouds
 @export var sky_cloud_lit := Color("ffe2b8")
@@ -67,10 +71,12 @@ static func load_data() -> HomeDioramaData:
 @export var scale_3d := 1.0 ## 3D resolution scale; lowered only if the 60 fps check needs it
 
 @export_group("Ground")
-## [name, centre, size (x, z), colour]; flat toon-shaded slabs under the set.
+## [name, centre, size (x, z), colour, texture?, tile?]: flat toon slabs under the set. The near
+## street carries the Meshy-painted decal (chalk hopscotch, paint splats, dirt verge, assets/props/
+## home/street_decal.png) instead of the old concrete tile; `tile` is metres per texture repeat.
 @export var ground := [
-	{"name": "Yard", "pos": Vector3(0, -0.01, 0.5), "size": Vector2(60, 18), "color": Color("b9a68c"),
-			"texture": "res://assets/props/home/ground_concrete.png", "tile": 8.0},
+	{"name": "Street", "pos": Vector3(0.0, -0.01, 0.5), "size": Vector2(60, 26), "color": Color("a9a69f"),
+			"texture": "res://assets/props/home/street_decal.png", "tile": 10.0},
 	{"name": "Road", "pos": Vector3(0, 0.0, -11.2), "size": Vector2(70, 6.6), "color": Color("4b4d58")},
 	{"name": "SideRoad", "pos": Vector3(9.1, 0.0, -11.0), "size": Vector2(6.2, 26), "color": Color("4b4d58")},
 	{"name": "FarGround", "pos": Vector3(0, -0.01, -19.0), "size": Vector2(70, 8), "color": Color("b79468"),
@@ -104,7 +110,7 @@ static func load_data() -> HomeDioramaData:
 ]
 ## The street wall behind the court: one building per entry, front plane at `backdrop_z`. {x (centre),
 ## w, h, tex (a..e = assets/props/home/facade_<tex>.png), color (the side walls), tank (rooftop water tank)}.
-## Gaps are left at x 6.2..12.4 for the side street the jeep drives down.
+## Gaps are left at x 6.2..12.4 for the side street the background tricycle drives down.
 @export var backdrop_z := -17.6
 @export var backdrop_depth := 5.0
 @export var backdrop := [
@@ -123,113 +129,118 @@ static func load_data() -> HomeDioramaData:
 @export var road_dash_color := Color("e7d7a8")
 
 @export_group("Set")
-@export var set_saturation := 0.62 ## default saturation of graded set pieces (the Meshy palettes are candy-bright)
-## {scene, pos, yaw (deg), scale, outline, toon, remap, sat}: Meshy and procedural props from
-## assets/props/home. `toon` keeps the hero toon shader (plants, stools); every other piece uses
-## the graded diorama_set shader, `remap` re-colours teal/orange Meshy textures, `outline` adds ink.
+@export var set_saturation := 0.95 ## light grade only: the meshy-7.1 textures already carry the reference palette
+## {scene, pos, yaw (deg), scale (float or Vector3), outline, toon, sat, tint, path}: props from
+## assets/props/home. `toon` keeps the hero toon shader (plants, stools); every other piece uses the
+## graded diorama_set shader. The palette remap is off now that the textures are generated from the
+## reference itself (add "remap": true to a piece to bring it back).
 @export var set_pieces := [
-	{"scene": "store", "pos": Vector3(1.4, 0, -4.9), "yaw": 0.0, "scale": 1.35, "remap": true, "sat": 0.75},
-	{"scene": "sign_sari_sari", "pos": Vector3(1.55, 2.75, -1.3), "yaw": 0.0, "scale": 1.35},
-	{"scene": "sidewalk", "pos": Vector3(-8, 0, -15.8), "yaw": 180.0},
-	{"scene": "sidewalk", "pos": Vector3(8, 0, -15.8), "yaw": 180.0},
-	{"scene": "facade_teal", "pos": Vector3(-5.2, 0, -10.2), "scale": 0.85, "remap": true, "sat": 0.55},
-	{"scene": "facade_pink", "pos": Vector3(5.6, 0, -11.0), "scale": 1.3, "remap": true, "sat": 0.55},
-	{"scene": "fruit_stall", "pos": Vector3(9.3, 0, -17.6), "yaw": 6.0},
-	{"scene": "payong", "pos": Vector3(9.3, 1.6, -17.6), "scale": 1.8},
-	{"scene": "sign_tindahan", "pos": Vector3(-0.5, 3.1, -16.8)},
-	{"scene": "power_pole", "pos": Vector3(-6.0, 0, -15.4)},
-	{"scene": "power_pole", "pos": Vector3(2.0, 0, -15.4)},
-	{"scene": "power_pole", "pos": Vector3(10.0, 0, -15.4)},
-	{"scene": "wire_span", "pos": Vector3(-6.0, 0, -15.4)},
-	{"scene": "wire_span", "pos": Vector3(2.0, 0, -15.4)},
-	{"scene": "bottle_crate", "pos": Vector3(-0.85, 0, -0.75), "yaw": 10.0},
-	{"scene": "graffiti_wall", "pos": Vector3(3.95, 0, -3.3), "yaw": -10.0, "scale": 1.1, "sat": 0.9},
-	{"scene": "bench", "pos": Vector3(1.5, 0, -0.95), "yaw": 0.0},
-	{"scene": "potted_plant", "pos": Vector3(3.95, 0, -0.9), "toon": true, "path": "res://assets/props/potted_plant.tscn"},
-	{"scene": "stool_24", "pos": Vector3(4.9, 0, 3.0), "yaw": 30.0, "scale": 1.5, "toon": true},
-	# Vegetation: the map's painted neighborhood assets (unit-height models, scale = metres tall).
-	{"scene": "mango_tree", "pos": Vector3(13.2, 0, -7.5), "yaw": 30.0, "scale": 1.0, "toon": true},
-	{"scene": "coconut_palm", "pos": Vector3(15.0, 0, -4.2), "yaw": 70.0, "scale": 1.05, "toon": true},
-	{"scene": "banana_plant", "pos": Vector3(5.2, 0, -6.2), "yaw": 15.0, "scale": 2.6, "toon": true, "path": "res://assets/props/neighborhood/banana_plant.tscn"},
-	{"scene": "banana_plant", "pos": Vector3(4.2, 0, -8.0), "yaw": 140.0, "scale": 2.0, "toon": true, "path": "res://assets/props/neighborhood/banana_plant.tscn"},
-	{"scene": "coconut_palm", "pos": Vector3(-7.5, 0, -9.0), "yaw": 20.0, "scale": 0.95, "toon": true},
+	# The store, raised on its procedural counter (`store_base`) and scaled so the reference crop's
+	# box lands on the reference's: base floating 1.11 m up at z -3.875, roof line at reference y 37.
+	{"scene": "store_base", "pos": Vector3(2.32, 0, -3.05), "yaw": 0.0, "scale": 1.05},
+	{"scene": "store", "pos": Vector3(2.32, 0.80, -3.875), "yaw": 0.0, "scale": 1.27},
+	# Red/blue crate stack at the store's right, one empty stool between Nene and Nathan.
+	{"scene": "crate_stack", "pos": Vector3(3.64, 0, -0.27), "yaw": -6.0, "scale": Vector3(0.67, 1.0, 1.20)},
+	{"scene": "plastic_stool", "pos": Vector3(0.96, 0, -0.77), "yaw": 24.0, "scale": 1.0, "toon": true,
+			"tint": Color("3568b0")},
+	# Parked tricycles: one at the left edge, one far down the side street at the right (the
+	# reference's right-hand pair sits about 20 m out).
+	{"scene": "tricycle_blue", "pos": Vector3(-2.45, 0, 0.55), "yaw": 14.0, "scale": 0.97},
+	{"scene": "tricycle_right", "pos": Vector3(11.8, 0, -11.6), "yaw": 168.0, "scale": 0.96},
+	# The reference's wooden jalousie house stands behind the left menu card.
+	{"scene": "house_left", "pos": Vector3(-3.3, 0, -6.0), "yaw": 8.0, "scale": 0.85},
+	# Bananas right of the store: the crop was wider than tall, so the clump model is stretched up.
+	{"scene": "banana_plant", "pos": Vector3(6.45, 1.35, -3.4), "yaw": 18.0, "scale": Vector3(0.78, 2.62, 0.78), "toon": true},
+	{"scene": "banana_plant", "pos": Vector3(6.95, 1.35, -5.4), "yaw": 130.0, "scale": Vector3(0.72, 2.60, 0.72), "toon": true},
+	{"scene": "croton_plant", "pos": Vector3(4.5, 0, -0.70), "yaw": 0.0, "scale": 1.0, "toon": true,
+			"path": "res://assets/props/neighborhood/croton_plant.tscn"},
+	# Power poles (scaled so the cross-arm and transformer sit in frame, as in the reference) with
+	# catenary spans between them: Meshy cannot make a thin sagging cable, so these stay procedural.
+	{"scene": "power_pole", "pos": Vector3(-0.39, 0, -6.60), "yaw": 0.0, "scale": 0.72},
+	{"scene": "power_pole", "pos": Vector3(9.6, 0, -5.4), "yaw": 0.0, "scale": 0.72},
+	{"scene": "wire_span", "pos": Vector3(-6.20, 0, -6.6), "scale": 0.75},
+	{"scene": "wire_span", "pos": Vector3(0.00, 0, -6.6), "scale": 0.75},
+	{"scene": "wire_span", "pos": Vector3(6.20, 0, -6.4), "scale": 0.75},
+	# Skyline fill far behind the set.
+	{"scene": "mango_tree", "pos": Vector3(-9.5, 0, -9.5), "yaw": 30.0, "scale": 1.0, "toon": true},
+	{"scene": "coconut_palm", "pos": Vector3(-7.5, 0, -6.0), "yaw": 20.0, "scale": 0.95, "toon": true},
 	{"scene": "mango_tree", "pos": Vector3(16.8, 0, -12.5), "yaw": 100.0, "scale": 1.05, "toon": true},
-	{"scene": "croton_plant", "pos": Vector3(-0.2, 0, -0.9), "yaw": 0.0, "scale": 1.0, "toon": true, "path": "res://assets/props/neighborhood/croton_plant.tscn"},
+	{"scene": "coconut_palm", "pos": Vector3(15.0, 0, -6.2), "yaw": 70.0, "scale": 1.05, "toon": true},
 ]
 
 @export_group("Cast")
-## One entry per hero: pos, yaw (deg), base idle clip, idle cycles per loop (so the base pose is
-## identical at the wrap), stool prop, offsets, held prop.
+## One entry per hero: pos (the hero root, on the ground), yaw (deg), base idle clip, idle cycles per
+## loop (so the base pose is identical at the wrap), stool prop, hand props. The seat height is not
+## tuned here: home_diorama reads the stool's seat from its own mesh and the hero's pelvis from frame
+## 0 of the sit clip, puts the stool under the pelvis and scales it so seat_top = pelvis - seat_pad.
+@export var seat_pad := 0.06 ## metres of thigh compression: the pelvis rides this far above the seat
 @export var cast := {
-	"inday": {"pos": Vector3(0.05, 0, 1.3), "yaw": 55.0, "base": "Menu_StandIdle", "cycles": 16,
-			"stool": "", "stool_dy": 0.0, "hero_dy": 0.0, "prop": {}},
-	"nene": {"pos": Vector3(0.7, 0, -0.1), "yaw": 32.0, "base": "Menu_SitIdle", "cycles": 8,
-			"stool": "stool_18", "stool_dy": 0.0, "hero_dy": 0.0,
-			"prop": {"scene": "palamig_bag", "bone": "mixamorig_RightHand", "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0), "scale": 1.0}},
-	"jm": {"pos": Vector3(1.75, 0, 0.3), "yaw": -8.0, "base": "Menu_SitIdle", "cycles": 32,
-			"stool": "stool_19", "stool_dy": 0.0, "hero_dy": 0.0,
-			"prop": {"scene": "soda_bottle", "bone": "mixamorig_RightHand", "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0), "scale": 1.0}},
-	"nathan": {"pos": Vector3(2.85, 0, -0.15), "yaw": -34.0, "base": "Menu_SitIdle", "cycles": 32,
-			"stool": "stool_24", "stool_dy": 0.0, "hero_dy": 0.0, "prop": {}},
-	"tutoy": {"pos": Vector3(4.0, 0, 0.9), "yaw": -52.0, "base": "Menu_StandIdle", "cycles": 16,
-			"stool": "", "stool_dy": 0.0, "hero_dy": 0.0, "prop": {}},
+	"inday": {"pos": Vector3(-0.27, 0, 1.41), "yaw": 60.0, "base": "Menu_StandIdle", "cycles": 16,
+			"stool": "", "hero_dy": 0.0, "prop": {}},
+	"nene": {"pos": Vector3(0.19, 0, 0.08), "yaw": 18.0, "base": "Menu_SitIdle", "cycles": 8,
+			"stool": "plastic_stool", "stool_tint": Color("d0402c"), "hero_dy": 0.0, "prop": {}},
+	"jm": {"pos": Vector3(1.53, 0, -0.43), "yaw": 6.0, "base": "Menu_SitIdle", "cycles": 32,
+			"stool": "plastic_stool", "stool_tint": Color("2f7f8f"), "hero_dy": 0.0, "prop": {}},
+	"nathan": {"pos": Vector3(2.59, 0, -0.27), "yaw": -20.0, "base": "Menu_SitIdle", "cycles": 32,
+			"stool": "plastic_stool", "stool_tint": Color("3a6fbd"), "hero_dy": 0.0, "prop": {}},
+	"tutoy": {"pos": Vector3(3.83, 0, 1.22), "yaw": -50.0, "base": "Menu_StandIdle", "cycles": 16,
+			"stool": "", "hero_dy": 0.0, "prop": {}},
 }
 @export var look_default := Vector3(1.6, 1.2, 0.4) ## where everyone looks when nobody speaks
-@export var look_yaw_limit := 45.0 ## degrees the head may turn toward a speaker
-@export var look_pitch_limit := 20.0
-@export var look_rate := 5.0 ## 1/s: how fast the gaze target eases to the next speaker
-@export var gesture_fade_in := 0.25
-@export var gesture_fade_out := 0.30
-@export var look_off_rate := 6.0 ## 1/s: look-at influence easing to 0 during full-body clips
+@export var look_yaw_limit := 30.0 ## degrees the head may turn toward a speaker
+@export var look_pitch_limit := 15.0
+@export var look_rate := 2.5 ## 1/s: how fast the gaze target eases to the next speaker
+@export var gesture_fade_in := 0.5
+@export var gesture_fade_out := 0.5
+@export var look_off_rate := 4.0 ## 1/s: look-at influence easing to 0 during full-body clips
 
 @export_group("Schedule")
-## {t, hero, clip, dur, full}: gestures never overlap on one hero and stay inside the quiet
-## window. `dur` can end a long clip early (the one-shot fades out).
+## {t, hero, clip, dur, full}: gestures never overlap on one hero and stay inside the quiet window.
+## `dur` can end a long clip early (the one-shot fades out). Few and long: five short gestures in a
+## row read as twitching, so each hero gets one unhurried turn.
 @export var gestures := [
-	{"t": 2.2, "hero": "inday", "clip": "Menu_TalkHandsOpen", "dur": 3.9},
-	{"t": 6.3, "hero": "inday", "clip": "Menu_TalkHip", "dur": 5.1},
-	{"t": 11.6, "hero": "nathan", "clip": "Menu_Answer", "dur": 9.6},
-	{"t": 12.2, "hero": "nene", "clip": "Menu_SitDrink", "dur": 11.1},
-	{"t": 15.2, "hero": "jm", "clip": "Menu_LeanBackLaugh", "dur": 4.7},
-	{"t": 21.0, "hero": "jm", "clip": "Menu_SitDrink", "dur": 8.5},
-	{"t": 25.2, "hero": "nene", "clip": "Menu_FingerWag", "dur": 3.9},
-	{"t": 25.5, "hero": "inday", "clip": "Menu_TalkRightOpen", "dur": 3.7},
-	{"t": 30.0, "hero": "tutoy", "clip": "Menu_TalkPassionate", "dur": 3.9},
-	{"t": 34.3, "hero": "tutoy", "clip": "Menu_HandstandFlip", "dur": 3.2, "full": true},
-	{"t": 38.0, "hero": "tutoy", "clip": "Menu_Cheer", "dur": 1.3},
-	{"t": 38.1, "hero": "nathan", "clip": "Menu_Clap", "dur": 3.2},
-	{"t": 38.2, "hero": "jm", "clip": "Menu_Clap", "dur": 3.2},
-	{"t": 38.3, "hero": "nene", "clip": "Menu_Clap", "dur": 3.2},
-	{"t": 41.7, "hero": "nathan", "clip": "Menu_ThumbsUp", "dur": 3.8},
-	{"t": 42.2, "hero": "inday", "clip": "Menu_TalkHandsOpen", "dur": 3.5},
+	{"t": 2.4, "hero": "inday", "clip": "Menu_TalkHandsOpen", "dur": 6.2},
+	{"t": 4.2, "hero": "tutoy", "clip": "Menu_Listen", "dur": 5.0},
+	{"t": 9.6, "hero": "inday", "clip": "Menu_TalkHip", "dur": 6.4},
+	{"t": 12.0, "hero": "nene", "clip": "Menu_ArmsCrossed", "dur": 4.4},
+	{"t": 17.0, "hero": "nathan", "clip": "Menu_Answer", "dur": 7.2},
+	{"t": 25.0, "hero": "inday", "clip": "Menu_TalkRaised", "dur": 6.0},
+	{"t": 30.0, "hero": "jm", "clip": "Menu_DozeOff", "dur": 5.0},
+	{"t": 31.4, "hero": "tutoy", "clip": "Menu_TalkPassionate", "dur": 6.2},
+	{"t": 34.0, "hero": "nathan", "clip": "Menu_CheerLeft", "dur": 3.6},
+	{"t": 38.0, "hero": "jm", "clip": "Menu_LeanBackLaugh", "dur": 4.0},
+	{"t": 39.0, "hero": "tutoy", "clip": "Menu_StandChat", "dur": 5.0},
+	{"t": 42.4, "hero": "nathan", "clip": "Menu_ThumbsUp", "dur": 3.4},
+	{"t": 42.6, "hero": "nene", "clip": "Menu_FingerWag", "dur": 3.2},
 ]
 ## {t0, t1, hero, mode}: who moves their mouth when. While a hero talks or laughs the others
 ## look at them (the gaze follows the latest speaker).
 @export var speech := [
-	{"t0": 2.4, "t1": 10.9, "hero": "inday", "mode": "talk"},
-	{"t0": 11.8, "t1": 16.0, "hero": "nathan", "mode": "talk"},
-	{"t0": 16.0, "t1": 19.2, "hero": "nathan", "mode": "smile"},
-	{"t0": 15.5, "t1": 19.6, "hero": "jm", "mode": "laugh"},
-	{"t0": 16.0, "t1": 18.8, "hero": "nene", "mode": "laugh"},
-	{"t0": 15.5, "t1": 19.5, "hero": "inday", "mode": "smile"},
-	{"t0": 15.5, "t1": 19.5, "hero": "tutoy", "mode": "smile"},
-	{"t0": 25.4, "t1": 27.4, "hero": "nene", "mode": "talk"},
-	{"t0": 27.4, "t1": 29.2, "hero": "inday", "mode": "talk"},
-	{"t0": 30.2, "t1": 33.9, "hero": "tutoy", "mode": "talk"},
-	{"t0": 38.1, "t1": 39.4, "hero": "tutoy", "mode": "laugh"},
-	{"t0": 38.0, "t1": 41.5, "hero": "nathan", "mode": "smile"},
-	{"t0": 38.0, "t1": 41.5, "hero": "jm", "mode": "smile"},
-	{"t0": 38.0, "t1": 41.5, "hero": "nene", "mode": "smile"},
-	{"t0": 41.8, "t1": 45.5, "hero": "nathan", "mode": "smile"},
-	{"t0": 42.4, "t1": 45.7, "hero": "inday", "mode": "talk"},
-	{"t0": 43.0, "t1": 45.5, "hero": "nene", "mode": "smile"},
+	{"t0": 2.6, "t1": 8.6, "hero": "inday", "mode": "talk"},
+	{"t0": 9.8, "t1": 15.9, "hero": "inday", "mode": "talk"},
+	{"t0": 9.8, "t1": 15.9, "hero": "nene", "mode": "smile"},
+	{"t0": 17.2, "t1": 24.0, "hero": "nathan", "mode": "talk"},
+	{"t0": 17.2, "t1": 24.0, "hero": "jm", "mode": "smile"},
+	{"t0": 25.2, "t1": 30.9, "hero": "inday", "mode": "talk"},
+	{"t0": 25.2, "t1": 30.9, "hero": "tutoy", "mode": "smile"},
+	{"t0": 31.6, "t1": 37.5, "hero": "tutoy", "mode": "talk"},
+	{"t0": 31.6, "t1": 37.5, "hero": "nathan", "mode": "smile"},
+	{"t0": 38.2, "t1": 41.9, "hero": "jm", "mode": "laugh"},
+	{"t0": 38.2, "t1": 41.9, "hero": "nene", "mode": "smile"},
+	{"t0": 38.2, "t1": 41.9, "hero": "inday", "mode": "smile"},
+	{"t0": 38.2, "t1": 41.9, "hero": "tutoy", "mode": "smile"},
+	{"t0": 38.2, "t1": 41.9, "hero": "nathan", "mode": "smile"},
+	{"t0": 42.4, "t1": 45.6, "hero": "nene", "mode": "talk"},
+	{"t0": 42.4, "t1": 45.7, "hero": "nathan", "mode": "smile"},
+	{"t0": 42.6, "t1": 45.7, "hero": "inday", "mode": "smile"},
 ]
 
 @export_group("Bystanders")
 ## Walkers: from -> to at `speed` m/s (the measured planted-foot speed, so the feet don't slide),
-## starting at loop time t0, hidden outside the walk. The tindera stays in the store window.
+## starting at loop time t0, hidden outside the walk. The tindera keeps the stall counter, standing
+## on the street in front of its left end (the store itself is raised on the counter now).
 @export var bystanders := {
-	"tindera": {"pos": Vector3(0.3, 0.2, -2.8), "yaw": 0.0, "clip": "Fan", "speed": 0.0, "cycles": 14,
+	"tindera": {"pos": Vector3(1.35, 0.0, -3.35), "yaw": 8.0, "clip": "Fan", "speed": 0.0, "cycles": 14,
 			"prop": {"scene": "paper_fan", "bone": "RightHand", "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0), "scale": 1.0}},
 	"student": {"from": Vector3(6.5, 0.0, -19.0), "to": Vector3(6.5, 0.0, 4.0), "t0": 6.0, "speed": 1.30, "clip": "Walk",
 			"prop": {"scene": "backpack", "bone": "Spine02", "pos": Vector3(0, 0, 0), "rot": Vector3(0, 0, 0), "scale": 1.0}},
@@ -241,19 +252,22 @@ static func load_data() -> HomeDioramaData:
 @export var bystander_height_fix := 1.0 ## scale applied to every bystander model
 @export var bystander_toon := true
 
-@export_group("Jeepney")
-@export var jeep_scene := "res://assets/props/vehicles/jeepney.tscn"
-@export var jeep_from := Vector3(9.1, 0.0, -26.0) ## down the side street toward the camera; starts and ends outside the frame
-@export var jeep_to := Vector3(9.1, 0.0, 1.0)
-@export var jeep_t0 := 16.5
-@export var jeep_speed := 3.6 ## m/s: a slow cruise, so it stays on screen about 4 s after clearing the wall
-@export var jeep_yaw := -90.0 ## model front is +X; it drives toward +Z
-@export var jeep_bob_amp := 0.018 ## metres of body bob
-@export var jeep_bob_hz := 2.1
-@export var jeep_pitch_deg := 0.35
-@export var jeep_scale := 1.0
-@export var jeep_horn_u := 4.6 ## seconds into the pass when the horn sounds (beep-beep)
-@export var jeep_audio_range := 38.0 ## metres: the engine is audible within this
+@export_group("Pass")
+## A tricycle cruises the road behind the cast (the reference itself shows only parked tricycles;
+## this keeps the street alive). It reuses the synthesised engine/horn bed built for the old jeepney
+## pass - a passing motor sounds the same either way.
+@export var pass_scene := "res://assets/props/home/tricycle_blue.tscn"
+@export var pass_from := Vector3(24.0, 0.0, -9.6) ## right to left along the back road, entering and leaving off frame
+@export var pass_to := Vector3(-24.0, 0.0, -9.6)
+@export var pass_t0 := 15.0
+@export var pass_speed := 3.2 ## m/s: a slow cruise, about 15 s in view
+@export var pass_yaw := 180.0 ## model front is +X; it drives toward -X
+@export var pass_bob_amp := 0.02 ## metres of body bob
+@export var pass_bob_hz := 2.4
+@export var pass_pitch_deg := 0.4
+@export var pass_scale := 1.0
+@export var pass_horn_u := 6.0 ## seconds into the pass when the horn sounds (beep-beep)
+@export var pass_audio_range := 38.0 ## metres: the engine is audible within this
 
 @export_group("Audio")
 @export var chatter_pitch := {"inday": 1.28, "nene": 1.45, "jm": 0.78, "nathan": 0.9, "tutoy": 1.12} ## per-hero pitch of the babble grains

@@ -70,6 +70,7 @@ def clip(src, name=None, trim=None, warp=None, loop=False, in_place=False, blend
 
 T, NE, NA, J, I = (f"meshy/{h}_moves.glb" for h in ("tutoy", "nene", "nathan", "jm", "inday"))
 TM, NEM, NAM, JM, IM = (f"meshy/{h}_menu.glb" for h in ("tutoy", "nene", "nathan", "jm", "inday"))  # Home diorama
+MX = "meshy/menu_extra.glb"  # six more preset actions for the Home diorama (one Meshy animate task)
 
 # Each hero's own locomotion and skills. Times were picked from source contact sheets.
 HERO_CLIPS = {
@@ -138,6 +139,8 @@ HERO_CLIPS["tutoy"].update({
     "Menu_Cheer": clip(TM, "Cheer_with_Both_Hands_Up", trim=(12 / 24, 44 / 24), face=True, in_place=True,
                        plant=True),                                  # the first ~11 frames crouch
     "Menu_HandstandFlip": clip(TM, "Handstand_Flip", in_place=True, on_floor=True),  # travels ~1 m in the source
+    "Menu_Listen": clip(MX, "Listening_Gesture", face=True, in_place=True, plant=True),
+    "Menu_StandChat": clip(MX, "Stand_and_Chat", face=True, in_place=True, plant=True),
 })
 HERO_CLIPS["nene"].update({
     # The source bows her head from ~frame 160; the first 150 frames are the stable stretch.
@@ -146,6 +149,10 @@ HERO_CLIPS["nene"].update({
     "Menu_SitDrink": clip(NEM, "Sit_and_Drink", face=True, in_place=True),
     "Menu_FingerWag": clip(NEM, "Sit_Finger_Wag_No", face=True, in_place=True),
     "Menu_Clap": clip(NEM, "Sitting_Clap", face=True, in_place=True),
+    # The action library has no hands-in-lap or leaning-forward seated idle (only the two
+    # Chair_Sit_Idle clips), so the resting variants are these two calm seated actions.
+    "Menu_ArmsCrossed": clip(MX, "Sit_on_Chair_Arms_Crossed", face=True, in_place=True),
+    "Menu_DozeOff": clip(MX, "Sit_and_Doze_Off", face=True, in_place=True),
 })
 HERO_CLIPS["jm"].update({
     # The source hunches forward for most of its 10 s and rises upright for ~1.5 s near the end
@@ -155,6 +162,8 @@ HERO_CLIPS["jm"].update({
     "Menu_SitDrink": clip(JM, "Sit_and_Drink", face=True, in_place=True),
     "Menu_LeanBackLaugh": clip(JM, "Sit_Hands_on_Head_Lean_Back", face=True, in_place=True),
     "Menu_Clap": clip(JM, "Sitting_Clap", face=True, in_place=True),
+    "Menu_ArmsCrossed": clip(MX, "Sit_on_Chair_Arms_Crossed", face=True, in_place=True),
+    "Menu_DozeOff": clip(MX, "Sit_and_Doze_Off", face=True, in_place=True),
 })
 HERO_CLIPS["nathan"].update({
     "Menu_SitIdle": clip(NAM, "Chair_Sit_Idle_M", trim=(211 / 24, 247 / 24), loop=True, blend=8, face=True,
@@ -162,6 +171,8 @@ HERO_CLIPS["nathan"].update({
     "Menu_Answer": clip(NAM, "Sitting_Answering_Questions", face=True, in_place=True),
     "Menu_ThumbsUp": clip(NAM, "Sit_Thumbs_Up_Right", face=True, in_place=True),
     "Menu_Clap": clip(NAM, "Sitting_Clap", face=True, in_place=True),
+    "Menu_ArmsCrossed": clip(MX, "Sit_on_Chair_Arms_Crossed", face=True, in_place=True),
+    "Menu_CheerLeft": clip(MX, "Sit_Cheer_with_Left_Hand", face=True, in_place=True),
 })
 HERO_CLIPS["inday"].update({
     # Her own Idle touches her face mid-loop, which would cover the face card; the talking idle does not.
@@ -169,6 +180,8 @@ HERO_CLIPS["inday"].update({
     "Menu_TalkHandsOpen": clip(IM, "Talk_with_Hands_Open", face=True, in_place=True, plant=True),
     "Menu_TalkHip": clip(IM, "Talk_with_Left_Hand_on_Hip", face=True, in_place=True, plant=True),
     "Menu_TalkRightOpen": clip(IM, "Talk_with_Right_Hand_Open", face=True, in_place=True, plant=True),
+    "Menu_StandChat": clip(MX, "Stand_and_Chat", face=True, in_place=True, plant=True),
+    "Menu_TalkRaised": clip(MX, "Talk_with_Left_Hand_Raised", face=True, in_place=True, plant=True),
 })
 
 # Core-rule clips, retargeted onto every hero. Chained is authored from each hero's Idle.
