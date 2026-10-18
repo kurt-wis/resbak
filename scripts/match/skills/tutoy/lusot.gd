@@ -135,6 +135,8 @@ func _would_hit(tagger: Hero, lunge: Vector3) -> bool:
 	return host.tag_system.in_tag_shape(tagger, lunge, start_pos, host.tuning.body_radius)
 
 func _pick_dir() -> Vector3:
+	if hero.frame.skill_aimed:
+		return hero.frame.aim_direction(hero.global_position)
 	if hero.wish_dir != Vector3.ZERO:
 		return hero.wish_dir
 	if hero.ground_speed() > 1.0:

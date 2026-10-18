@@ -215,6 +215,49 @@ static func fan_mesh(length: float, angle_deg: float, color: Color, segments := 
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mi
 
+## Only the curved outer edge: no filled wedge or radial sides. Presentation, never a hitbox.
+static func tag_arc(length: float, angle_deg: float, color: Color, width := 0.025, segments := 40) -> MeshInstance3D:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var half := deg_to_rad(angle_deg) * 0.5
+	for i in range(segments):
+		var a0 := -half + 2.0 * half * i / segments
+		var a1 := -half + 2.0 * half * (i + 1) / segments
+		var d0 := Vector3(sin(a0), 0, cos(a0))
+		var d1 := Vector3(sin(a1), 0, cos(a1))
+		for v in [d0 * length, d1 * length, d0 * (length - width), d1 * length, d1 * (length - width), d0 * (length - width)]:
+			st.add_vertex(v)
+	var mi := MeshInstance3D.new()
+	mi.mesh = st.commit()
+	mi.material_override = flat_material(color)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mi
+
+## Thin inset border around the exact fan area, with radial sides; presentation only.
+static func fan_border(length: float, angle_deg: float, color: Color, width := 0.035, segments := 32) -> MeshInstance3D:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var half := deg_to_rad(angle_deg) * 0.5
+	for i in range(segments):
+		var a0 := -half + 2.0 * half * i / segments
+		var a1 := -half + 2.0 * half * (i + 1) / segments
+		var d0 := Vector3(sin(a0), 0, cos(a0))
+		var d1 := Vector3(sin(a1), 0, cos(a1))
+		var vertices := [d0 * length, d1 * length, d0 * (length - width),
+				d1 * length, d1 * (length - width), d0 * (length - width)]
+		for v in vertices:
+			st.add_vertex(v)
+	for side in [-1.0, 1.0]:
+		var dir := Vector3(sin(half * side), 0, cos(half * side))
+		var inset: Vector3 = Vector3(-dir.z, 0, dir.x) * float(side) * width
+		for v in [Vector3.ZERO, dir * length, dir * length + inset, Vector3.ZERO, dir * length + inset, inset]:
+			st.add_vertex(v)
+	var mi := MeshInstance3D.new()
+	mi.mesh = st.commit()
+	mi.material_override = flat_material(color)
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mi
+
 ## Flat arrow on the floor pointing +Z: a shaft from z = `start` to the head, whose tip is at
 ## `length`. Used for the tag aim arrow (the charge adds reach, so the mesh is rebuilt as it grows).
 static func arrow_array_mesh(length: float, width: float, head_len: float, head_width: float, start := 0.0) -> ArrayMesh:
@@ -303,3 +346,30 @@ static func _puff_curve() -> Curve:
 		_curve.add_point(Vector2(0.2, 1.0))
 		_curve.add_point(Vector2(1.0, 0.55))
 	return _curve
+## Filled narrow straight guide. Hit-testing stays in TagSystem, never in this mesh.
+static func tag_strip(length: float, half_width: float, color: Color) -> MeshInstance3D:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for v in [Vector3(-half_width, 0, 0), Vector3(half_width, 0, 0), Vector3(-half_width, 0, length), Vector3(half_width, 0, 0), Vector3(half_width, 0, length), Vector3(-half_width, 0, length)]:
+		st.add_vertex(v)
+	var result := MeshInstance3D.new()
+	result.mesh = st.commit()
+	result.material_override = flat_material(color)
+	result.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return result
+
+## Border around a straight attack strip, with no opaque fill underneath.
+static func tag_strip_border(length: float, half_width: float, width: float, color: Color) -> MeshInstance3D:
+	var outer := [Vector3(-half_width, 0, 0), Vector3(half_width, 0, 0), Vector3(half_width, 0, length), Vector3(-half_width, 0, length)]
+	var inner := [Vector3(-half_width + width, 0, width), Vector3(half_width - width, 0, width), Vector3(half_width - width, 0, length - width), Vector3(-half_width + width, 0, length - width)]
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for i in range(4):
+		var j := (i + 1) % 4
+		for vertex in [outer[i], outer[j], inner[i], outer[j], inner[j], inner[i]]:
+			st.add_vertex(vertex)
+	var result := MeshInstance3D.new()
+	result.mesh = st.commit()
+	result.material_override = flat_material(color)
+	result.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return result

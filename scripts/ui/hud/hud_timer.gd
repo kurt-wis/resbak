@@ -70,6 +70,12 @@ func refresh(_delta: float) -> void:
 	HudStyle.set_color(name_right, hud.team_color(rt).lightened(0.25))
 	if rf.phase == RoundFlow.Phase.COUNTDOWN:
 		_sudden_seen = false
+	if host.training:
+		timer_label.text = "ENSAYO"
+		round_label.text = "FREE TRAINING"
+		sun_fraction = 0.0
+		queue_redraw()
+		return
 	var sudden := rf.phase == RoundFlow.Phase.SUDDEN_DEATH
 	if sudden:
 		_sudden_seen = true

@@ -183,14 +183,16 @@ func _harurot_tagging(t: TestCtx) -> void:
 	var host := _live(t)
 	var tu := _stand(t, host, -6, 0)
 	var foe: Hero = host.heroes[2]
-	TestCtx.put(foe, -3.0, 0)
+	TestCtx.put(foe, -4.5, 0)
 	var inp := t.inputs(host)
 	inp.move(tu, Vector2(1, 0))
 	inp.aim_at(tu, Vector3(5, 0, 0))
 	inp.press(tu, S1)
 	t.steps(host, 2)
+	var planted := tu.global_position
 	inp.press(tu, TAG)
 	t.steps(host, _land())
+	t.check(RB.flat_dist(planted, tu.global_position) < 0.01, "tag commitment plants Tutoy even during HARUROT!")
 	t.check(foe.state == Hero.State.TAGGED, "Tutoy can tag during HARUROT! (foe state %d)" % foe.state)
 	await t.free_match(host)
 	# and be tagged: the burst ends
@@ -474,7 +476,13 @@ func _lusot_perfect(t: TestCtx) -> void:
 	tu = host.heroes[0]
 	foe = host.heroes[2]
 	t.check(_count("perfect_slide") == 0, "cast 6 ticks before the landing is not a perfect slide")
-	t.check(tu.state == Hero.State.TAGGED, "...and the tag still hits the slid-to position (Tutoy state %d, z=%.2f)" % [tu.state, tu.global_position.z])
+	t.check(tu.state == Hero.State.FREE and foe.stumble_ticks == 30 and foe.stun_ticks == 0, "...ordinary lateral movement leaves the narrow sweep: miss recovery, no perfect stun")
+	await t.free_match(host)
+
+	# A normal slide has no universal immunity: staying in the path still gets tagged.
+	host = await _perfect_setup(t, 3, Vector2(1, 0))
+	tu = host.heroes[0]
+	t.check(tu.state == Hero.State.TAGGED and _count("perfect_slide") == 0, "an early ordinary slide remaining in the straight sweep is still tagged")
 	await t.free_match(host)
 
 	# slide passes through the tagger

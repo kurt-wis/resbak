@@ -21,7 +21,10 @@ func run(t: TestCtx) -> void:
 	await _tag_hit_and_jail(t)
 	await _tag_geometry(t)
 	await _failed_tag(t)
-	await _charged_tag(t)
+	await _tap_tag(t)
+	await _first_landing(t)
+	await _selected_tag(t)
+	await _planted_tag(t)
 	await _escape_protection(t)
 	await _sabay(t)
 	await _barrier(t)
@@ -271,8 +274,8 @@ func _tag_geometry(t: TestCtx) -> void:
 	var a: Hero = host.heroes[0]
 	var c: Hero = host.heroes[2]
 	var d: Hero = host.heroes[3]
-	# arc: 40 deg hits, 50 deg misses (45 deg either side)
-	for case in [[40.0, true], [50.0, false], [-40.0, true], [-50.0, false]]:
+	# Narrow straight sweep: small offsets overlap the body; broad fan angles miss.
+	for case in [[10.0, true], [40.0, false], [-10.0, true], [-40.0, false]]:
 		TestCtx.put(a, 0, 0)
 		var ang := deg_to_rad(case[0])
 		TestCtx.put(c, cos(ang) * 1.6, sin(ang) * 1.6)
@@ -287,7 +290,9 @@ func _tag_geometry(t: TestCtx) -> void:
 	TestCtx.put(d, 1.3, 0.55)
 	_face_east(t, host, a)
 	_tag(t, host, a)
-	t.check(d.state == Hero.State.TAGGED and c.state == Hero.State.FREE, "the nearest taggable enemy is tagged")
+	t.check(d.state == Hero.State.TAGGED and c.state == Hero.State.FREE, "one swing catches only the nearest eligible enemy when two are inside the straight sweep")
+	var impact := host.tag_system.contact_point(a, d)
+	t.check(t.near(RB.flat_dist(impact, d.global_position), host.tuning.body_radius) and impact.y > d.global_position.y, "tag contact is on the target body surface, not the indicator")
 	await t.free_match(host)
 
 	# reach: exactly inside / just outside (edge to edge), Tutoy has 1.0
@@ -301,7 +306,7 @@ func _tag_geometry(t: TestCtx) -> void:
 		_tag(t, h2, a2)
 		t.check((c2.state == Hero.State.TAGGED) == case[2], "%s tag at centre distance %.2f %s" % [case[0], case[1], "hits" if case[2] else "misses"])
 		await t.free_match(h2)
-	t.ok("tag arc 45 deg, reach edge to edge, nearest wins")
+	t.ok("narrow straight sweep, reach edge to edge, nearest wins")
 
 func _failed_tag(t: TestCtx) -> void:
 	var host := _live(t, ["nene", "inday"], ["nathan", "nene"])
@@ -333,55 +338,68 @@ func _failed_tag(t: TestCtx) -> void:
 	t.ok("failed tag -> 0.5 s stumble")
 	await t.free_match(host)
 
-## v0.2 charged hampas: hold Tag to charge (slower while charging), release to swing with
-## up to tag_charge_reach_bonus more reach; the charge bar reads charge_fraction().
-func _charged_tag(t: TestCtx) -> void:
+## Held buttons still swing immediately, never gain reach and never auto-repeat.
+func _tap_tag(t: TestCtx) -> void:
 	var host := _live(t, ["nene", "inday"], ["nathan", "nene"])
 	var a: Hero = host.heroes[0]
 	var c: Hero = host.heroes[2]
-	var tu := host.tuning
+	TestCtx.put(a, 0, 0)
+	TestCtx.put(c, a.tag_reach() + host.tuning.body_radius * 2.0 + 0.2, 0)
+	_face_east(t, host, a)
 	var inp := t.inputs(host)
-	var full := RB.ticks(tu.tag_charge_time)
-	var plain_edge := a.tag_reach()
-	# out of tap reach, inside full-charge reach
-	var gap := plain_edge * (1.0 + tu.tag_charge_reach_bonus * 0.5)
-	TestCtx.put(a, 0, 0)
-	TestCtx.put(c, gap + tu.body_radius * 2.0, 0)
-	_face_east(t, host, a)
+	var speed := a.current_speed()
 	inp.hold(a, TAG)
-	t.steps(host, full / 2)
-	t.check(a.is_charging() and not a.is_winding_up(), "holding Tag charges, no swing yet")
-	t.check(a.charge_fraction() > 0.3 and a.charge_fraction() < 0.7, "half-way charge reads about 0.5 (got %.2f)" % a.charge_fraction())
-	t.steps(host, full)
-	t.check(t.near(a.charge_fraction(), 1.0, 0.001), "the charge caps at full")
-	t.check(t.near(a.charged_reach(), plain_edge * (1.0 + tu.tag_charge_reach_bonus), 0.001), "a full charge adds tag_charge_reach_bonus x reach")
-	# moving while charging is slower
-	inp.move(a, Vector2(0, 1))
-	t.steps(host, 20)
-	var slow := a.ground_speed()
-	inp.move(a, Vector2.ZERO)
-	t.steps(host, 15)
-	var run := a.data.run_speed * tu.move_speed_scale
-	t.check(t.near(slow, run * (1.0 - tu.tag_charge_slow), 0.08), "charging slows you to %.2f m/s (got %.2f)" % [run * (1.0 - tu.tag_charge_slow), slow])
-	TestCtx.put(a, 0, 0)
-	_face_east(t, host, a)
+	t.steps(host, 1)
+	t.check(a.is_winding_up(), "holding TAG starts the swing on press, without waiting for release")
+	t.check(t.near(a.strike_reach, a.tag_reach()), "every swing uses normal reach")
+	t.check(t.near(a.current_speed(), speed), "holding TAG adds no movement penalty")
+	t.steps(host, RB.ticks(host.tuning.tag_windup))
+	t.check(c.is_free() and _count("tag_failed") == 1, "holding cannot tag beyond normal reach")
+	t.steps(host, 100)
+	t.check(_count("tag_windup") == 1, "holding TAG does not auto-repeat after recovery")
 	inp.release(a, TAG)
 	t.steps(host, 1)
-	t.check(a.is_winding_up() and not a.is_charging(), "release swings")
-	t.steps(host, RB.ticks(tu.tag_windup))
-	t.check(c.state == Hero.State.TAGGED, "a charged swing tags beyond the tap reach (gap %.2f m)" % gap)
+	t.check(not a.is_winding_up(), "release never starts another swing")
+	TestCtx.put(c, 1.6, 0)
+	inp.press(a, TAG)
+	t.steps(host, RB.ticks(host.tuning.tag_windup) + 1)
+	t.check(c.state == Hero.State.TAGGED, "a fresh press can tag after the miss recovery")
+	t.ok("tap-only tagging: immediate press, fixed reach, normal speed, no held-repeat")
 	await t.free_match(host)
-	# the same gap with a tap misses
-	var h2 := _live(t, ["nene", "inday"], ["nathan", "nene"])
-	var a2: Hero = h2.heroes[0]
-	var c2: Hero = h2.heroes[2]
-	TestCtx.put(a2, 0, 0)
-	TestCtx.put(c2, gap + tu.body_radius * 2.0, 0)
-	_face_east(t, h2, a2)
-	_tag(t, h2, a2)
-	t.check(c2.state == Hero.State.FREE, "a tap at the same gap misses")
-	t.ok("charged hampas: hold to charge, slower, longer reach on release")
-	await t.free_match(h2)
+
+func _first_landing(t: TestCtx) -> void:
+	var host := _live(t, ["nene", "inday"], ["nathan", "nene"])
+	var a: Hero = host.heroes[0]
+	var c: Hero = host.heroes[2]
+	TestCtx.put(a, 0, 0)
+	TestCtx.put(c, 1.6, 0)
+	_face_east(t, host, a)
+	_face_west(t, host, c)
+	t.inputs(host).press(c, TAG) # later slot attacks a tick earlier: array order must not decide
+	t.steps(host, 1)
+	t.inputs(host).press(a, TAG)
+	t.steps(host, RB.ticks(host.tuning.tag_windup))
+	t.check(a.state == Hero.State.TAGGED and c.is_free(), "first swing to land wins, independent of hero slot")
+	t.check(not a.is_winding_up(), "the clean first hit cancels the opponent's pending swing")
+	t.steps(host, 1)
+	t.check(c.is_free() and _count("tag") == 1 and _count("sabay") == 0, "one tick apart is not Sabay")
+	await t.free_match(host)
+	# Hit test happens at impact and direction stays locked, so opponents can dodge.
+	host = _live(t, ["nene", "inday"], ["nathan", "nene"])
+	a = host.heroes[0]
+	c = host.heroes[2]
+	TestCtx.put(a, 0, 0)
+	TestCtx.put(c, 1.6, 0)
+	_face_east(t, host, a)
+	t.inputs(host).press(a, TAG)
+	t.steps(host, 1)
+	var locked := a.lunge_dir
+	TestCtx.put(c, -1.6, 0)
+	t.inputs(host).aim_at(a, c.global_position)
+	t.steps(host, RB.ticks(host.tuning.tag_windup))
+	t.check(a.lunge_dir.is_equal_approx(locked) and c.is_free(), "aim locks on press; moving outside the fan before impact dodges")
+	t.ok("first landing wins, later swing cancelled, locked aim can be dodged")
+	await t.free_match(host)
 
 func _escape_protection(t: TestCtx) -> void:
 	var host := _live(t, ["nene", "inday"], ["nathan", "nene"])
@@ -406,6 +424,7 @@ func _escape_protection(t: TestCtx) -> void:
 	c._update_collision()
 	TestCtx.put(c, -10.6, 0) # in capture range of the Dilaw pole
 	c.windup_end_tick = -1
+	c.tag_started_tick = -1 # cancel the staged attack before testing capture
 	t.inputs(host).hold(c, USE)
 	t.steps(host, 2)
 	t.check(c.capturing and not c.has_ep(), "EP ends when a capture starts")
@@ -434,7 +453,20 @@ func _sabay(t: TestCtx) -> void:
 	t.check(a.stumble_ticks > 0 and c.stumble_ticks > 0, "Sabay: both stumble")
 	t.check(_count("sabay") == 1, "one sabay event")
 	t.check(d.state == Hero.State.TAGGED, "other tags apply on a Sabay tick")
-	t.ok("Sabay")
+	t.check(a.sabay_ticks > 0 and c.sabay_ticks > 0, "Sabay starts both fall timers")
+	t.check(host.can_tag(b, c), "fallen players remain Free and obey normal tag eligibility")
+	t.steps(host, RB.ticks(host.tuning.failed_tag_stumble) / 2)
+	a.visual._update_sabay_fall()
+	c.visual._update_sabay_fall()
+	t.check(absf(a.visual.model.rotation.z) > 0.5 and absf(c.visual.model.rotation.z) > 0.5, "both models visibly fall during Sabay")
+	t.steps(host, RB.ticks(host.tuning.failed_tag_stumble))
+	a.visual._update_sabay_fall()
+	t.check(a.sabay_ticks == 0 and c.sabay_ticks == 0 and a.can_press_tag() and c.can_press_tag(), "both recover and can retry after Sabay")
+	t.check(t.near(a.visual.model.rotation.z, 0.0), "the model stands upright again after recovery")
+	inp.press(a, TAG)
+	t.steps(host, RB.ticks(host.tuning.tag_windup) + 1)
+	t.check(c.state == Hero.State.TAGGED, "a fresh tag after Sabay can catch the opponent")
+	t.ok("Sabay: simultaneous hits fall, recover and retry")
 	await t.free_match(host)
 
 func _barrier(t: TestCtx) -> void:
@@ -884,4 +916,59 @@ func _match_end(t: TestCtx) -> void:
 	t.check(host.round_flow.winner == D, "Dilaw wins the match")
 	t.check(_count("match_end") == 1, "match_end event")
 	t.ok("first to 3 ends the match")
+	await t.free_match(host)
+
+## The selected identity and direction commit together; a crossing enemy cannot take the hit.
+func _selected_tag(t: TestCtx) -> void:
+	var host := _live(t, ["nene"], ["nathan", "tutoy"])
+	var a: Hero = host.heroes[0]
+	var selected: Hero = host.heroes[1]
+	var crossing: Hero = host.heroes[2]
+	TestCtx.put(a, 0, 0)
+	TestCtx.put(selected, 1.7, 0)
+	TestCtx.put(crossing, 1.1, 0.15)
+	var frame := InputFrame.new()
+	frame.tag_aim_dir = Vector2.RIGHT
+	frame.tag_target_slot = selected.slot
+	frame.pressed = TAG
+	a.set_frame(frame)
+	host.tag_system.handle_tag_button(a, frame)
+	t.check(a.strike_target_slot == selected.slot, "host commits selected identity even with a nearer crossing enemy")
+	t.check(frame.duplicate_frame().tag_target_slot == selected.slot, "InputFrame copies preserve selected identity")
+	host.tick = a.windup_end_tick
+	var results := host.tag_system.resolve()
+	t.check(results.size() == 1 and results[0].get("target") == selected, "only the selected body receives the tag")
+	host.tag_system.apply(results)
+	t.check(crossing.is_free(), "crossing enemy cannot steal the selected tag")
+	selected.reset_for_round(Vector3(1.7, 0.05, 0), Vector3.LEFT)
+	a.reset_for_round(Vector3(0, 0.05, 0), Vector3.RIGHT)
+	a.set_frame(frame)
+	host.tag_system.handle_tag_button(a, frame)
+	var direction := a.lunge_dir
+	TestCtx.put(selected, 1.7, 0.9)
+	host.tick = a.windup_end_tick
+	results = host.tag_system.resolve()
+	t.check(results.size() == 1 and results[0].type == "fail" and a.lunge_dir == direction, "ordinary sidestepping escapes the committed straight tag without homing")
+	t.check(not host.tag_system.in_tag_shape(a, direction, Vector3(-0.1, 0, 0), host.tuning.body_radius), "the sweep never tags behind the attacker")
+	await t.free_match(host)
+
+func _planted_tag(t: TestCtx) -> void:
+	var host := _live(t, ["nene", "inday"], ["nathan", "tutoy"])
+	var a: Hero = host.heroes[0]
+	var b: Hero = host.heroes[2]
+	TestCtx.put(a, 0, 0)
+	TestCtx.put(b, 1.5, 0)
+	var input := t.inputs(host)
+	input.move(a, Vector2.RIGHT)
+	input.aim_at(a, b.global_position)
+	input.press(a, TAG)
+	var before := a.global_position
+	t.steps(host, 1)
+	t.check(a.is_attacking() and not a.can_move() and a.ground_speed() < 0.01, "release commitment instantly plants the attacker without sliding")
+	t.check(not a.can_use_skills(), "another skill cannot interrupt the planted hit")
+	t.steps(host, RB.ticks(host.tuning.tag_windup))
+	t.check(b.state == Hero.State.TAGGED and RB.flat_dist(a.global_position, before) < 0.01, "hit resolves normally without moving the attacker forward")
+	t.check(a.is_attacking() and not a.can_press_tag(), "successful tag retains a short follow-through lock without restarting")
+	t.steps(host, RB.ticks(host.tuning.tag_followthrough) + 1)
+	t.check(not a.is_attacking() and a.can_move() and a.ground_speed() > 0.0, "movement resumes automatically after the brief hit animation")
 	await t.free_match(host)

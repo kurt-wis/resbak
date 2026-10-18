@@ -2,7 +2,7 @@ extends FrontScreen
 
 ## Home / "Tambayan" (docs/RESBAK.md § 6): the sari-sari store diorama behind street-sticker UI. Left
 ## column: the cardboard player card (click it to open the default-character picker), LARO
-## (preselected), ENSAYO (the tutorial), BARKADA / LOCKER / GAWAIN greyed "Malapit na", LUMABAS back to
+## (preselected), ENSAYO (training menu), BARKADA / LOCKER / GAWAIN greyed "Malapit na", LUMABAS back to
 ## the title screen (leaving steps back one screen at a time: the title is the last screen before
 ## quitting). The default hero is saved in profile.home_hero (JM first launch); its face is the card's
 ## portrait and it is who ENSAYO plays. The breakdance preview lives in the picker (hero_picker.gd).
@@ -217,10 +217,10 @@ func _build_nav() -> void:
 	HomeSkin.skin_button(laro, "primary", true)
 	col.add_child(laro)
 	laro.pressed.connect(func(): go("play_menu"))
-	var ensayo := btn("Ensayo", "ENSAYO", "TUTORIAL", Vector2(475, 95), 44)
+	var ensayo := btn("Ensayo", "ENSAYO", "TRAINING", Vector2(475, 95), 44)
 	HomeSkin.skin_button(ensayo, "paper", true)
 	col.add_child(ensayo)
-	ensayo.pressed.connect(start_tutorial)
+	ensayo.pressed.connect(func(): go("training"))
 	var soon_row := HBoxContainer.new()
 	soon_row.add_theme_constant_override("separation", 20)
 	col.add_child(soon_row)

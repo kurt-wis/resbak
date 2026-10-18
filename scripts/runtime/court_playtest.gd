@@ -210,6 +210,7 @@ func _physics_process(delta: float) -> void:
 func apply_illustrated_materials(m: Node3D) -> void:
 	var outline := ShaderMaterial.new()
 	outline.shader = load("res://shaders/character_outline.gdshader")
+	outline.set_shader_parameter("outline_pixels", (load(Tuning.PATH) as Tuning).character_outline_pixels)
 	for instance in m.find_children("*", "MeshInstance3D", true, false):
 		instance.mesh = instance.mesh.duplicate()
 		instance.mesh.resource_name = "BatangHamogGeometry"

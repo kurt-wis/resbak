@@ -33,6 +33,13 @@ func skill_name() -> String:
 func v(key: String, fallback: Variant = null) -> Variant:
 	return hero.data.v(key, fallback)
 
+## Read-only aiming contract; point skills override with their exact cast clamp.
+func aim_preview(frame: InputFrame) -> Dictionary:
+	return SkillAim.describe(self, frame)
+
+func can_recast() -> bool:
+	return false
+
 func is_ready() -> bool:
 	return cd_ticks <= 0
 

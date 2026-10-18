@@ -24,6 +24,7 @@ var settings := {} ## see default_settings()
 var input_sources := {} ## slot -> object with frame_for(hero: Hero, host: MatchHost) -> InputFrame
 var stats := {} ## slot -> Dictionary (see _new_stats)
 
+var training: TrainingMode
 var tag_system: TagSystem
 var base_system: BaseSystem
 var jail_system: JailSystem
@@ -74,6 +75,8 @@ func setup(p_world: Node3D, p_map: Node3D, lineup: Array, p_settings: Dictionary
 		slot += 1
 	base_system.setup_match()
 	round_flow.start_match()
+	if bool(settings.get("free_training", false)):
+		training = TrainingMode.new(self)
 
 func _physics_process(dt: float) -> void:
 	if paused or manual_step or round_flow == null:
@@ -118,6 +121,8 @@ func step(dt: float = 1.0 / RB.TICK_RATE) -> void:
 		# 9. Round end
 		round_flow.check_end(landed, captured)
 	round_flow.post_tick()
+	if training:
+		training.post_tick()
 
 func _frame_for(h: Hero) -> InputFrame:
 	var src: Object = input_sources.get(h.slot)
@@ -144,7 +149,7 @@ func _actions(h: Hero) -> void:
 		tag_system.handle_tag_button(h, f)
 		base_system.handle_interact(h, f)
 	else:
-		h.charge_ticks = -1
+		h.sabay_ticks = 0
 		jail_system.handle_interact(h, f)
 	if f.was_pressed(RB.BTN_PING):
 		emit_event("ping", {"hero": h, "point": f.aim_point})

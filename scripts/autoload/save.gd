@@ -17,7 +17,7 @@ const DEMO_RESET_PROGRESS := true
 
 ## Settings rows and their defaults (spec § 10). Sections match the Settings tabs.
 const SETTINGS_DEFAULTS := {
-	"gameplay": {"danger_border": true, "skill_casting": "quick", "tag_assist": true, "camera_shake": 0.7,
+	"gameplay": {"on_screen_controls": true, "danger_border": true, "skill_casting": "quick", "tag_assist": true, "camera_shake": 0.7,
 		"minimap_size": "M", "minimap_position": "top_right", "tag_feed": true, "team_colours": "fixed"},
 	"controls": {"mouse_sensitivity": 1.0, "stick_dead_zone": 0.15, "vibration": true, "button_icons": "auto"},
 	"video": {"display_mode": "borderless", "resolution": "monitor", "render_scale": 1.0, "vsync": true,

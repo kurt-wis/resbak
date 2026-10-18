@@ -43,6 +43,11 @@ var _stuck_count := 0
 var _rolls := {} ## chance key -> [last tick, result]
 var _retreat_last := -1000
 var _retreat_ignore := false
+var _tag_candidate := -1
+var _tag_ready_tick := -1
+var _recovering_sabay := false
+var _reposition_until := -1
+var _reposition_dir := Vector2.ZERO
 
 func setup(p_hero: Hero, p_host: MatchHost, p_difficulty: int) -> void:
 	hero = p_hero
@@ -65,7 +70,17 @@ func frame_for(h: Hero, p_host: MatchHost) -> InputFrame:
 		_seen.clear()
 		_rolls.clear()
 		mode = "idle"
+		_tag_candidate = -1
+		_tag_ready_tick = -1
+		_recovering_sabay = false
+		_reposition_until = -1
 		return f
+	if not h.is_free():
+		_tag_candidate = -1
+		_tag_ready_tick = -1
+		_reposition_until = -1
+		_recovering_sabay = false
+	_update_tag_recovery(h)
 	_sense(h)
 	role = coord.role_of(h)
 	match h.state:
@@ -139,6 +154,10 @@ func _free(h: Hero, f: InputFrame) -> void:
 		if not bool(host.settings.get("capture_toggle", false)):
 			f.held |= RB.BTN_INTERACT
 		return
+	if host.tick < _reposition_until and h.can_move():
+		mode = "reposition"
+		f.move = _reposition_dir
+		return
 	if _ihip_standing(h, f):
 		return
 	_try_tag(h, f)
@@ -165,21 +184,19 @@ func _free(h: Hero, f: InputFrame) -> void:
 		elif mode == "base" or mode == "rescue" or mode == "go":
 			stop = 0.25
 		_move_to(h, f, _goal, stop)
-	if f.pressed & RB.BTN_TAG == 0 and not h.is_charging():
+	if f.pressed & RB.BTN_TAG == 0:
 		_use_skills(h, f)
 
 # ---- tagging --------------------------------------------------------------------------------
-## Charged hampas (v0.2): tap Tag when an enemy will be inside plain reach when the wind-up
-## lands; if one is just beyond it (inside the full-charge reach), hold Tag and release as soon
-## as the charge covers the gap (or the target escapes).
+## Tap Tag when an enemy will be inside normal reach when the swing lands.
 func _try_tag(h: Hero, f: InputFrame) -> void:
-	var charging := h.is_charging()
-	if not charging and not h.can_press_tag():
+	if not h.can_press_tag():
+		_tag_candidate = -1
 		return
-	var max_reach := h.tag_reach() * (1.0 + host.tuning.tag_charge_reach_bonus)
+	var max_reach := h.tag_reach()
 	var lead := host.tuning.tag_windup
 	var r := host.tuning.body_radius
-	var my_p := h.global_position + RB.flat(h.velocity) * lead
+	var my_p := h.global_position # commitment plants the attacker; do not predict a forward run
 	var best: Hero = null
 	var best_edge := INF
 	var best_pt := Vector3.ZERO
@@ -199,19 +216,39 @@ func _try_tag(h: Hero, f: InputFrame) -> void:
 		best = e
 		best_edge = edge
 		best_pt = ep
-	if charging:
-		if best:
-			f.aim_point = best_pt
-			f.has_aim = true
-			if best_edge > h.charged_reach() - 0.12 and h.charge_fraction() < 1.0:
-				f.held |= RB.BTN_TAG # keep charging; letting go swings
+	if best == null:
+		_tag_candidate = -1
 		return
-	if best:
-		f.pressed |= RB.BTN_TAG
-		if best_edge > h.tag_reach() - 0.12:
-			f.held |= RB.BTN_TAG # start a charge
-		f.aim_point = best_pt
-		f.has_aim = true
+	if _tag_candidate != best.slot:
+		_tag_candidate = best.slot
+		_tag_ready_tick = maxi(_tag_ready_tick, host.tick + _tag_delay_ticks())
+	if host.tick < _tag_ready_tick:
+		return
+	f.pressed |= RB.BTN_TAG
+	f.aim_point = best_pt
+	f.has_aim = true
+	_tag_candidate = -1
+
+func _tag_delay_ticks() -> int:
+	var t := host.tuning
+	return maxi(1, RB.ticks(rng.randf_range(t.bot_tag_delay_min[difficulty], t.bot_tag_delay_max[difficulty])))
+
+func _update_tag_recovery(h: Hero) -> void:
+	if h.sabay_ticks > 0 and not _recovering_sabay:
+		_recovering_sabay = true
+		_tag_candidate = -1
+		var t := host.tuning
+		var recovery_end := host.tick + h.sabay_ticks
+		_reposition_until = recovery_end + RB.ticks(rng.randf_range(t.bot_sabay_reposition_min, t.bot_sabay_reposition_max))
+		_tag_ready_tick = _reposition_until + _tag_delay_ticks()
+		var side := h.facing.cross(Vector3.UP).normalized() * (-1.0 if rng.randf() < 0.5 else 1.0)
+		_reposition_dir = Vector2(side.x, side.z)
+		# Do not deliberately sidestep into map walls; ordinary body collision remains authoritative.
+		var probe := h.global_position + side * h.current_speed() * t.bot_sabay_reposition_max
+		if not host.los_clear(h.global_position, probe, RB.L_WORLD | RB.L_SKILL_WALL):
+			_reposition_dir = -_reposition_dir
+	elif h.sabay_ticks <= 0:
+		_recovering_sabay = false
 
 ## Who lands a tag first if both go for it now (reach, speed, wind-up already running, stun).
 func _i_land_first(h: Hero, e: Hero) -> bool:

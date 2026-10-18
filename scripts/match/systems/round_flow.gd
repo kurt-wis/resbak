@@ -213,7 +213,7 @@ func check_end(landed: Array, captured: Array) -> void:
 func _end_round(win_team: int, reason: String) -> void:
 	for h in host.heroes:
 		h.windup_end_tick = -1
-		h.charge_ticks = -1
+		h.sabay_ticks = 0
 		if h.capturing:
 			host.base_system.cancel_capture(h, "round_end")
 		for s in h.skills:

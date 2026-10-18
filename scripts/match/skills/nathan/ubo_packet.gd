@@ -52,7 +52,10 @@ static func _build_pouch() -> Node3D:
 
 ## Where the packet is at progress t (0..1): straight line on the ground, parabolic arc up.
 func arc_position(t: float) -> Vector3:
-	var p := from_pos.lerp(to_pos, t)
+	return sample_arc(from_pos, to_pos, t)
+
+static func sample_arc(from: Vector3, to: Vector3, t: float) -> Vector3:
+	var p := from.lerp(to, t)
 	p.y += 4.0 * 1.4 * t * (1.0 - t)
 	return p
 

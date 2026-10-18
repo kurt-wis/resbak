@@ -33,6 +33,9 @@ func _cast(_frame: InputFrame) -> void:
 	hero.visual.play_action(CLIP, -1.0, true)
 	_build_lane()
 
+func can_recast() -> bool:
+	return active
+
 func on_recast(_frame: InputFrame) -> void:
 	end("recast")
 

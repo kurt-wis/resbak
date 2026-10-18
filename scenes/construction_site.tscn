@@ -5762,3 +5762,7 @@ shape = SubResource("YardWallZ")
 [node name="South" type="CollisionShape3D" parent="YardWalls" unique_id=1800000054]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2, 15)
 shape = SubResource("YardWallZ")
+
+[node name="TrainingSpawn" type="Marker3D" parent="Gameplay"]
+position = Vector3(-6, 0.05, 9)
+rotation = Vector3(0, 1.5707963, 0)

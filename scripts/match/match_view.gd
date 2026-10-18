@@ -3,37 +3,26 @@ extends Node3D
 
 ## What the local player sees of the host state (docs/RESBAK.md Â§ 2 "Outlines", Â§ 7 Feedback):
 ## per-hero visibility (clouds hide, IYAK! see-through at 25 %, reveals), outline colour
-## (taggable enemy orange + "!" icon, untaggable grey, EP shield), the local aim marker, and
+## (selected overhead nametag, muted enemy outline, EP shield), the local aim strip, and
 ## world feedback for host events (HULI!, whiff, NAKUHA!, RESBAK!, guard break, PERFECT!).
 ## Presentation only: reads the host, never changes it.
 
 const ORANGE := Color("ff8a1f")
 const GREY := Color(0.24, 0.24, 0.3) ## untaggable: a dark slate (a light grey bleeds through hair on the hull outline)
 const INK := Color(0.055, 0.045, 0.075)
-const ARROW_WIDTH := 0.22 ## aim arrow: shaft width, head size and where the shaft starts (m)
-const ARROW_HEAD := 0.5
-const ARROW_HEAD_WIDTH := 0.8
-const ARROW_START := 0.55
-const ARROW_OUTSET := 1.4 ## the ink outline is this much wider than the bright fill
-const ARROW_INK_EDGE := 0.05 ## and this much longer, so the tip keeps its dark edge
-const ARROW_IDLE_ALPHA := 0.2 ## opacity with no charge
-const ARROW_FULL_ALPHA := 0.85 ## opacity at full charge
-const ARROW_PULSE_ALPHA := 0.08 ## extra opacity of the full-charge pulse
-const ARROW_PULSE_WHITE := 0.45 ## how far the fill turns white in that pulse
-const ARROW_PULSE_HZ := 16.0
-const ARROW_CORE_TINT := 0.85 ## how much team colour the fill carries (rest is white: it lifts the colour off dark floors)
 
 var host: MatchHost
 var local: Hero
 var camera: MatchCamera
 var aim_marker: Node3D
-var _arrow: MeshInstance3D
-var _arrow_rim: MeshInstance3D
-var _arrow_mat: StandardMaterial3D
-var _arrow_rim_mat: StandardMaterial3D
-var _arrow_len := -1.0
-var _arrow_t := 0.0
-var aim_arrow_alpha := 0.0 ## current arrow opacity (tests)
+var _border: MeshInstance3D
+var _strip: MeshInstance3D
+var _strip_mat: StandardMaterial3D
+var _strip_reach := -1.0
+var aim_strip_alpha := 0.0
+var preview_target: Hero
+
+var skill_aim: SkillAimView
 var arena: ArenaArt
 var danger := false ## any enemy within danger range can tag the local hero (HUD reads it)
 
@@ -42,54 +31,35 @@ func setup(p_host: MatchHost, p_local: Hero, p_camera: MatchCamera) -> void:
 	local = p_local
 	camera = p_camera
 	host.event.connect(_on_event)
+	skill_aim = SkillAimView.new()
+	add_child(skill_aim)
+	skill_aim.setup(host, local)
 	arena = ArenaArt.new()
 	add_child(arena)
 	arena.setup(host)
 	aim_marker = Node3D.new()
 	aim_marker.name = "AimMarker"
+	aim_marker.visible = false
 	add_child(aim_marker)
-	# the tag aim arrow (2026-10-17: replaces the old fan): points where the lunge goes, reaches
-	# as far as a swing released now would, and fills in as the hampas charge builds. Two layers
-	# (dark outline under a bright core) so it stays readable on the orange Konstruksyon floor.
-	var meshes := Vfx.aim_arrow_meshes(1.0, ARROW_WIDTH, ARROW_HEAD, ARROW_HEAD_WIDTH, ARROW_START,
-			ARROW_OUTSET, ARROW_INK_EDGE)
-	_arrow = _arrow_layer("AimArrow", meshes[0], Color.WHITE, 2)
-	_arrow_rim = _arrow_layer("AimArrowOutline", meshes[1], INK, 1)
-	_arrow.position.y = 0.05
-	_arrow_rim.position.y = -0.01
-	_arrow.add_child(_arrow_rim) ## the outline rides just under the fill
-	aim_marker.add_child(_arrow)
-	_arrow_mat = _arrow.material_override as StandardMaterial3D
-	_arrow_rim_mat = _arrow_rim.material_override as StandardMaterial3D
-	if local:
-		local.visual.set_ring_color(Color.WHITE.lerp(RB.TEAM_COLORS[local.team], 0.35))
-
-## One layer of the aim arrow: a flat unshaded quad in `color`, drawn at `priority` among the
-## transparent floor decals (the fill draws over the outline).
-func _arrow_layer(node_name: String, mesh: ArrayMesh, color: Color, priority: int) -> MeshInstance3D:
-	var mi := MeshInstance3D.new()
-	mi.name = node_name
-	mi.mesh = mesh
-	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var mat := Vfx.flat_material(color)
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.render_priority = priority
-	mi.material_override = mat
-	return mi
-
-## Resize both arrow layers: the reach grows with the charge and the outline is a little longer.
-func _build_arrow(reach: float) -> void:
-	_arrow_len = reach
-	var meshes := Vfx.aim_arrow_meshes(reach, ARROW_WIDTH, ARROW_HEAD, ARROW_HEAD_WIDTH, ARROW_START,
-			ARROW_OUTSET, ARROW_INK_EDGE)
-	_arrow.mesh = meshes[0]
-	_arrow_rim.mesh = meshes[1]
+	_strip = Vfx.tag_strip(1.0, host.tuning.tag_strip_half_width, Color(0.94, 0.12, 0.12, host.tuning.tag_strip_fill_alpha))
+	_strip.name = "TagStrip"
+	_strip.position.y = 0.05
+	aim_marker.add_child(_strip)
+	_strip_mat = _strip.material_override as StandardMaterial3D
+	_strip_mat.render_priority = 2
+	_border = Vfx.tag_strip_border(1.0, host.tuning.tag_strip_half_width, host.tuning.tag_strip_outline_width, Color(0.94, 0.12, 0.12, host.tuning.tag_strip_outline_alpha))
+	_border.name = "TagOutline"
+	_border.position.y = 0.052
+	aim_marker.add_child(_border)
+	(_border.material_override as StandardMaterial3D).render_priority = 3
 
 func _process(delta: float) -> void:
 	if host == null:
 		return
 	if arena:
 		arena.refresh(delta)
+	_update_aim()
+	skill_aim.refresh()
 	danger = false
 	for h in host.heroes:
 		var alpha := host.visibility(local, h) if local else 1.0
@@ -98,12 +68,11 @@ func _process(delta: float) -> void:
 			h.visual.set_outline(INK)
 			h.visual.set_markers(false, h.has_ep() or h.is_immune())
 			continue
-		var taggable := host.can_tag(local, h)
-		h.visual.set_outline(ORANGE if taggable else GREY)
+		var taggable := h == preview_target
+		h.visual.set_outline(GREY)
 		h.visual.set_markers(taggable, h.has_ep() or h.is_immune())
 		if local.is_free() and host.can_tag(h, local) and RB.flat_dist(h.global_position, local.global_position) <= host.tuning.danger_border_range:
 			danger = true
-	_update_aim()
 	_update_intro()
 
 ## Round-1 flyover pose (presentation only): the arena from the enemy end to our own, each
@@ -151,30 +120,44 @@ func _spawn_centre(team: int) -> Vector3:
 	return sum / float(maxi(n, 1))
 
 func _update_aim() -> void:
-	aim_arrow_alpha = 0.0
-	if local == null or not local.is_free() or not host.round_live():
+	aim_strip_alpha = 0.0
+	preview_target = null
+	if local == null or not local.is_free() or not host.round_live() or (not local.can_press_tag() and not local.is_winding_up()):
+		aim_marker.visible = false
+		return
+	var winding := local.is_winding_up()
+	var input := host.input_sources.get(local.slot) as PlayerInput
+	if not winding and not (input and input.tag_aiming):
 		aim_marker.visible = false
 		return
 	aim_marker.visible = true
-	var reach := local.charged_reach() + host.tuning.body_radius * 2.0 # grows with the hampas charge
+	var direction := local.lunge_dir if winding else host.tag_system.aim_direction(local)
+	var reach := (local.strike_reach if winding else local.tag_reach()) + host.tuning.body_radius * 2.0
 	aim_marker.global_position = local.global_position
-	aim_marker.rotation.y = atan2(local.aim.x, local.aim.z)
-	if absf(reach - _arrow_len) > 0.005:
-		_build_arrow(reach)
-	# a team-coloured fill at rest, filling in as the charge builds and pulsing when full
-	var f := local.charge_fraction()
-	var team_col: Color = RB.TEAM_COLORS[local.team]
-	var core := Color.WHITE.lerp(team_col, ARROW_CORE_TINT)
-	var alpha := ARROW_IDLE_ALPHA + (ARROW_FULL_ALPHA - ARROW_IDLE_ALPHA) * f
-	_arrow_t += get_process_delta_time()
-	if f >= 1.0:
-		var pulse := 0.5 + 0.5 * sin(_arrow_t * ARROW_PULSE_HZ)
-		alpha = minf(1.0, alpha + ARROW_PULSE_ALPHA * pulse)
-		core = core.lerp(Color.WHITE, ARROW_PULSE_WHITE * pulse)
-	core.a = alpha
-	_arrow_mat.albedo_color = core
-	_arrow_rim_mat.albedo_color = Color(INK.r, INK.g, INK.b, alpha)
-	aim_arrow_alpha = alpha
+	aim_marker.rotation.y = atan2(direction.x, direction.z)
+	if absf(reach - _strip_reach) > 0.005:
+		_strip_reach = reach
+		var mesh := Vfx.tag_strip(reach, host.tuning.tag_strip_half_width, Color.WHITE)
+		_strip.mesh = mesh.mesh
+		mesh.free()
+		var border := Vfx.tag_strip_border(reach, host.tuning.tag_strip_half_width, host.tuning.tag_strip_outline_width, Color.WHITE)
+		_border.mesh = border.mesh
+		border.free()
+	preview_target = host.tag_system.preview_target(local, direction)
+	var source := host.input_sources.get(local.slot) as PlayerInput
+	if not winding and source and source.valid_touch_target(local, host, source.touch_target, reach):
+		preview_target = source.touch_target
+		var toward := RB.flat(preview_target.global_position - local.global_position).normalized()
+		aim_marker.rotation.y = atan2(toward.x, toward.z)
+	if source and source.tag_aim_cancelled:
+		preview_target = null
+		_strip_mat.albedo_color = Color(1, 0.2, 0.2, host.tuning.tag_strip_fill_alpha)
+		return
+	if preview_target and (host.visibility(local, preview_target) <= 0.01 or preview_target.is_warded()):
+		preview_target = null
+	aim_strip_alpha = host.tuning.tag_strip_attack_alpha if winding else host.tuning.tag_strip_fill_alpha
+	_strip_mat.albedo_color = Color(0.94, 0.12, 0.12, aim_strip_alpha)
+	(_border.material_override as StandardMaterial3D).albedo_color = Color(0.94, 0.12, 0.12, host.tuning.tag_strip_outline_alpha)
 
 ## Event -> sound name (res://assets/audio/<name>.ogg|wav; silent until the file lands, every
 ## play still raises Audio.cue for subtitles). Candidates and slots: docs/status.md "Audio".
@@ -207,7 +190,7 @@ func _on_event(kind: String, d: Dictionary) -> void:
 			_confetti()
 		"tag":
 			Vfx.popup_text(self, d.target.global_position, "HULI!", ORANGE)
-			Vfx.burst(self, d.target.global_position + Vector3(0, 1.0, 0), Color("ffd27a"), 30, 4.0, 0.5)
+			Vfx.burst(self, d.get("point", d.target.global_position + Vector3(0, 1.0, 0)), Color("ffd27a"), 30, 4.0, 0.5)
 			if camera and (d.target == local or d.tagger == local):
 				camera.shake(0.25, 0.2)
 		"guard_break":

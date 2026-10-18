@@ -29,10 +29,6 @@ func _cast(frame: InputFrame) -> void:
 		"gap": float(v("hila_gap")),
 	})
 	host.spawn_object(_hand, hero.global_position + dir * host.tuning.body_radius)
-	if hero.visual:
-		var clip_time := minf(hero.visual.clip_length(CLIP), 0.6)
-		if clip_time > 0.0:
-			hero.visual.play_action(CLIP, clip_time)
 	host.emit_event("hila", {"hero": hero, "dir": dir, "object": _hand})
 
 ## The open hand counts as Inday's touch for a chain tip (JailSystem step 6).
@@ -47,5 +43,5 @@ func rescue_touch_radius() -> float:
 func end(_reason: String) -> void:
 	active = false
 	if _hand != null and is_instance_valid(_hand) and not _hand.expired:
-		_hand.expire()
+		_hand._close("cancelled")
 	_hand = null

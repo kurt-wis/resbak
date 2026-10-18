@@ -24,11 +24,11 @@ func run(t: TestCtx) -> void:
 			for clip in ["Idle", "Walking", "Running", "BreakDance"]:
 				if t.check(ap.has_animation(clip), "%s clip %s must exist" % [hid, clip]):
 					t.check(ap.get_animation(clip).get_track_count() >= 60, "%s clip %s must animate the full skeleton (>= 60 tracks)" % [hid, clip])
-			# the held hampas wind-up (Meshy text-to-motion, 2026-10-17): a seamless loop on every hero
+			# retained TagCharge source clip (not used by tap-only tagging): seamless on every hero
 			if t.check(ap.has_animation("TagCharge"), "%s clip TagCharge must exist" % hid):
 				var tc := ap.get_animation("TagCharge")
 				t.check(tc.get_track_count() >= 60, "%s clip TagCharge must animate the full skeleton (>= 60 tracks)" % hid)
-				t.check("TagCharge" in HeroVisual.LOOP_CLIPS, "TagCharge loops in game (HeroVisual.LOOP_CLIPS): a long charge holds the wind-up")
+				t.check("TagCharge" in HeroVisual.LOOP_CLIPS, "retained TagCharge library clip keeps its loop contract")
 			for bad in ["Slide", "Dash"]:
 				t.check(not ap.has_animation(bad), "%s must not have an exact '%s' clip" % [hid, bad])
 		var meshes := node.find_children("*", "MeshInstance3D", true, false)

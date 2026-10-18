@@ -21,3 +21,6 @@ meshy_output/*
 gate_*.txt
 /dev/
 
+
+# Generated knowledge-graph output (not source)
+graphify-out/

@@ -11,7 +11,7 @@ const HEAD_BONE := "mixamorig_Head"
 const UPPER_ROOT := "mixamorig_Spine"
 const TOON := "res://shaders/character_toon.gdshader"
 const OUTLINE := "res://shaders/character_outline.gdshader"
-const OUTLINE_PX := 2.0
+const OUTLINE_PX := 2.0 ## Home set-piece compatibility; characters use Tuning.character_outline_pixels
 
 var id := ""
 var model: Node3D
@@ -40,7 +40,7 @@ static func toonify(root: Node, outline: bool) -> void:
 	if outline:
 		ink = ShaderMaterial.new()
 		ink.shader = load(OUTLINE)
-		ink.set_shader_parameter("outline_pixels", OUTLINE_PX)
+		ink.set_shader_parameter("outline_pixels", (load(Tuning.PATH) as Tuning).character_outline_pixels)
 	for node in root.find_children("*", "MeshInstance3D", true, false):
 		var mi := node as MeshInstance3D
 		for s in range(mi.mesh.get_surface_count()):

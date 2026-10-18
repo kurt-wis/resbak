@@ -10,6 +10,7 @@ extends CanvasLayer
 ## announcer ribbons (HudAnnouncer), and the
 ## Escape overlay. F10 hides everything but the overlay.
 
+signal pause_requested
 signal resume_requested
 signal leave_requested
 
@@ -36,6 +37,7 @@ var banner_part: HudBanner
 var announcer: HudAnnouncer
 var scoreboard: HudScoreboard
 var pause: HudPause
+var touch: HudPart
 
 # Convenience handles kept from the first HUD.
 var timer_label: Label
@@ -80,6 +82,7 @@ func setup(p_host: MatchHost, p_local: Hero, p_view: MatchView) -> void:
 	banner_part = _add(HudBanner.new(), root) as HudBanner
 	announcer = _add(HudAnnouncer.new(), root) as HudAnnouncer
 	scoreboard = _add(HudScoreboard.new(), root) as HudScoreboard
+	touch = _add(preload("res://scripts/ui/hud/hud_touch.gd").new(), root)
 	pause = _add(HudPause.new(), overlay) as HudPause
 	timer_label = timer.timer_label
 	banner = banner_part.banner

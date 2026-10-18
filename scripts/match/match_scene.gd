@@ -104,6 +104,8 @@ func _ready() -> void:
 		if h == local_hero and not autoplay:
 			host.input_sources[h.slot] = player_input
 			continue
+		if host.training and not bool(settings.get("training_bots", false)):
+			continue # empty InputFrames keep dummies still
 		var brain := BotBrain.new()
 		add_child(brain)
 		brain.setup(h, host, int(settings.get("difficulty", 1)))
@@ -118,11 +120,14 @@ func _ready() -> void:
 	add_child(hud)
 	hud.setup(host, local_hero, view)
 	hud.input_source = player_input
+	if host.training:
+		_build_training_tools()
 	if OcclusionFade.wanted(map_root):
 		occlusion = OcclusionFade.new()
 		occlusion.name = "OcclusionFade"
 		add_child(occlusion)
 		occlusion.setup(camera, map_root, local_hero, host.layout.bounds)
+	hud.pause_requested.connect(_set_pause.bind(true))
 	hud.resume_requested.connect(_set_pause.bind(false))
 	hud.leave_requested.connect(_leave_match)
 	host.event.connect(_on_event)
@@ -199,7 +204,8 @@ func _set_pause(on: bool) -> void:
 ## (Home). Leaving steps back one screen at a time: match -> Home -> title -> quit.
 func _leave_match() -> void:
 	host.paused = true
-	var to := HOME_SCENE if ResourceLoader.exists(HOME_SCENE) else TITLE_SCENE
+	var session := get_node_or_null("/root/Session")
+	var to := "res://scenes/frontend/training.tscn" if session and session.mode == "training" else (HOME_SCENE if ResourceLoader.exists(HOME_SCENE) else TITLE_SCENE)
 	if ResourceLoader.exists(to):
 		FE.go(self, to)
 	else:
@@ -208,3 +214,15 @@ func _leave_match() -> void:
 func _is_offline() -> bool:
 	var session := get_node_or_null("/root/Session")
 	return session == null or session.mode != "custom_room"
+
+func _build_training_tools() -> void:
+	hud.feed_visible = false
+	var column := VBoxContainer.new()
+	column.position = Vector2(24, 160)
+	column.custom_minimum_size = Vector2(410, 0)
+	hud.root.add_child(column)
+	column.add_child(FE.label("FREE TRAINING", 30, FE.GOLD))
+	column.add_child(FE.label("Tags and captures reset automatically.\nFaster skill recharge. Esc: menu.", 22, FE.CHALK))
+	var reset := FE.button("RESET", "Positions & cooldowns", Vector2(410, 72), 28)
+	column.add_child(reset)
+	reset.pressed.connect(func(): host.training.reset_requested = true)
