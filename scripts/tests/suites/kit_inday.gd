@@ -133,9 +133,10 @@ func _placed_wind(t: TestCtx) -> void:
 	t.check(skill.lane_active() and not skill.active and not skill.controls_movement(), "IHIP places an independent lane")
 	t.check(t.near(skill.lane_length(), 12.0) and t.near(lane.width_m, 4.5), "approved 12 m by 4.5 m lane")
 	t.check(skill.cd_ticks == RB.ticks(24.0) - 1, "24 s cooldown starts at placement")
+	t.steps(host, RB.ticks(inday.data.v("ihip_form_time")) - 1)
 	t.check(t.near(ally.biggest_bonus(), 0.4), "teammate receives +40% speed")
 	t.check(t.near(enemy.strongest_slow(), 0.25) and t.near(inday.strongest_slow(), 0.25), "enemies and owner receive 25% slow")
-	t.check(not inday.can_move() and inday.is_taggable(), "brief casting plant retains tag eligibility")
+	t.check(inday.is_taggable(), "forming cast retains tag eligibility")
 	inp.move(inday, Vector2(0, -1))
 	inp.aim_at(inday, Vector3(-4, 0, 10))
 	t.steps(host, 45)
@@ -187,6 +188,7 @@ func _wind_priority(t: TestCtx) -> void:
 	_cast(t, host, inday, 0)
 	TestCtx.put(ally, 1, 0)
 	TestCtx.put(enemy, 2, 0)
+	t.steps(host, RB.ticks(inday.data.v("ihip_form_time")))
 	var results := _land_pair(host, ally, enemy)
 	t.check(results.size() == 2 and results[0].type == "outprioritized" and results[1].type == "hit", "unaffected ally wins reciprocal same-tick tag against enemy in lane")
 	TestCtx.put(inday, 1, 0)
@@ -218,10 +220,16 @@ func _hila_cast(t: TestCtx) -> void:
 	t.steps(host, 10)
 	var x1 := hand.global_position.x
 	t.check(not hand.holding and x1 > -6.0 + 2.5, "the hand flies out along her aim (x %.2f)" % x1)
-	t.steps(host, 25)
+	var ticks := 10
+	while ticks < 60 and not _hands(host).is_empty():
+		t.steps(host, 1)
+		ticks += 1
+	t.check(ticks <= RB.ticks(5.0 / 20.0) + 4, "a missed hand retracts within its flight time (%d ticks)" % ticks)
 	t.check(_hands(host).is_empty() and _count("hila_open") == 1, "a missed reach returns immediately at maximum range")
 	t.check(s.rescue_touch_point() == Vector3.INF, "return has no gameplay touch point")
 	t.check(_count("hila_close") == 1, "miss closes once without a two-second wait")
+	t.steps(host, RB.ticks(inday.tuning.hila_retract_time) + 2)
+	t.check(not inday.visual.hila_pose_active(), "the arm returns after a miss instead of staying extended")
 	t.ok("HILA immediate miss return with normal cooldown")
 	await t.free_match(host)
 
@@ -230,7 +238,7 @@ func _hila_pull_ally(t: TestCtx) -> void:
 	var inday := _inday(host)
 	var ally: Hero = host.heroes[3] # tutoy
 	var inp := t.inputs(host)
-	TestCtx.put(inday, -6, 0)
+	TestCtx.put(inday, -4.5, 0)
 	TestCtx.put(ally, 0, 0)
 	inp.aim_at(inday, Vector3(5, 0, 0))
 	_cast(t, host, inday, 1)
@@ -243,7 +251,7 @@ func _hila_pull_ally(t: TestCtx) -> void:
 	# an enemy in the way is not grabbed
 	var enemy: Hero = host.heroes[1]
 	TestCtx.put(enemy, 0, 3)
-	TestCtx.put(inday, -6, 3)
+	TestCtx.put(inday, -4.5, 3)
 	inp.aim_at(inday, Vector3(5, 0, 3))
 	log_events.clear()
 	log_data.clear()
@@ -261,7 +269,7 @@ func _hila_rescue(t: TestCtx) -> void:
 	var inp := t.inputs(host)
 	var tip := _chain_out(t, host)
 	t.check(c.state == Hero.State.CHAINED and d.state == Hero.State.CHAINED, "chain of two walked out (%s)" % str(tip))
-	TestCtx.put(inday, tip.x + 6.0, tip.z)
+	TestCtx.put(inday, tip.x + 4.5, tip.z)
 	inp.aim_at(inday, tip)
 	log_events.clear()
 	log_data.clear()
@@ -289,7 +297,7 @@ func _hila_wall(t: TestCtx) -> void:
 	var d: Hero = host.heroes[5]
 	var inp := t.inputs(host)
 	var tip := _chain_out(t, host)
-	TestCtx.put(inday, tip.x + 6.0, tip.z)
+	TestCtx.put(inday, tip.x + 4.5, tip.z)
 	_wall(host, Vector3(tip.x + 3.0, 1, tip.z), Vector3(0.3, 2, 4))
 	inp.aim_at(inday, tip)
 	log_events.clear()

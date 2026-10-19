@@ -19,6 +19,9 @@ var cooldown := 10.0 ## seconds, from HeroData
 var cd_ticks := 0 ## ticks until ready
 var active := false
 var cast_tick := -1 ## host tick of the last cast
+var committed_aim := {}
+var committed_origin := Vector3.ZERO
+var committed_until_tick := -1
 
 ## Spec type: RB.SkillKind.OFFENSIVE / MOVEMENT / NEITHER. EP ends early on Offensive or Movement.
 func kind() -> int:
@@ -57,10 +60,13 @@ func try_cast(frame: InputFrame) -> bool:
 		return false
 	cd_ticks = RB.ticks(cooldown)
 	cast_tick = host.tick
+	committed_origin = hero.global_position
+	committed_aim = aim_preview(frame).duplicate(true)
+	committed_until_tick = host.tick + RB.ticks(maxf(cast_plant_seconds(), float(committed_aim.get("tell_time", host.tuning.skill_commit_tell_time))))
 	hero.notify_skill_cast(self)
 	_cast(frame)
-	if not is_traversal():
-		hero.plant_cast(host.tuning.skill_cast_plant)
+	if cast_plant_seconds() > 0.0:
+		hero.plant_cast(cast_plant_seconds())
 	host.emit_event("skill_cast", {"hero": hero, "slot": slot, "skill": skill_name()})
 	return true
 
@@ -69,6 +75,10 @@ func try_cast(frame: InputFrame) -> bool:
 ## Only skills that actually transport the caster are exempt from planting.
 func is_traversal() -> bool:
 	return false
+
+## Presentation preparation may differ per skill; zero permits a moving cast.
+func cast_plant_seconds() -> float:
+	return 0.0 if is_traversal() else host.tuning.skill_cast_plant
 
 ## Extra cast conditions (e.g. LUSOT! needs ground). Base rules are already checked.
 func _can_cast_extra() -> bool:
@@ -88,6 +98,15 @@ func tick_action(_frame: InputFrame) -> void:
 
 ## True while this skill drives the hero's movement (dashes, jumps, charges, channels).
 func controls_movement() -> bool:
+	return false
+
+## ZERO leaves ordinary turning enabled; channels can keep the host facing their committed aim.
+func locked_facing() -> Vector3:
+	return Vector3.ZERO
+
+## True when the skill is steered by the movement stick and facing, not by an aim direction
+## (TAMARAW!!!): it then ignores the aim point entirely.
+func aim_from_movement() -> bool:
 	return false
 
 ## Move the hero this tick (only called while controls_movement()). Use hero.move_body().
@@ -162,6 +181,8 @@ func evade_stun_seconds() -> float:
 ## Round reset: end effects, clear cooldown (the host resets cd_ticks after this).
 func on_round_reset() -> void:
 	end("reset")
+	committed_until_tick = -1
+	committed_aim.clear()
 
 ## For the HUD: extra state text such as "1.2 s" while channelling; "" for none.
 func hud_note() -> String:

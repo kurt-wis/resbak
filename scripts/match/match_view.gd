@@ -23,6 +23,7 @@ var aim_strip_alpha := 0.0
 var preview_target: Hero
 
 var skill_aim: SkillAimView
+var _skill_tells := {}
 var arena: ArenaArt
 var danger := false ## any enemy within danger range can tag the local hero (HUD reads it)
 
@@ -60,6 +61,7 @@ func _process(delta: float) -> void:
 		arena.refresh(delta)
 	_update_aim()
 	skill_aim.refresh()
+	_refresh_skill_tells()
 	danger = false
 	for object in host.objects:
 		if object is UboCloud:
@@ -81,6 +83,34 @@ func _process(delta: float) -> void:
 		if local.is_free() and host.can_tag(h, local) and RB.flat_dist(h.global_position, local.global_position) <= host.tuning.danger_border_range:
 			danger = true
 	_update_intro()
+
+func _refresh_skill_tells() -> void:
+	var alive := {}
+	if host.round_live():
+		for h in host.heroes:
+			for skill in h.skills:
+				if host.tick >= skill.committed_until_tick or skill.committed_aim.is_empty() or not h.is_free() or h.is_disabled():
+					continue
+				# TALBOG already owns a public landing/flight tell with exact impact timing,
+				# SIGAW's own fan is its public tell while it travels, and TAMARAW, like
+				# HARUROT!, shows no direction indicator at all: it just moves.
+				if h.data.id == "jm":
+					continue
+				if h.data.id == "nene" and skill.slot == 0:
+					continue
+				var key := "%d/%d/%d" % [h.slot, skill.slot, skill.cast_tick]
+				alive[key] = true
+				if not _skill_tells.has(key):
+					var view := SkillAimView.new()
+					add_child(view)
+					view.setup(host, h)
+					view.name = "CommittedSkill_%d_%d" % [h.slot, skill.slot]
+					_skill_tells[key] = view
+				(_skill_tells[key] as SkillAimView).show_info(skill, skill.committed_aim, skill.committed_origin, false, true)
+	for key in _skill_tells.keys():
+		if not alive.has(key):
+			_skill_tells[key].queue_free()
+			_skill_tells.erase(key)
 
 ## Round-1 flyover pose (presentation only): the arena from the enemy end to our own, each
 ## team's spawn, then the faceoff at the centre, easing back to the hero over the last 0.7 s.

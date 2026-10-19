@@ -267,6 +267,10 @@ func _talbog_tagged_midair(t: TestCtx) -> void:
 	t.ok("TALBOG! tagged mid-air")
 
 # ---- TAMARAW!!! ------------------------------------------------------------------------
+## TAMARAW!!! follows the movement stick (or facing when centred), never an aim point.
+func _steer(inp: ScriptedInput, jm: Hero, dir: Vector3) -> void:
+	inp.move(jm, Vector2(dir.x, dir.z).normalized())
+
 func _tamaraw_charge(t: TestCtx) -> void:
 	var host := _live(t, [], ["nathan"])
 	var jm: Hero = host.heroes[0]
@@ -274,7 +278,8 @@ func _tamaraw_charge(t: TestCtx) -> void:
 	var sk := _skill2(jm)
 	t.check(sk.kind() == RB.SkillKind.OFFENSIVE, "TAMARAW!!! is an Offensive skill")
 	TestCtx.put(jm, -5.0, 3.0)
-	inp.aim_at(jm, Vector3(30.0, 0, 3.0))
+	_steer(inp, jm, Vector3(1, 0, 0))
+	inp.aim_at(jm, Vector3(-30.0, 0, 3.0)) # an aim point behind him must not steer the charge
 	inp.press(jm, S2)
 	t.steps(host, 1)
 	var tam: float = jm.data.v("tamaraw_speed") * host.tuning.move_speed_scale
@@ -282,6 +287,7 @@ func _tamaraw_charge(t: TestCtx) -> void:
 	t.check(sk.cd_ticks >= 958 and sk.cd_ticks <= 960, "cooldown 16 s starts on cast (%d)" % sk.cd_ticks)
 	t.steps(host, 59)
 	t.check(t.near(jm.global_position.x, -5.0 + tam, 0.3), "60 ticks of charging cover %.1f m (x=%.2f)" % [tam, jm.global_position.x])
+	t.check(t.near(jm.global_position.z, 3.0, 0.15), "the charge follows the stick, never the aim point (z=%.2f)" % jm.global_position.z)
 	t.check(jm.collision_layer == RB.L_GHOST, "JM is off the hero layer while charging")
 	inp.press(jm, TAG)
 	t.steps(host, 1)
@@ -318,7 +324,7 @@ func _tamaraw_shove(t: TestCtx) -> void:
 	TestCtx.put(ally, 2.0, 3.0)
 	TestCtx.put(e_south, 0.0, 3.3)
 	TestCtx.put(e_north, 4.0, 2.7)
-	inp.aim_at(jm, Vector3(30.0, 0, 3.0))
+	_steer(inp, jm, Vector3(1, 0, 0))
 	inp.press(jm, S2)
 	t.steps(host, 90)
 	t.check(t.near(e_south.global_position.z, 5.3, 0.2) and t.near(e_south.global_position.x, 0.0, 0.1), "enemy on the +z side is shoved 2 m sideways off the path (got %s)" % e_south.global_position)
@@ -334,10 +340,10 @@ func _tamaraw_turn(t: TestCtx) -> void:
 	var jm: Hero = host.heroes[0]
 	var inp := t.inputs(host)
 	TestCtx.put(jm, -8.0, -4.0)
-	inp.aim_at(jm, Vector3(30.0, 0, -4.0))
+	_steer(inp, jm, Vector3(1, 0, 0))
 	inp.press(jm, S2)
 	t.steps(host, 1) # first move heads east
-	inp.aim_at(jm, Vector3(jm.global_position.x, 0, 200.0)) # now aim 90 deg to the right
+	_steer(inp, jm, Vector3(0, 0, 1)) # now the stick points 90 deg to the right
 	t.steps(host, 30)
 	var ang := _dir_deg(jm.velocity)
 	t.check(ang > 38.0 and ang < 52.0, "turns at most 90 deg/s: about 45 deg after 0.5 s (got %.1f)" % ang)
@@ -357,7 +363,7 @@ func _tamaraw_crash(t: TestCtx) -> void:
 	TestCtx.put(jm, 15.0, 3.0)
 	TestCtx.put(near, 18.0, 4.5) # within 2.5 m of the crash point (19.6, 3), off the path
 	TestCtx.put(far, 15.0, 7.0)
-	inp.aim_at(jm, Vector3(30.0, 0, 3.0))
+	_steer(inp, jm, Vector3(1, 0, 0))
 	inp.press(jm, S2)
 	t.steps(host, 1)
 	var n := _until_inactive(host, sk, 80)
@@ -386,7 +392,7 @@ func _tamaraw_crash(t: TestCtx) -> void:
 	jm = host.heroes[0]
 	inp = t.inputs(host)
 	TestCtx.put(jm, 8.0, 0.0)
-	inp.aim_at(jm, Vector3(30.0, 0, 0.0))
+	_steer(inp, jm, Vector3(1, 0, 0))
 	inp.press(jm, S2)
 	t.steps(host, 40)
 	t.check(not _skill2(jm).active and jm.is_stunned(), "charging into the enemy pole ends the charge and stuns")
@@ -404,7 +410,7 @@ func _tamaraw_crash(t: TestCtx) -> void:
 	t.check(jm.cast_lock_ticks > 0 and jm.is_taggable(), "Talbog landing recovery plants JM while he stays taggable")
 	t.steps(host, jm.cast_lock_ticks)
 	TestCtx.put(jm, -5.5, -4)
-	inp.aim_at(jm, Vector3(30, 0, -4))
+	_steer(inp, jm, Vector3(1, 0, 0))
 	inp.press(jm, S2)
 	t.steps(host, 30)
 	t.check(_skill2(jm).active and not jm.is_stunned() and jm.global_position.x > -3, "Tamaraw crosses the former wall footprint")
@@ -418,13 +424,13 @@ func _tamaraw_recast_and_tag(t: TestCtx) -> void:
 	var inp := t.inputs(host)
 	var sk := _skill2(jm)
 	TestCtx.put(jm, -5.0, 3.0)
-	inp.aim_at(jm, Vector3(30.0, 0, 3.0))
+	_steer(inp, jm, Vector3(1, 0, 0))
 	inp.press(jm, S2)
 	t.steps(host, 20)
 	var x_before := jm.global_position.x
 	inp.press(jm, S2)
 	t.steps(host, 1)
-	t.check(not sk.active, "S2 again ends the charge")
+	t.check(not sk.active, "S2 again cancels the charge mid-run")
 	t.check(not sk.is_ready(), "ending early doesn't refund the cooldown")
 	t.check(not jm.is_stunned(), "ending on purpose doesn't stun")
 	t.check(jm.global_position.x < x_before + 1.2, "JM slows to a stop after the recast (x=%.2f)" % jm.global_position.x)

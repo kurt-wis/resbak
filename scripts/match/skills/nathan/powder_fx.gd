@@ -51,8 +51,8 @@ static func volume_emitter(parent: Node3D, radius: float, color: Color, amount: 
 ## The BUGA! blast: a quick pink and white burst along `dir`, plus a fan that flashes and fades.
 static func blow_cone(parent: Node3D, origin: Vector3, dir: Vector3, length: float, width_deg: float) -> void:
 	var at := origin + Vector3(0, 1.15, 0) + dir * 0.4
-	Vfx.burst(parent, at, PINK, 70, length * 1.25, 0.8, 0.55, 0.3, width_deg * 0.5, dir)
-	Vfx.burst(parent, at, WHITE, 40, length * 1.1, 0.7, 0.35, 0.2, width_deg * 0.4, dir)
+	Vfx.burst(parent, at, PINK, 85, length * 1.25, 0.55, 0.09, -0.5, width_deg * 0.5, dir)
+	Vfx.burst(parent, at, WHITE, 28, length * 1.1, 0.4, 0.18, -0.3, width_deg * 0.4, dir)
 	var fan := Vfx.fan_mesh(length, width_deg, Color(PINK.r, PINK.g, PINK.b, 0.35))
 	parent.add_child(fan)
 	fan.global_position = origin + Vector3(0, 0.07, 0)

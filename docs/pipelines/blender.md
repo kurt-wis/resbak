@@ -243,3 +243,20 @@ At runtime the recovery window plays **Walking, never Running** (gate-asserted).
 - `build_supplied_towel.py` creates **960 triangles / 17 joints**, one rough nonmetallic material, with **Towel_Carry (1 s)** and **Towel_Whip (1 s)** NLA clips. Runtime supplies hand/shoulder anchors, folded drape and damped movement. Its open double-sided topology is deliberate.
 - `qc_asset.py` measures bounds in bind pose; an automatically activated first dance clip must not change height, ground or foot-speed normalization. Current JM gait: Walking 1.04 m/s, Running 3.99 m/s.
 - Render close in-game front/back, run, miss and impact checks with `tools/qc_jm_carry.gd`; geometry/weights with `tools/qc_hero_polish.py`. Ordinary rendering remains smooth while match/Home hero AnimationTrees sample at the configured 24 poses/s.
+
+## 2026-10-19 motion pass
+
+`build_motion_pass.py` preserves libraries and stages reviewed GLBs in `renders/motion_pass/`. Follow with `build_inday_hair.py` for Inday and `build_jm_grip.py` for JM. Both run at the end of `build_heroes.py`. Run `qc_motion_pass.py` and `qc_asset.py` before promoting staged assets, then Godot import and the full gate. `qc_motion_pass.gd` captures the real game; `--only=` filters heroes.
+
+| Clip / asset | Updated contract |
+| --- | --- |
+| Tag, all five | 24 frames at 24 fps (1 s source), JM 40 frames (exact sampled contact at frame 22); open-palm forward reach (JM: overhead towel coil/snap), contact at 55%, follow-through. Host seeks contact at 0.35 s, followed by 0.18 s recovery |
+| Stumble, all five | 18 frames at 24 fps (0.75 s), begins at Tag contact and continues overbalance/recovery; fitted to unchanged 0.5 s gameplay stumble |
+| Sumbong, Nene | 18 frames at 24 fps, both hands cup the authored mouth; runtime shout mouth card and sequential sound rings |
+| Ubo, Nathan | 24 frames at 24 fps; bag pickup, above/behind-shoulder coil, overhead release at 50%, cross-body follow-through. Fit to 0.6 s; packet releases at 0.3 s, fingers closed before release |
+| Walking / Running, Inday | Grounded Quick_Walk / Lean_Forward_Sprint from Tutoy; measured 1.51 / 4.25 m/s at game scale |
+| Inday braid | Four Mixamo-named Hair joints under Head; 640 reviewed vertices with geodesic boundary fade. `source_art/heroes/inday_motion_source.glb` preserves vertex order; `tools/data/inday_hair_mask.json` excludes clothes and includes gray highlights |
+| JM grip | Repositioned RightHandMiddle1 hinge and 387 reviewed distal finger vertices; same 28 joints/full-skeleton clips |
+| JM towel | Closed loosely rolled terry form, 984 triangles, 17 joints, 0.72 m; Towel_Carry/Towel_Whip NLA clips. UV seam/cap splits intentional; no zero-area UVs, UV overlap or inconsistent winding |
+
+Geometry QA accepts preserved source UV/normal splits and previously existing hidden back-to-back face pairs. First-animation ground offsets and held-prop origins are not bind-ground failures. The canonical Inday source and changed GLBs use Git LFS. Runtime secondary dynamics approximate body clearance; they do not add world cloth or ragdolls.

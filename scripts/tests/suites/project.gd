@@ -26,7 +26,7 @@ func run(t: TestCtx) -> void:
 	# Tuning matches the spec's numbers
 	var tu := Tuning.get_default()
 	t.check(t.near(tu.body_radius, 0.4), "body radius 0.4")
-	t.check(t.near(tu.tag_windup, 0.3) and RB.ticks(tu.tag_windup) == 18, "tag wind-up 0.3 s = 18 ticks (v0.2 slower hampas; spec 0.15 s)")
+	t.check(t.near(tu.tag_windup, 0.35) and RB.ticks(tu.tag_windup) == 21, "approved tag wind-up 0.35 s = 21 ticks (spec 0.15 s)")
 	t.check(tu.move_speed_scale > 0.5 and tu.move_speed_scale < 1.0, "v0.2: everyone moves slower (move_speed_scale %.2f)" % tu.move_speed_scale)
 	t.check(tu.chain_post_speed > 0.0 and tu.jail_band > 0.0, "jail line tuning (post speed, band)")
 	t.check(tu.touch_target_release_range >= tu.tag_assist_range and tu.character_outline_pixels > 0.0 and tu.character_outline_pixels <= 1.5, "touch lock retention and thin character outline tuning")

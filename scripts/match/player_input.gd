@@ -92,6 +92,7 @@ func finish_touch_skill(cancelled := false) -> void:
 ## Read-only preview input: identical point selection to the eventual release frame.
 func skill_preview_frame(hero: Hero) -> InputFrame:
 	var frame := InputFrame.new()
+	frame.from_gamepad = last_device_gamepad or touch_active
 	frame.aim_dir = touch_skill_direction if touch_skill_direction != Vector2.ZERO else Vector2(hero.aim.x, hero.aim.z)
 	if touch_skill_button != 0:
 		SkillAim.apply_input(frame, hero, touch_skill_button, touch_skill_direction, touch_skill_fraction)

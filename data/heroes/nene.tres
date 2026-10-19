@@ -16,7 +16,7 @@ color = Color(0.949, 0.549, 0.7216, 1)
 glb = "res://assets/characters/nene.glb"
 model_height = 1.8
 run_speed = 4.5
-tag_reach = 1.2
+tag_reach = 1.0
 walk_clip_speed = 1.21
 run_clip_speed = 3.06
 skill1_name = "SIGAW!"
@@ -27,12 +27,13 @@ skill2_cooldown = 14.0
 skill1_script = ExtResource("2")
 skill2_script = ExtResource("3")
 passive_script = ExtResource("4")
-skill1_text = "Shout a word that flies 12 m. An enemy it hits is stunned for 0.5 s; a teammate it hits gets a short dash."
-skill2_text = "Hold up a BAWAL! sign for 3 s. An enemy who tags you anyway does not tag you: they hallucinate for 3 s."
+skill1_text = "Shout a fixed 60-degree sound fan 7 m ahead. Each enemy it reaches is stunned for 0.5 s; each teammate gets a short dash. Walls block it."
+skill2_text = "Keep moving under a pink BAWAL! ward for 3 s. The first enemy who tags you is stopped and hallucinates for 3 s. Tagging or capturing ends your ward."
 passive_text = "After 4 s with no free enemy within 8 m, your footsteps go silent until one comes within 4 m."
 values = {
 "sigaw_speed": 18.0,
-"sigaw_range": 12.0,
+"sigaw_range": 7.0,
+"sigaw_width_deg": 60.0,
 "sigaw_radius": 0.35,
 "sigaw_stun": 0.5,
 "sigaw_dash_distance": 3.0,

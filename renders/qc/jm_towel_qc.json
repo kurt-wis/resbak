@@ -1,24 +1,36 @@
 {
  "file": "assets\\props\\jm_towel.glb",
- "real_height_m": 0.047,
+ "real_height_m": 0.073,
  "game_scale": 1.0,
  "dims_m": [
-  0.208,
-  0.75,
-  0.047
+  0.073,
+  0.72,
+  0.073
  ],
- "triangles": 1058,
+ "triangles": 984,
  "clips": [
+  {
+   "clip": "Towel_Carry",
+   "frames": [
+    0,
+    24
+   ],
+   "seconds": 1.0,
+   "tracks": 170,
+   "foot_plant_speed_mps": 0.0,
+   "loop_seam_m": 0.0,
+   "hips_root_motion_m": 0.0
+  },
   {
    "clip": "Towel_Whip",
    "frames": [
     0,
-    19
+    24
    ],
-   "seconds": 0.792,
-   "tracks": 60,
+   "seconds": 1.0,
+   "tracks": 170,
    "foot_plant_speed_mps": 0.0,
-   "loop_seam_m": 0.072,
+   "loop_seam_m": 0.0,
    "hips_root_motion_m": 0.0
   }
  ],
@@ -27,37 +39,42 @@
   {
    "check": "origin",
    "status": "PASS",
-   "detail": "Z centre = 0.009 m (want 0 for a held prop)"
+   "detail": "Z centre = -0.000 m (want 0 for a held prop)"
   },
   {
    "check": "centred",
    "status": "WARN",
-   "detail": "XY centre (-0.015, 0.375) m"
+   "detail": "XY centre (0.001, 0.360) m"
   },
   {
-   "check": "normals JM_CottonTowel",
-   "status": "WARN",
-   "detail": "53% of faces point outward (inside-out meshes score under 40%)"
-  },
-  {
-   "check": "topology JM_CottonTowel",
+   "check": "normals JM_TerryCloth",
    "status": "PASS",
-   "detail": "0 non-manifold edges (2040 open edges, normal at UV seams)"
+   "detail": "100% of faces point outward (inside-out meshes score under 40%)"
+  },
+  {
+   "check": "topology JM_TerryCloth",
+   "status": "PASS",
+   "detail": "0 non-manifold edges (128 open edges, normal at UV seams)"
   },
   {
    "check": "triangles",
    "status": "PASS",
-   "detail": "1058 (budget 1500)"
+   "detail": "984 (budget 15000)"
   },
   {
    "check": "mixamo names",
    "status": "WARN",
-   "detail": "0/6 bones"
+   "detail": "0/17 bones"
+  },
+  {
+   "check": "clip Towel_Carry",
+   "status": "PASS",
+   "detail": "1.0 s, 170 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m"
   },
   {
    "check": "clip Towel_Whip",
-   "status": "WARN",
-   "detail": "0.792 s, 60 channels, foot plant 0.0 m/s, loop seam 0.072 m, root motion 0.0 m"
+   "status": "PASS",
+   "detail": "1.0 s, 170 channels, foot plant 0.0 m/s, loop seam 0.0 m, root motion 0.0 m"
   }
  ]
 }

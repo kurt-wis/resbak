@@ -4,7 +4,7 @@ extends Node3D
 ## Presentation for one Hero: model, toon + outline materials, animation, see-through,
 ## icons, team ring. Reads the Hero every frame (_process) and never changes game state.
 ## Animation: an AnimationTree blends Idle / Walking / Running by ground speed (playback
-## scaled to the measured foot speed, as HeroController did) and cross-fades to an action
+## bounded by measured foot speeds, with phase-synchronized gaits) and cross-fades to an action
 ## layer for state clips (Tagged, Stunned, Jailed...) and skill clips requested through
 ## play_action(). Clip names are the contract in docs/pipelines/blender.md.
 
@@ -35,7 +35,8 @@ var _slot := 0 ## alternates 0/1 so a new action always restarts
 var _cur_key := ""
 var _req_clip := ""
 var _action_facing := Vector3.FORWARD
-var _req_until := 0.0 ## engine seconds; <= 0 means until stop_action()
+var _req_until := 0.0 ## host seconds; <= 0 means until stop_action()
+var _req_start := 0.0
 var _req_dur := -1.0
 var _req_loop := false
 var _req_serial := 0
@@ -54,6 +55,7 @@ var elastic_arm: SkeletonModifier3D
 var _pose_remainder := 0.0
 var pose_sample_count := 0
 var _tamaraw_miss_until := -1
+var _loco_speed := 0.0
 
 func tamaraw_miss_active() -> bool:
 	return hero != null and hero.is_free() and hero.cast_lock_ticks > 0 and hero.host.tick < _tamaraw_miss_until
@@ -104,6 +106,7 @@ var _ik_weight := 0.0
 ## _process() returns the un-IK'd animation pose. The arm joints are therefore captured on the
 ## skeleton's `skeleton_updated` signal, which fires with the modified pose still in place.
 var _bones_world := {} ## bone name -> last rendered world position
+var _bone_world_transforms := {}
 var _tail_names := {} ## Mixamo name tail -> resolved bone name
 
 func setup(p_hero: Hero) -> void:
@@ -128,6 +131,10 @@ func setup(p_hero: Hero) -> void:
 		for pair in [["upper", "RightArm"], ["fore", "RightForeArm"], ["hand", "RightHand"]]:
 			elastic_arm.set(pair[0], _skel.find_bone(_bone_by_tail(pair[1])))
 		_skel.add_child(elastic_arm)
+		var hair := preload("res://scripts/match/hair_motion.gd").new()
+		hair.name = "BraidMotion"
+		hair.visual = self
+		_skel.add_child(hair)
 	if hero.host:
 		hero.host.event.connect(_on_host_event)
 
@@ -149,7 +156,8 @@ func play_action(clip: String, duration: float = -1.0, hold := false) -> void:
 	_req_loop = clip in LOOP_CLIPS or hold
 	var natural := clip_length(clip)
 	var span := duration if duration > 0.0 else (natural if not _req_loop else 0.0)
-	_req_until = _now() + span if span > 0.0 else 0.0
+	_req_start = _now()
+	_req_until = _req_start + span if span > 0.0 else 0.0
 	_req_serial += 1
 
 func stop_action(clip := "") -> void:
@@ -269,9 +277,12 @@ func _build_tree() -> void:
 	space.min_space = 0.0
 	var run_speed := hero.data.run_speed * hero.tuning.move_speed_scale
 	space.max_space = maxf(run_speed, 0.1)
-	space.sync = true
-	var walk_speed := run_speed * hero.tuning.walk_fraction
-	for point in [["Idle", 0.0], ["Walking", hero.tuning.locomotion_idle_blend_speed], ["Walking", walk_speed], ["Running", run_speed]]:
+	space.sync_mode = AnimationNodeBlendSpace1D.SYNC_MODE_CYCLIC_MUTABLE
+	# Put gaits at their measured natural speeds, rather than stretching a tiny walk
+	# stride to the gameplay walk threshold. Intermediate speeds mix both poses.
+	var walk_speed := minf(hero.data.walk_clip_speed, run_speed * hero.tuning.walk_fraction)
+	var run_point := maxf(walk_speed + 0.1, minf(run_speed, hero.data.run_clip_speed))
+	for point in [["Idle", 0.0], ["Walking", hero.tuning.locomotion_idle_blend_speed], ["Walking", walk_speed], ["Running", run_point]]:
 		var n := AnimationNodeAnimation.new()
 		n.animation = point[0]
 		space.add_blend_point(n, point[1], -1, point[0])
@@ -451,7 +462,16 @@ func _on_skel_updated() -> void:
 		for bone in arm:
 			var idx := _skel.find_bone(bone)
 			if idx >= 0:
-				_bones_world[bone] = xform * _skel.get_bone_global_pose(idx).origin
+				var pose := xform * _skel.get_bone_global_pose(idx)
+				_bones_world[bone] = pose.origin
+				_bone_world_transforms[bone] = pose
+
+func bone_world_transform(tail: String) -> Transform3D:
+	var bone := _bone_by_tail(tail)
+	if _bone_world_transforms.has(bone):
+		return _bone_world_transforms[bone]
+	var index := _skel.find_bone(bone)
+	return _skel.global_transform * _skel.get_bone_global_pose(index)
 
 ## The rig bone ending in the Mixamo name tail ("RightHand" finds mixamorig_RightHand), or "".
 func _bone_by_tail(tail: String) -> String:
@@ -781,6 +801,7 @@ func _process(delta: float) -> void:
 	elif model:
 		model.rotation.y = want if hero.capturing else lerp_angle(model.rotation.y, want, minf(TURN_RATE * delta, 1.0))
 	var ward := 1.0 if hero.is_warded() else 0.0
+	nametag.position.y = hero.data.model_height + (0.95 if ward > 0.0 else 0.24)
 	for entry in _opaque + _faded:
 		(entry[2] as ShaderMaterial).set_shader_parameter("ward_strength", ward)
 	_update_sabay_fall()
@@ -807,7 +828,7 @@ func _update_sabay_fall() -> void:
 	model.rotation.z = roll
 
 func _now() -> float:
-	return Time.get_ticks_msec() / 1000.0
+	return RB.seconds(hero.host.tick) if hero.host else Time.get_ticks_msec() / 1000.0
 
 ## What to show, most important first: state clips, then skill requests, then locomotion.
 func _desired() -> Array:
@@ -876,7 +897,8 @@ func _update_animation(delta := 0.0) -> void:
 	var speed := travel.length()
 	if hero.state == Hero.State.CHAINED:
 		speed = minf(speed, hero.data.run_speed * hero.tuning.walk_fraction)
-	var rate := _loco_scale(speed)
+	_loco_speed = move_toward(_loco_speed, speed, delta * hero.tuning.locomotion_blend_acceleration) if delta > 0.0 else speed
+	var rate := _loco_scale(_loco_speed)
 	var heading := 0.0
 	if upper and speed > 0.05:
 		var front := Vector3(sin(model.rotation.y), 0, cos(model.rotation.y))
@@ -886,11 +908,12 @@ func _update_animation(delta := 0.0) -> void:
 			rate = -rate # backpedal with the same planted-foot cycle, not forward moonwalking
 	if leg_heading:
 		leg_heading.set("heading_delta", heading)
-	tree.set("parameters/Loco/blend_position", clampf(speed, 0.0, hero.data.run_speed))
+	tree.set("parameters/Loco/blend_position", _loco_speed)
 	tree.set("parameters/LocoSpeed/scale", rate)
 	var key := "%s#%d" % [clip, desired[2]]
 	var goal := 0.0 if clip == "" else 1.0
-	_layer_weight = move_toward(_layer_weight, goal, delta / XFADE) if delta > 0.0 else goal
+	var fade := hero.tuning.action_recovery_blend if goal == 0.0 else XFADE
+	_layer_weight = move_toward(_layer_weight, goal, delta / fade) if delta > 0.0 else goal
 	tree.set("parameters/ActionLayer/blend_amount", _layer_weight)
 	if clip == "":
 		_cur_key = "loco"
@@ -898,6 +921,8 @@ func _update_animation(delta := 0.0) -> void:
 	var layer := (tree.tree_root as AnimationNodeBlendTree).get_node("ActionLayer") as AnimationNodeBlend2
 	layer.filter_enabled = upper
 	if key != _cur_key:
+		var transition := (tree.tree_root as AnimationNodeBlendTree).get_node("Mode") as AnimationNodeTransition
+		transition.xfade_time = hero.tuning.action_recovery_blend if clip == "Stumble" else XFADE
 		_cur_key = key
 		_slot = 1 - _slot
 		var slot := "A" if _slot == 0 else "B"
@@ -916,6 +941,10 @@ func _update_animation(delta := 0.0) -> void:
 	elif clip == "Sagip" and hila_pose_active():
 		tree.set("parameters/Speed%s/scale" % slot, 0.0)
 		tree.set("parameters/Seek%s/seek_request" % slot, hila_clip_position())
+	elif clip == _req_clip and _req_dur > 0.0 and not _req_loop:
+		# Preparation/release must agree with the host even on a slow render frame.
+		tree.set("parameters/Speed%s/scale" % slot, 0.0)
+		tree.set("parameters/Seek%s/seek_request" % slot, clip_length(clip) * clampf((_now() - _req_start) / _req_dur, 0.0, 1.0))
 
 func hila_pose_active() -> bool:
 	return hero.is_free() and hero.round_live() and not hero.is_disabled() and (is_instance_valid(_hila_hand) and not _hila_hand.expired or _now() < _hila_return_until)
@@ -973,9 +1002,10 @@ func _loco_scale(spd: float) -> float:
 	if spd <= 0.001:
 		return 1.0 # Idle keeps breathing at rest.
 	var run := hero.data.run_speed * hero.tuning.move_speed_scale
-	var walk := run * hero.tuning.walk_fraction
-	var source_speed := maxf(hero.data.walk_clip_speed, 0.01)
-	if spd <= walk:
-		return maxf(spd, hero.tuning.locomotion_idle_blend_speed) / source_speed
-	var mix := clampf((spd - walk) / maxf(run - walk, 0.01), 0.0, 1.0)
-	return spd / lerpf(source_speed, maxf(hero.data.run_clip_speed, 0.01), mix)
+	var walk := minf(hero.data.walk_clip_speed, run * hero.tuning.walk_fraction)
+	if spd < walk:
+		return maxf(spd, hero.tuning.locomotion_idle_blend_speed) / maxf(walk, 0.01)
+	var run_point := maxf(walk + 0.1, minf(run, hero.data.run_clip_speed))
+	var mix := clampf((spd - walk) / (run_point - walk), 0.0, 1.0)
+	var source_speed := lerpf(hero.data.walk_clip_speed, hero.data.run_clip_speed, mix)
+	return minf(spd / maxf(source_speed, 0.01), hero.tuning.locomotion_max_rate)

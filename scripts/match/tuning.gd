@@ -33,8 +33,8 @@ const PATH := "res://data/tuning.tres"
 @export var tag_followthrough := 0.18
 @export var tag_contact_fraction := 0.55 ## source Tag clip pose at impact
 @export var tag_contact_height := 0.65 ## fraction of the tagged model height
-@export var hila_retract_time := 0.2 ## presentation only; rescue/pull ends immediately
-@export var tag_windup := 0.3 ## v0.2: a slower, readable hampas (spec 0.15)
+@export var hila_retract_time := 0.15 ## presentation only; rescue/pull ends immediately
+@export var tag_windup := 0.35 ## approved 2026-10-19; spec 0.15
 @export var tagged_freeze := 0.8
 @export var failed_tag_stumble := 0.5
 @export var danger_border_range := 10.0
@@ -48,6 +48,9 @@ const PATH := "res://data/tuning.tres"
 @export var character_pose_fps := 24.0 ## stepped poses; simulation and rendering retain their own rates
 @export var character_outline_pixels := 1.0
 @export var locomotion_idle_blend_speed := 0.12
+@export var locomotion_blend_acceleration := 18.0
+@export var locomotion_max_rate := 1.2
+@export var action_recovery_blend := 0.16
 
 @export_group("Bases")
 @export var base_ring_radius := 2.0
@@ -140,10 +143,15 @@ static func get_default() -> Tuning:
 
 @export_group("Skill aiming presentation")
 @export var skill_aim_pad_radius := 130.0
-@export var skill_preview_fill_alpha := 0.12
-@export var skill_preview_outline_alpha := 0.9
+@export var skill_preview_fill_alpha := 0.18
+## Outlines are opaque so the dark under-stroke never blends over the bright stroke.
+@export var skill_preview_outline_alpha := 1.0
 @export var skill_preview_wall_alpha := 0.22
-@export var skill_preview_line_width := 0.045
+@export var skill_preview_line_width := 0.075
+## Every preview outline is drawn twice: this dark under-stroke keeps it readable on any floor.
+@export var skill_preview_ink_scale := 2.2
+@export var skill_preview_ink_alpha := 0.85
+@export var skill_commit_tell_time := 0.35
 
 @export var touch_cancel_radius := 54.0
 

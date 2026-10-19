@@ -34,6 +34,7 @@ var ep_ticks := 0 ## Escape Protection left
 var lockout_ticks := 0 ## capture lockout left
 var stumble_ticks := 0
 var stun_ticks := 0
+var fall_facing := Vector3.ZERO ## locked body direction during a stumble (the swing that failed)
 var tag_block_ticks := 0 ## can't press Tag (LUSOT! recovery, MAKAPAL! guard break)
 var immune_ticks := 0 ## can't be tagged, stays solid (MAKAPAL! rage after a guard break)
 var tag_started_tick := -1 ## presentation timeline, set by the same host tick as the swing
@@ -306,6 +307,9 @@ func stun(secs: float, by_enemy_skill := true) -> void:
 func stumble(secs: float) -> void:
 	if state != State.FREE:
 		return
+	# The fall keeps the direction of the swing that missed; the player cannot look away.
+	var swing := RB.flat(lunge_dir)
+	fall_facing = swing.normalized() if swing.length() > 0.01 else RB.flat(facing).normalized()
 	stumble_ticks = maxi(stumble_ticks, RB.ticks(secs))
 	_disrupt()
 
@@ -489,6 +493,8 @@ func tick_timers() -> void:
 			_update_collision()
 	lockout_ticks = maxi(0, lockout_ticks - 1)
 	stumble_ticks = maxi(0, stumble_ticks - 1)
+	if stumble_ticks == 0:
+		fall_facing = Vector3.ZERO
 	sabay_ticks = maxi(0, sabay_ticks - 1)
 	stun_ticks = maxi(0, stun_ticks - 1)
 	tag_block_ticks = maxi(0, tag_block_ticks - 1)
@@ -574,6 +580,15 @@ func _update_facing() -> void:
 	if capturing:
 		facing = RB.flat(host.base_system.pole_pos(RB.other_team(team)) - global_position).normalized()
 		return
+	if stumble_ticks > 0 and fall_facing != Vector3.ZERO:
+		# Frozen mid-fall: the body stays on the missed swing's direction even if the player aims away.
+		facing = fall_facing
+		return
+	for skill in skills:
+		var locked: Vector3 = skill.locked_facing()
+		if locked != Vector3.ZERO:
+			facing = locked
+			return
 	if frame.tag_preparing and can_press_tag():
 		facing = host.tag_system.aim_direction(self)
 		return

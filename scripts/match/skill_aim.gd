@@ -9,22 +9,26 @@ static func profile(skill: Skill) -> Dictionary:
 	match h.data.id + str(skill.slot):
 		"jm0":
 			result.merge({"mode": "point", "icon": "jump", "hint": "Choose landing stun area", "range": float(v.talbog_range), "radius": float(v.talbog_push_radius)}, true)
+			result.tell_time = float(v.talbog_air_time)
 		"jm1":
-			result.merge({"mode": "path", "icon": "charge", "hint": "Charge; steer after release / tap STOP", "range": float(v.tamaraw_speed) * float(v.tamaraw_time) * h.tuning.move_speed_scale * (1.0 - h.strongest_slow())}, true)
-			result.tap_only = true
-			result.hint = "Click to charge; click again to stop"
+			# No direction preview: like HARUROT!, hold to show the cancel target, release to
+			# charge where you move or face. Press again mid-charge to stop.
+			result.merge({"mode": "self", "icon": "charge", "hint": "Hold, then release to charge where you move or face"}, true)
+			result.hint = "Hold and release to charge; drag to CANCEL; press again to stop"
 		"tutoy0":
 			result.merge({"mode": "self", "icon": "sprint", "hint": "Burst along movement; steer with the movement stick"}, true)
 		"tutoy1":
 			result.merge({"mode": "path", "icon": "slide", "hint": "Slide this way / vault low props", "range": float(v.lusot_distance)}, true)
 		"nene0":
-			result.merge({"mode": "line", "icon": "shout", "hint": "First enemy: stun / first ally: dash", "range": float(v.sigaw_range), "width": float(v.sigaw_radius) * 2.0}, true)
+			result.merge({"mode": "cone", "icon": "shout", "hint": "Sound wave: enemies stun / allies dash", "range": float(v.sigaw_range), "angle": float(v.sigaw_width_deg)}, true)
+			result.tell_time = float(v.sigaw_range) / float(v.sigaw_speed)
 		"nene1":
 			result.merge({"icon": "shield", "hint": "Protect yourself / punish an enemy tag"}, true)
 		"nathan0":
 			result.merge({"mode": "cone", "icon": "cone", "hint": "Powder cone / walls block hits", "range": float(v.buga_length), "angle": float(v.buga_width_deg)}, true)
 		"nathan1":
 			result.merge({"mode": "point", "icon": "cloud", "hint": "Choose where the hiding cloud lands", "range": float(v.ubo_range), "radius": float(v.ubo_radius)}, true)
+			result.tell_time = float(v.ubo_prepare_time) + float(v.ubo_flight_time)
 		"inday0":
 			result.merge({"mode": "lane", "icon": "wind", "hint": "Place a fixed wind lane", "range": float(v.ihip_length), "width": float(v.ihip_width)}, true)
 		"inday1":
@@ -39,6 +43,9 @@ static func describe(skill: Skill, frame: InputFrame) -> Dictionary:
 		dir = h.aim if h.aim.length() > 0.01 else h.facing
 	if not frame.skill_aimed and h.data.id == "tutoy" and h.wish_dir != Vector3.ZERO:
 		dir = h.wish_dir
+	if skill.aim_from_movement():
+		# TAMARAW!!! follows the movement stick and facing; an aim point never turns it.
+		dir = h.wish_dir if h.wish_dir.length() > 0.01 else h.facing
 	dir = RB.flat(dir).normalized()
 	var reach: float = result.range
 	if result.mode == "point" and frame.aim_distance(h.global_position) >= 0.0:
@@ -54,7 +61,12 @@ static func describe(skill: Skill, frame: InputFrame) -> Dictionary:
 	result.point = h.global_position + dir * reach
 	result.distance = reach
 	result.wall = []
+	result.blocked = reach + 0.01 < float(result.range) and result.mode != "point"
+	result.clamped = frame.aim_distance(h.global_position) > float(result.range) and result.mode != "self"
 	return result
+
+## Aim is never assisted: skills use exactly the direction or point the player gave. Only the
+## tag attack keeps its small gamepad assist (TagSystem._assisted).
 
 ## Stick distance selects a point, never increases its maximum range.
 static func apply_input(frame: InputFrame, h: Hero, button: int, direction: Vector2, fraction: float) -> void:

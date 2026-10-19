@@ -1,5 +1,5 @@
 """Build clean terry cloth from supplied material, with independent deform joints.
-960 triangles; open double-sided sheet is intentional. Runtime supplies shoulder/contact
+984 triangles; closed loosely rolled cloth. Runtime supplies grip/contact
 anchors and damped follow-through. NLA clips permit standalone asset review.
 """
 import bpy, math, sys
@@ -21,23 +21,37 @@ for n in material.node_tree.nodes:
         n.inputs['Roughness'].default_value=.94
         n.inputs['Metallic'].default_value=0.0
 for o in raw:bpy.data.objects.remove(o,do_unlink=True)
-rows,cols,length,width=40,12,.85,.22
+rows,cols,length,width=40,12,.72,.07
 verts=[];faces=[]
 for row in range(rows+1):
     t=row/rows
-    for col in range(cols+1):
-        u=col/cols
-        # Broad soft corrugations, not a rigid flat board. Gather only at grip.
-        gather=.38+.62*min(1,t/.16)
-        verts.append(((u-.5)*width*gather,t*length,(.018*math.sin(u*math.pi*4)+.007*(abs(u-.5)*2)**3)*math.sin(math.pi*t)**.4))
+    for col in range(cols):
+        angle=col/cols*math.tau
+        radius=(.023+.012*math.sin(math.pi*t)**.5)*(1+.06*math.cos(angle*3+t*12))
+        verts.append((math.cos(angle)*radius,t*length,math.sin(angle)*radius))
 for row in range(rows):
     for col in range(cols):
-        i=row*(cols+1)+col;faces.append((i,i+1,i+cols+2,i+cols+1))
-mesh=bpy.data.meshes.new('TerryCloth');mesh.from_pydata(verts,[],faces);mesh.update()
+        i=row*cols+col;j=row*cols+(col+1)%cols
+        faces.append((i,i+cols,j+cols,j))
+# Soft gathered caps, explicitly triangulated for stable game export.
+for row,reverse in [(0,False),(rows,True)]:
+    center=len(verts);verts.append((0,row/rows*length,0))
+    for col in range(cols):
+        a=row*cols+col;b=row*cols+(col+1)%cols
+        faces.append((center,b,a) if reverse else (center,a,b))
+mesh=bpy.data.meshes.new('RolledTerry');mesh.from_pydata(verts,[],faces);mesh.update()
 mesh.materials.append(material)
 uv=mesh.uv_layers.new(name='UVMap')
-for loop in mesh.loops:
-    i=loop.vertex_index;uv.data[loop.index].uv=(i%(cols+1)/cols,1-i//(cols+1)/rows)
+for polygon in mesh.polygons:
+    if polygon.index < rows*cols:
+        row=polygon.index//cols;col=polygon.index%cols
+        coords=[(col/cols,.15+row/rows*.85),(col/cols,.15+(row+1)/rows*.85),((col+1)/cols,.15+(row+1)/rows*.85),((col+1)/cols,.15+row/rows*.85)]
+        for li,coordinate in zip(polygon.loop_indices,coords):uv.data[li].uv=coordinate
+    else:
+        center_u=.25 if polygon.index<rows*cols+cols else .75
+        for li in polygon.loop_indices:
+            co=mesh.vertices[mesh.loops[li].vertex_index].co
+            uv.data[li].uv=(center_u+co.x*1.8,.075+co.z*1.8)
 for p in mesh.polygons:p.use_smooth=True
 ob=bpy.data.objects.new('JM_TerryCloth',mesh);bpy.context.collection.objects.link(ob)
 data=bpy.data.armatures.new('TowelRig');arm=bpy.data.objects.new('TowelRig',data);bpy.context.collection.objects.link(arm)
@@ -54,12 +68,8 @@ for v in mesh.vertices:
 mod=ob.modifiers.new('ClothSkin','ARMATURE');mod.object=arm;ob.parent=arm
 arm.animation_data_create()
 def curve(t,carry):
-    if not carry:return Vector((.05*math.sin(t*math.pi),t*length,.06*math.sin(t*math.pi*2)))
-    # Piecewise shoulder arch from a chest grip over the shoulder to the back.
-    controls=[Vector((0,0,0)),Vector((-.02,.16,.22)),Vector((-.02,.36,.15)),Vector((-.02,.39,-.26))]
-    u=t*3;k=min(2,int(u));f=u-k
-    a=controls[max(0,k-1)];b=controls[k];c=controls[k+1];d=controls[min(3,k+2)]
-    return .5*((2*b)+(-a+c)*f+(2*a-5*b+4*c-d)*f*f+(-a+3*b-3*c+d)*f*f*f)
+    if not carry:return Vector((.12*math.sin(t*math.pi),t*length,.05*math.sin(t*math.pi*2)))
+    return Vector((.04*math.sin(t*math.pi),t*length,-.04*math.sin(t*math.pi)))
 for name,carry in [('Towel_Carry',True),('Towel_Whip',False)]:
     arm.animation_data.action=None
     for f in range(25):
@@ -75,4 +85,4 @@ for name,carry in [('Towel_Carry',True),('Towel_Whip',False)]:
 arm.animation_data.action=None
 for tr in arm.animation_data.nla_tracks:tr.mute=False
 bpy.ops.export_scene.gltf(filepath=str(R/'assets/props/jm_towel.glb'),export_format='GLB',export_animation_mode='NLA_TRACKS',export_force_sampling=True,export_skins=True)
-print('TOWEL',rows*cols*2,'triangles',count,'joints',flush=True)
+print('TOWEL',len(mesh.polygons)+rows*cols,'triangles',count,'joints',flush=True)

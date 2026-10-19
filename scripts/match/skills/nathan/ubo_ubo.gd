@@ -3,13 +3,47 @@ extends Skill
 ## Nathan S2 UBO! UBO! (docs/RESBAK.md § 4 Nathan). Offensive.
 ## Lob a Kimkim packet up to 9 m along his aim (aim past range = max range). It lands 0.5 s
 ## later, or sooner at the first wall in its path, and bursts into a UboCloud (r 3.5 m, 5 s).
-## Instant skill: it never becomes `active`, and the packet and cloud last their full time
-## even if Nathan is tagged.
+## Prepare on the host for 0.3 s; disruption before release cancels the throw.
+## Once released, the packet and cloud survive the owner's tag.
+var _release_tick := -1
+var _throw_frame: InputFrame
+
+func cast_plant_seconds() -> float:
+	return float(v("ubo_prepare_time"))
 
 func kind() -> int:
 	return RB.SkillKind.OFFENSIVE
 
 func _cast(frame: InputFrame) -> void:
+	active = true
+	_release_tick = host.tick + RB.ticks(v("ubo_prepare_time"))
+	_throw_frame = frame.duplicate_frame()
+	if hero.aim != Vector3.ZERO:
+		hero.facing = hero.aim
+	hero.visual.play_action("Ubo", float(v("ubo_action_time")))
+	host.emit_event("ubo_prepare", {"hero": hero})
+
+func tick_action(_frame: InputFrame) -> void:
+	if not active:
+		return
+	if not hero.is_free() or hero.is_disabled():
+		end("disrupted")
+	elif host.tick >= _release_tick:
+		active = false
+		_release_tick = -1
+		_release(_throw_frame)
+
+func end(_reason: String) -> void:
+	if active:
+		hero.visual.stop_action("Ubo")
+	active = false
+	_release_tick = -1
+	_throw_frame = null
+	# A cancelled preparation never launches: withdraw its public landing tell too.
+	committed_until_tick = -1
+	committed_aim.clear()
+
+func _release(frame: InputFrame) -> void:
 	var origin := hero.global_position
 	var preview := aim_preview(frame)
 	var dir: Vector3 = preview.direction
@@ -23,9 +57,6 @@ func _cast(frame: InputFrame) -> void:
 		"cough_reveal": float(v("ubo_cough_reveal")),
 		"blind_time": float(v("ubo_blind_time")),
 	}
-	if hero.aim != Vector3.ZERO:
-		hero.facing = hero.aim
-	hero.visual.play_action("Ubo", 0.6)
 	var packet := UboPacket.new()
 	var from: Vector3 = preview.trajectory_from
 	packet.begin(host, hero, from, preview.trajectory_to, flight, cfg)
@@ -52,6 +83,7 @@ func aim_preview(frame: InputFrame) -> Dictionary:
 	info.direction = dir
 	info.point = land
 	info.distance = land_d
+	info.blocked = land_d + 0.01 < dist
 	info.flight = flight
 	var right := Vector3(-dir.z, 0, dir.x)
 	info.trajectory_from = origin + right * 0.2 + dir * 0.4 + Vector3(0, 1.3, 0)

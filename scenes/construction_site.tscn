@@ -4166,8 +4166,8 @@ fog_light_energy = 0.9
 fog_density = 0.006
 fog_sky_affect = 0.0
 adjustment_enabled = true
-adjustment_contrast = 1.04
-adjustment_saturation = 1.08
+adjustment_contrast = 1.06
+adjustment_saturation = 1.02
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1t3rv"]
 render_priority = 127
@@ -5719,6 +5719,11 @@ shape = SubResource("CP_Plant")
 metadata/play_bounds = Rect2(-26.5, -12.5, 49, 27)
 metadata/occlusion_fade = true
 metadata/dust = true
+metadata/presentation = {
+"haze_color": Color(0.93, 0.83, 0.68, 1),
+"ink_color": Color(0.1, 0.09, 0.16, 1),
+"stroke_pixels": 0.8
+}
 metadata/base_prop = "res://assets/props/sand_castle.tscn"
 
 [node name="BaseSite_Dilaw" type="Marker3D" parent="Gameplay" unique_id=1800000010]

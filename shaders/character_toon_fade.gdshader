@@ -15,8 +15,8 @@ void fragment() {
  EMISSION = ALBEDO * rim * 0.10;
  ALPHA = alpha;
 	float ward_rim = pow(1.0 - max(dot(normalize(NORMAL), normalize(VIEW)), 0.0), 1.8);
-	ALBEDO = mix(ALBEDO, vec3(0.95, 0.035, 0.055), ward_strength * 0.35);
-	EMISSION += vec3(1.0, 0.025, 0.04) * ward_strength * (0.25 + ward_rim * 1.5);
+	// Keep costume colours; the protective cue lives on the silhouette.
+	EMISSION += vec3(1.0, 0.28, 0.65) * ward_strength * ward_rim * (0.28 + 0.07 * sin(TIME * 7.0));
 
 }
 

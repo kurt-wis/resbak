@@ -11110,7 +11110,7 @@ fog_light_energy = 0.9
 fog_density = 0.0015
 fog_sky_affect = 0.0
 adjustment_enabled = true
-adjustment_contrast = 1.04
+adjustment_contrast = 1.06
 adjustment_saturation = 1.02
 
 [node name="BarangayCourt" type="Node3D" unique_id=971625077]
@@ -20947,7 +20947,7 @@ top_level = true
 
 [node name="WarmAfternoonSun" type="DirectionalLight3D" parent="LightingAndEnvironment"]
 rotation = Vector3(-1.047198, -0.558505, 0)
-light_color = Color(1, 0.97, 0.88, 1)
+light_color = Color(1, 0.95, 0.83, 1)
 light_energy = 0.98
 shadow_enabled = true
 shadow_bias = 0.06

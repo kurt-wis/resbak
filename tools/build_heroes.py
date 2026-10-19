@@ -118,8 +118,8 @@ HERO_CLIPS = {
     },
     "inday": {
         "Idle": clip(I, "Hand_on_Hip_Gesture", loop=True),
-        "Walking": clip(I, "Confident_Strut", loop=True),
-        "Running": clip(I, "run_fast_6", loop=True),
+        "Walking": clip(T, "Quick_Walk", trim=(0.0, 1.0), loop=True, plant=True),
+        "Running": clip(T, "Lean_Forward_Sprint", loop=True),
         # S1 IHIP!: the held two-arms-forward push, channelled up to 4 s.
         "Ihip": clip(I, "mage_soell_cast_3", trim=(32.8 / 24, 60.8 / 24), loop=True, blend=6),
         "Sagip": clip(I, "Cheer_with_Both_Hands_Up", trim=(3 / 24, 36 / 24)),   # S2 SAGIP!
@@ -601,7 +601,7 @@ def _stamp(img, text, x0, y0, s=2, color=(0.75, 0.05, 0.05)):
                     img[y:y + s, x:x + s, :3] = color
 
 
-def render_moves_sheet(arm, hero_id, names, per_clip=6, per_row=2, tile=(150, 190), suffix="moves"):
+def render_moves_sheet(arm, hero_id, names, per_clip=6, per_row=2, tile=(150, 190), suffix="moves", samples=None, view=(0.75, -1.0, 0.42)):
     """renders/heroes_<id>_moves.png: `per_clip` evenly spaced frames of every clip (first and
     last included), from the front-right, with a floor and shadows so floating or sunken feet,
     arms through the body and bad trims show up."""
@@ -625,7 +625,7 @@ def render_moves_sheet(arm, hero_id, names, per_clip=6, per_row=2, tile=(150, 19
     cam = bpy.data.objects.new("MovesCam", bpy.data.cameras.new("MovesCam"))
     cam.data.type = "ORTHO"; cam.data.ortho_scale = 2.5
     sc.collection.objects.link(cam); sc.camera = cam
-    d = Vector((0.75, -1.0, 0.42)).normalized()
+    d = Vector(view).normalized()
     cam.location = Vector((0, 0, 0.95)) + d * 8
     cam.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
     tmp = os.path.join(RENDER_DIR, f"_moves_{hero_id}.png")
@@ -636,8 +636,8 @@ def render_moves_sheet(arm, hero_id, names, per_clip=6, per_row=2, tile=(150, 19
         arm.animation_data.action = act
         f0, f1 = (int(round(x)) for x in act.frame_range)
         for k in range(per_clip):
-            f = int(round(f0 + (f1 - f0) * k / (per_clip - 1)))
-            sc.frame_set(f)
+            f = f0 + (f1 - f0) * (samples[k] if samples else k / (per_clip - 1))
+            sc.frame_set(int(f), subframe=f-int(f))
             sc.render.filepath = tmp
             bpy.ops.render.render(write_still=True)
             img = bpy.data.images.load(tmp, check_existing=False)
@@ -645,7 +645,7 @@ def render_moves_sheet(arm, hero_id, names, per_clip=6, per_row=2, tile=(150, 19
             bpy.data.images.remove(img)
             if k == 0:
                 _stamp(px, name, 3, 3)
-            _stamp(px, str(f), 3, h - 13, color=(0.2, 0.2, 0.2))
+            _stamp(px, str(round(f, 1)), 3, h - 13, color=(0.2, 0.2, 0.2))
             px[:, -1, :3] = px[-1, :, :3] = 0.35
             r, c = divmod(ci, per_row)
             y, x = r * h, (c * per_clip + k) * w
@@ -739,6 +739,16 @@ def main():
                         os.path.join(OUT_DIR, hero_id+'.glb'))
     if 'jm' in only:
         runpy.run_path(os.path.join(PROJ, 'tools', 'build_supplied_towel.py'), run_name='__main__')
+    from build_motion_pass import build as motion_pass
+    for hero_id in only:
+        motion_pass(hero_id)
+    if 'inday' in only:
+        runpy.run_path(os.path.join(PROJ, 'tools', 'build_inday_hair.py'), run_name='__main__')
+    if 'jm' in only:
+        runpy.run_path(os.path.join(PROJ, 'tools', 'build_jm_grip.py'), run_name='__main__')
+    for hero_id in only:
+        shutil.copyfile(os.path.join(RENDER_DIR, 'motion_pass', hero_id+'.glb'),
+                        os.path.join(OUT_DIR, hero_id+'.glb'))
     _contact_sheet(dance_strips, os.path.join(RENDER_DIR, "heroes_breakdance.png"))
     log("done")
 

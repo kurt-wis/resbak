@@ -14,6 +14,7 @@ var cfg := {}
 var travelled := 0.0
 var holding := false
 var _hold_left := 0
+var _life_ticks := 0
 var _palm: Marker3D
 var _close_reason := "cancelled"
 
@@ -22,6 +23,9 @@ func begin(p_host: MatchHost, p_owner: Hero, p_dir: Vector3, p_cfg: Dictionary) 
 	name = "HilaHand"
 	dir = p_dir
 	cfg = p_cfg
+	# Safety net: whatever the geometry does, a hand never outlives its flight by more than a
+	# few ticks, so a miss can never leave the reach hanging in the world.
+	_life_ticks = RB.ticks(float(cfg.range) / maxf(float(cfg.speed), 0.01)) + 3
 	# Gameplay target only: the hero's actual skinned hand and arm provide the visuals.
 	_palm = Marker3D.new()
 	_palm.position = Vector3.UP
@@ -30,6 +34,10 @@ func begin(p_host: MatchHost, p_owner: Hero, p_dir: Vector3, p_cfg: Dictionary) 
 func tick(dt: float) -> void:
 	if expired:
 		return
+	if _life_ticks <= 0:
+		_close("timeout")
+		return
+	_life_ticks -= 1
 	if owner_hero == null or not owner_hero.is_free():
 		_close("owner")
 		return

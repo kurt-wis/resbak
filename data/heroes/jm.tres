@@ -16,7 +16,7 @@ color = Color(0.949, 0.7137, 0.1961, 1)
 glb = "res://assets/characters/jm.glb"
 model_height = 1.8
 run_speed = 4.15
-tag_reach = 1.2
+tag_reach = 1.0
 walk_clip_speed = 1.04
 run_clip_speed = 3.99
 skill1_name = "TALBOG!"
@@ -28,9 +28,17 @@ skill1_script = ExtResource("2")
 skill2_script = ExtResource("3")
 passive_script = ExtResource("4")
 skill1_text = "Jump up to 6 m and slam: enemies within 2.5 m are pushed 3 m and stunned for 2 s."
-skill2_text = "Charge inside a spectral Tamaraw, shoving enemies aside and slowing them 30% for 0.5 s. Click to charge; click again to stop. Missing every enemy causes a dizzy pose during the existing 0.5 s recovery. Hitting a wall slows nearby enemies but stuns you."
+skill2_text = "Charge where you move or face, shoving enemies aside and slowing them 30% for 0.5 s. Click to charge; click again to stop. Missing every enemy causes a dizzy pose during the existing 0.5 s recovery. Hitting a wall slows nearby enemies but stuns you."
 passive_text = "Your first tag only breaks your guard. Then you get angry: 2 s nobody can tag you and you spin, shoving everyone near you away. The guard returns 18 s later."
 values = {
+"towel_length": 0.72,
+"towel_body_radius": 0.161,
+"towel_clearance": 0.04,
+"towel_grip_offset": Vector3(0.035, 0.135, -0.045),
+"towel_damping": 7.0,
+"towel_stiffness": 16.0,
+"towel_whip_force": 70.0,
+"towel_iterations": 10,
 "talbog_range": 6.0,
 "talbog_air_time": 0.6,
 "talbog_jump_height": 0.95,

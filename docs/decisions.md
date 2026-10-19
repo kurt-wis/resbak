@@ -1,5 +1,51 @@
 # Decision log
 
+## 2026-10-19 — No skill aim assist, stick-driven TAMARAW, shorter skills, arm-length tags
+
+The user asked for a fairer, more physical game: skill aim is the player's own, TAMARAW follows facing/movement, ranges shrink, and tag reach should be arm-length.
+
+Skill aim assist is removed entirely; only the tag attack keeps its small gamepad assist. Every skill uses exactly the direction or point the player gave (the preview and the release frame are identical).
+
+TAMARAW!!! no longer takes an aim direction and shows no direction indicator. Its control now matches Tutoy's HARUROT!: hold the skill button to open the cancel target, drag to CANCEL to drop it, release to charge; keep holding nothing extra, and press again mid-charge to stop. It charges where the movement stick points, or where JM faces when the stick is centred, and keeps steering toward the stick at its 90 deg/s limit; a mouse aim point never turns it. No arrow, lane or committed tell is drawn — it just moves — and S2 again still cancels the charge mid-run.
+
+Ranges were shortened for fairness: HILA! 9 to 5 m, UBO! UBO! 9 to 6.5 m with the cloud radius 3.5 to 2.5 m, SIGAW! 12 to 7 m. Tag reach is now arm-length: 1.0 m edge to edge for four heroes and 0.9 m for Tutoy (was 1.2 / 1.0), so a tag needs the bodies within about 1.8 m instead of 2 m.
+
+A HILA! that touches nothing retracts on its own: the hand carries a hard flight-time timeout (so no geometry case can leave it hanging), the missed reach closes on the tick after it opens, and the arm returns in 0.15 s.
+
+A stumbling hero (failed tag or Sabay) freezes on the direction of the swing that missed: `Hero.stumble` captures `fall_facing`, `_update_facing` holds it for the whole stumble, and the model turns to it, so aiming away mid-fall no longer spins the body.
+
+These override the spec's tag reach and skill ranges; RESBAK.md stays untouched and the deviations are logged in status.
+
+## 2026-10-19 — Soft aim assist, no aim text, smaller SIGAW fan
+
+The user replaced the earlier lock-on assistance with a soft assist, and asked for a quieter, fairer presentation.
+
+Skill assist now works like the tag assist: if a visible, unobstructed enemy sits within 25° of the aim and inside the skill's own reach, the aim turns toward it by 60 % of that angle, never more than 10°. Nothing is selected or marked, nothing homes after the cast, the caller's frame is untouched, and mouse/keyboard aim is never altered. Only skills that aim at a hero are assisted (offensive skills toward enemies, HILA! toward teammates); IHIP!, HARUROT!, LUSOT! and BAWAL! keep the player's exact direction or spot.
+
+All in-world skill text and target highlights were removed: no selected-enemy ring or gold outline, no skill-name or range labels on previews or committed tells. The shape and its colour carry the state (skill colour, red for cancel, amber for blocked, cyan for max range), in the comic ink style used by the rest of the game.
+
+SIGAW! is now a fixed 7 m by 60° fan (was 12 m): one third of the previous area, a static fan outline with a fast front sweeping inside it, each hero affected once. This supersedes the 12 m fan approved earlier the same day and is logged in status; RESBAK.md stays untouched.
+
+## 2026-10-19 — Skill commitment, aim assistance and committed tells
+
+The user approved all five recommendations of the skill-readability round in one go, then confirmed Nene's wave rules separately.
+
+1. BUGA! plants Nathan for the full 0.75 s inhale/spit and commits the aim direction at the cast. Facing, powder and hit cone stay aligned with that direction even if the player turns the stick mid-spit. Character cadence stays 24 poses/s.
+2. SIGAW! is an expanding 60-degree sound fan that travels outward at her current 18 m/s to the 12 m range, instead of a straight word that stops at the first hero. Every hero the front reaches is affected once: enemies are stunned 0.5 s, teammates dash 3 m. Walls block the rays they cross, so a wall never kills the unobstructed side of the fan.
+3. Offensive skills assist. An enemy that is visible, unobstructed and inside the displayed aim shape is selected (closest to the player's aiming direction wins), the preview highlights it, and the cast commits that direction or landing point. Enemies can still dodge after the cast. Aiming at empty ground stays exact. Assistance applies to quick casts and dragged aim alike.
+4. HILA! assists toward valid allies and rescue-chain tips. BAWAL! stays self-targeted; slides, speed boosts and wind placement keep the player's intended movement or placement.
+5. Aiming previews are private. A committed cast publishes a tell shaped like the real hit area, without the private target highlight, and every outline is drawn as a dark ink under-stroke plus the skill's bright stroke over a restrained fill.
+
+These supersede RESBAK.md § 4 wording that SIGAW stops at the first hero it touches and that Nathan may move while inhaling. The spec file itself stays untouched; the deviation is logged in status.
+
+## 2026-10-19 — Motion, secondary dynamics and cast readability
+
+User confirmed the design in two grilling rounds. Keep 24 character poses/s and the 60 Hz host. Phase-synchronize walk/run around measured stride speeds with bounded playback correction. Inday uses grounded Quick_Walk and Lean_Forward_Sprint. Strikes coil backward before contact; miss recovery starts from contact and blends out.
+
+Approved gameplay changes: tag wind-up 0.30 to 0.25 s, retaining planted commitment/reach; UBO prepares for 0.30 s and cancels if caught before release, after which projectile/cloud persist normally; IHIP plants the caster for one second while its effective area grows with the visible front, consuming the first second of its five-second lifetime; BAWAL casts while moving with pink rim/sign/orbit cues. These override the frozen spec and are logged in status; RESBAK.md stays untouched.
+
+Secondary motion uses bounded presentation solvers. JM holds a loosely rolled towel with actual finger weights. Inday's braid belongs to Head, independently of her elastic arm. Explicit reviewed masks preserve UV seams and exclude clothing; a canonical pre-repair Inday library preserves vertex indices. Both maps share the illustrated finish/ink, with court sunshine/cool fill and construction amber/dust.
+
 ## 2026-10-18 — Five-hero animation and skill presentation redesign
 User approved one continuous implementation with review/playtest at the end. TALBOG replaces the wall with the existing landing push plus a 2 s enemy stun. TAMARAW keeps its sideways shove and crash penalty, adding a 30% contact slow for 0.5 s, once per target per charge. The supplied Meshy Tamaraw becomes a 4,800-triangle animated golden projection around JM, rather than a separate animal. JM's towel tag preserves the normal hit rules and host timing.
 
@@ -151,3 +197,8 @@ Use host timers for cast/recovery plants, InputFrame state for held preparation,
 ## 2026-10-19 — JM shoulder towel and stepped character cadence
 
 The user approved 24 character poses per second while retaining responsive 60 Hz gameplay and smooth camera/UI. Use accumulated manual AnimationTree advancement, including Home heroes, instead of capping game FPS. Cloth retains smooth secondary response. JM's newly supplied shoulder rig replaces the simplified generic-joint adaptation while retaining his identity and existing full clip contract. The new towel source contributes its material to clean cloth topology. No-contact Tamaraw expiry/manual cancellation uses the existing half-second recovery for a dizzy animation; it adds no stun, protection, or punishment to successful contacts. Tamaraw is click-on-press with click-to-stop. These approved changes are documented as spec deviations in status; the spec itself is unchanged.
+
+
+## 2026-10-19 — Reference tag, overhead throw and towel snap
+
+The user approved the two supplied five-pose references: a planted lead-foot reach with an upright open palm for normal tags, and an above/behind-shoulder coil, overhead release and cross-body follow-through for Nathan and JM. Keep JM gripping the towel throughout. Allow the tag hit timing to breathe: wind-up is now 0.35 s (21 host ticks), with unchanged 0.18 s follow-through and 0.5 s miss penalty. Nathan still picks up the packet before the coil and releases on the authoritative 0.3 s boundary. These timings supersede the previous 0.25 s presentation revision, remain approved spec deviations, and retain 24 character pose samples/s. Stumble starts from the new contact pose. Exported-pose tests check upright fingers, raised coils and contact continuity.

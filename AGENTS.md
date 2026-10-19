@@ -58,8 +58,8 @@ shaders/              all spatial shaders (toon, toon fade, outline, painted sur
 assets/               game-ready: characters/*.glb (+ bystanders/, face_cards/), props/*.tscn (+ home/), audio/, fonts/, ui/home/, environment textures
 source_art/           raw sources (Godot-ignored): heroes/ (Meshy GLBs), mocap/meshy/ + mocap/quaternius/
 mixamo/               Mixamo breakdance pack (Godot-ignored)
-tools/                Blender builders (see tools/README.md)
-renders/              Blender review stills and QC sheets (Godot-ignored)
+tools/                Blender builders + reviewed vertex masks in data/ (see tools/README.md)
+renders/              Blender review stills and QC sheets (Godot-ignored; motion_* scratch is Git-ignored)
 addons/               meshy-godot-plugin (third-party; don't edit)
 docs/                 RESBAK.md = the spec · reality docs · archive/ = superseded design docs
 ```

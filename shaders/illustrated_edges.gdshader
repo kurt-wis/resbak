@@ -15,6 +15,7 @@ uniform float far_softness=4.0;
 uniform float distance_focus_enabled=1.0;
 uniform vec2 player_focus_uv=vec2(.5,.6);
 uniform vec4 haze_color : source_color=vec4(.92,.81,.64,1.);
+uniform float paper_finish : hint_range(0., .25) = .10;
 float view_depth(vec2 uv, mat4 inverse_projection) {
  float depth = texture(scene_depth,uv).r;
  #if CURRENT_RENDERER == RENDERER_COMPATIBILITY
@@ -80,8 +81,16 @@ void fragment() {
   blurred=distant_color(SCREEN_UV,far_softness*distance_blur*VIEWPORT_SIZE.y/720.,1.0/VIEWPORT_SIZE,INV_PROJECTION_MATRIX,INV_VIEW_MATRIX);
  }
  blurred=mix(blurred,haze_color.rgb,.13*outside*distance_blur);
+ // Shared printed-paint finish: subdued violet shadows, warm paper highlights.
+ // Map-specific sunlight and haze still supply the scene's dominant palette.
+ float luminance=dot(blurred,vec3(.299,.587,.114));
+ vec3 shadow_paint=blurred*vec3(.93,.94,1.05);
+ vec3 sun_paint=blurred*vec3(1.03,1.01,.97);
+ vec3 painted=mix(shadow_paint,sun_paint,smoothstep(.18,.75,luminance));
+ float grain=fract(sin(dot(floor(world_position.xz*180.),vec2(12.9898,78.233)))*43758.5453)-.5;
+ blurred=painted+grain*.018;
  float ink_alpha=edge*.70*(1.-distance_blur);
- float blur_alpha=distance_blur*.94;
+ float blur_alpha=max(distance_blur*.94,paper_finish);
  float combined=ink_alpha+blur_alpha*(1.-ink_alpha);
  ALBEDO=mix(blurred,ink.rgb,ink_alpha/max(combined,.00001));
  ALPHA=combined;

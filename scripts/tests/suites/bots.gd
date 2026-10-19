@@ -355,6 +355,6 @@ func _tag_decisions(t: TestCtx) -> void:
 	first.rng.seed = duplicate.rng.seed
 	t.check(first._tag_delay_ticks() == duplicate._tag_delay_ticks(), "decision variation is reproducible with the same seed")
 	# Human timing/range and exact-tick Sabay were never changed by bot decisions.
-	t.check(RB.ticks(host.tuning.tag_windup) == 18 and t.near(host.tuning.failed_tag_stumble, 0.5), "bot variation leaves the shared attack/recovery rules intact")
+	t.check(RB.ticks(host.tuning.tag_windup) == 21 and t.near(host.tuning.failed_tag_stumble, 0.5), "bot variation leaves the shared attack/recovery rules intact")
 	t.ok("bot attempts: seeded decision delay and post-Sabay reposition, no attack buffs")
 	await t.free_match(host)

@@ -16,9 +16,9 @@ color = Color(0.2471, 0.498, 0.851, 1)
 glb = "res://assets/characters/inday.glb"
 model_height = 1.8
 run_speed = 4.5
-tag_reach = 1.2
-walk_clip_speed = 1.02
-run_clip_speed = 2.26
+tag_reach = 1.0
+walk_clip_speed = 1.51
+run_clip_speed = 4.25
 skill1_name = "IHIP!"
 skill2_name = "HILA!"
 passive_name = "TAKBO NA!"
@@ -27,17 +27,22 @@ skill2_cooldown = 14.0
 skill1_script = ExtResource("2")
 skill2_script = ExtResource("3")
 passive_script = ExtResource("4")
-skill1_text = "Place a 12 m by 4.5 m wind lane for 5 s. Teammates gain 40% speed. Enemies and Inday are slowed 25% and lose otherwise simultaneous reciprocal tags to an unaffected opponent."
-skill2_text = "Stretch your hand up to 9 m. A miss returns immediately; the first teammate it touches is pulled to you. A chain tip that touches it is rescued, then pulled in."
+skill1_text = "Stand still for 1 s as a 12 m by 4.5 m wind lane forms outward. It lasts 5 s from casting and affects only the formed area. Teammates gain 40% speed; enemies and Inday are slowed 25% and lose otherwise simultaneous reciprocal tags."
+skill2_text = "Stretch your hand up to 5 m. A miss returns immediately; the first teammate it touches is pulled to you. A chain tip that touches it is rescued, then pulled in."
 passive_text = "After you rescue, you and everyone you freed get +20 % speed for 2 s, and your freed teammates get 1 s more protection."
 values = {
+"hair_stiffness": 95.0,
+"hair_damping": 14.0,
+"hair_back_clearance": 0.13,
+"hair_max_offset": 0.14,
+"ihip_form_time": 1.0,
 "ihip_time": 5.0,
 "ihip_length": 12.0,
 "ihip_width": 4.5,
 "ihip_bonus": 0.4,
 "ihip_slow": 0.25,
 "hila_speed": 20.0,
-"hila_range": 9.0,
+"hila_range": 5.0,
 "hila_hold": 0.0,
 "hila_grab": 0.6,
 "hila_gap": 0.3,

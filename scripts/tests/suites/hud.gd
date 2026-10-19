@@ -546,7 +546,7 @@ func _tag_aim_selection(t: TestCtx) -> void:
 	frame = source.frame_for(hero, host)
 	t.check(frame.was_pressed(RB.BTN_TAG) and frame.tag_target_slot == other.slot, "release commits selected identity exactly once")
 	t.check(not source.frame_for(hero, host).was_pressed(RB.BTN_TAG), "holding/releasing never queues a repeat")
-	TestCtx.put(nearest, 0, 1.9)
+	TestCtx.put(nearest, 0, 1.8)
 	TestCtx.put(other, 0, 1.6)
 	source.begin_tag_aim()
 	source.drag_tag_aim(Vector2(0, 100), host.tuning)
@@ -673,6 +673,7 @@ func _skill_previews(t: TestCtx) -> void:
 	release = input.frame_for(nathan, host)
 	nathan.set_frame(release)
 	t.check(nathan.skills[1].try_cast(release), "Nathan casts at his chosen cloud point")
+	t.steps(host, RB.ticks(nathan.data.v("ubo_prepare_time")) + 1)
 	var packet: UboPacket = host.objects[-1] as UboPacket
 	t.check(packet != null and RB.flat_dist(packet.to_pos, preview.point) < 0.01 and packet.flight_ticks == preview.flight, "cloud packet landing and flight match the selected preview")
 	# Explicit slide aim overrides the movement stick only for this aimed cast.

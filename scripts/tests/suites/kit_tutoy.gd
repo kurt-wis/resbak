@@ -77,7 +77,7 @@ func _data(t: TestCtx) -> void:
 	if d == null:
 		return
 	t.check(t.near(d.run_speed, 4.85), "Tutoy runs at 4.85 m/s (v0.1.1 pacing, spec 5.4)")
-	t.check(t.near(d.tag_reach, 1.0), "Tutoy tag reach is 1.0 m")
+	t.check(t.near(d.tag_reach, 0.9), "Tutoy tag reach is 0.9 m")
 	t.check(t.near(d.skill1_cooldown, 8.0) and t.near(d.skill2_cooldown, 6.0), "HARUROT! cooldown 8 s, LUSOT! cooldown 6 s")
 	var want := {
 		"harurot_speed": 8.2, "harurot_time": 1.3, "harurot_trail_part_time": 2.0,
@@ -545,7 +545,7 @@ func _lusot_perfect_edges(t: TestCtx) -> void:
 	var f1: Hero = host.heroes[2]
 	var f2: Hero = host.heroes[3]
 	TestCtx.put(f1, 1.5, 0)
-	TestCtx.put(f2, 1.5, -1.2)
+	TestCtx.put(f2, 1.4, -0.9)
 	inp = t.inputs(host)
 	inp.aim_at(f1, Vector3(-5, 0, 0))
 	inp.aim_at(f2, Vector3(0, 0, 0))

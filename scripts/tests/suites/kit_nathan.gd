@@ -109,8 +109,11 @@ func _objs_of(host: MatchHost, script: Script) -> Array:
 	return out
 
 func _cast(t: TestCtx, host: MatchHost, n: Hero, button: int) -> void:
+	t.steps(host, n.cast_lock_ticks)
 	t.inputs(host).press(n, button)
 	t.steps(host, 1)
+	if button == S2:
+		t.steps(host, RB.ticks(n.data.v("ubo_prepare_time")))
 
 func _aim(t: TestCtx, host: MatchHost, n: Hero, offset: Vector3) -> void:
 	t.inputs(host).aim_at(n, n.global_position + offset)
@@ -119,9 +122,9 @@ func _aim(t: TestCtx, host: MatchHost, n: Hero, offset: Vector3) -> void:
 func _data(t: TestCtx) -> void:
 	var d := HeroData.load_hero("nathan")
 	t.check(d != null and d.id == "nathan", "nathan.tres loads")
-	t.check(d.skill1_cooldown == 10.0 and d.skill2_cooldown == 18.0 and d.run_speed == 4.5 and d.tag_reach == 1.2, "Nathan CDs 10 / 18 s, 4.5 m/s, reach 1.2 m")
+	t.check(d.skill1_cooldown == 10.0 and d.skill2_cooldown == 18.0 and d.run_speed == 4.5 and d.tag_reach == 1.0, "Nathan CDs 10 / 18 s, 4.5 m/s, arm-length reach 1.0 m")
 	t.check(d.v("buga_length") == 5.0 and d.v("buga_width_deg") == 60.0 and d.v("buga_slow") == 0.3 and d.v("buga_slow_time") == 1.5 and d.v("buga_trail_time") == 4.0, "BUGA! numbers")
-	t.check(d.v("ubo_range") == 9.0 and d.v("ubo_radius") == 3.5 and d.v("ubo_cloud_time") == 5.0 and d.v("ubo_inside_sight") == 2.0 and d.v("ubo_cough_after") == 1.0, "UBO! UBO! numbers")
+	t.check(d.v("ubo_range") == 6.5 and d.v("ubo_radius") == 2.5 and d.v("ubo_cloud_time") == 5.0 and d.v("ubo_inside_sight") == 2.0 and d.v("ubo_cough_after") == 1.0, "UBO! UBO! numbers")
 	t.check(d.v("tira_turn_deg") == 90.0 and d.v("tira_turn_window") == 0.5 and d.v("tira_patch_radius") == 1.0 and d.v("tira_reveal_time") == 2.0, "MAY TIRA PA! numbers")
 	var buga = load(BUGA_SCRIPT)
 	var o := Vector3.ZERO
@@ -154,14 +157,14 @@ func _buga_timing(t: TestCtx) -> void:
 	t.check(n.ep_ticks == 0, "an Offensive skill ends EP (none here)")
 	t.steps(host, 22)
 	t.check(host.tick == cast_tick + 22 and e1.strongest_slow() == 0.0 and _count("buga_blow") == 0, "no powder during the 24-tick inhale")
-	# Nathan can move while inhaling
+	# Approved planted inhale and spit
 	t.inputs(host).move(n, Vector2(0, 1))
 	t.steps(host, 1)
 	t.inputs(host).move(n, Vector2.ZERO)
-	t.check(n.global_position.z > 0.0, "Nathan can move while inhaling")
+	t.check(absf(n.global_position.z) < 0.001, "Nathan remains planted while inhaling")
 	TestCtx.put(n, 0, 0)
 	t.steps(host, 1)
-	t.check(host.tick == cast_tick + 24 and _count("buga_blow") == 1 and not s.active, "the cone blows on tick cast + 24 (0.4 s)")
+	t.check(host.tick == cast_tick + 24 and _count("buga_blow") == 1 and s.active, "the cone blows on tick cast + 24 (0.4 s)")
 	var hit_tick := host.tick
 	t.check(t.near(e1.strongest_slow(), 0.3, 0.0001) and t.near(e2.strongest_slow(), 0.3, 0.0001), "both enemies in the cone are slowed 30 %")
 	t.check(ally.strongest_slow() == 0.0 and not ally.is_revealed_to(D), "the ally is untouched")
@@ -208,7 +211,7 @@ func _buga_cone(t: TestCtx) -> void:
 		t.steps(host, 24)
 		var hit := e1.strongest_slow() > 0.0
 		t.check(hit == c[1], "cone %s: hit = %s" % [c[2], c[1]])
-	# aim is read when the powder blows: turn during the inhale
+	# Aim commits with the cast, including when the input turns during inhale.
 	e1.clear_modifier("buga")
 	TestCtx.put(e1, 0, 4)
 	s.cd_ticks = 0
@@ -216,7 +219,7 @@ func _buga_cone(t: TestCtx) -> void:
 	t.steps(host, 10)
 	_aim(t, host, n, Vector3(0, 0, 5))
 	t.steps(host, 14)
-	t.check(e1.strongest_slow() > 0.0, "the cone follows the aim at the moment of the blow")
+	t.check(e1.strongest_slow() == 0.0 and n.facing.dot(Vector3.RIGHT) > 0.99, "the cone and facing retain committed aim despite a new input direction")
 	t.ok("BUGA! cone 5 m x 60 deg")
 	await t.free_match(host)
 
@@ -298,10 +301,10 @@ func _ubo_landing(t: TestCtx) -> void:
 	_aim(t, host, n, Vector3(0, 0, 20))
 	_cast(t, host, n, S2)
 	var cast_tick := host.tick
-	t.check(s.kind() == RB.SkillKind.OFFENSIVE and not s.active, "UBO! UBO! is Offensive and instant")
-	t.check(s.cd_ticks >= 1078 and s.cd_ticks <= 1080, "cooldown 18 s = 1080 ticks (got %d)" % s.cd_ticks)
+	t.check(s.kind() == RB.SkillKind.OFFENSIVE and not s.active, "UBO! UBO! is Offensive and finishes preparation before flight")
+	t.check(s.cd_ticks >= 1078 - RB.ticks(n.data.v("ubo_prepare_time")) and s.cd_ticks <= 1080 - RB.ticks(n.data.v("ubo_prepare_time")), "cooldown 18 s = 1080 ticks (got %d)" % s.cd_ticks)
 	t.check(_count("ubo_throw") == 1 and last.ubo_throw.flight_ticks == 30, "packet thrown, 30-tick flight")
-	t.check(t.near(last.ubo_throw.to.z, 1.0, 0.01), "aim past range lands at the 9 m maximum (z = %.2f)" % last.ubo_throw.to.z)
+	t.check(t.near(last.ubo_throw.to.z, -1.5, 0.01), "aim past range lands at the 6.5 m maximum (z = %.2f)" % last.ubo_throw.to.z)
 	t.check(_objs_of(host, UboPacket).size() == 1, "a packet is in the air")
 	t.steps(host, 29)
 	t.check(host.tick == cast_tick + 29 and _objs_of(host, UboCloud).is_empty(), "still flying at 29 ticks")
@@ -311,7 +314,7 @@ func _ubo_landing(t: TestCtx) -> void:
 	t.check(land_tick == cast_tick + 30 and clouds.size() == 1 and _count("ubo_land") == 1, "the cloud forms 0.5 s (30 ticks) after the throw")
 	t.check(_objs_of(host, UboPacket).is_empty(), "the packet is gone")
 	var cloud: UboCloud = clouds[0]
-	t.check(t.near(cloud.radius, 3.5) and t.near(cloud.global_position.z, 1.0, 0.01) and t.near(cloud.global_position.x, 8.0, 0.01), "cloud r 3.5 m at the landing spot")
+	t.check(t.near(cloud.radius, 2.5) and t.near(cloud.global_position.z, -1.5, 0.01) and t.near(cloud.global_position.x, 8.0, 0.01), "cloud r 2.5 m at the landing spot")
 	t.steps(host, 296)
 	t.check(not cloud.expired, "cloud still there at 4.9 s")
 	t.steps(host, 6)
@@ -355,22 +358,22 @@ func _ubo_vision_and_cough(t: TestCtx) -> void:
 	t.steps(host, 30)
 	var cloud: UboCloud = _objs_of(host, UboCloud)[0]
 	var land := host.tick
-	TestCtx.put(e1, 0, 1) # inside
-	TestCtx.put(e2, 0, 6) # outside (5 m)
-	TestCtx.put(ally, 3, 1) # inside, 3 m from e1
+	TestCtx.put(e1, 0, -1.5) # inside, at the cloud centre
+	TestCtx.put(e2, 0, 3.5) # outside (5 m)
+	TestCtx.put(ally, 2.2, -1.5) # inside, more than 2 m from e1
 	t.steps(host, 1)
 	# vision
 	t.check(host.visibility(n, e1) == 0.0, "an outside viewer cannot see an enemy whose centre is inside")
 	t.check(host.visibility(n, e2) == 1.0, "outside sees outside")
 	t.check(host.visibility(e2, ally) == 0.0, "an enemy outside cannot see Nathan's ally inside: both teams are hidden")
 	t.check(host.visibility(ally, n) == 0.0 and host.visibility(n, ally) == 0.0, "smoke hides allies as well as opponents")
-	t.check(host.visibility(e1, ally) == 0.0, "an inside viewer sees only within 2 m (ally at 3 m: hidden)")
-	TestCtx.put(ally, 1.5, 1)
+	t.check(host.visibility(e1, ally) == 0.0, "an inside viewer sees only within 2 m (ally further: hidden)")
+	TestCtx.put(ally, 1.5, -1.5)
 	t.steps(host, 1)
 	t.check(host.visibility(e1, ally) == 0.0, "an inside non-owner cannot see even a nearby target")
 	t.check(host.visibility(e1, n) == 0.0, "an inside viewer does not see an outside enemy 9 m away")
-	t.check(cloud.hides(null, Vector3(0, 0, 2.0)) and not cloud.hides(null, Vector3(0, 0, 5.0)), "hides(): inside hidden, outside not")
-	t.check(cloud.hides(null, Vector3(3.4, 0, 1.0)) and not cloud.hides(null, Vector3(3.6, 0, 1.0)), "radius 3.5 m on the centre")
+	t.check(cloud.hides(null, Vector3(0, 0, -1.5)) and not cloud.hides(null, Vector3(0, 0, 3.5)), "hides(): inside hidden, outside not")
+	t.check(cloud.hides(null, Vector3(2.4, 0, -1.5)) and not cloud.hides(null, Vector3(2.6, 0, -1.5)), "radius 2.5 m on the centre")
 	TestCtx.put(ally, 9, -10)
 	# cough after 1 continuous second
 	var inside := host.tick - land
@@ -407,11 +410,11 @@ func _ubo_cough_rules(t: TestCtx) -> void:
 	_cast(t, host, n, S2)
 	t.steps(host, 30)
 	# the inside time must be continuous
-	TestCtx.put(e2, 1.5, 1)
+	TestCtx.put(e2, 1.5, -1.5)
 	t.steps(host, 50)
-	TestCtx.put(e2, 1.5, 6)
+	TestCtx.put(e2, 1.5, 3.5)
 	t.steps(host, 1)
-	TestCtx.put(e2, 1.5, 1)
+	TestCtx.put(e2, 1.5, -1.5)
 	t.steps(host, 50)
 	t.check(_count("cough") == 0, "leaving resets the continuous timer (50 + 50 ticks, no cough)")
 	t.steps(host, 15)

@@ -85,12 +85,12 @@ func _until(t: TestCtx, host: MatchHost, kind: String, cap: int) -> int:
 # ---- data --------------------------------------------------------------------------------
 func _data(t: TestCtx) -> void:
 	var hd := HeroData.load_hero("nene")
-	var want := {"sigaw_speed": 18.0, "sigaw_range": 12.0, "sigaw_radius": 0.35, "sigaw_stun": 0.5,
+	var want := {"sigaw_speed": 18.0, "sigaw_range": 7.0, "sigaw_width_deg": 60.0, "sigaw_radius": 0.35, "sigaw_stun": 0.5,
 		"sigaw_dash_distance": 3.0, "bawal_time": 3.0, "bawal_hallucinate_time": 3.0,
 		"saling_pusa_quiet_time": 4.0, "saling_pusa_clear_radius": 8.0, "saling_pusa_break_radius": 4.0}
 	for k in want:
 		t.check(hd.values.has(k) and t.near(float(hd.values[k]), want[k]), "nene.tres %s = %s" % [k, str(want[k])])
-	t.check(t.near(hd.skill1_cooldown, 10.0) and t.near(hd.skill2_cooldown, 14.0) and t.near(hd.run_speed, 4.5) and t.near(hd.tag_reach, 1.2), "Nene: 4.5 m/s, 1.2 m reach, CD 10 s / 14 s")
+	t.check(t.near(hd.skill1_cooldown, 10.0) and t.near(hd.skill2_cooldown, 14.0) and t.near(hd.run_speed, 4.5) and t.near(hd.tag_reach, 1.0), "Nene: 4.5 m/s, arm-length reach 1.0 m, CD 10 s / 14 s")
 	var host := _make(t)
 	var nene: Hero = host.heroes[0]
 	t.check(nene.skills[0].kind() == RB.SkillKind.OFFENSIVE and nene.skills[1].kind() == RB.SkillKind.NEITHER, "SIGAW! is Offensive, BAWAL! is Neither")
@@ -123,7 +123,7 @@ func _sigaw_stun(t: TestCtx) -> void:
 	var d := _last("sigaw_hit")
 	t.check(d.get("target") == nathan and bool(d.get("enemy", false)), "the hit names the enemy")
 	t.check(nathan.is_stunned() and nathan.stun_ticks >= RB.ticks(0.5) - 2 and nathan.stun_ticks <= RB.ticks(0.5), "the enemy is stunned for 0.5 s (%d ticks left)" % nathan.stun_ticks)
-	t.check(_words(host).is_empty(), "the word is used up on the hit")
+	t.check(not _words(host).is_empty(), "the sound front continues after its first hit")
 	t.steps(host, RB.ticks(0.5) + 1)
 	t.check(not nathan.is_stunned(), "the stun wears off after 0.5 s")
 	await t.free_match(host)
@@ -133,14 +133,17 @@ func _sigaw_first_hit(t: TestCtx) -> void:
 	var nene: Hero = host.heroes[0]
 	var nathan: Hero = host.heroes[2]
 	var tutoy: Hero = host.heroes[3]
-	TestCtx.put(nathan, -11, -10)
-	TestCtx.put(tutoy, -7, -10)
+	var far: Hero = host.heroes[1]
+	TestCtx.put(nathan, -12, -10)
+	TestCtx.put(tutoy, -9, -10)
+	TestCtx.put(far, -4, -10) # 11 m out: outside the fixed 7 m fan
 	t.inputs(host).aim_at(nene, tutoy.global_position)
 	_press(t, host, nene, S1)
 	_until(t, host, "sigaw_hit", 40)
 	t.check(_last("sigaw_hit").get("target") == nathan, "the nearer enemy on the line takes the word")
 	t.steps(host, 30)
-	t.check(_count("sigaw_hit") == 1 and not tutoy.is_stunned(), "one word, one hit: the enemy behind is untouched")
+	t.check(_count("sigaw_hit") == 2, "one sound front reaches both heroes inside the fan once")
+	t.check(not far.is_stunned() and RB.flat_dist(far.global_position, nene.global_position) > 7.0, "the fixed 7 m fan never reaches a hero outside it")
 	await t.free_match(host)
 
 func _sigaw_ally_dash(t: TestCtx) -> void:
@@ -174,7 +177,7 @@ func _sigaw_range(t: TestCtx) -> void:
 	var fz := _last("sigaw_fizzle")
 	t.check(took > 0 and _count("sigaw_hit") == 0, "a word that meets nobody fizzles")
 	var fx: float = fz.pos.x if not fz.is_empty() else 0.0
-	t.check(t.near(fx, -15.0 + 0.4 + 12.0, 0.4), "it flies 12 m (fizzled at x %.2f)" % fx)
+	t.check(t.near(fx, -15.0 + 7.0, 0.05), "the fan stops at its fixed 7 m (fizzled at x %.2f)" % fx)
 	t.check(_words(host).is_empty(), "and is gone")
 	await t.free_match(host)
 
@@ -191,14 +194,14 @@ func _bawal_curse(t: TestCtx) -> void:
 	_press(t, host, nene, S2)
 	var sk = nene.skills[1]
 	t.check(_count("bawal") == 1 and nene.is_warded(), "BAWAL! puts up the sign")
-	t.check(sk.sign_label == null and nene.is_warded(), "BAWAL uses body glow without a floating sign")
+	t.check(sk.sign_label != null and sk.sign_label.visible and nene.is_warded(), "BAWAL uses an overhead pink protective cue")
 	TestCtx.put(nathan, -14, -10)
 	_tap_tag(t, host, nathan, nene)
 	t.check(nene.is_free() and _count("tag") == 0, "a tag on a warded Nene does not count")
 	t.check(_count("bawal_curse") == 1 and _last("bawal_curse").get("tagger") == nathan, "the tagger is cursed")
 	t.check(nathan.is_hallucinating() and nathan.hallucinate_ticks > RB.ticks(3.0) - 3, "the tagger hallucinates for 3 s")
 	t.check(not nathan.is_stumbling(), "no failed-tag stumble on top")
-	t.check(not nene.is_warded() and sk.sign_label == null, "one curse per cast: the sign drops")
+	t.check(not nene.is_warded() and not sk.sign_label.visible, "one curse per cast: the sign drops")
 	t.check(int(host.stats[nathan.slot].tags) == 0, "no tag stat for the cursed swing")
 	# the curse turns the stick around
 	TestCtx.put(nathan, 5, 5)
@@ -228,7 +231,7 @@ func _bawal_drops(t: TestCtx) -> void:
 	nene.skills[1].cd_ticks = 0
 	_press(t, host, nene, S2)
 	t.check(nene.is_warded(), "cast again")
-	t.check(not nene.can_press_tag(), "ward cast briefly plants Nene")
+	t.check(nene.can_press_tag() and nene.can_move(), "ward cast preserves movement and actions")
 	t.steps(host, nene.cast_lock_ticks)
 	_press(t, host, nene, TAG)
 	t.check(not nene.is_warded(), "pressing Tag drops the sign (no hitting from behind it)")

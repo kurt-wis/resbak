@@ -230,7 +230,7 @@ func _tag_hit_and_jail(t: TestCtx) -> void:
 	var a: Hero = host.heroes[0]
 	var c: Hero = host.heroes[2]
 	TestCtx.put(a, 0, 0)
-	TestCtx.put(c, 1.9, 0) # centres 1.9 apart = 1.1 m edge to edge, inside the 1.2 m reach
+	TestCtx.put(c, 1.8, 0) # centres 1.8 apart = 1.0 m edge to edge, inside the 1.0 m arm reach
 	_face_east(t, host, a)
 	var windup := RB.ticks(host.tuning.tag_windup)
 	t.inputs(host).press(a, TAG)
@@ -286,7 +286,7 @@ func _tag_geometry(t: TestCtx) -> void:
 		a.reset_for_round(Vector3(0, 0.05, 0), Vector3.RIGHT)
 	# the nearest of two enemies in reach is the one tagged
 	TestCtx.put(a, 0, 0)
-	TestCtx.put(c, 1.9, 0)
+	TestCtx.put(c, 1.8, 0)
 	TestCtx.put(d, 1.3, 0.55)
 	_face_east(t, host, a)
 	_tag(t, host, a)
@@ -295,8 +295,8 @@ func _tag_geometry(t: TestCtx) -> void:
 	t.check(t.near(RB.flat_dist(impact, d.global_position), host.tuning.body_radius) and impact.y > d.global_position.y, "tag contact is on the target body surface, not the indicator")
 	await t.free_match(host)
 
-	# reach: exactly inside / just outside (edge to edge), Tutoy has 1.0
-	for case in [["nene", 1.95, true], ["nene", 2.1, false], ["tutoy", 1.75, true], ["tutoy", 1.9, false]]:
+	# reach: exactly inside / just outside (edge to edge), Tutoy has 0.9
+	for case in [["nene", 1.8, true], ["nene", 1.95, false], ["tutoy", 1.65, true], ["tutoy", 1.8, false]]:
 		var h2 := _live(t, [case[0], "inday"], ["nathan", "nene"])
 		var a2: Hero = h2.heroes[0]
 		var c2: Hero = h2.heroes[2]
@@ -324,10 +324,19 @@ func _failed_tag(t: TestCtx) -> void:
 	t.steps(host, 20)
 	t.check(t.near(a.global_position.x, 0.0, 0.05), "a stumbling hero cannot move")
 	t.check(not a.is_winding_up(), "a stumbling hero cannot tag")
-	t.steps(host, 9)
+	# the fall keeps the missed swing's direction: aiming away cannot turn the body
+	t.inputs(host).move(a, Vector2.ZERO)
+	t.inputs(host).aim_at(a, a.global_position + Vector3(-6, 0, 0))
+	t.steps(host, 4)
+	t.check(a.facing.dot(Vector3.RIGHT) > 0.99, "a stumbling hero stays locked on the swing's direction")
+	a.visual._process(0.2)
+	a.visual._process(0.2)
+	t.check(a.visual.model.rotation.y > 0.9 and a.visual.model.rotation.y < 2.3, "and the model does not turn to look elsewhere mid-fall")
+	t.steps(host, 5)
 	t.check(a.is_stumbling(), "stumble lasts the full 30 ticks")
 	t.steps(host, 1)
 	t.check(not a.is_stumbling(), "stumble over after 0.5 s")
+	t.inputs(host).move(a, Vector2(1, 0))
 	t.steps(host, 30)
 	t.check(a.global_position.x > 0.5, "moves again after the stumble")
 	# a stumble does not stack: the longer remaining time applies
@@ -440,7 +449,7 @@ func _sabay(t: TestCtx) -> void:
 	TestCtx.put(a, 0, 0)
 	TestCtx.put(c, 1.6, 0)
 	TestCtx.put(b, -6, -4)
-	TestCtx.put(d, -4.2, -4)
+	TestCtx.put(d, -4.4, -4)
 	_face_east(t, host, a)
 	_face_west(t, host, c)
 	_face_east(t, host, b)
@@ -553,7 +562,7 @@ func _capture_cancel(t: TestCtx) -> void:
 	t.steps(host, 2)
 	# being tagged cancels (and counts as a save)
 	TestCtx.put(c, -10.6, 0)
-	TestCtx.put(a, -8.8, 0)
+	TestCtx.put(a, -8.9, 0)
 	inp.hold(c, USE)
 	t.steps(host, 30)
 	t.check(c.capturing, "capturing before the tag")

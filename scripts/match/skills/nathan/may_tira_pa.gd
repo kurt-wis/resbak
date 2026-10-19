@@ -12,8 +12,11 @@ var patch: TiraPatch
 var _window_end := -1 ## last host tick a turn still drops a patch
 var _hist: Array = [] ## recent non-zero move directions: {tick, dir}
 
-func on_skill_cast(_skill: Skill) -> void:
+func on_skill_cast(skill: Skill) -> void:
 	_window_end = host.tick + RB.ticks(float(v("tira_turn_window")))
+	# A plant longer than the reaction window must not consume the entire passive.
+	if skill.cast_plant_seconds() > float(v("tira_turn_window")):
+		_window_end += RB.ticks(skill.cast_plant_seconds())
 
 func tick(_dt: float) -> void:
 	if not hero.is_free() or not hero.can_move():

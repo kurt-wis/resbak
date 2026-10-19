@@ -16,6 +16,9 @@ var sign_board: MeshInstance3D
 func kind() -> int:
 	return RB.SkillKind.NEITHER
 
+func cast_plant_seconds() -> float:
+	return 0.0
+
 func _ready() -> void:
 	if hero:
 		hero.state_changed.connect(_on_hero_state)
@@ -58,9 +61,27 @@ func on_owner_event(event: String, _data: Variant) -> void:
 	if _left > 0 and event in ["tag_pressed", "capture_start"]:
 		end(event)
 
-func _show_sign(_on: bool) -> void:
-	# HeroVisual reads warded() and applies a red glow to the skinned body.
-	pass
+func _show_sign(on: bool) -> void:
+	if sign_label == null:
+		sign_label = Label3D.new()
+		sign_label.name = "BawalSign"
+		sign_label.text = "♡\nBAWAL!"
+		sign_label.font_size = 46
+		sign_label.pixel_size = 0.0035
+		sign_label.outline_size = 10
+		sign_label.modulate = Color("ff9dce")
+		sign_label.outline_modulate = Color("66264f")
+		sign_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		sign_label.no_depth_test = true
+		hero.visual.extras.add_child(sign_label)
+		sign_label.position.y = hero.data.model_height + 0.45
+	sign_label.visible = on
+
+func _process(_delta: float) -> void:
+	if sign_label and warded() and not host.paused:
+		var phase := RB.seconds(host.tick - cast_tick)
+		sign_label.position.y = hero.data.model_height + 0.45 + sin(phase * 5.0) * 0.055
+		sign_label.scale = Vector3.ONE * (1.0 + sin(phase * 7.0) * 0.055)
 
 func hud_note() -> String:
 	return "%.1f s" % RB.seconds(_left) if _left > 0 else ""

@@ -14,3 +14,8 @@ __pycache__/
 # Gate output scratch and stray git-hook folder
 gate_*.txt
 /dev/
+
+# Local motion-pass builds, capture logs, isolated save data and inspection scratch.
+/renders/motion_*
+/renders/*_motion.png
+/renders/heroes_inday_hair.png

@@ -40,3 +40,7 @@ One-time apply_hero_revision, revise_*, align_recovery_checks and update_revisio
 - JM follow-up source/clip/budget details: `docs/pipelines/blender.md`, “JM shoulder follow-up”. `qc_asset.py` uses bind-pose bounds so an imported first animation cannot bias scale or gait speeds.
 
 - `playtest_hero.gd -- --hero=jm [--bots]`: launches playable Ensayo directly, without changing saved hero preferences.
+
+- Motion pass: `build_motion_pass.py -- <hero ids>` stages full-rig reference reach/miss, shout and overhead throw clips in `renders/motion_pass/`. Then `build_inday_hair.py` / `build_jm_grip.py` apply reviewed masks from `tools/data/`. `build_heroes.py` includes these final steps.
+- `qc_motion_pass.py`: Blender geometry/weight checks on the staged roster and towel. `qc_motion_pass.gd -- --only=jm,nene` captures real-map gait, attack, skill and map-style stills under `renders/motion_game/`.
+- Local motion builds, logs and isolated test save data use the Git-ignored `renders/motion_*` prefix.

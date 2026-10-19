@@ -1,10 +1,7 @@
 extends Skill
 
-## Nene S1 SIGAW! (v0.2, replaces IYAK!; docs/status.md). She shouts a word ("SIGAW!") that
-## flies straight along her aim (SigawWord). The first Free hero it meets decides what it does:
-## an enemy is stunned for sigaw_stun seconds; a teammate gets a short dash (a quick push of
-## sigaw_dash_distance metres the way they are moving, else the way the word flew). Walls stop
-## it. Type: Offensive.
+## SIGAW sends a fixed 60-degree sound fan out to its range. Each reachable hero is
+## affected once: enemy stun, teammate dash. Walls occlude their part of the wave.
 
 func kind() -> int:
 	return RB.SkillKind.OFFENSIVE
@@ -20,12 +17,12 @@ func _cast(frame: InputFrame) -> void:
 	word.begin(host, hero, dir, {
 		"speed": float(v("sigaw_speed")),
 		"range": float(v("sigaw_range")),
+		"angle": float(v("sigaw_width_deg")),
 		"radius": float(v("sigaw_radius")),
 		"stun": float(v("sigaw_stun")),
 		"dash": float(v("sigaw_dash_distance")),
 	})
-	host.spawn_object(word, hero.global_position + dir * host.tuning.body_radius)
-	Vfx.sound_shell(host.world, hero.global_position + Vector3.UP, dir, Color("ff83ba"), 0.7)
+	host.spawn_object(word, hero.global_position)
 	var clip_time := minf(hero.visual.clip_length("Sumbong"), 0.6) if hero.visual else 0.0
 	if clip_time > 0.0:
 		hero.visual.play_action("Sumbong", clip_time)

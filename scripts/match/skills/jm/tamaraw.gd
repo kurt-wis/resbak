@@ -1,7 +1,9 @@
 extends Skill
 
-## JM S2 TAMARAW!!! (docs/RESBAK.md § 4 JM). A charge along the aim at a fixed 9 m/s (no speed
-## bonus, slows still apply) for up to 1.5 s; the heading turns toward the aim at most 90 deg/s.
+## JM S2 TAMARAW!!! (docs/RESBAK.md § 4 JM). A charge along the movement stick (or where he
+## faces when the stick is centred) at a fixed 9 m/s (no speed bonus, slows still apply) for up
+## to 1.5 s; the heading turns toward the stick at most 90 deg/s. There is no aim: the mouse or
+## the aim stick never steers it.
 ## Pressing S2 again ends it. JM can't tag while charging. Each enemy touched is pushed 2 m
 ## sideways off the path, once per charge; allies are unaffected and don't block (JM moves on the
 ## ghost layer with no hero mask while charging). Hitting a wall or other solid thing (world, TALBOG!
@@ -36,8 +38,20 @@ func fixed_speed() -> float:
 func hud_note() -> String:
 	return "" if not active else "%.1f s" % RB.seconds(_left)
 
+## The charge follows the movement stick (and facing when the stick is centred), never the aim.
+func aim_from_movement() -> bool:
+	return true
+
+## Direction the charge uses right now: the stick, else where JM is facing.
+func charge_heading() -> Vector3:
+	var wish := RB.flat(hero.wish_dir)
+	if wish.length() > 0.01:
+		return wish.normalized()
+	var face := RB.flat(hero.facing)
+	return face.normalized() if face.length() > 0.01 else Vector3.FORWARD
+
 func _cast(_frame: InputFrame) -> void:
-	_dir = RB.flat(hero.aim if hero.aim.length() > 0.01 else hero.facing).normalized()
+	_dir = charge_heading()
 	_left = maxi(1, RB.ticks(v("tamaraw_time")))
 	_hit.clear()
 	active = true
@@ -60,12 +74,11 @@ func on_owner_event(event: String, _data: Variant) -> void:
 
 func move(dt: float) -> void:
 	_ghost_body() # EP / state changes elsewhere may have reset the layers
-	# Steer toward the aim, at most turn_rate deg/s.
-	var want := hero.aim
-	if want.length() > 0.01:
-		var ang := _dir.signed_angle_to(RB.flat(want).normalized(), Vector3.UP)
-		var lim := deg_to_rad(float(v("tamaraw_turn_rate_deg"))) * dt
-		_dir = _dir.rotated(Vector3.UP, clampf(ang, -lim, lim)).normalized()
+	# Steer toward the movement stick, at most turn_rate deg/s.
+	var want := charge_heading()
+	var ang := _dir.signed_angle_to(want, Vector3.UP)
+	var lim := deg_to_rad(float(v("tamaraw_turn_rate_deg"))) * dt
+	_dir = _dir.rotated(Vector3.UP, clampf(ang, -lim, lim)).normalized()
 	var spd := hero.current_speed()
 	hero.velocity = Vector3(_dir.x * spd, hero.velocity.y, _dir.z * spd)
 	hero.move_body(dt)

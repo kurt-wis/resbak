@@ -4,11 +4,11 @@ extends RefCounted
 ## pacing values, about 10 % under the spec, see docs/status.md).
 
 const SPEC := {
-	"tutoy": {"speed": 4.85, "reach": 1.0, "cd1": 8.0, "cd2": 6.0},
-	"nene": {"speed": 4.5, "reach": 1.2, "cd1": 10.0, "cd2": 14.0}, # v0.2 SIGAW! / BAWAL!
-	"nathan": {"speed": 4.5, "reach": 1.2, "cd1": 10.0, "cd2": 18.0},
-	"jm": {"speed": 4.15, "reach": 1.2, "cd1": 12.0, "cd2": 16.0},
-	"inday": {"speed": 4.5, "reach": 1.2, "cd1": 24.0, "cd2": 14.0}, # v0.2 HILA!
+	"tutoy": {"speed": 4.85, "reach": 0.9, "cd1": 8.0, "cd2": 6.0},
+	"nene": {"speed": 4.5, "reach": 1.0, "cd1": 10.0, "cd2": 14.0}, # v0.2 SIGAW! / BAWAL!
+	"nathan": {"speed": 4.5, "reach": 1.0, "cd1": 10.0, "cd2": 18.0},
+	"jm": {"speed": 4.15, "reach": 1.0, "cd1": 12.0, "cd2": 16.0},
+	"inday": {"speed": 4.5, "reach": 1.0, "cd1": 24.0, "cd2": 14.0}, # v0.2 HILA!
 }
 
 func run(t: TestCtx) -> void:
@@ -21,7 +21,7 @@ func run(t: TestCtx) -> void:
 		var node := packed.instantiate()
 		var ap := node.find_child("*AnimationPlayer*", true, false) as AnimationPlayer
 		if t.check(ap != null, "%s AnimationPlayer must exist" % hid):
-			for clip in ["Idle", "Walking", "Running", "BreakDance", "Tag", "Cough"]:
+			for clip in ["Idle", "Walking", "Running", "BreakDance", "Tag", "Stumble", "Cough"] + (["Sumbong"] if hid == "nene" else (["Ubo"] if hid == "nathan" else [])):
 				if t.check(ap.has_animation(clip), "%s clip %s must exist" % [hid, clip]):
 					t.check(ap.get_animation(clip).get_track_count() >= 60, "%s clip %s must animate the full skeleton (>= 60 tracks)" % [hid, clip])
 			# retained TagCharge source clip (not used by tap-only tagging): seamless on every hero
@@ -33,7 +33,30 @@ func run(t: TestCtx) -> void:
 				t.check(not ap.has_animation(bad), "%s must not have an exact '%s' clip" % [hid, bad])
 			for clip in (["Tag"] if hid == "jm" else (["Sagip"] if hid == "inday" else [])):
 				t.check(ap.has_animation(clip) and ap.get_animation(clip).get_track_count() >= 60, "%s authored %s retains full-skeleton animation" % [hid, clip])
+			_reference_poses(t, node, ap, hid)
 		var meshes := node.find_children("*", "MeshInstance3D", true, false)
+		if hid == "inday":
+			var sk := node.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+			var head := sk.find_bone("mixamorig_Head")
+			var parent := head
+			for i in range(4):
+				var hair := sk.find_bone("mixamorig_Hair%d" % (i + 1))
+				t.check(hair >= 0 and sk.get_bone_parent(hair) == parent, "Inday hair joint %d belongs exclusively to the Head chain" % (i + 1))
+				parent = hair
+		if hid == "jm":
+			var sk := node.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+			var finger := sk.find_bone("mixamorig_RightHandMiddle1")
+			var weighted := 0
+			for mesh in meshes:
+				var bind := -1
+				for i in range(mesh.skin.get_bind_count()):
+					if mesh.skin.get_bind_bone(i) == finger or mesh.skin.get_bind_name(i) == "mixamorig_RightHandMiddle1":bind = i
+				if bind < 0:continue
+				for surface in range(mesh.mesh.get_surface_count()):
+					var arrays: Array = mesh.mesh.surface_get_arrays(surface)
+					for i in range(arrays[Mesh.ARRAY_BONES].size()):
+						if arrays[Mesh.ARRAY_BONES][i] == bind and arrays[Mesh.ARRAY_WEIGHTS][i] > 0.01:weighted += 1
+			t.check(weighted > 100, "JM's grip joint deforms actual finger vertices rather than an unweighted placeholder")
 		t.check(meshes.size() == 1, "%s must have exactly one mesh, got %d" % [hid, meshes.size()])
 		node.free()
 
@@ -70,3 +93,32 @@ func run(t: TestCtx) -> void:
 		t.check(tris > 0 and tris <= int(pair[2]), "%s stays within its triangle budget" % pair[0])
 		t.check(player != null and player.has_animation(pair[1]), "%s exports its authored NLA action" % pair[0])
 		prop.free()
+
+func _reference_poses(t: TestCtx, node: Node, ap: AnimationPlayer, hid: String) -> void:
+	# Sample the exported clips, so an export/mapping error cannot pass a source-only check.
+	t.tree.root.add_child(node)
+	var skeleton := node.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	var hand := skeleton.find_bone("mixamorig_RightHand")
+	var shoulder := skeleton.find_bone("mixamorig_RightArm")
+	ap.play("Tag")
+	ap.seek(ap.get_animation("Tag").length * 0.55, true)
+	var contact: Array[Transform3D] = []
+	for i in range(skeleton.get_bone_count()):contact.append(skeleton.get_bone_global_pose(i))
+	if hid != "jm":
+		var upright := contact[hand].basis.y.normalized().dot(Vector3.UP)
+		t.check(upright > 0.8, "%s tags with upright open-palm fingers (up %.3f)" % [hid, upright])
+	else:
+		ap.seek(ap.get_animation("Tag").length * 0.34, true)
+		t.check(skeleton.get_bone_global_pose(hand).origin.y > skeleton.get_bone_global_pose(shoulder).origin.y + 0.05, "JM raises the held towel behind the shoulder before snapping")
+	ap.play("Stumble")
+	ap.seek(0.0, true)
+	var largest := 0.0
+	for i in range(skeleton.get_bone_count()):largest = maxf(largest, contact[i].origin.distance_to(skeleton.get_bone_global_pose(i).origin))
+	t.check(largest < 0.025, "%s miss starts at the exported tag contact (%.4f m)" % [hid, largest])
+	if hid == "nathan":
+		ap.play("Ubo")
+		ap.seek(ap.get_animation("Ubo").length * 0.34, true)
+		var raised := skeleton.get_bone_global_pose(hand).origin.y - skeleton.get_bone_global_pose(shoulder).origin.y
+		t.check(raised > 0.05, "Nathan gathers the packet above and behind the shoulder (raised %.3f m)" % raised)
+	ap.stop()
+	t.tree.root.remove_child(node)

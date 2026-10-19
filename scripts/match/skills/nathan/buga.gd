@@ -1,45 +1,59 @@
 extends Skill
 
 ## Nathan S1 BUGA! (docs/RESBAK.md § 4 Nathan). Offensive.
-## Inhale 0.4 s (Nathan can move; enemies see and hear it: event 'buga_inhale'), then a Kimkim
-## powder cone 5 m long and 60 deg wide along his aim at the moment he blows. Walls block it
+## Planted 0.75 s inhale/spit, with a 0.4 s inhale, then a Kimkim
+## powder cone 5 m long and 60 deg wide along his committed aim. Walls block it
 ## (host.los_clear per target). Every free enemy whose centre is in the cone is slowed 30 % for
 ## 1.5 s, leaves a powder trail everyone can see for 4 s, and is revealed to Nathan's team for
 ## the same 4 s (hiding spots, clouds, minimap). No tag, no capture cancel, no stun.
 ## A tag, a stun or a stumble during the inhale cancels the blow (the cooldown is spent).
 
 var _blow_tick := -1
+var _finish_tick := -1
+var _direction := Vector3.ZERO
 var _trails := {} ## target slot -> PowderTrail
 
 func kind() -> int:
 	return RB.SkillKind.OFFENSIVE
 
-func _cast(_frame: InputFrame) -> void:
+func cast_plant_seconds() -> float:
+	return float(v("buga_action_time"))
+
+## The committed direction holds for the whole inhale/spit, including its last tick.
+func locked_facing() -> Vector3:
+	return _direction if _finish_tick >= 0 and host.tick < _finish_tick else Vector3.ZERO
+
+func _cast(frame: InputFrame) -> void:
 	active = true
-	hero.plant_cast(float(v("buga_inhale")))
+	_direction = frame.aim_direction(hero.global_position)
+	if _direction == Vector3.ZERO:
+		_direction = hero.aim if hero.aim != Vector3.ZERO else hero.facing
+	_direction = RB.flat(_direction).normalized()
+	hero.aim = _direction
+	hero.facing = _direction
 	_blow_tick = host.tick + RB.ticks(v("buga_inhale"))
-	if hero.aim != Vector3.ZERO:
-		hero.facing = hero.aim
-	hero.visual.play_action("Buga", float(v("buga_inhale")) + 0.35)
+	_finish_tick = host.tick + RB.ticks(v("buga_action_time"))
+	hero.visual.play_action("Buga", float(v("buga_action_time")))
 	PowderFx.inhale_ring(host.world, hero.global_position, 1.6, float(v("buga_inhale")))
 	host.emit_event("buga_inhale", {"hero": hero, "pos": hero.global_position})
 
 func tick_action(_frame: InputFrame) -> void:
 	if not active:
 		return
-	if hero.is_disabled():
+	if not hero.is_free() or hero.is_disabled():
 		end("disrupted")
 		return
-	if host.tick >= _blow_tick:
+	if _blow_tick >= 0 and host.tick >= _blow_tick:
 		_blow()
+	if host.tick + 1 >= _finish_tick:
+		# The cast plant ends on the next tick; release here so a press on that tick casts
+		# instead of being read as a recast of a finished spit.
+		active = false
 
 func _blow() -> void:
-	active = false
 	_blow_tick = -1
 	var origin := hero.global_position
-	var dir := RB.flat(hero.aim).normalized()
-	if dir == Vector3.ZERO:
-		dir = RB.flat(hero.facing).normalized()
+	var dir := _direction
 	var length: float = v("buga_length")
 	var width: float = v("buga_width_deg")
 	var hits: Array[Hero] = []
@@ -81,8 +95,10 @@ func end(_reason: String) -> void:
 		hero.visual.stop_action("Buga")
 	active = false
 	_blow_tick = -1
+	_finish_tick = -1
+	committed_until_tick = -1
 
 func hud_note() -> String:
 	if not active:
 		return ""
-	return "%.1f s" % RB.seconds(maxi(0, _blow_tick - host.tick))
+	return "%.1f s" % RB.seconds(maxi(0, _finish_tick - host.tick))
